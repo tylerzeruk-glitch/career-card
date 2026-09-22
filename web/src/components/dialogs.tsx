@@ -30,7 +30,7 @@ function DropZone({ label, accept, multiple, onFiles }: { label: string; accept:
 }
 
 export function ImportDialog({ open, tab, onClose }: { open: boolean; tab: ImportTab; onClose: () => void }) {
-  const { S, sampleMode, replace, update, flash } = useCard();
+  const { S, sampleMode, replace, update, flash, user } = useCard();
   const [t, setT] = useState<ImportTab>(tab);
   const [data, setData] = useState<ImportData | null>(null);
   const [busy, setBusy] = useState('');
@@ -46,7 +46,24 @@ export function ImportDialog({ open, tab, onClose }: { open: boolean; tab: Impor
   const preview = (d: CareerImport) => { setData(d); setKeep(new Set(d.roles.map((_, i) => i))); setNote(d.roles.length ? '' : 'Nothing to import from the roles.'); };
 
   const onLinkedIn = async (files: File[]) => { try { setBusy('Reading files…'); preview(await readLinkedIn(files)); setBusy(''); } catch (e) { fail(e); } };
-  const onResume = async (files: File[]) => { try { setBusy('Reading ' + files[0].name + '…'); preview(heuristicResume(await resumeText(files[0]))); setBusy(''); } catch (e) { fail(e); } };
+  const onResume = async (files: File[]) => {
+    const f = files[0];
+    try {
+      // Signed in: Claude reads the file on the server. Otherwise, or if that is unavailable, the date-pattern parser has a go.
+      let why = user ? '' : 'Sign in and Claude reads the resume for you; for now the simple parser had a go.';
+      if (user) {
+        setBusy('Asking Claude to read ' + f.name + '…');
+        const fd = new FormData(); fd.append('file', f);
+        const res = await fetch('/api/resume', { method: 'POST', body: fd });
+        if (res.ok) { preview(await res.json() as CareerImport); setBusy(''); return; }
+        const err = await res.json().catch(() => ({})) as { error?: string; message?: string };
+        why = err.error === 'not-configured' ? 'Claude extraction is not set up here; the simple parser had a go.' : (err.message || 'Claude could not read it') + ' The simple parser had a go instead.';
+      }
+      setBusy('Reading ' + f.name + '…');
+      const d = heuristicResume(await resumeText(f));
+      preview(d); setBusy(''); if (why) setNote(why);
+    } catch (e) { fail(e); }
+  };
   const onTracker = async (files: File[]) => { try { setBusy('Reading ' + files[0].name + '…'); const tr = await readTracker(files[0]); setTracker(tr); const m = guessMapping(tr.sheets[tr.current]); setMapping(m); setData(trackerEvents(tr.sheets[tr.current], m.hi, m.map)); setBusy(''); } catch (e) { fail(e); } };
   const remap = (k: string, v: number) => { if (!tracker || !mapping) return; const map = { ...mapping.map, [k]: v }; setMapping({ ...mapping, map }); setData(trackerEvents(tracker.sheets[tracker.current], mapping.hi, map)); };
   const pickSheet = (name: string) => { if (!tracker) return; const tr = { ...tracker, current: name }; setTracker(tr); const m = guessMapping(tr.sheets[name]); setMapping(m); setData(trackerEvents(tr.sheets[name], m.hi, m.map)); };
@@ -92,7 +109,7 @@ export function ImportDialog({ open, tab, onClose }: { open: boolean; tab: Impor
           {([['linkedin', 'LinkedIn export'], ['resume', 'Resume'], ['tracker', 'Job-hunt tracker']] as [ImportTab, string][]).map(([k, l]) => <button key={k} className={'tab' + (t === k ? ' on' : '')} onClick={() => { reset(); setT(k); }}>{l}</button>)}
         </div>
         {t === 'linkedin' && <div><p>On LinkedIn: Settings → Data privacy → <b>Get a copy of your data</b> → the full archive. Drop the zip here, or just Positions.csv (plus Education.csv, Skills.csv, Certifications.csv, Profile.csv if you have them).</p><DropZone label="Drop the LinkedIn zip or CSV files here, or click to choose" accept=".zip,.csv" multiple onFiles={onLinkedIn} /></div>}
-        {t === 'resume' && <div><p>PDF, Word (.docx) or plain text. The text is read in your browser and a date-pattern parser finds the roles; you check the result before anything is saved.</p><DropZone label="Drop a resume here, or click to choose" accept=".pdf,.docx,.txt,.md" onFiles={onResume} /></div>}
+        {t === 'resume' && <div><p>PDF, Word (.docx) or plain text. {user ? 'Claude reads it and pulls out the roles, dates, highlights, education and contact details; you check the result before anything is saved.' : 'A date-pattern parser finds the roles; sign in and Claude reads the resume properly instead.'}</p><DropZone label="Drop a resume here, or click to choose" accept=".pdf,.docx,.txt,.md" onFiles={onResume} /></div>}
         {t === 'tracker' && (
           <div>
             <p>Excel or CSV of applications. Columns are matched by header (the Application Tracker layout maps automatically) and each row becomes an application event on the timeline.</p>

@@ -59,11 +59,20 @@ origin.
 - `src/styles/card.css` is the card stylesheet, shared with the single-file
   version; `src/app/globals.css` is the page chrome.
 
+## Resume import
+
+Import → Resume sends the file to `src/app/api/resume/route.ts`, which
+asks Claude for the structure (roles with dates, highlights and skills,
+education, certifications, contact details) as a typed object and returns
+the same preview shape the LinkedIn import uses. It needs `ANTHROPIC_API_KEY`
+on the server and a signed-in user, so the key is never exposed to
+anonymous traffic. Without either, the browser falls back to the
+date-pattern parser and says so in the preview.
+
 ## Not yet
 
-- Resume extraction by Claude (the artifact version had it). The web app
-  uses the simpler date-pattern parser; a server route with an API key is
-  the next step.
+- Clean up the Role, Event and Profile drawer forms: fewer fields up front,
+  better date entry, inline validation.
 - The "download a standalone HTML page" export. The public page replaces
   it once you sign in.
 - Company logo lookup for the card art.

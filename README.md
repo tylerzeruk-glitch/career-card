@@ -83,3 +83,4 @@ runs in local mode (this browser only) without any configuration. See
   an app with a backend. Started in `web/`: sign-in, per-user saving and
   the public page are there; the Free agency row and log are owner-only.
 - Past job hunts as their own free-agency zones.
+- Clean up how entry works in the Role, Event and Profile flyout (web app).
