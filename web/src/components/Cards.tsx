@@ -1,11 +1,20 @@
 'use client';
-import type { CSSProperties } from 'react';
+import { useCallback, useEffect, useRef, useState, type CSSProperties } from 'react';
 import type { Profile, Role, State } from '@/lib/types';
-import { dur, durShort, fmt, fmtMonth, monthIndex, monthsBetween, nowYM, pad, yearOf } from '@/lib/dates';
+import { dur, fmt, fmtMonth, monthIndex, monthsBetween, nowYM, pad, yearOf, yrs } from '@/lib/dates';
 import { codeFor, huntStats, initials, pairFor, runs, status, teamSize, type Run } from '@/lib/derived';
 
 type Vars = CSSProperties & { '--a'?: string; '--b'?: string };
 const vars = (a: string, b: string): Vars => ({ '--a': a, '--b': b });
+
+/** The highlights list: scrolls inside the card, with a nudge at the bottom while there is more below. */
+function Bullets({ items }: { items: string[] }) {
+  const ref = useRef<HTMLUListElement>(null);
+  const [more, setMore] = useState(false);
+  const check = useCallback(() => { const el = ref.current; if (el) setMore(el.scrollHeight - el.scrollTop - el.clientHeight > 2); }, []);
+  useEffect(() => { check(); const el = ref.current; if (!el || !('ResizeObserver' in window)) return; const ro = new ResizeObserver(check); ro.observe(el); return () => ro.disconnect(); }, [check, items]);
+  return <div className={'bulwrap' + (more ? ' has-more' : '')}><ul className="bul" ref={ref} onScroll={check}>{items.map((x, i) => <li key={i}>{x}</li>)}</ul><span className="more" aria-hidden="true" /></div>;
+}
 
 /** One role, front and back. `on` shows the back. */
 export function RoleCard({ S, r, idx, total, on, className, onClick }: { S: State; r: Role; idx: number; total: number; on?: boolean; className?: string; onClick?: () => void }) {
@@ -13,7 +22,7 @@ export function RoleCard({ S, r, idx, total, on, className, onClick }: { S: Stat
   const p: Profile = S.profile;
   const run = runs(S).find((x) => x.roles.some((z) => z.id === r.id));
   const seasons = run ? run.roles : [r];
-  const bullets = (r.bullets || []).slice(0, 4), skills = (r.skills || []).slice(0, 8);
+  const bullets = r.bullets || [], skills = (r.skills || []).slice(0, 8);
   return (
     <div className={'card' + (on ? ' on' : '') + (className ? ' ' + className : '')} style={vars(a, b)} data-id={r.id} tabIndex={0} role="button" aria-label={r.company + ', ' + r.title} onClick={onClick}>
       <div className="inner">
@@ -28,16 +37,16 @@ export function RoleCard({ S, r, idx, total, on, className, onClick }: { S: Stat
           <div className="hdr"><div className="t">{r.company}</div><div className="s">{r.title}{r.location ? ' · ' + r.location : ''}</div></div>
           <table>
             <colgroup><col className="c1" /><col /><col className="c3" /></colgroup>
-            <thead><tr><th>Season</th><th>Position</th><th className="n">Time</th></tr></thead>
+            <thead><tr><th>Season</th><th>Position</th><th className="n">Years</th></tr></thead>
             <tbody>
               {seasons.map((s) => (
                 <tr key={s.id} className={s.id === r.id ? 'cur' : ''}>
-                  <td>{yearOf(s.start).slice(2)}–{s.end ? yearOf(s.end).slice(2) : 'now'}</td><td>{s.title}</td><td className="n">{durShort(monthsBetween(s.start, s.end))}</td>
+                  <td>{yearOf(s.start).slice(2)}–{s.end ? yearOf(s.end).slice(2) : 'now'}</td><td>{s.title}</td><td className="n">{yrs(monthsBetween(s.start, s.end))}</td>
                 </tr>
               ))}
             </tbody>
           </table>
-          {bullets.length ? <ul className="bul">{bullets.map((x, i) => <li key={i}>{x}</li>)}</ul> : <div className="bul" style={{ color: '#6b6559', fontStyle: 'italic' }}>No highlights yet.</div>}
+          {bullets.length ? <Bullets items={bullets} /> : <div className="bul" style={{ color: '#6b6559', fontStyle: 'italic' }}>No highlights yet.</div>}
           {skills.length ? <div className="skills">{skills.map((x, i) => <span key={i}>{x}</span>)}</div> : null}
           <div className="foot"><span>{r.reason || (r.end ? 'Ended ' + fmtMonth(r.end) : 'Current')}</span><span>{pad(idx + 1)} of {pad(total)}</span></div>
         </div>

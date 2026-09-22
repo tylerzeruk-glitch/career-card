@@ -23,7 +23,15 @@
 .card th{color:#6b6559;font-weight:500}
 .card td.n,.card th.n{text-align:right}
 .card tr.cur td{color:#dc4432}
+.card .bulwrap{position:relative;display:flex;flex-direction:column;flex:0 1 auto;min-height:0;margin:0 0 3%}
 .card .bul{font:400 4.7cqw/1.4 "Libre Caslon Text",Georgia,serif;color:#2e2b25;margin:0 0 3%;padding-left:5%;overflow:hidden;flex:0 1 auto;min-height:0}
+.card .bulwrap .bul{margin:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none}
+.card .bulwrap .bul::-webkit-scrollbar{display:none}
+.card .more{position:absolute;left:0;right:0;bottom:0;height:11cqw;background:linear-gradient(rgba(233,223,201,0),#e9dfc9 70%);pointer-events:none;opacity:0;transition:opacity .2s;display:grid;place-items:end center}
+.card .more::after{content:"";width:2.6cqw;height:2.6cqw;border-right:2px solid #dc4432;border-bottom:2px solid #dc4432;margin-bottom:1.6cqw;animation:nudge 1.6s ease-in-out infinite}
+.card .bulwrap.has-more .more{opacity:1}
+@keyframes nudge{0%,100%{transform:translateY(0) rotate(45deg)}50%{transform:translateY(1.2cqw) rotate(45deg)}}
+@media (prefers-reduced-motion: reduce){.card .more::after{animation:none;transform:rotate(45deg)}}
 .card .bul li{margin-bottom:1%}
 .card .skills{display:flex;flex-wrap:wrap;gap:1.5%;margin-bottom:3%;max-height:22cqw;overflow:hidden}
 .card .skills span{background:#dc4432;color:#fff;font:700 4cqw/1 "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.06em;text-transform:uppercase;padding:1.8% 2.4%;border-radius:2px;white-space:nowrap}
@@ -51,3 +59,12 @@
 .card.summary .num{width:auto;padding:0 5%;border-radius:999px;font-size:5cqw}
 .card.summary .art .mono{font-size:22cqw}
 .card.summary .art .mono small{display:block;font:700 5cqw "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.14em;text-transform:uppercase;margin-top:2%}
+
+/* Safari lets positioned children of a backface-hidden face show through the other side (the monogram and
+   badge appeared mirrored on the back). Hide each face outright once the flip passes the halfway point. */
+.card .face *{-webkit-backface-visibility:hidden;backface-visibility:hidden}
+.card .front{visibility:visible;transition:visibility 0s .3s}
+.card.on .front{visibility:hidden}
+.card .back{visibility:hidden;transition:visibility 0s .3s}
+.card.on .back{visibility:visible}
+@media (prefers-reduced-motion: reduce){.card .face{transition:none}}

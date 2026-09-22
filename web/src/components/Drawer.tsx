@@ -93,8 +93,8 @@ function RoleForm({ roleId }: { roleId: string | null }) {
         </div>
         <div className="field"><label htmlFor="r-bullets">Highlights, one per line</label><textarea id="r-bullets" name="bullets" placeholder={'Led delivery for a portfolio of clients\nRan intake, triage and UAT'} defaultValue={(r?.bullets || []).join('\n')} /></div>
         <div className="field"><label htmlFor="r-skills">Skills, comma separated</label><input id="r-skills" name="skills" placeholder="Program management, UAT, Client delivery" defaultValue={(r?.skills || []).join(', ')} /></div>
-        <div className="field"><label>Team colours</label>
-          <div className="swatches">{PAIRS.map((p, i) => <button type="button" key={i} className={'sw' + (i === curSwatch ? ' on' : '')} style={{ '--a': p[0], '--b': p[1] } as React.CSSProperties} title={'Colour pair ' + (i + 1)} onClick={() => setSwatch(i)} />)}</div>
+        <div className="field"><label>Team colors</label>
+          <div className="swatches">{PAIRS.map((p, i) => <button type="button" key={i} className={'sw' + (i === curSwatch ? ' on' : '')} style={{ '--a': p[0], '--b': p[1] } as React.CSSProperties} title={'Color pair ' + (i + 1)} onClick={() => setSwatch(i)} />)}</div>
           <span className="help">Shared by every role at this company.</span>
         </div>
         <div className="form-foot">

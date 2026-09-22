@@ -34,6 +34,8 @@ export const nowYM = () => todayISO().slice(0, 7);
 export const monthsBetween = (a: string, b: string | null | undefined) =>
   Math.max(1, monthIndex(b || nowYM()) - monthIndex(a) + 1);
 export const durShort = (m: number) => (m >= 12 ? Math.floor(m / 12) + 'y' + (m % 12 ? ' ' + (m % 12) + 'm' : '') : m + 'm');
+/** Years to one decimal for the card table; months when under a year. */
+export const yrs = (m: number) => (m >= 12 ? (Math.round((m / 12) * 10) / 10).toString().replace(/\.0$/, '') : m + ' mo');
 export const dur = (months: number) =>
   months >= 12
     ? (Math.round((months / 12) * 10) / 10).toString().replace(/\.0$/, '') + ' yr' + (months >= 24 ? 's' : '')
