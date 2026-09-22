@@ -50,12 +50,10 @@ export function Deck() {
     runs(S).forEach((run) => {
       const from = i + 1, to = i + run.roles.length, key = norm(run.company), [, b] = pairFor(S, run.company);
       if (run.roles.length === 1 || openRuns.has(key)) {
-        run.roles.forEach((r, j) => {
+        run.roles.forEach((r) => {
           const k = i++;
           items.push(
             <div key={r.id} className={'slot' + (run.roles.length > 1 ? ' cont' : '')} style={{ '--b': b } as React.CSSProperties}>
-              {/* a spread run gets a small tab over its first card to gather it back into a stack */}
-              {run.roles.length > 1 && j === 0 && <button className="restack" title="Stack these cards again" onClick={(e) => { e.stopPropagation(); restack(key); }}><i /> Stack {run.company}</button>}
               <RoleCard S={S} r={r} idx={k} total={total} onClick={() => openFocus(r.id)} />
             </div>,
           );
@@ -77,6 +75,7 @@ export function Deck() {
   if (st.free) items.push(<div key="free" className="slot"><FreeCard S={S} onClick={() => openFocus('free')} onTimeline={onTimeline} /></div>);
   items.push(<button key="ghost" className="ghost" title="Add a role" onClick={() => openDrawer('role', { roleId: null })}>+ Add a role</button>);
 
+  const spreadRuns = runs(S).filter((run) => run.roles.length > 1 && openRuns.has(norm(run.company)));
   const pick = (g: 'role' | 'team') => { setOpenRuns(new Set()); update((s) => ({ ...s, settings: { ...s.settings, group: g } }), { keepSample: true }); };
 
   return (
@@ -92,6 +91,14 @@ export function Deck() {
       {/* the grouping switch: radio dots under the deck, lined up with the first card */}
       <div className="shelf-foot">
         <GroupToggle group={S.settings.group} onPick={pick} />
+        {/* teams that are spread out: a chip each, with an × that gathers the run back into its stack; sits still, unlike the cards */}
+        {S.settings.group === 'team' && spreadRuns.length > 0 && (
+          <div className="spread-chips" aria-label="Spread teams">
+            <span className="k">Spread</span>
+            {spreadRuns.map((run) => <span className="chip" key={norm(run.company)} style={{ '--b': pairFor(S, run.company)[1] } as React.CSSProperties}><i />{run.company}<button title={'Stack ' + run.company} aria-label={'Stack ' + run.company} onClick={() => restack(norm(run.company))}>×</button></span>)}
+            {spreadRuns.length > 1 && <button className="btn sm" onClick={() => setOpenRuns(new Set())}>Stack all</button>}
+          </div>
+        )}
       </div>
     </>
   );

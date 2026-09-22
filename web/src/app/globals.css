@@ -85,7 +85,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 .note-inline .btn{color:inherit;padding:2px 6px;font-size:12px}
 :root{--cw:clamp(210px,19vw,260px);--gap:22px}
 /* the deck: cards overlap from the left so the whole career fits the width; hover lifts one out */
-.shelf{display:flex;align-items:flex-start;padding:38px 6px 40px;scrollbar-width:none}
+.shelf{display:flex;align-items:flex-start;padding:30px 6px 40px;scrollbar-width:none}
 .shelf.scroll{overflow-x:auto;overflow-y:hidden;padding-inline:18px;margin-inline:-12px}
 .shelf::-webkit-scrollbar{display:none}
 .shelf > *{flex:none;position:relative;transition:transform .22s cubic-bezier(.2,.7,.2,1)}
@@ -93,11 +93,13 @@ button,input,select,textarea{font:inherit;color:inherit}
 .shelf > *:hover,.shelf > *:focus-within{transform:translateY(-18px);z-index:60!important}
 .slot{width:var(--cw)}
 .slot .card{width:var(--cw)}
-/* the tab above the first card of a spread team run: click to gather the run back into a stack */
-.restack{position:absolute;left:0;top:-24px;display:inline-flex;align-items:center;gap:6px;border:0;background:transparent;padding:3px 8px 3px 4px;border-radius:999px;cursor:pointer;font:700 10.5px/1 var(--cond);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);white-space:nowrap;z-index:1}
-.restack i{width:9px;height:9px;border-radius:50%;background:var(--b,var(--hair))}
-.restack::after{content:"⤺";font-size:12px;margin-left:2px;color:var(--muted)}
-.restack:hover{background:var(--hover);color:var(--ink)}
+/* spread teams, listed beside the toggle under the deck: a chip each, × gathers the run back into its stack */
+.spread-chips{display:inline-flex;align-items:center;gap:8px;margin-left:auto;margin-right:var(--deck-mr,0);align-self:flex-end;padding-bottom:6px;flex-wrap:wrap}
+.spread-chips .k{font:600 10.5px/1 var(--cond);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-right:2px}
+.chip{display:inline-flex;align-items:center;gap:7px;background:var(--paper);border:1px solid var(--hair);border-radius:999px;padding:5px 6px 5px 10px;font-size:12.5px;color:var(--ink);white-space:nowrap}
+.chip i{width:9px;height:9px;border-radius:50%;background:var(--b,var(--hair))}
+.chip button{width:18px;height:18px;border:0;border-radius:50%;background:var(--hover);color:var(--ink-2);font:700 13px/1 var(--sans);padding:0;cursor:pointer;display:grid;place-items:center}
+.chip button:hover{background:var(--ink);color:var(--bg)}
 .stack{width:var(--cw);cursor:pointer;isolation:isolate}
 .stack .card{position:absolute;top:0;left:0;width:var(--cw);transition:transform .25s ease}
 .stack .card.top{position:relative}
