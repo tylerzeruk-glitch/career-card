@@ -34,6 +34,12 @@ That is local mode. To turn on accounts:
    runs and add `<site>/auth/callback` to the redirect list.
 4. Copy `.env.example` to `.env.local` and fill in the project URL and the
    publishable (anon) key from Project settings → API.
+5. Authentication → SMTP settings: turn on custom SMTP. Supabase's built-in
+   sender allows about two emails an hour, which is enough to test and not
+   enough to use. Production uses Resend with the app's own domain:
+   host `smtp.resend.com`, port 465, username `resend`, password a
+   send-only Resend API key, sender `hello@<your domain>`. Then raise
+   Authentication → Rate limits → emails per hour.
 
 Deploy anywhere Next.js runs (Vercel is the easy path); set the same three
 environment variables there, with `NEXT_PUBLIC_SITE_URL` as the deployed
