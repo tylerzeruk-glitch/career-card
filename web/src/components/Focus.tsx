@@ -26,7 +26,10 @@ export function Focus({ id, onClose }: { id: string; onClose: () => void }) {
     setOn(false); setPop(false);
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) { setOn(true); return; }
     const el = holder.current;
-    const src = first.current ? document.querySelector<HTMLElement>(`.shelf .card[data-id="${cur}"]`) : null;
+    // The deck card this one stands for is lifted out of the deck while the big one is up.
+    const deckCard = document.querySelector<HTMLElement>(`.shelf .card[data-id="${cur}"]`);
+    if (deckCard) deckCard.style.visibility = 'hidden';
+    const src = first.current ? deckCard : null;
     first.current = false;
     let wait = POP_MS;
     if (el && src) {
@@ -41,7 +44,7 @@ export function Focus({ id, onClose }: { id: string; onClose: () => void }) {
       }
     } else setPop(true);
     const t = setTimeout(() => setOn(true), wait);
-    return () => clearTimeout(t);
+    return () => { clearTimeout(t); if (deckCard) deckCard.style.visibility = ''; };
   }, [cur]);
 
   useEffect(() => {
