@@ -78,14 +78,15 @@ button,input,select,textarea{font:inherit;color:inherit}
 .view{flex:1;min-height:0;display:flex;flex-direction:column}
 .scroller{flex:1;min-height:0;overflow:auto;padding:0 var(--room) 20px;margin-inline:calc(-1 * var(--room));scrollbar-width:none}
 .scroller::-webkit-scrollbar{display:none}
-.shelf-head{display:flex;justify-content:space-between;align-items:center;gap:8px 10px;padding:14px 0 0;flex-wrap:wrap}
+.shelf-head{display:flex;justify-content:space-between;align-items:center;gap:8px 10px;padding:6px 0 0;flex-wrap:wrap}
 .shelf-head:empty{display:none}
 .shelf-head .k{font:700 11px/1 var(--cond);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
 .note-inline{display:inline-flex;align-items:center;gap:6px;font-size:12px;white-space:nowrap;color:var(--info-ink);background:var(--info-bg);padding:3px 6px 3px 10px;border-radius:999px;margin-right:auto}
 .note-inline .btn{color:inherit;padding:2px 6px;font-size:12px}
 :root{--cw:clamp(210px,19vw,260px);--gap:22px}
 /* the deck: cards overlap from the left so the whole career fits the width; hover lifts one out */
-.shelf{display:flex;align-items:flex-start;padding:30px 6px 40px;scrollbar-width:none}
+/* enough headroom that a lifted card, or the fanned cards behind a stack, never clip at the scroller's top */
+.shelf{display:flex;align-items:flex-start;padding:46px 6px 40px;scrollbar-width:none}
 .shelf.scroll{overflow-x:auto;overflow-y:hidden;padding-inline:18px;margin-inline:-12px}
 .shelf::-webkit-scrollbar{display:none}
 .shelf > *{flex:none;position:relative;transition:transform .22s cubic-bezier(.2,.7,.2,1)}
@@ -93,13 +94,11 @@ button,input,select,textarea{font:inherit;color:inherit}
 .shelf > *:hover,.shelf > *:focus-within{transform:translateY(-18px);z-index:60!important}
 .slot{width:var(--cw)}
 .slot .card{width:var(--cw)}
-/* spread teams, listed beside the toggle under the deck: a chip each, × gathers the run back into its stack */
-.spread-chips{display:inline-flex;align-items:center;gap:8px;margin-left:auto;margin-right:var(--deck-mr,0);align-self:flex-end;padding-bottom:6px;flex-wrap:wrap}
-.spread-chips .k{font:600 10.5px/1 var(--cond);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-right:2px}
-.chip{display:inline-flex;align-items:center;gap:7px;background:var(--paper);border:1px solid var(--hair);border-radius:999px;padding:5px 6px 5px 10px;font-size:12.5px;color:var(--ink);white-space:nowrap}
-.chip i{width:9px;height:9px;border-radius:50%;background:var(--b,var(--hair))}
-.chip button{width:18px;height:18px;border:0;border-radius:50%;background:var(--hover);color:var(--ink-2);font:700 13px/1 var(--sans);padding:0;cursor:pointer;display:grid;place-items:center}
-.chip button:hover{background:var(--ink);color:var(--bg)}
+/* whatever follows a slim tab keeps a full gap, so the next card never slides over it */
+.ghost + *{margin-left:var(--gap)!important}
+/* the Restack tab in the deck: same slim tab as Add a role, solid rather than dashed */
+.ghost.restack{border-style:solid;border-color:var(--ink-2);color:var(--ink-2)}
+.ghost.restack:hover{background:var(--hover);color:var(--ink)}
 .stack{width:var(--cw);cursor:pointer;isolation:isolate}
 .stack .card{position:absolute;top:0;left:0;width:var(--cw);transition:transform .25s ease}
 .stack .card.top{position:relative}
