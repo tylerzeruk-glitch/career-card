@@ -19,8 +19,8 @@ async function load(slug: string): Promise<State | null> {
 export async function generateMetadata({ params }: PageProps<'/u/[slug]'>): Promise<Metadata> {
   const { slug } = await params;
   const S = await load(slug);
-  if (!S) return { title: 'Career Card' };
-  return { title: (S.profile.name || 'Career') + ' · Career Card', description: S.profile.summary || S.profile.headline || undefined, robots: { index: false } };
+  if (!S) return { title: 'CareerCards' };
+  return { title: (S.profile.name || 'Career') + ' · CareerCards', description: S.profile.summary || S.profile.headline || undefined, robots: { index: false } };
 }
 
 /** Someone's card at its address. Shows the career, never the job hunt. */

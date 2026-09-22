@@ -162,7 +162,7 @@ export function BackupDialog({ open, onClose }: { open: boolean; onClose: () => 
         <h3>Backup / restore</h3>
         <p>{user ? 'Your card is saved to your account. A backup file is still handy for moving between tools.' : 'Everything lives in this browser. Download a JSON backup now and then; restore it here on another device.'}</p>
         <div className="actions" style={{ marginBottom: 10 }}>
-          <button className="btn primary" onClick={() => download('career-card-backup-' + todayISO() + '.json', json(), 'application/json')}>Download backup</button>
+          <button className="btn primary" onClick={() => download('careercards-backup-' + todayISO() + '.json', json(), 'application/json')}>Download backup</button>
           <button className="btn" onClick={() => copyText(json(), flash)}>Copy JSON</button>
           <label className="btn" style={{ cursor: 'pointer' }}>Restore from file…<input type="file" accept=".json" hidden onChange={(e) => { const f = e.target.files?.[0]; if (f) restore(f); e.target.value = ''; }} /></label>
           <button className="btn" onClick={() => download('job-hunt-' + todayISO() + '.csv', csv(), 'text/csv')}>Download job-hunt CSV</button>

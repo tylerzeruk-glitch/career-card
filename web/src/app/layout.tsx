@@ -3,7 +3,7 @@ import './globals.css';
 import '@/styles/card.css';
 
 export const metadata: Metadata = {
-  title: 'Career Card',
+  title: 'CareerCards',
   description: 'Your career as a card set: one card per role, a free-agent card when you are between teams, and a timeline of the job hunt.',
 };
 

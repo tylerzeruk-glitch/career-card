@@ -1,6 +1,6 @@
-# Career Card (web app)
+# CareerCards (web app)
 
-The Next.js version of Career Card: the same cards, deck, resume rows and
+The Next.js version of CareerCards: the same cards, deck, resume rows and
 timeline as `../index.html`, plus accounts. It runs in two modes:
 
 - **Local mode** (no sign-in): the card lives in this browser's localStorage,

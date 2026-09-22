@@ -1,4 +1,4 @@
--- Career Card: one row per user. The career (profile, roles, colours) lives in
+-- CareerCards: one row per user. The career (profile, roles, colours) lives in
 -- `data`; the job hunt (events, view settings) lives in `hunt` and is never
 -- exposed to anyone but the owner.
 

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Career Card</title>
+<title>CareerCards</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Righteous&family=Lilita+One&family=Barlow+Condensed:wght@500;600;700&family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
 :root{
@@ -322,7 +322,7 @@ kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--hair);border-r
 <body>
 <header class="topbar">
   <div class="brand">
-    <div><div class="namerow"><h1 id="p-name">Career Card</h1><span class="pill" id="pill"><i></i>Free agent</span></div><div class="sub" id="p-sub"></div><div class="line" id="p-line"></div></div>
+    <div><div class="namerow"><h1 id="p-name">CareerCards</h1><span class="pill" id="pill"><i></i>Free agent</span></div><div class="sub" id="p-sub"></div><div class="line" id="p-line"></div></div>
   </div>
   <div class="actions">
     <div class="toggle" id="view-toggle"><button class="on" data-view="cards">Cards</button><button data-view="timeline">Timeline</button></div>
@@ -710,7 +710,7 @@ function huntStats(){
 // ---------- header + stat line ----------
 function renderHeader(){
   const p=S.profile, st=status(), cs=careerStats();
-  $('#p-name').textContent = p.name || 'Career Card';
+  $('#p-name').textContent = p.name || 'CareerCards';
   $('#p-sub').textContent = [p.headline, p.location].filter(Boolean).join(' · ');
   const pill=$('#pill');
   if(st.free){ pill.className='pill'; pill.innerHTML = `<i></i>Free agent`; }
@@ -1173,7 +1173,7 @@ function download(name, text, mime){ downloadsNS.then(dl=>{ if(dl){ return dl.sa
 function copyText(t){ (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>flash('Copied.'), ()=>flash('Copy failed; select the text and copy it.')); }
 function backupJSON(){ return JSON.stringify(Object.assign({}, S, {exportedAt:new Date().toISOString(), app:'career-card'}), null, 2); }
 function huntCSV(){ const cols=['date','type','company','title','status','salary','link','notes']; const q=v=>{ v=String(v==null?'':v); return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v; }; return [cols.join(',')].concat(sortedEvents().map(e=>cols.map(c=>q(c==='status'&&e.type==='application'?statusOf(e).label:e[c])).join(','))).join('\n'); }
-$('#bk-download').addEventListener('click', ()=>download('career-card-backup-'+todayISO()+'.json', backupJSON(), 'application/json'));
+$('#bk-download').addEventListener('click', ()=>download('careercards-backup-'+todayISO()+'.json', backupJSON(), 'application/json'));
 $('#bk-copy').addEventListener('click', ()=>copyText(backupJSON()));
 $('#bk-csv').addEventListener('click', ()=>download('job-hunt-'+todayISO()+'.csv', huntCSV(), 'text/csv'));
 $('#backup-close').addEventListener('click', ()=>$('#dlg-backup').close());

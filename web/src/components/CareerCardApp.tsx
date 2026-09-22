@@ -89,7 +89,7 @@ function Header() {
       <div className="brand">
         <div>
           <div className="namerow">
-            <h1>{p.name || 'Career Card'}</h1>
+            <h1>{p.name || 'CareerCards'}</h1>
             {st.free ? <span className="pill"><i />Free agent</span> : <span className="pill active"><i />Active · {st.current.company}</span>}
           </div>
           <div className="sub">{[p.headline, p.location].filter(Boolean).join(' · ')}</div>

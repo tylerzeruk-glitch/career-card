@@ -1,4 +1,4 @@
-# Career Card (working title)
+# CareerCards
 
 A career page in the grammar of a ballplayer's page: teams are companies,
 seasons are years, positions are titles, and the gap after a layoff is free

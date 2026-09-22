@@ -41,7 +41,7 @@ export function PublicCard({ S }: { S: State }) {
         {p.certs.length > 0 && <section className="row"><h2>Award inserts</h2><div className="body"><ul className="list">{p.certs.map((c, i) => <li key={i}><span>{c.name}{c.issuer ? ' · ' + c.issuer : ''}</span><span className="m">{c.year}</span></li>)}</ul></div></section>}
         {(p.email || p.linkedin) && <section className="row"><h2>Contact</h2><div className="body"><ul className="list inline">{p.email && <li><a href={'mailto:' + p.email}>{p.email}</a></li>}{p.linkedin && <li><a href={p.linkedin} target="_blank" rel="noopener">LinkedIn</a></li>}</ul></div></section>}
       </div>
-      <div className="foot">Made with <a href="/">Career Card</a>.</div>
+      <div className="foot">Made with <a href="/">CareerCards</a>.</div>
     </div>
   );
 }
