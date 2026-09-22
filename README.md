@@ -2,7 +2,7 @@
 
 A career page in the grammar of a ballplayer's page: teams are companies,
 seasons are years, positions are titles, and the gap after a layoff is free
-agency. One playing card per role, front and back; a stat line; a timeline with
+agency. One playing card per role, fanned into a deck (hover lifts a card, click opens it); a career line; a timeline with
 company spans; and the job-hunt tracker folded in as the free-agency record.
 
 Single file, no build step, no server. Data lives in the browser's local

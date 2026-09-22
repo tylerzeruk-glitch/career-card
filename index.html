@@ -79,29 +79,30 @@ button,input,select,textarea{font:inherit;color:inherit}
 /* stage */
 .stage{flex:1;min-height:0;position:relative;display:flex;flex-direction:column;padding-bottom:12px}
 .view{flex:1;min-height:0;display:flex;flex-direction:column}
-.scroller{flex:1;min-height:0;overflow:auto;padding-bottom:20px}
-.shelf-head{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:14px 0 0}
+.scroller{flex:1;min-height:0;overflow:auto;padding-bottom:20px;scrollbar-width:none}
+.scroller::-webkit-scrollbar{display:none}
+.shelf-head{display:flex;justify-content:space-between;align-items:center;gap:8px 10px;padding:14px 0 0;flex-wrap:wrap}
 .shelf-head .k{font:700 11px/1 var(--cond);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
 .note-inline{display:inline-flex;align-items:center;gap:6px;font-size:12px;white-space:nowrap;color:var(--info-ink);background:var(--info-bg);padding:3px 6px 3px 10px;border-radius:999px;margin-right:auto}
 .note-inline .btn{color:inherit;padding:2px 6px;font-size:12px}
-:root{--cw:clamp(210px,19vw,260px)}
-.shelf{display:flex;gap:22px;overflow-x:auto;padding:14px 6px 16px;align-items:flex-start;scroll-snap-type:x proximity}
-.shelf > *{scroll-snap-align:start}
-.slot{flex:none;width:var(--cw)}
+:root{--cw:clamp(210px,19vw,260px);--gap:22px}
+/* the deck: cards overlap from the left so the whole career fits the width; hover lifts one out */
+.shelf{display:flex;align-items:flex-start;padding:22px 6px 34px;overflow-x:auto;overflow-y:hidden;scrollbar-width:none}
+.shelf::-webkit-scrollbar{display:none}
+.shelf > *{flex:none;position:relative;transition:transform .22s cubic-bezier(.2,.7,.2,1)}
+.shelf > * + *{margin-left:var(--ml,var(--gap))}
+.shelf > *:hover,.shelf > *:focus-within{transform:translateY(-16px);z-index:60!important}
+.slot{width:var(--cw)}
 .slot .card{width:var(--cw)}
-.slot .cap{font:500 11.5px/1.3 var(--sans);color:var(--muted);text-align:center;margin-top:9px}
-.run{display:flex;gap:22px}
-.run .slot{position:relative}
-.run .slot::after{content:"";position:absolute;left:-11px;right:-11px;bottom:-8px;height:2px;background:var(--b,var(--hair));border-radius:2px;opacity:.5}
-.run .slot:first-child::after{left:6px}.run .slot:last-child::after{right:6px}
-.stack{flex:none;width:var(--cw);position:relative;cursor:pointer;isolation:isolate;margin-left:6px}
+.slot.cont::before{content:"";position:absolute;left:8%;right:8%;bottom:-8px;height:2px;background:var(--b,var(--hair));border-radius:2px;opacity:.5}
+.stack{width:var(--cw);cursor:pointer;isolation:isolate}
 .stack .card{position:absolute;top:0;left:0;width:var(--cw);transition:transform .25s ease}
 .stack .card.top{position:relative}
 .stack .under1{transform:translate(8px,-6px) rotate(2deg);z-index:-1}
 .stack .under2{transform:translate(16px,-12px) rotate(4deg);z-index:-2}
-.stack .cap{font:500 11px/1.3 var(--sans);color:var(--muted);text-align:center;margin-top:8px}
-.ghost{flex:none;width:var(--cw);aspect-ratio:2.5/3.5;border:1.5px dashed var(--muted);border-radius:12px;display:grid;place-items:center;font:700 12px var(--cond);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);cursor:pointer;background:transparent}
+.ghost{width:48px;height:calc(var(--cw) * 1.4);margin-left:var(--gap)!important;border:1.5px dashed var(--muted);border-radius:10px;display:grid;place-items:center;font:700 11px var(--cond);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);cursor:pointer;background:transparent;writing-mode:vertical-rl;padding:0}
 .ghost:hover{color:var(--ink);border-color:var(--ink)}
+@media (hover:none){.shelf > *:hover{transform:none}}
 
 /* fold: resume rows */
 .fold{max-width:880px;margin-top:6px;border-top:1px solid var(--hair)}
@@ -767,27 +768,39 @@ function summaryCardHTML(run, from, to){
 let openRuns = new Set();
 function renderShelf(){
   const rs=roles(), shelf=$('#shelf'), st=status();
-  if(!rs.length){ shelf.innerHTML = `<div class="empty-shelf" style="width:100%">No roles on the shelf yet.<br><button class="btn primary" id="empty-add">Add your first role</button><button class="btn" id="empty-import">Import LinkedIn or a resume</button></div>`; return; }
+  if(!rs.length){ shelf.innerHTML = `<div class="empty-shelf" style="width:100%">No roles on the shelf yet.<br><button class="btn primary" id="empty-add">Add your first role</button><button class="btn" id="empty-import">Import LinkedIn or a resume</button></div>`; shelf.style.setProperty('--ml','0px'); return; }
   const total=rs.length; let html='';
   if(S.settings.group==='team'){
     let i=0;
     runs().forEach(run=>{
-      const from=i+1, to=i+run.roles.length; const key=norm(run.company);
+      const from=i+1, to=i+run.roles.length; const key=norm(run.company); const [a,b]=pairFor(run.company);
       if(run.roles.length===1 || openRuns.has(key)){
-        html += `<div class="run" style="--b:${pairFor(run.company)[1]}">${run.roles.map(r=>{ const k=i++; return `<div class="slot">${cardHTML(r,k,total)}<div class="cap">${esc(r.title)}</div></div>`; }).join('')}</div>`;
+        html += run.roles.map(r=>{ const k=i++; return `<div class="slot${run.roles.length>1?' cont':''}" style="--b:${b}">${cardHTML(r,k,total)}</div>`; }).join('');
       } else {
         const n=run.roles.length; i+=n;
-        html += `<div class="stack" data-run="${esc(key)}">${summaryCardHTML(run,from,to)}${n>1?`<div class="card under1" style="--a:${pairFor(run.company)[0]};--b:${pairFor(run.company)[1]}"><div class="inner"><div class="face front"></div></div></div>`:''}${n>2?`<div class="card under2" style="--a:${pairFor(run.company)[0]};--b:${pairFor(run.company)[1]}"><div class="inner"><div class="face front"></div></div></div>`:''}<div class="cap">${n} roles · click to spread</div></div>`;
+        html += `<div class="stack" data-run="${esc(key)}" title="${n} roles · click to spread">${summaryCardHTML(run,from,to)}${n>1?`<div class="card under1" style="--a:${a};--b:${b}"><div class="inner"><div class="face front"></div></div></div>`:''}${n>2?`<div class="card under2" style="--a:${a};--b:${b}"><div class="inner"><div class="face front"></div></div></div>`:''}</div>`;
       }
     });
   } else {
-    html = rs.map((r,i)=>`<div class="slot">${cardHTML(r,i,total)}<div class="cap">${esc(r.title)}</div></div>`).join('');
+    html = rs.map((r,i)=>`<div class="slot">${cardHTML(r,i,total)}</div>`).join('');
   }
-  if(st.free) html += `<div class="slot">${freeCardHTML()}<div class="cap">Free agent</div></div>`;
-  html += `<button class="ghost" id="ghost-add">+ Add a role</button>`;
+  if(st.free) html += `<div class="slot">${freeCardHTML()}</div>`;
+  html += `<button class="ghost" id="ghost-add" title="Add a role">+ Add a role</button>`;
   shelf.innerHTML = html;
+  [...shelf.children].forEach((el,i)=>{ el.style.zIndex=i+1; });
   $('#shelf-k').textContent = `Career · ${total} ${total===1?'card':'cards'}`;
+  layoutShelf();
 }
+// Overlap the deck just enough to fit; never hide more than leaves a 48px strip of each card.
+function layoutShelf(){
+  const shelf=$('#shelf'); const items=[...shelf.children].filter(el=>!el.classList.contains('empty-shelf')&&!el.classList.contains('ghost')); if(items.length<2){ shelf.style.setProperty('--ml','0px'); return; }
+  const gap=22; const W=shelf.clientWidth-12-(48+gap); let widths=items.map(el=>el.offsetWidth); const sum=widths.reduce((a,b)=>a+b,0);
+  const need=sum+gap*(items.length-1)-W;
+  if(need<=0){ shelf.style.setProperty('--ml', gap+'px'); return; }
+  const cw=widths[0]; const ov=Math.min(cw-48, need/(items.length-1));
+  shelf.style.setProperty('--ml', (-ov)+'px');
+}
+if(window.ResizeObserver){ new ResizeObserver(()=>layoutShelf()).observe($('#shelf')); }
 $('#shelf').addEventListener('click', e=>{
   const stack=e.target.closest('.stack'); if(stack){ openRuns.add(stack.dataset.run); renderShelf(); return; }
   const card=e.target.closest('.card'); if(card){ if(card.dataset.id==='free') openFocus('free'); else if(card.dataset.id) openFocus(card.dataset.id); return; }
@@ -1160,7 +1173,7 @@ function sharePage(){
   const p=S.profile, rs=roles(), cs=careerStats(), contact=$('#sh-contact').checked, showFA=$('#sh-fa').checked && status().free;
   const cardCss=$('#card-css').textContent;
   const skillCount={}; S.roles.forEach(r=>(r.skills||[]).forEach(s=>{ const k=s.trim(); if(k) skillCount[k]=(skillCount[k]||0)+1; })); const skills=Object.entries(skillCount).sort((a,b)=>b[1]-a[1]).slice(0,18);
-  const cards = rs.map((r,i)=>`<div class="slot">${cardHTML(r,i,rs.length)}<div class="cap">${esc(r.title)}</div></div>`).join('') + (showFA?`<div class="slot">${freeCardHTML({share:true})}<div class="cap">Free agent</div></div>`:'');
+  const cards = rs.map((r,i)=>`<div class="slot" style="z-index:${i+1}">${cardHTML(r,i,rs.length)}</div>`).join('') + (showFA?`<div class="slot" style="z-index:${rs.length+1}">${freeCardHTML({share:true})}</div>`:'');
   const row=(h2,body)=>`<section class="row"><h2>${h2}</h2><div class="body">${body}</div></section>`;
   return `<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${esc(p.name||'Career')} · Career</title>
@@ -1175,8 +1188,10 @@ body{margin:0;background:#f2eee5;color:#1c1b18;font:14px/1.5 system-ui,-apple-sy
 .pill{display:inline-flex;align-items:center;gap:8px;font:700 12px/1 "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.14em;text-transform:uppercase;padding:8px 12px;border-radius:4px;background:#dc4432;color:#fff;transform:rotate(-2deg)}
 h2{font:700 11px/1.5 "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#dc4432;margin:0}
 .k{font:700 11px/1 "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#8a867b;margin-top:18px}
-.shelf{display:flex;gap:22px;overflow-x:auto;padding:14px 6px 16px}
-.slot{flex:none;width:clamp(210px,19vw,260px)}.slot .card{width:100%}.slot .cap{font-size:11.5px;color:#8a867b;text-align:center;margin-top:9px}
+.shelf{display:flex;align-items:flex-start;padding:22px 6px 30px;overflow-x:auto;overflow-y:hidden;scrollbar-width:none}.shelf::-webkit-scrollbar{display:none}
+.shelf > *{flex:none;position:relative;transition:transform .22s cubic-bezier(.2,.7,.2,1)}.shelf > * + *{margin-left:var(--ml,22px)}
+.shelf > *:hover,.shelf > *:focus-within{transform:translateY(-16px);z-index:60!important}
+.slot{width:clamp(210px,19vw,260px)}.slot .card{width:100%}
 .fold{max-width:880px;margin-top:6px;border-top:1px solid #dcd6c8}
 .row{display:grid;grid-template-columns:132px 1fr;gap:18px;padding:13px 0;border-bottom:1px solid #dcd6c8;align-items:baseline}
 .row .body{min-width:0;font-size:13.5px;color:#55524a}.row p{margin:0 0 7px;max-width:66ch}.row p:last-child{margin:0}
@@ -1189,14 +1204,16 @@ a{color:#2a78d6}
 ${cardCss}
 </style></head><body><div class="wrap">
 <header class="mast"><div><h1>${esc(p.name||'Career')}</h1><div class="sub">${esc([p.headline,p.location].filter(Boolean).join(' · '))}</div>${cs?`<div class="line">${statLine(cs)}</div>`:''}</div>${showFA?'<span class="pill">Free agent · open to offers</span>':''}</header>
-<div class="k">Career</div><div class="shelf">${cards}</div><div class="hint">Click a card to flip it.</div>
+<div class="k">Career</div><div class="shelf">${cards}</div><div class="hint">Hover to lift a card; click to flip it.</div>
 <div class="fold">
 ${p.summary||skills.length?row('Scouting report',(p.summary?`<p>${esc(p.summary)}</p>`:'')+(skills.length?`<div class="tiles">${skills.map(([k])=>`<span>${esc(k)}</span>`).join('')}</div>`:'')):''}
 ${(p.education||[]).length?row('Farm system',`<ul class="list">${p.education.map(e=>`<li><span>${esc(e.school)}${e.degree?' · '+esc(e.degree):''}</span><span class="m">${esc(e.years||'')}</span></li>`).join('')}</ul>`):''}
 ${(p.certs||[]).length?row('Award inserts',`<ul class="list">${p.certs.map(c=>`<li><span>${esc(c.name)}${c.issuer?' · '+esc(c.issuer):''}</span><span class="m">${esc(c.year||'')}</span></li>`).join('')}</ul>`):''}
 ${contact&&(p.email||p.linkedin)?row('Contact',`<ul class="list inline">${p.email?`<li><a href="mailto:${esc(p.email)}">${esc(p.email)}</a></li>`:''}${p.linkedin?`<li><a href="${esc(p.linkedin)}">${esc(p.linkedin)}</a></li>`:''}</ul>`):''}
 </div></div>
-<scr${''}ipt>document.querySelectorAll('.card').forEach(function(c){c.addEventListener('click',function(){c.classList.toggle('on')});c.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();c.classList.toggle('on')}})});<\/script>
+<scr${''}ipt>document.querySelectorAll('.card').forEach(function(c){c.addEventListener('click',function(){c.classList.toggle('on')});c.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();c.classList.toggle('on')}})});
+function deck(){var s=document.querySelector('.shelf'),it=[].slice.call(s.children);if(it.length<2)return;var W=s.clientWidth-12,gap=22,sum=0;it.forEach(function(e){sum+=e.offsetWidth});var need=sum+gap*(it.length-1)-W;s.style.setProperty('--ml',need<=0?gap+'px':(-Math.min(it[0].offsetWidth-48,need/(it.length-1)))+'px')}
+deck();window.addEventListener('resize',deck);<\/script>
 </body></html>`;
 }
 $('#sh-download').addEventListener('click', ()=>download((S.profile.name||'career').toLowerCase().replace(/[^a-z0-9]+/g,'-')+'-career.html', sharePage(), 'text/html'));
