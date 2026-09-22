@@ -107,10 +107,10 @@ button,input,select,textarea{font:inherit;color:inherit}
 /* perforated tear-off lines between the rows */
 :root{--perf:radial-gradient(circle,var(--hair) 1.3px,transparent 1.6px) 4px 50%/9px 4px repeat-x}
 .fold{max-width:100%;margin-top:6px;position:relative;padding-top:1px;margin-left:var(--fold-ml,0);width:var(--fold-w,auto)}
-.shelf-foot{display:flex;margin:-24px 0 18px var(--deck-ml,6px)}
+.shelf-foot{display:flex;margin:-24px 0 18px calc(var(--deck-ml,6px) + 14px)}
 /* By role / By team: radio dots, the pick filled red like the free-agent pill's dot */
 .gt-wrap{display:flex;flex-direction:column;gap:2px}
-.gt-label{font:600 10.5px/1 var(--cond);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.gt-label{font:600 12.5px/1 var(--cond);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2)}
 .gt{display:inline-flex;align-items:center;gap:22px;font:700 13.5px/1 var(--cond);letter-spacing:.1em;text-transform:uppercase}
 .gt button{display:inline-flex;align-items:center;gap:9px;padding:8px 0;border:0;background:transparent;cursor:pointer;color:var(--muted);white-space:nowrap;font:inherit;letter-spacing:inherit;text-transform:inherit;transition:color .15s}
 .gt button:hover{color:var(--ink-2)}
