@@ -803,7 +803,9 @@ function layoutShelf(){
   const gap=22, n=items.length; const widths=items.map(el=>el.offsetWidth); const sum=widths.reduce((a,b)=>a+b,0); const cw=widths[0];
   const W=shelf.clientWidth-12-(48+gap); const need=sum+gap*(n-1)-W;
   const ov = need<=0 ? -gap : Math.min(cw-48, need/(n-1));
-  shelf.style.setProperty('--ml', (-ov)+'px'); shelf.classList.toggle('scroll', need>0 && need/(n-1) > cw-48);
+  shelf.style.setProperty('--ml', (-ov)+'px'); const scroll = need>0 && need/(n-1) > cw-48; shelf.classList.toggle('scroll', scroll);
+  // line the group toggle up with the right edge of the last card
+  requestAnimationFrame(()=>{ const last=items[items.length-1]; const right=last.offsetLeft+last.offsetWidth; $('#group-toggle').style.marginRight = scroll ? '' : Math.max(0, shelf.clientWidth-right)+'px'; });
 }
 if(window.ResizeObserver){ new ResizeObserver(()=>layoutShelf()).observe($('#shelf')); }
 $('#shelf').addEventListener('click', e=>{
