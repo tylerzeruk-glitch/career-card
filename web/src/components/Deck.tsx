@@ -93,10 +93,13 @@ export function Deck() {
 /** By role / By team as two radio dots; the pick is filled red like the dot on the free-agent pill. */
 function GroupToggle({ group, onPick }: { group: 'role' | 'team'; onPick: (g: 'role' | 'team') => void }) {
   return (
-    <div className="gt" id="group-toggle" role="radiogroup" aria-label="Group cards">
-      {(['role', 'team'] as const).map((g) => (
-        <button key={g} role="radio" aria-checked={group === g} className={group === g ? 'on' : ''} onClick={() => onPick(g)}><i aria-hidden="true" />{g === 'role' ? 'By role' : 'By team'}</button>
-      ))}
+    <div className="gt-wrap">
+      <div className="gt-label" id="group-label">Group cards by</div>
+      <div className="gt" id="group-toggle" role="radiogroup" aria-labelledby="group-label">
+        {(['role', 'team'] as const).map((g) => (
+          <button key={g} role="radio" aria-checked={group === g} className={group === g ? 'on' : ''} onClick={() => onPick(g)}><i aria-hidden="true" />{g === 'role' ? 'Role' : 'Team'}</button>
+        ))}
+      </div>
     </div>
   );
 }
