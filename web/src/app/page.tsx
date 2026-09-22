@@ -1,11 +1,15 @@
 import { CareerCardApp } from '@/components/CareerCardApp';
+import { Landing } from '@/components/Landing';
 import { rowToCard } from '@/lib/card-row';
 import { supabaseServer } from '@/lib/supabase/server';
 import type { AuthUser, CloudCard } from '@/lib/types';
 
 export const dynamic = 'force-dynamic';
 
-/** The app. When signed in, the account's card is rendered on the server so there is no flash of local data. */
+/**
+ * Signed in: the account's card, rendered on the server so there is no flash
+ * of local data. Signed out: the front door; the app itself is at /app.
+ */
 export default async function Home() {
   let user: AuthUser | null = null;
   let cloud: CloudCard | null = null;
@@ -18,5 +22,6 @@ export default async function Home() {
       if (data) cloud = rowToCard(data);
     }
   }
+  if (!user) return <Landing />;
   return <CareerCardApp user={user} cloud={cloud} />;
 }

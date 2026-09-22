@@ -20,7 +20,10 @@ export function CareerCardApp({ user, cloud }: { user: AuthUser | null; cloud: C
 }
 
 function Shell() {
-  const { S, update, flashMsg, migration, migrate } = useCard();
+  const { S, update, flashMsg, migration, migrate, user, sampleMode } = useCard();
+  const [trying, setTrying] = useState(false);
+  useEffect(() => { try { setTrying(!user && sessionStorage.getItem('careercard.trying') !== 'seen'); } catch { setTrying(!user); } }, [user]);
+  const dismissTrying = () => { setTrying(false); try { sessionStorage.setItem('careercard.trying', 'seen'); } catch { /* ignore */ } };
   const [drawer, setDrawer] = useState<DrawerState>({ open: false, tab: 'role', roleId: null, eventId: null, prefill: null, nonce: 0 });
   const [focusId, setFocusId] = useState<string | null>(null);
   const [imp, setImp] = useState<{ open: boolean; tab: ImportTab }>({ open: false, tab: 'linkedin' });
@@ -52,6 +55,13 @@ function Shell() {
             <span>This browser has a card that isn&apos;t in your account yet. Bring it in?</span>
             <button className="btn primary sm" onClick={() => migrate(true)}>Bring it in</button>
             <button className="btn sm" onClick={() => migrate(false)}>Start empty</button>
+          </div>
+        )}
+        {trying && !migration && (
+          <div className="banner">
+            <span>{sampleMode ? 'This is an example career to look around in. Whatever you change stays in this browser until you sign in.' : 'Your card lives in this browser. Sign in to keep it across devices and give it a page.'}</span>
+            <a className="btn primary sm" href="/login">Sign in</a>
+            <button className="btn sm" onClick={dismissTrying}>Got it</button>
           </div>
         )}
         <main className="stage">
@@ -103,6 +113,7 @@ function Header() {
         <button className="btn" onClick={() => ui.openImport('linkedin')}>Import</button>
         <button className="btn" onClick={() => ui.openDrawer('profile')}>Profile</button>
         <button className="btn" onClick={() => ui.openDrawer('profile')}>Share</button>
+        {!user && <a className="btn" href="/login">Sign in</a>}
         <details className="menu" ref={menuRef} open={menu} onToggle={(e) => setMenu((e.target as HTMLDetailsElement).open)}>
           <summary className="btn">···</summary>
           <div className="pop" onClick={() => setMenu(false)}>
@@ -111,7 +122,7 @@ function Header() {
             <button className="btn" onClick={() => ui.openDrawer('log')}>Job-hunt log</button>
             <button className="btn" onClick={ui.openBackup}>Backup / restore</button>
             <button className="btn" onClick={ui.openHelp}>How this works</button>
-            {user ? <button className="btn" onClick={signOut}>Sign out</button> : <a className="btn" href="/login">Sign in</a>}
+            {user && <button className="btn" onClick={signOut}>Sign out</button>}
           </div>
         </details>
       </div>

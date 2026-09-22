@@ -37,9 +37,14 @@ export function Deck() {
     return (
       <div className="shelf" ref={shelf}>
         <div className="empty-shelf" style={{ width: '100%' }}>
-          No roles on the shelf yet.<br />
-          <button className="btn primary" onClick={() => openDrawer('role', { roleId: null })}>Add your first role</button>
-          <button className="btn" onClick={() => openImport('linkedin')}>Import LinkedIn or a resume</button>
+          <div className="k">Your shelf is empty</div>
+          <h2>Deal your first cards.</h2>
+          <p>The quickest way is a resume: Claude reads it and fills in every role, school and certification for you to check. Or build the deck by hand.</p>
+          <div className="choices">
+            <button className="btn primary" onClick={() => openImport('resume')}>Import a resume</button>
+            <button className="btn" onClick={() => openImport('linkedin')}>Import LinkedIn</button>
+            <button className="btn" onClick={() => openDrawer('role', { roleId: null })}>Add a role by hand</button>
+          </div>
         </div>
       </div>
     );

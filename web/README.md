@@ -47,8 +47,9 @@ origin.
 
 ## Single-file preview
 
-`npm run artifact` bundles the client side into one HTML file (local mode,
-sample career, no account) at `careercards-preview.html`. It is what gets
+`npm run artifact` bundles the client side into one HTML file (the landing
+page, then the app in local mode with the sample career, no account) at
+`careercards-preview.html`. It is what gets
 published as a claude.ai artifact for review comments; it is not the
 deployed app.
 
@@ -67,8 +68,10 @@ deployed app.
   settings, log), `dialogs` (import, backup, help), `PublicCard` (the
   shareable page).
 - `src/app/page.tsx` renders the signed-in card on the server so there is
-  no flash of local data; `src/app/u/[slug]/page.tsx` is the public page;
-  `src/proxy.ts` keeps the session cookie fresh.
+  no flash of local data, and the landing page (`Landing`) for anyone
+  signed out; `src/app/app/page.tsx` is the app without an account (the
+  card lives in that browser); `src/app/u/[slug]/page.tsx` is the public
+  page; `src/proxy.ts` keeps the session cookie fresh.
 - `src/styles/card.css` is the card stylesheet, shared with the single-file
   version; `src/app/globals.css` is the page chrome.
 

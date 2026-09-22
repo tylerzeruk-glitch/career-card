@@ -41,7 +41,7 @@ export default function Login() {
         ) : (
           <p>Sign-in is not set up on this deployment. The app still works on this device; use Backup to move your card.</p>
         )}
-        <a className="back" href="/">← Back to your card</a>
+        <a className="back" href="/">← Back</a>
       </div>
     </div>
   );
