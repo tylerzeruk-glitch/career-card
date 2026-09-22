@@ -196,7 +196,6 @@ function ProfileForm() {
 
   return (
     <section>
-      <h2>Profile</h2>
       <form className="form" autoComplete="off" onSubmit={submit}>
         <div className="field"><label htmlFor="p-name-in">Name</label><input id="p-name-in" name="name" placeholder="Jordan Avery" defaultValue={p.name} /></div>
         <div className="field"><label htmlFor="p-headline">Headline (position)</label><input id="p-headline" name="headline" placeholder="Program Delivery Lead" defaultValue={p.headline} /></div>
@@ -253,7 +252,6 @@ function Log() {
   const nq = norm(q); if (nq) list = list.filter((e) => [e.company, e.title, e.notes, e.status, e.salary].some((v) => norm(v).includes(nq)));
   return (
     <section>
-      <h2>Job-hunt log</h2>
       <div className="figs" style={{ marginBottom: 12 }}>{fig(h.apps, 'applications')}{fig(h.open, 'open')}{fig(h.apps ? Math.round((100 * h.responded) / h.apps) + '%' : '–', 'response')}{fig(h.interviews, 'interviews')}{fig(h.offers, 'offers')}{fig(h.denials, 'denials')}</div>
       <div className="log-tools">
         <input placeholder="Search" style={{ minWidth: 150 }} value={q} onChange={(e) => setQ(e.target.value)} />
