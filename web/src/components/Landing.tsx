@@ -65,7 +65,7 @@ export function Landing({ tryHref = '/app', signInHref = '/login', onTry }: { tr
           <h1>Every role you&apos;ve played, on its own card.</h1>
           <p>Your career as a deck of cards. Team and position on the front. Seasons, highlights and skills on the back. Shareable at an address of your own.</p>
           <div className="cta">
-            <a className="btn primary lg" href={signInHref}>Make your card</a>
+            <a className="btn primary lg" href={signInHref}>Make your deck</a>
             <a className="btn lg" {...tryProps}>Try it with an example</a>
           </div>
           <div className="fine">
