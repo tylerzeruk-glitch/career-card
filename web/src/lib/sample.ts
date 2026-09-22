@@ -9,12 +9,12 @@ export function sampleState(): State {
   const y = new Date().getFullYear();
   return {
     profile: {
-      name: 'Jordyn Smith',
+      name: 'George Costanza',
       headline: 'Importer / Exporter',
       location: 'New York, NY',
       targets: ['Importing', 'Exporting'],
-      email: 'jordyn@example.com',
-      linkedin: 'https://www.linkedin.com/in/jordyn-smith',
+      email: 'george@example.com',
+      linkedin: 'https://www.linkedin.com/in/george-costanza',
       summary:
         'Fifteen years across marine biology and latex sales, two fields that come up together less often than you would think. Steady under pressure, good with clients, and better with a clipboard than a pitch deck.',
       education: [{ school: 'State University', degree: 'BS, Marine Biology', years: y - 20 + ' – ' + (y - 16) }],

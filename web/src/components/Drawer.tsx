@@ -231,7 +231,7 @@ function ProfileForm() {
     <section>
       <form className="form" autoComplete="off" onSubmit={submit}>
         <div className="group"><div className="gh">Player</div>
-        <div className="field"><label htmlFor="p-name-in">Name</label><input id="p-name-in" name="name" placeholder="Jordyn Smith" defaultValue={p.name} /></div>
+        <div className="field"><label htmlFor="p-name-in">Name</label><input id="p-name-in" name="name" placeholder="George Costanza" defaultValue={p.name} /></div>
         <div className="row2">
         <div className="field"><label htmlFor="p-headline">Headline</label><input id="p-headline" name="headline" placeholder="Importer / Exporter" defaultValue={p.headline} /></div>
         <div className="field"><label htmlFor="p-location">Location</label><input id="p-location" name="location" placeholder="New York, NY" defaultValue={p.location} /></div>
