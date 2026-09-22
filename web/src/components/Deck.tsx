@@ -76,7 +76,7 @@ export function Deck() {
     <>
       <div className="shelf-head">
         {sampleMode && (
-          <span className="note-inline"><span>Example career</span><button className="btn" onClick={() => { if (confirm('Clear the example career and start empty?')) { update(() => ({ profile: { name: '', headline: '', location: '', summary: '', targets: [], email: '', linkedin: '', education: [], certs: [] }, roles: [], events: [], brand: {}, settings: S.settings })); openDrawer('profile'); } }}>Clear</button></span>
+          <span className="note-inline"><span>Example career</span><button className="btn" onClick={() => { if (confirm('Clear the example career and start empty?')) { update(() => ({ profile: { name: '', headline: '', location: '', summary: '', targets: [], email: '', linkedin: '', education: [], certs: [], skills: [] }, roles: [], events: [], brand: {}, settings: S.settings })); openDrawer('profile'); } }}>Clear</button></span>
         )}
       </div>
       <div className="shelf" ref={shelf} onKeyDown={(e) => { if (e.key !== 'Enter' && e.key !== ' ') return; const card = (e.target as HTMLElement).closest<HTMLElement>('.card[data-id]'); if (card) { e.preventDefault(); openFocus(card.dataset.id!); } }}>

@@ -22,6 +22,7 @@ export function sampleState(): State {
         { name: 'PMP', issuer: 'PMI', year: String(y - 9) },
         { name: 'Delivery Excellence Award', issuer: 'Alight', year: String(y - 3) },
       ],
+      skills: [],
     },
     roles: [
       { id: uid(), company: 'Aon Hewitt', title: 'Programmer Analyst', code: 'PA', start: y - 23 + '-06', end: y - 19 + '-03', location: 'Lincolnshire, IL', reason: 'Promoted', bullets: ['Built and maintained benefits-calculation batch jobs for three Fortune 500 clients.', 'Cut nightly cycle time by a third by reworking the eligibility pass.'], skills: ['COBOL', 'SQL', 'Batch', 'Eligibility'] },

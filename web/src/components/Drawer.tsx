@@ -203,6 +203,7 @@ function ProfileForm() {
   const { S, update, flash, user, slug, visibility, setMeta } = useCard();
   const p = S.profile;
   const [targets, setTargets] = useState<string[]>(p.targets || []);
+  const [pskills, setPskills] = useState<string[]>(p.skills || []);
   const [edu, setEdu] = useState<EduRow[]>(() => (p.education || []).map((e) => { const ys = e.years.match(/\d{4}/g) || []; const ip = IN_PROGRESS.test(e.years) || /[–-]\s*$/.test(e.years); return { school: e.school, degree: e.degree, start: ys[0] || '', end: ip ? '' : ys[1] || '', inProgress: ip }; }));
   const [certs, setCerts] = useState<CertRow[]>(() => (p.certs || []).map((c) => ({ name: c.name, issuer: c.issuer, year: IN_PROGRESS.test(c.year) ? '' : c.year, inProgress: IN_PROGRESS.test(c.year) })));
   const setEduAt = (i: number, k: keyof EduRow, v: string | boolean) => setEdu((rows) => rows.map((r, j) => (j === i ? { ...r, [k]: v } : r)));
@@ -216,7 +217,7 @@ function ProfileForm() {
   const submit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
-    update((s) => ({ ...s, profile: { ...s.profile, name: field(fd, 'name'), headline: field(fd, 'headline'), location: field(fd, 'location'), summary: field(fd, 'summary'), targets, email: field(fd, 'email'), linkedin: field(fd, 'linkedin'), education: edu.map((r) => ({ school: r.school.trim(), degree: r.degree.trim(), years: r.inProgress ? (r.start.trim() ? r.start.trim() + '–present' : 'In progress') : [r.start.trim(), r.end.trim()].filter(Boolean).join('–') })).filter((r) => r.school), certs: certs.map((c) => ({ name: c.name.trim(), issuer: c.issuer.trim(), year: c.inProgress ? 'In progress' : c.year.trim() })).filter((c) => c.name) } }));
+    update((s) => ({ ...s, profile: { ...s.profile, name: field(fd, 'name'), headline: field(fd, 'headline'), location: field(fd, 'location'), summary: field(fd, 'summary'), targets, skills: pskills, email: field(fd, 'email'), linkedin: field(fd, 'linkedin'), education: edu.map((r) => ({ school: r.school.trim(), degree: r.degree.trim(), years: r.inProgress ? (r.start.trim() ? r.start.trim() + '–present' : 'In progress') : [r.start.trim(), r.end.trim()].filter(Boolean).join('–') })).filter((r) => r.school), certs: certs.map((c) => ({ name: c.name.trim(), issuer: c.issuer.trim(), year: c.inProgress ? 'In progress' : c.year.trim() })).filter((c) => c.name) } }));
     setMsg('Saved.'); flash('Saved.');
   };
   const savePage = async () => {
@@ -234,6 +235,7 @@ function ProfileForm() {
         <div className="field"><label htmlFor="p-location">Location</label><input id="p-location" name="location" placeholder="Chicago, IL" defaultValue={p.location} /></div>
         <div className="field"><label htmlFor="p-summary">Scouting report (summary)</label><textarea id="p-summary" name="summary" style={{ minHeight: 80 }} defaultValue={p.summary} /></div>
         <div className="field"><label htmlFor="p-targets">Open to (target roles)</label><TagInput id="p-targets" value={targets} onChange={setTargets} placeholder="Type a role and press Enter" /></div>
+        <div className="field"><label htmlFor="p-skills">Skills (scouting report)</label><TagInput id="p-skills" value={pskills} onChange={setPskills} placeholder="Type a skill and press Enter" /><span className="help">Leave empty to show the skills gathered from your roles.</span></div>
         <div className="row2">
           <div className="field"><label htmlFor="p-email">Email</label><input id="p-email" name="email" type="email" defaultValue={p.email} /></div>
           <div className="field"><label htmlFor="p-linkedin">LinkedIn URL</label><input id="p-linkedin" name="linkedin" type="url" defaultValue={p.linkedin} /></div>

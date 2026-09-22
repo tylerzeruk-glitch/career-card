@@ -94,7 +94,7 @@ export function ImportDialog({ open, tab, onClose }: { open: boolean; tab: Impor
           data.certs.forEach((c) => { if (have.some((x) => norm(x.name) !== '' && alike(x.name, c.name))) certDupes++; else have.push(c); });
           p.certs = have;
         }
-        if (data.skills.length && roles.length) { const last = rs[rs.length - 1]; if (last && !last.skills.length) last.skills = data.skills.slice(0, 8); }
+        if (data.skills.length) { const have = opts.replace ? [] : (p.skills || []).slice(); data.skills.forEach((k) => { if (!have.some((x) => norm(x) === norm(k))) have.push(k); }); p.skills = have; }
         return { ...s, roles: rs, profile: p };
       });
       const skipped = [[dupes, 'role'], [eduDupes, 'school'], [certDupes, 'certification']].filter(([n]) => n).map(([n, k]) => `${n} ${k}${n === 1 ? '' : 's'}`).join(', ');

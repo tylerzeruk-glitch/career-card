@@ -46,7 +46,7 @@ export function pairFor(S: Pick<State, 'brand'>, company: string): [string, stri
 }
 
 export const blank = (): State => ({
-  profile: { name: '', headline: '', location: '', summary: '', targets: [], email: '', linkedin: '', education: [], certs: [] },
+  profile: { name: '', headline: '', location: '', summary: '', targets: [], email: '', linkedin: '', education: [], certs: [], skills: [] },
   roles: [],
   events: [],
   brand: {},
@@ -170,6 +170,9 @@ export function huntStats(S: State) {
 
 /** Skills across all roles, most repeated first. */
 export function skillTally(S: State, limit = 18): [string, number][] {
+  // an explicit list on the profile wins; otherwise tally what the roles say
+  const own = (S.profile.skills || []).map((s) => s.trim()).filter(Boolean);
+  if (own.length) return own.map((s) => [s, 1]);
   const c: Record<string, number> = {};
   S.roles.forEach((r) => (r.skills || []).forEach((s) => { const k = s.trim(); if (k) c[k] = (c[k] || 0) + 1; }));
   return Object.entries(c).sort((a, b) => b[1] - a[1]).slice(0, limit);

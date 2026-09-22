@@ -45,6 +45,8 @@ export type Profile = {
   linkedin: string;
   education: Education[];
   certs: Cert[];
+  /** The scouting-report skills. Empty means: gather them from the roles. */
+  skills: string[];
 };
 
 export type Settings = { group: 'role' | 'team'; view: 'cards' | 'timeline' };
