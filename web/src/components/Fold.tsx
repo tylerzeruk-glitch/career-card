@@ -4,8 +4,11 @@ import { useUI } from './ui';
 import { fmtMonth } from '@/lib/dates';
 import { huntStats, skillTally, status } from '@/lib/derived';
 
-const Row = ({ h2, children }: { h2: string; children: React.ReactNode }) => (
-  <section className="row"><h2>{h2}</h2><div className="body">{children}</div></section>
+const Row = ({ h2, children, tone, hint }: { h2: string; children: React.ReactNode; tone?: 'private'; hint?: string }) => (
+  <section className={'row' + (tone ? ' ' + tone : '')}>
+    <h2>{h2}{hint && <span className="hint-q" tabIndex={0} role="img" aria-label={hint} data-tip={hint}>?</span>}</h2>
+    <div className="body">{children}</div>
+  </section>
 );
 const Fig = ({ v, k }: { v: React.ReactNode; k: string }) => <span><b>{v}</b><small>{k}</small></span>;
 
@@ -28,7 +31,7 @@ export function Fold() {
         <ul className="list">{(p.certs || []).length ? p.certs.map((c, i) => <li key={i}><span>{c.name}{c.issuer ? ' · ' + c.issuer : ''}</span><span className="m">{c.year || ''}</span></li>) : <li className="empty">None yet.</li>}</ul>
       </Row>
       {st.free ? (
-        <Row h2="Free agency">
+        <Row h2="Free agency" tone="private" hint="Only visible to you">
           <div className="figs">
             <Fig v={st.days != null ? st.days : '–'} k="days" /><Fig v={h.apps} k="applications" />{h.open ? <Fig v={h.open} k="open" /> : null}
             <Fig v={h.interviews} k="interviews" /><Fig v={h.offers} k="offers" /><Fig v={h.apps ? Math.round((100 * h.responded) / h.apps) + '%' : '–'} k="response" />

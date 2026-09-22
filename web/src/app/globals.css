@@ -121,7 +121,14 @@ button,input,select,textarea{font:inherit;color:inherit}
 .fold::before{content:"";position:absolute;left:0;right:0;top:0;height:4px;background:var(--perf)}
 .row{display:grid;grid-template-columns:150px 1fr;gap:16px;padding:12px 0 13px;align-items:baseline;position:relative}
 .row::after{content:"";position:absolute;left:0;right:0;bottom:-2px;height:4px;background:var(--perf)}
-.row h2{font:700 12.5px/1.5 var(--cond);letter-spacing:.14em;text-transform:uppercase;color:var(--red)}
+.row h2{font:700 12.5px/1.5 var(--cond);letter-spacing:.14em;text-transform:uppercase;color:var(--red);display:flex;align-items:center;gap:7px}
+/* the owner-only row: navy like the free-agent card, with a small ? that explains why */
+.row.private{background:rgba(31,42,68,.07);margin-inline:-12px;padding-inline:12px;border-radius:6px}
+.row.private::after{left:12px;right:12px}
+.row.private h2,.row.private .figs b{color:var(--navy)}
+.hint-q{position:relative;display:inline-grid;place-items:center;width:15px;height:15px;border-radius:50%;border:1.5px solid var(--navy);color:var(--navy);font:700 10px/1 var(--sans);letter-spacing:0;cursor:help;flex:none}
+.hint-q::after{content:attr(data-tip);position:absolute;left:50%;bottom:calc(100% + 7px);transform:translateX(-50%);background:var(--ink);color:var(--bg);font:400 12px/1.3 var(--sans);letter-spacing:0;text-transform:none;padding:6px 9px;border-radius:5px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .12s;box-shadow:0 6px 20px rgba(0,0,0,.18)}
+.hint-q:hover::after,.hint-q:focus-visible::after{opacity:1}
 .row .body{min-width:0;font-size:13.5px;color:var(--ink-2)}
 .row p{margin:0 0 7px;max-width:66ch}
 .row p:last-child{margin-bottom:0}
