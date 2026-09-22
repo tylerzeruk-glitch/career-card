@@ -1,0 +1,1222 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Career Card</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Righteous&family=Lilita+One&family=Barlow+Condensed:wght@500;600;700&family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  color-scheme:light;
+  --bg:#f2eee5; --paper:#fbf9f4; --hover:#ebe6da; --ink:#1c1b18; --ink-2:#55524a; --muted:#8a867b; --hair:#dcd6c8; --line:#1c1b18;
+  --focus:#2a78d6; --red:#dc4432; --navy:#1f2a44; --gold:#e8a13a;
+  --c-app:#2a78d6; --c-int:#eda100; --c-off:#008300; --c-den:#e34948; --c-wd:#9a9a92; --c-ms:#1c1b18;
+  --ok-bg:#e4f4e4; --ok-ink:#0b4d0b; --warn-bg:#fff3d6; --warn-ink:#6d4a00; --info-bg:#e8f0fb; --info-ink:#1b3f6d;
+  --sans:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --cond:"Barlow Condensed","Arial Narrow",sans-serif;
+  --serif:"Libre Caslon Text",Georgia,serif;
+  --topps:"Righteous","Arial Black",Impact,sans-serif;
+  --riso:"Lilita One","Arial Black",Impact,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#171613; --paper:#1f1d19; --hover:#2a2722; --ink:#efeae0; --ink-2:#c3bdb0; --muted:#8a857a; --hair:#33302a; --line:#efeae0;
+    --focus:#3987e5; --red:#ef6b5b;
+    --c-app:#3987e5; --c-int:#b39000; --c-off:#008300; --c-den:#e66767; --c-wd:#85857d; --c-ms:#efeae0;
+    --ok-bg:#123b12; --ok-ink:#9fe09f; --warn-bg:#3a2e08; --warn-ink:#f4d28a; --info-bg:#172a45; --info-ink:#b9d2f5;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#171613; --paper:#1f1d19; --hover:#2a2722; --ink:#efeae0; --ink-2:#c3bdb0; --muted:#8a857a; --hair:#33302a; --line:#efeae0;
+  --focus:#3987e5; --red:#ef6b5b;
+  --c-app:#3987e5; --c-int:#b39000; --c-off:#008300; --c-den:#e66767; --c-wd:#85857d; --c-ms:#efeae0;
+  --ok-bg:#123b12; --ok-ink:#9fe09f; --warn-bg:#3a2e08; --warn-ink:#f4d28a; --info-bg:#172a45; --info-ink:#b9d2f5;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font:14px/1.5 var(--sans);display:flex;flex-direction:column;padding-inline:clamp(16px,3vw,40px);padding-block:0;overflow:hidden}
+h1,h2,h3{margin:0;text-wrap:balance}
+a{color:var(--focus)}
+button,input,select,textarea{font:inherit;color:inherit}
+.btn{border:0;background:transparent;border-radius:6px;padding:7px 11px;cursor:pointer;line-height:1.2;color:var(--ink-2);white-space:nowrap}
+.btn:hover{background:var(--hover);color:var(--ink)}
+.btn.primary{background:var(--ink);color:var(--bg);padding-inline:14px}
+.btn.primary:hover{opacity:.88}
+.btn.danger{color:var(--c-den)}
+.btn.sm{padding:4px 8px;font-size:12px}
+.btn.icon{width:30px;height:30px;padding:0;display:inline-grid;place-items:center;font-size:16px}
+.btn:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,.card:focus-visible,.tab:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.menu{position:relative}
+.menu summary{list-style:none;cursor:pointer}
+.menu summary::-webkit-details-marker{display:none}
+.menu .pop{position:absolute;right:0;top:calc(100% + 4px);background:var(--paper);border:1px solid var(--hair);border-radius:8px;box-shadow:0 10px 30px rgba(0,0,0,.14);padding:4px;display:grid;min-width:170px;z-index:8}
+.menu .pop .btn{text-align:left}
+
+/* header */
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-block:14px 8px;flex:none}
+.brand{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.brand h1{font:700 26px/1 var(--cond);letter-spacing:.03em;text-transform:uppercase}
+.brand .sub{font:400 12.5px var(--serif);color:var(--ink-2);letter-spacing:.02em}
+.pill{display:inline-flex;align-items:center;gap:8px;font:700 12px/1 var(--cond);letter-spacing:.14em;text-transform:uppercase;padding:7px 11px;border-radius:4px;background:var(--red);color:#fff;transform:rotate(-2deg);white-space:nowrap}
+.pill i{width:7px;height:7px;border-radius:50%;background:#fff;box-shadow:0 0 0 3px rgba(255,255,255,.35)}
+.pill.active{background:var(--navy);transform:none}
+.actions{display:flex;gap:2px;flex-wrap:wrap;align-items:center}
+.toggle{display:inline-flex;border:1.5px solid var(--ink);border-radius:999px;overflow:hidden;font:700 11.5px/1 var(--cond);letter-spacing:.1em;text-transform:uppercase}
+.toggle button{border:0;background:transparent;padding:7px 13px;cursor:pointer;color:var(--ink)}
+.toggle button.on{background:var(--ink);color:var(--bg)}
+.toggle.small button{padding:5px 10px;font-size:10.5px}
+
+/* stat line */
+.statline{display:flex;gap:26px;flex-wrap:wrap;padding:8px 0 4px;font-variant-numeric:tabular-nums;flex:none}
+.statline .s{min-width:0}
+.statline .v{font:700 22px/1 var(--cond)}
+.statline .v small{font:400 12px var(--cond);color:var(--muted);margin-left:4px;letter-spacing:.02em}
+.statline .k{font:400 10px var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:3px}
+
+/* stage */
+.stage{flex:1;min-height:0;position:relative;display:flex;flex-direction:column;padding-bottom:12px}
+.view{flex:1;min-height:0;display:flex;flex-direction:column}
+.scroller{flex:1;min-height:0;overflow:auto;padding-bottom:20px}
+.shelf-head{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0 4px}
+.shelf-head .k{font:700 11px/1 var(--cond);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.note-inline{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--info-ink);background:var(--info-bg);padding:3px 6px 3px 10px;border-radius:999px;margin-right:auto}
+.note-inline .btn{color:inherit;padding:2px 6px;font-size:12px}
+.shelf{display:flex;gap:18px;overflow-x:auto;padding:16px 6px 18px;align-items:flex-start;scroll-snap-type:x proximity}
+.shelf > *{scroll-snap-align:start}
+.slot{flex:none;width:184px}
+.slot .card{width:184px}
+.slot .cap{font:500 11px/1.3 var(--sans);color:var(--muted);text-align:center;margin-top:8px}
+.run{display:flex;gap:18px}
+.run .slot{position:relative}
+.run .slot::after{content:"";position:absolute;left:-9px;right:-9px;bottom:-8px;height:2px;background:var(--b,var(--hair));border-radius:2px;opacity:.5}
+.run .slot:first-child::after{left:6px}.run .slot:last-child::after{right:6px}
+.stack{flex:none;width:184px;position:relative;cursor:pointer;isolation:isolate;margin-left:6px}
+.stack .card{position:absolute;top:0;left:0;width:184px;transition:transform .25s ease}
+.stack .card.top{position:relative}
+.stack .under1{transform:translate(8px,-6px) rotate(2deg);z-index:-1}
+.stack .under2{transform:translate(16px,-12px) rotate(4deg);z-index:-2}
+.stack .cap{font:500 11px/1.3 var(--sans);color:var(--muted);text-align:center;margin-top:8px}
+.ghost{flex:none;width:184px;aspect-ratio:2.5/3.5;border:1.5px dashed var(--muted);border-radius:12px;display:grid;place-items:center;font:700 12px var(--cond);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);cursor:pointer;background:transparent}
+.ghost:hover{color:var(--ink);border-color:var(--ink)}
+
+/* fold */
+.fold{display:grid;grid-template-columns:2fr 3fr;gap:18px;padding-top:6px}
+@media (max-width:900px){.fold{grid-template-columns:1fr}}
+.panel{background:var(--paper);border:1px solid var(--hair);border-radius:10px;padding:14px 16px}
+.panel h2{font:700 11px/1 var(--cond);letter-spacing:.14em;text-transform:uppercase;color:var(--red);margin-bottom:10px}
+.panel p{margin:0 0 8px;color:var(--ink-2);font-size:13.5px;max-width:64ch}
+.figs{display:flex;gap:22px;flex-wrap:wrap;margin-bottom:10px}
+.figs div{font:700 22px/1 var(--cond)}
+.figs small{display:block;font:400 10px var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:3px}
+.tiles{display:flex;flex-wrap:wrap;gap:4px}
+.tiles span{background:var(--red);color:#fff;font:700 10px/1 var(--cond);letter-spacing:.08em;text-transform:uppercase;padding:5px 7px;border-radius:2px}
+.tiles span b{font-weight:500;opacity:.75;margin-left:4px}
+.list{margin:0;padding:0;list-style:none;font-size:13px}
+.list li{padding:5px 0;border-bottom:1px solid var(--hair);display:flex;justify-content:space-between;gap:10px}
+.list li:last-child{border-bottom:0}
+.list .m{color:var(--muted);font-family:var(--mono);font-size:11.5px;white-space:nowrap}
+.trio{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:18px;grid-column:1 / -1}
+.empty-shelf{padding:40px 16px;text-align:center;color:var(--muted)}
+.empty-shelf .btn{margin:6px 2px 0}
+
+/* timeline */
+.tl{flex:1;min-height:240px;position:relative;background:var(--paper);border-radius:10px;overflow:hidden;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;border:1px solid var(--hair)}
+.tl.drag{cursor:grabbing}
+.tl svg{display:block;width:100%;height:100%}
+.tl text{font-family:var(--sans);fill:var(--ink);pointer-events:none}
+.tl .month{font-family:var(--mono);font-size:11px;fill:var(--muted)}
+.tl .lbl{font-size:12px;fill:var(--ink)}
+.tl .lbl.ms{font-weight:600;font-size:12.5px}
+.tl .lbl2{font-size:10.5px;fill:var(--muted)}
+.tl .span-lbl{font:700 11px var(--cond);letter-spacing:.06em;text-transform:uppercase;fill:#fff}
+.tl .ev,.tl .sp{cursor:pointer}
+.tl .ev .hit{fill:transparent;stroke:none}
+.tl .ev.dim{opacity:.25}
+.tl .ev.hot .tick{stroke-width:3.5}
+.tl .today{stroke:var(--muted);stroke-dasharray:2 5;stroke-width:1.2}
+.tl .todaytxt{font-family:var(--mono);font-size:11px;fill:var(--muted)}
+.overlay{position:absolute;display:flex;align-items:center;gap:2px;z-index:2}
+.overlay.legend{left:14px;bottom:10px;gap:14px;font-size:11.5px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{display:inline-block;width:2px;height:11px;border-radius:1px}
+.legend i.down{transform:translateY(3px)}
+.legend i.bar{width:14px;height:8px;border-radius:2px}
+.overlay.zoom{right:10px;bottom:8px;background:var(--paper);border-radius:8px;padding:2px}
+.overlay.flash{left:50%;top:12px;transform:translateX(-50%);font-size:12px;color:var(--ok-ink);background:var(--ok-bg);padding:6px 12px;border-radius:999px;max-width:80%;z-index:5}
+.overlay.note{right:14px;top:12px;font-size:12px;color:var(--info-ink);background:var(--info-bg);padding:4px 6px 4px 10px;border-radius:999px;gap:6px}
+.overlay.note .btn{color:inherit;padding:2px 6px;font-size:12px}
+.tip{position:fixed;z-index:20;pointer-events:none;background:var(--ink);color:var(--bg);padding:8px 11px;border-radius:6px;font-size:12px;max-width:280px;box-shadow:0 6px 20px rgba(0,0,0,.22);line-height:1.45}
+.tip b{font-weight:600}
+.tip .m{opacity:.7;font-family:var(--mono);font-size:11px}
+@media (max-width:700px){.overlay.legend{display:none}}
+
+/* focus overlay for a card */
+.focus{position:fixed;inset:0;z-index:12;background:rgba(20,18,14,.55);display:flex;align-items:center;justify-content:center;gap:10px;padding:16px}
+.focus .card{width:min(330px,80vw)}
+.focus .nav{background:rgba(255,255,255,.12);color:#fff;border:0;width:40px;height:40px;border-radius:50%;font-size:20px;cursor:pointer}
+.focus .nav:hover{background:rgba(255,255,255,.25)}
+.focus .bar{position:absolute;bottom:22px;left:0;right:0;display:flex;justify-content:center;gap:6px}
+.focus .bar .btn{background:rgba(255,255,255,.14);color:#fff}
+.focus .bar .btn:hover{background:rgba(255,255,255,.28)}
+.focus .close{position:absolute;top:14px;right:14px}
+.focus .hint{position:absolute;top:18px;left:0;right:0;text-align:center;color:rgba(255,255,255,.7);font-size:12px}
+
+/* drawer */
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.18);z-index:9;opacity:0;pointer-events:none;transition:opacity .18s}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(420px,100vw);background:var(--paper);z-index:10;box-shadow:-8px 0 30px rgba(0,0,0,.12);transform:translateX(104%);transition:transform .22s ease,width .22s ease;display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px)}
+.drawer.wide{width:min(760px,100vw)}
+.drawer.open{transform:none}
+body.drawer-open .scrim{opacity:1;pointer-events:auto}
+.drawer-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:14px 18px 8px;flex:none}
+.tabs{display:flex;gap:2px;flex-wrap:wrap}
+.tab{border:0;background:transparent;padding:6px 10px;border-radius:6px;cursor:pointer;color:var(--muted);font:700 12px var(--cond);letter-spacing:.08em;text-transform:uppercase}
+.tab.on{color:var(--ink);background:var(--hover)}
+.drawer-body{flex:1;overflow:auto;padding:6px 18px 24px}
+.drawer h2{font:700 11px/1 var(--cond);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+@media (prefers-reduced-motion: reduce){.drawer,.scrim,.stack .card{transition:none}}
+.form{display:grid;gap:13px;margin-top:6px}
+.field{display:grid;gap:2px}
+.field label{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.field input,.field select,.field textarea{border:0;border-bottom:1px solid var(--hair);border-radius:0;padding:6px 0;background:transparent;width:100%}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-bottom-color:var(--ink)}
+.field textarea{min-height:52px;resize:vertical}
+.field .help{font-size:11px;color:var(--muted)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.row3{display:grid;grid-template-columns:2fr 2fr 1fr;gap:13px}
+.check{display:flex;gap:8px;align-items:center;font-size:13px;color:var(--ink-2)}
+.swatches{display:flex;gap:6px;flex-wrap:wrap}
+.sw{width:26px;height:26px;border-radius:50%;border:2px solid transparent;cursor:pointer;background:linear-gradient(135deg,var(--a) 50%,var(--b) 50%);padding:0}
+.sw.on{border-color:var(--ink)}
+.form-foot{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:4px}
+.form-foot .spacer{flex:1}
+.form-foot .status{font-size:12px;color:var(--muted)}
+
+.log-tools{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:8px}
+.log-tools input,.log-tools select{border:0;border-bottom:1px solid var(--hair);border-radius:0;padding:5px 0;background:transparent}
+.log-tools .count{margin-left:auto;font-size:12px;color:var(--muted)}
+.tablewrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{text-align:left;padding:8px 10px 8px 0;border-bottom:1px solid var(--hair);vertical-align:top}
+th{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:500;white-space:nowrap}
+td.d{font-family:var(--mono);font-size:12px;white-space:nowrap;color:var(--ink-2)}
+td.n{color:var(--ink-2);max-width:280px}
+td.co{white-space:nowrap}
+tr:hover td{background:var(--hover)}
+.type{display:inline-flex;align-items:center;gap:7px;white-space:nowrap;color:var(--ink-2)}
+.type i{width:2px;height:12px;border-radius:1px;display:inline-block}
+.type.application i{background:var(--c-app)}.type.interview i{background:var(--c-int)}.type.offer i{background:var(--c-off)}
+.type.denial i{background:var(--c-den)}.type.withdrawn i{background:var(--c-wd)}.type.layoff i,.type.milestone i{background:var(--c-ms)}
+.st{font-size:12px;color:var(--ink-2);white-space:nowrap}
+.st.needs{color:var(--warn-ink);background:var(--warn-bg);padding:1px 8px;border-radius:999px;cursor:pointer;border:0}
+.edit{opacity:0}
+tr:hover .edit,.edit:focus-visible{opacity:1}
+
+/* dialogs */
+dialog{border:0;border-radius:10px;background:var(--paper);color:var(--ink);padding:0;max-width:min(800px,calc(100vw - 32px));width:100%;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+dialog::backdrop{background:rgba(0,0,0,.35)}
+.dlg{padding:20px 22px}
+.dlg h3{font:700 20px/1.2 var(--cond);letter-spacing:.03em;text-transform:uppercase;margin-bottom:6px}
+.dlg p{margin:0 0 10px;color:var(--ink-2);font-size:13px}
+.dlg .tabs{margin-bottom:12px}
+.dropzone{border:1px dashed var(--muted);border-radius:8px;padding:20px;text-align:center;color:var(--muted);font-size:13px;margin-bottom:12px;cursor:pointer;display:block}
+.dropzone.over{border-color:var(--focus);color:var(--ink)}
+.dropzone input{display:none}
+.preview{max-height:300px;overflow:auto;border:1px solid var(--hair);border-radius:6px;padding:4px 8px}
+.prow{display:grid;grid-template-columns:20px 1.2fr 1.4fr 84px 84px;gap:6px;align-items:center;padding:4px 0;border-bottom:1px solid var(--hair);font-size:12.5px}
+.prow:last-child{border-bottom:0}
+.prow input[type=text]{border:0;border-bottom:1px solid transparent;background:transparent;padding:2px 0;width:100%;font-size:12.5px}
+.prow input[type=text]:focus{outline:none;border-bottom-color:var(--ink)}
+.prow .m{font-family:var(--mono);font-size:11px;color:var(--muted)}
+.maprow{display:grid;grid-template-columns:140px 1fr;gap:8px;align-items:center;margin-bottom:6px;font-size:13px}
+.maprow select{border:0;border-bottom:1px solid var(--hair);padding:5px 0;background:transparent;border-radius:0}
+.opts{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;margin-top:8px}
+.opts label{display:flex;gap:6px;align-items:center}
+.dlg-foot{display:flex;gap:6px;justify-content:flex-end;align-items:center;flex-wrap:wrap;margin-top:14px}
+.dlg-foot .note{flex:1;font-size:12px;color:var(--muted)}
+textarea.code{width:100%;min-height:140px;font-family:var(--mono);font-size:12px;border:1px solid var(--hair);border-radius:6px;padding:8px;background:var(--bg)}
+kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--hair);border-radius:4px;padding:0 4px}
+.prog{font-size:12.5px;color:var(--ink-2);display:flex;gap:8px;align-items:center}
+.prog i{width:10px;height:10px;border-radius:50%;border:2px solid var(--muted);border-top-color:transparent;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion: no-preference){.btn,.edit{transition:background .12s,opacity .12s}}
+</style>
+
+<!-- Card styles are kept in their own block so the share export can carry them verbatim. Cards are physical objects: always cream and kraft, in both themes. -->
+<style id="card-css">
+.card{--a:#e8a13a;--b:#1f2a44;aspect-ratio:2.5/3.5;position:relative;perspective:1400px;cursor:pointer;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#1c1b18}
+.card .inner{position:absolute;inset:0;transition:transform .6s cubic-bezier(.2,.7,.2,1);transform-style:preserve-3d}
+.card.on .inner{transform:rotateY(180deg)}
+@media (prefers-reduced-motion: reduce){.card .inner{transition:none}}
+.card .face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:12px;overflow:hidden;box-shadow:0 2px 0 rgba(0,0,0,.06),0 10px 26px rgba(0,0,0,.16)}
+.card .back{transform:rotateY(180deg)}
+.card .front{background:#fbf6ea;padding:6% 6.5%;display:flex;flex-direction:column;container-type:inline-size}
+.card .team{font:400 15cqw/1 "Righteous","Arial Black",Impact,sans-serif;color:var(--a);text-transform:uppercase;text-shadow:.11em .11em 0 var(--b);letter-spacing:.01em;padding-right:16%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card .num{position:absolute;top:4.5%;right:5%;width:13cqw;height:13cqw;border:1.5px solid #dc4432;border-radius:50%;display:grid;place-items:center;font:700 6cqw "Libre Caslon Text",Georgia,serif;color:#dc4432}
+.card .art{flex:1;margin:5% 0 4%;border-radius:5cqw;background:var(--a);border:2px solid var(--b);position:relative;display:grid;place-items:center;overflow:hidden}
+.card .art::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 30% 20%,rgba(255,255,255,.35),transparent 55%)}
+.card .mono{font:700 34cqw/1 "Barlow Condensed","Arial Narrow",sans-serif;color:var(--b);position:relative;z-index:1;letter-spacing:-.02em}
+.card .badge{position:absolute;left:5%;bottom:5%;width:16cqw;height:16cqw;border-radius:50%;background:#fff;border:1.5px solid #dc4432;display:grid;place-items:center;font:700 5cqw "Barlow Condensed","Arial Narrow",sans-serif;color:#dc4432;z-index:1;letter-spacing:.02em}
+.card .who{font:700 9.5cqw/1 "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.04em;text-transform:uppercase;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card .role{font:italic 400 5.6cqw/1.25 "Libre Caslon Text",Georgia,serif;color:#6b6559;text-align:center;margin-top:1.5%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card .back{background:#e9dfc9;display:flex;flex-direction:column;container-type:inline-size;padding:0 6% 5%}
+.card .hdr{background:var(--b);color:#fbf6ea;margin:0 -7.5% 3%;padding:5% 6% 4%;text-align:center}
+.card .hdr .t{font:400 9cqw/1 "Lilita One","Arial Black",Impact,sans-serif;text-transform:uppercase;letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card .hdr .s{font:700 4.6cqw/1.2 "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--a);margin-top:1.5%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card table{width:100%;border-collapse:collapse;table-layout:fixed;font:600 4.4cqw/1.2 "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.03em;text-transform:uppercase;margin-bottom:3%}
+.card th,.card td{padding:1.4% 1%;border-bottom:1px solid #cfc4a9;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card col.c1{width:22%}.card col.c3{width:17%}
+.card th{color:#6b6559;font-weight:500}
+.card td.n,.card th.n{text-align:right}
+.card tr.cur td{color:#dc4432}
+.card .bul{font:400 4.7cqw/1.4 "Libre Caslon Text",Georgia,serif;color:#2e2b25;margin:0 0 3%;padding-left:5%;overflow:hidden;flex:0 1 auto;min-height:0}
+.card .bul li{margin-bottom:1%}
+.card .skills{display:flex;flex-wrap:wrap;gap:1.5%;margin-bottom:3%;max-height:22cqw;overflow:hidden}
+.card .skills span{background:#dc4432;color:#fff;font:700 4cqw/1 "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.06em;text-transform:uppercase;padding:1.8% 2.4%;border-radius:2px;white-space:nowrap}
+.card .foot{margin-top:auto;display:flex;justify-content:space-between;gap:4%;font:italic 400 4.3cqw/1.3 "Libre Caslon Text",Georgia,serif;color:#6b6559;border-top:1px solid #cfc4a9;padding-top:2.5%}
+.card .foot span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* free agent */
+.card.free .front{background:var(--b)}
+.card.free .team{color:#dc4432;text-shadow:.11em .11em 0 rgba(0,0,0,.35)}
+.card.free .num{border-color:#fbf6ea;color:#fbf6ea}
+.card.free .art{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.35);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:6%;text-align:center;color:#fbf6ea}
+.card.free .art::after{display:none}
+.card.free .art .k{font:700 4.6cqw "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.2em;text-transform:uppercase;opacity:.7;margin-bottom:3%}
+.card.free .art .open{font:400 7.5cqw/1.15 "Lilita One","Arial Black",Impact,sans-serif;text-transform:uppercase}
+.card.free .art .day{margin-top:5%;font:700 4.6cqw "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#dc4432}
+.card.free .who{color:#fbf6ea}
+.card.free .role{color:#c9c2b2}
+.card.free .hdr{background:#dc4432}
+.card.free .hdr .s{color:#fbf6ea}
+.card.free .figs{display:grid;grid-template-columns:repeat(3,1fr);gap:2%;margin-bottom:3%}
+.card.free .figs div{text-align:center;background:#fbf6ea;border-radius:2px;padding:4% 2%}
+.card.free .figs b{display:block;font:700 9cqw/1 "Barlow Condensed","Arial Narrow",sans-serif}
+.card.free .figs small{font:400 3.8cqw "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.1em;text-transform:uppercase;color:#6b6559}
+.card.free .go{margin-top:auto;font:700 4.6cqw "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#dc4432;text-align:center;padding:3%;border:1.5px solid #dc4432;border-radius:3px}
+/* stack summary */
+.card.summary .num{width:auto;padding:0 5%;border-radius:999px;font-size:5cqw}
+.card.summary .art .mono{font-size:22cqw}
+.card.summary .art .mono small{display:block;font:700 5cqw "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.14em;text-transform:uppercase;margin-top:2%}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <div><h1 id="p-name">Career Card</h1><div class="sub" id="p-sub"></div></div>
+    <span class="pill" id="pill"><i></i>Free agent</span>
+  </div>
+  <div class="actions">
+    <div class="toggle" id="view-toggle"><button class="on" data-view="cards">Cards</button><button data-view="timeline">Timeline</button></div>
+    <span style="width:8px"></span>
+    <button class="btn primary" id="btn-add">+ Add</button>
+    <button class="btn" id="btn-import">Import</button>
+    <button class="btn" id="btn-share">Share</button>
+    <details class="menu" id="more"><summary class="btn">···</summary><div class="pop">
+      <button class="btn" id="btn-profile">Profile</button>
+      <button class="btn" id="btn-log">Job-hunt log</button>
+      <button class="btn" id="btn-backup">Backup / restore</button>
+      <button class="btn" id="btn-help">How this works</button>
+    </div></details>
+  </div>
+</header>
+<div class="statline" id="statline"></div>
+
+<main class="stage">
+  <div class="overlay flash" id="flash" hidden></div>
+
+  <section class="view" id="view-cards">
+    <div class="scroller">
+      <div class="shelf-head"><span class="k" id="shelf-k">Career</span><span class="note-inline" id="sample-banner" hidden><span>Example career</span><button class="btn" id="btn-clear-samples">Clear</button></span><div class="toggle small" id="group-toggle"><button class="on" data-group="role">By role</button><button data-group="team">By team</button></div></div>
+      <div class="shelf" id="shelf"></div>
+      <div class="fold" id="fold"></div>
+    </div>
+  </section>
+
+  <section class="view" id="view-timeline" hidden>
+    <div class="tl" id="tl" aria-label="Career timeline">
+      <div class="overlay legend legend">
+        <span><i class="bar" style="background:var(--navy)"></i>Team</span>
+        <span><i class="bar" style="background:repeating-linear-gradient(135deg,rgba(220,68,50,.35) 0 3px,transparent 3px 6px)"></i>Free agency</span>
+        <span><i style="background:var(--c-app)"></i>Application</span>
+        <span><i style="background:var(--c-int)"></i>Interview</span>
+        <span><i style="background:var(--c-off)"></i>Offer</span>
+        <span><i class="down" style="background:var(--c-den)"></i>Denial</span>
+      </div>
+      <div class="overlay zoom">
+        <button class="btn sm" id="zoom-career">Career</button>
+        <button class="btn sm" id="zoom-fa">Free agency</button>
+        <button class="btn icon" id="zoom-out" title="Zoom out">−</button>
+        <button class="btn icon" id="zoom-in" title="Zoom in">+</button>
+        <button class="btn sm" id="zoom-today">Today</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="focus" id="focus" hidden>
+  <div class="hint">Click the card to flip it · ← → to move · Esc to close</div>
+  <button class="nav" id="focus-prev" title="Previous">‹</button>
+  <div id="focus-card"></div>
+  <button class="nav" id="focus-next" title="Next">›</button>
+  <button class="btn icon close nav" id="focus-close" title="Close">×</button>
+  <div class="bar"><button class="btn" id="focus-flip">Flip</button><button class="btn" id="focus-edit">Edit</button></div>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-hidden="true">
+  <div class="drawer-head">
+    <div class="tabs">
+      <button class="tab on" data-tab="role">Role</button>
+      <button class="tab" data-tab="event">Event</button>
+      <button class="tab" data-tab="profile">Profile</button>
+      <button class="tab" data-tab="log">Log</button>
+    </div>
+    <button class="btn icon" id="drawer-close" title="Close">×</button>
+  </div>
+  <div class="drawer-body">
+    <section id="pane-role">
+      <h2 id="role-title">Add a role</h2>
+      <form class="form" id="role-form" autocomplete="off">
+        <input type="hidden" id="r-id">
+        <div class="field"><label for="r-company">Company (team)</label><input id="r-company" list="companies" required placeholder="Acme Corp"><datalist id="companies"></datalist></div>
+        <div class="row3">
+          <div class="field" style="grid-column:span 2"><label for="r-title">Title (position)</label><input id="r-title" required placeholder="Program Delivery Lead"></div>
+          <div class="field"><label for="r-code">Badge</label><input id="r-code" maxlength="4" placeholder="PDL"></div>
+        </div>
+        <div class="row2">
+          <div class="field"><label for="r-start">Started</label><input type="month" id="r-start" required></div>
+          <div class="field"><label for="r-end">Ended</label><input type="month" id="r-end"></div>
+        </div>
+        <label class="check"><input type="checkbox" id="r-current"> I still work here</label>
+        <div class="row2">
+          <div class="field"><label for="r-location">Location</label><input id="r-location" placeholder="Chicago, IL"></div>
+          <div class="field"><label for="r-reason">How it ended</label><input id="r-reason" placeholder="Promoted · Left for · Role eliminated"></div>
+        </div>
+        <div class="field"><label for="r-bullets">Highlights, one per line</label><textarea id="r-bullets" placeholder="Led delivery for a portfolio of clients&#10;Ran intake, triage and UAT"></textarea></div>
+        <div class="field"><label for="r-skills">Skills, comma separated</label><input id="r-skills" placeholder="Program management, UAT, Client delivery"></div>
+        <div class="field"><label>Team colours</label><div class="swatches" id="r-swatches"></div><span class="help">Shared by every role at this company.</span></div>
+        <div class="form-foot">
+          <button class="btn primary" type="submit" id="r-save">Add role</button>
+          <button class="btn" type="button" id="r-cancel">Cancel</button>
+          <button class="btn danger" type="button" id="r-delete" hidden>Delete</button>
+          <span class="spacer"></span><span class="status" id="r-status"></span>
+        </div>
+      </form>
+    </section>
+
+    <section id="pane-event" hidden>
+      <h2 id="form-title">Add a job-hunt event</h2>
+      <form class="form" id="form" autocomplete="off">
+        <input type="hidden" id="f-id">
+        <div class="row2">
+          <div class="field"><label for="f-date">Date</label><input type="date" id="f-date" required></div>
+          <div class="field"><label for="f-type">Type</label>
+            <select id="f-type">
+              <option value="application">Application</option>
+              <option value="interview">Interview</option>
+              <option value="offer">Offer</option>
+              <option value="denial">Denial</option>
+              <option value="withdrawn">Withdrawn</option>
+              <option value="milestone">Milestone</option>
+              <option value="layoff">Layoff / job loss</option>
+            </select></div>
+        </div>
+        <div class="field"><label for="f-company">Company</label><input id="f-company" list="ev-companies" placeholder="Acme Corp"><datalist id="ev-companies"></datalist></div>
+        <div class="field"><label for="f-title" id="f-title-label">Job title</label><input id="f-title" placeholder="Program Delivery Lead"></div>
+        <div class="row2">
+          <div class="field"><label for="f-salary">Salary</label><input id="f-salary" placeholder="$120k"></div>
+          <div class="field"><label for="f-link">Link</label><input id="f-link" type="url" placeholder="https://"></div>
+        </div>
+        <div class="field"><label for="f-notes">Notes</label><textarea id="f-notes"></textarea></div>
+        <div class="form-foot">
+          <button class="btn primary" type="submit" id="f-save">Add event</button>
+          <button class="btn" type="button" id="f-cancel">Cancel</button>
+          <button class="btn danger" type="button" id="f-delete" hidden>Delete</button>
+          <span class="spacer"></span><span class="status" id="f-status"></span>
+        </div>
+      </form>
+    </section>
+
+    <section id="pane-profile" hidden>
+      <h2>Profile</h2>
+      <form class="form" id="profile-form" autocomplete="off">
+        <div class="field"><label for="p-name-in">Name</label><input id="p-name-in" placeholder="Jordan Avery"></div>
+        <div class="field"><label for="p-headline">Headline (position)</label><input id="p-headline" placeholder="Program Delivery Lead"></div>
+        <div class="field"><label for="p-location">Location</label><input id="p-location" placeholder="Chicago, IL"></div>
+        <div class="field"><label for="p-summary">Scouting report (summary)</label><textarea id="p-summary" style="min-height:80px"></textarea></div>
+        <div class="field"><label for="p-targets">Open to (target roles), comma separated</label><input id="p-targets" placeholder="Delivery, Program, Client services"></div>
+        <div class="row2">
+          <div class="field"><label for="p-email">Email</label><input id="p-email" type="email"></div>
+          <div class="field"><label for="p-linkedin">LinkedIn URL</label><input id="p-linkedin" type="url"></div>
+        </div>
+        <div class="field"><label for="p-education">Education, one per line</label><textarea id="p-education" placeholder="Illinois State University | BS, Computer Science | 1998 – 2002"></textarea><span class="help">School | Degree | Years</span></div>
+        <div class="field"><label for="p-certs">Certifications and awards, one per line</label><textarea id="p-certs" placeholder="PMP | PMI | 2015"></textarea><span class="help">Name | Issuer | Year</span></div>
+        <div class="form-foot"><button class="btn primary" type="submit">Save profile</button><span class="spacer"></span><span class="status" id="p-status"></span></div>
+      </form>
+    </section>
+
+    <section id="pane-log" hidden>
+      <h2>Job-hunt log</h2>
+      <div class="figs" id="log-figs"></div>
+      <div class="log-tools">
+        <input id="q" placeholder="Search" style="min-width:150px">
+        <select id="type-filter"><option value="">All types</option><option value="application">Applications</option><option value="interview">Interviews</option><option value="offer">Offers</option><option value="denial">Denials</option><option value="withdrawn">Withdrawn</option><option value="milestone">Milestones</option></select>
+        <select id="sort"><option value="desc">Newest first</option><option value="asc">Oldest first</option><option value="company">By company</option></select>
+        <span class="count" id="log-count"></span>
+      </div>
+      <div class="tablewrap"><table><thead><tr><th>Date</th><th>Type</th><th>Company</th><th>Job</th><th>Status</th><th>Notes</th><th></th></tr></thead><tbody id="log-body"></tbody></table></div>
+    </section>
+  </div>
+</aside>
+
+<div class="tip" id="tip" hidden></div>
+
+<dialog id="dlg-import">
+  <div class="dlg">
+    <h3>Import</h3>
+    <div class="tabs" id="imp-tabs">
+      <button class="tab on" data-imp="linkedin">LinkedIn export</button>
+      <button class="tab" data-imp="resume">Resume</button>
+      <button class="tab" data-imp="tracker">Job-hunt tracker</button>
+    </div>
+    <div id="imp-linkedin">
+      <p>On LinkedIn: Settings → Data privacy → <b>Get a copy of your data</b> → the full archive. Drop the zip here, or just Positions.csv (plus Education.csv, Skills.csv, Certifications.csv, Profile.csv if you have them).</p>
+      <label class="dropzone" id="dz-li">Drop the LinkedIn zip or CSV files here, or click to choose<input type="file" id="file-li" multiple accept=".zip,.csv"></label>
+    </div>
+    <div id="imp-resume" hidden>
+      <p>PDF, Word (.docx) or plain text. The text is read in your browser; the structure (roles, dates, highlights) is extracted by Claude with your consent, and you check the result before anything is saved. Without that, a simpler date-pattern parser has a go and you fix the rest.</p>
+      <label class="dropzone" id="dz-res">Drop a resume here, or click to choose<input type="file" id="file-res" accept=".pdf,.docx,.txt,.md"></label>
+    </div>
+    <div id="imp-tracker" hidden>
+      <p>Excel or CSV of applications. Columns are matched by header (the Application Tracker layout maps automatically) and each row becomes an application event on the timeline.</p>
+      <label class="dropzone" id="dz-tr">Drop a spreadsheet here, or click to choose<input type="file" id="file-tr" accept=".xlsx,.xls,.xlsm,.csv,.tsv"></label>
+      <div id="map-area" hidden>
+        <div class="maprow"><span>Sheet</span><select id="m-sheet"></select></div>
+        <div id="map-fields"></div>
+        <div class="opts"><label><input type="checkbox" id="m-skipdupes" checked> Skip rows that already exist</label></div>
+      </div>
+    </div>
+    <div id="imp-progress" class="prog" hidden><i></i><span id="imp-progress-text"></span></div>
+    <div id="imp-preview" hidden>
+      <p id="imp-preview-title" style="margin-top:10px"></p>
+      <div class="preview" id="preview"></div>
+      <div class="opts" id="imp-opts"></div>
+    </div>
+    <div class="dlg-foot">
+      <span class="note" id="import-note"></span>
+      <button class="btn" id="import-cancel">Cancel</button>
+      <button class="btn primary" id="import-go" disabled>Import</button>
+    </div>
+  </div>
+</dialog>
+
+<dialog id="dlg-share">
+  <div class="dlg">
+    <h3>Share your career page</h3>
+    <p>Share makes a single HTML file with your cards, stat line, scouting report and education, and <b>nothing from the job hunt</b>: no applications, no free-agent day count, no log. Host it anywhere or send it as a file.</p>
+    <div class="opts" style="margin-bottom:10px">
+      <label><input type="checkbox" id="sh-contact" checked> Include email and LinkedIn</label>
+      <label><input type="checkbox" id="sh-fa"> Show a "free agent · open to" card (no dates or counts)</label>
+    </div>
+    <div class="actions" style="margin-bottom:10px">
+      <button class="btn primary" id="sh-download">Download career page</button>
+      <button class="btn" id="sh-copy">Copy HTML</button>
+      <button class="btn" id="sh-preview">Preview</button>
+    </div>
+    <div class="dlg-foot"><button class="btn" id="share-close">Close</button></div>
+  </div>
+</dialog>
+
+<dialog id="dlg-backup">
+  <div class="dlg">
+    <h3>Backup / restore</h3>
+    <p>Everything lives in this browser. Download a JSON backup now and then; restore it here on another device.</p>
+    <div class="actions" style="margin-bottom:10px">
+      <button class="btn primary" id="bk-download">Download backup</button>
+      <button class="btn" id="bk-copy">Copy JSON</button>
+      <label class="btn" for="file-bk" style="cursor:pointer">Restore from file…</label><input type="file" id="file-bk" accept=".json" hidden>
+      <button class="btn" id="bk-csv">Download job-hunt CSV</button>
+    </div>
+    <textarea class="code" id="bk-text" readonly></textarea>
+    <div class="dlg-foot"><button class="btn danger" id="bk-reset">Erase everything</button><span class="note"></span><button class="btn" id="backup-close">Close</button></div>
+  </div>
+</dialog>
+
+<dialog id="dlg-help">
+  <div class="dlg">
+    <h3>How this works</h3>
+    <p><b>Cards.</b> One card per role, oldest to newest, like a career in a card set. Click a card to open it large; click again to flip it and read the back. "By team" gathers consecutive roles at one company into a stack; click a stack to spread it.</p>
+    <p><b>Free agent.</b> When no role is current you're a free agent. The pill in the header counts the days, from your layoff event if you've added one, otherwise from the end of your last role. Add a job-hunt event (<i>+ Add → Event</i>) as you apply and interview; the free-agent card and the timeline pick them up.</p>
+    <p><b>Timeline.</b> Company spans sit above the line, job-hunt events sit on it. Drag to pan; pinch, <kbd>Ctrl</kbd>+scroll or double-click to zoom. "Career" fits everything, "Free agency" fits the job hunt.</p>
+    <p><b>Import.</b> LinkedIn's data export (zip or CSVs), a resume (PDF, Word, text), or the job-hunt tracker spreadsheet. Every import shows a preview you can correct before saving.</p>
+    <p><b>Share.</b> Builds a standalone career page with the job hunt left out.</p>
+    <p><b>Saving.</b> Automatic, in this browser. Use Backup for a file you can move.</p>
+    <div class="dlg-foot"><button class="btn" id="help-close">Close</button></div>
+  </div>
+</dialog>
+
+<script>
+(function(){
+'use strict';
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const KEY = 'careercard.v1';
+const TYPES = {
+  layoff:{label:'Layoff', dir:1, color:'--c-ms'}, milestone:{label:'Milestone', dir:1, color:'--c-ms'},
+  application:{label:'Application', dir:1, color:'--c-app'}, interview:{label:'Interview', dir:1, color:'--c-int'},
+  offer:{label:'Offer', dir:1, color:'--c-off'}, denial:{label:'Denial', dir:-1, color:'--c-den'}, withdrawn:{label:'Withdrawn', dir:-1, color:'--c-wd'}
+};
+const STATUS_LABEL = {application:'Applied', interview:'Interviewing', offer:'Offer', denial:'Denied', withdrawn:'Withdrawn'};
+const PAIRS = [['#e8a13a','#1f2a44'],['#f4c7a1','#7a2e1f'],['#9fd0c7','#0f4c45'],['#f6b8c8','#4a1942'],['#c9d7f2','#1b3a6b'],['#f5e08a','#3b3b2f'],['#f0a58f','#1c1b18'],['#bfe0e3','#254e70'],['#d7c4f0','#3a2a6b'],['#cde3a5','#2f5d2a']];
+
+// ---------- dates ----------
+const pad = n => String(n).padStart(2,'0');
+const todayISO = () => { const d=new Date(); return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()); };
+const isoOf = d => d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+const dayNum = iso => { const [y,m,d]=iso.split('-').map(Number); return Math.round(Date.UTC(y,m-1,d||1)/86400000); };
+const isoFromDay = n => { const d=new Date(n*86400000); return d.getUTCFullYear()+'-'+pad(d.getUTCMonth()+1)+'-'+pad(d.getUTCDate()); };
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const fmt = iso => { if(!iso) return ''; const [y,m,d]=iso.split('-').map(Number); return MONTHS[m-1]+' '+d+', '+y; };
+const fmtShort = iso => { const [y,m,d]=iso.split('-').map(Number); return MONTHS[m-1]+' '+d; };
+const fmtMonth = ym => { if(!ym) return 'Present'; const [y,m]=ym.split('-').map(Number); return MONTHS[m-1]+' '+y; };
+const yearOf = ym => ym ? ym.slice(0,4) : 'Now';
+const monthIndex = ym => { const [y,m]=ym.split('-').map(Number); return y*12+(m-1); };
+const nowYM = () => todayISO().slice(0,7);
+const monthsBetween = (a,b) => Math.max(1, monthIndex(b||nowYM()) - monthIndex(a) + 1);
+const durShort = m => m>=12 ? Math.floor(m/12)+'y'+(m%12?' '+(m%12)+'m':'') : m+'m';
+const dur = months => months>=12 ? (Math.round(months/12*10)/10).toString().replace(/\.0$/,'')+' yr'+(months>=24?'s':'') : months+' mo';
+const monthEndDay = ym => { const [y,m]=ym.split('-').map(Number); return Math.round(Date.UTC(y,m,1)/86400000); };
+function parseDate(v){
+  if(v==null || v==='') return null;
+  if(v instanceof Date){ return isNaN(v) ? null : isoOf(v); }
+  if(typeof v==='number'){ if(v<20000 || v>80000) return null; const d=new Date(Math.round((v-25569)*86400000)); return d.getUTCFullYear()+'-'+pad(d.getUTCMonth()+1)+'-'+pad(d.getUTCDate()); }
+  const s = String(v).trim();
+  let m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/); if(m) return m[1]+'-'+pad(+m[2])+'-'+pad(+m[3]);
+  m = s.match(/^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{2,4})/); if(m){ let y=+m[3]; if(y<100) y+=2000; return y+'-'+pad(+m[1])+'-'+pad(+m[2]); }
+  const t = Date.parse(s); if(!isNaN(t)) return isoOf(new Date(t));
+  return null;
+}
+function parseMonth(v){ // "Jan 2021", "2021-03", "03/2021", "2021", "Present"
+  if(v==null) return null; const s=String(v).trim(); if(!s || /present|current|now/i.test(s)) return null;
+  let m = s.match(/^(\d{4})-(\d{1,2})/); if(m) return m[1]+'-'+pad(+m[2]);
+  m = s.match(/^(\d{1,2})[\/.](\d{4})$/); if(m) return m[2]+'-'+pad(+m[1]);
+  m = s.match(/^([A-Za-z]{3})[a-z]*\.?\s+(\d{4})$/); if(m){ const i=MONTHS.findIndex(x=>x.toLowerCase()===m[1].slice(0,3).toLowerCase()); if(i>=0) return m[2]+'-'+pad(i+1); }
+  m = s.match(/^(\d{4})$/); if(m) return m[1]+'-01';
+  const d = parseDate(s); return d ? d.slice(0,7) : null;
+}
+
+// ---------- state ----------
+const uid = () => Math.random().toString(36).slice(2,10)+Date.now().toString(36);
+const esc = s => String(s==null?'':s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const norm = s => (s||'').trim().toLowerCase();
+let S = null, sampleMode = false;
+const blank = () => ({ profile:{name:'',headline:'',location:'',summary:'',targets:[],email:'',linkedin:'',education:[],certs:[]}, roles:[], events:[], brand:{}, settings:{group:'role', view:'cards'} });
+function load(){
+  try{ const raw=localStorage.getItem(KEY); if(raw){ const o=JSON.parse(raw); if(o && o.roles){ S=Object.assign(blank(), o); S.profile=Object.assign(blank().profile, o.profile||{}); sampleMode=!!o.sample; return; } } }catch(e){}
+  S = sampleState(); sampleMode = true;
+}
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(Object.assign({}, S, {sample:sampleMode, savedAt:new Date().toISOString()}))); }catch(e){} }
+function sampleState(){
+  const t = dayNum(todayISO()); const d = n => isoFromDay(t-n);
+  const y = new Date().getFullYear();
+  return {
+    profile:{ name:'Jordan Avery', headline:'Program Delivery Lead', location:'Chicago, IL', targets:['Delivery','Program','Client services'], email:'jordan@example.com', linkedin:'https://www.linkedin.com/in/jordan-avery',
+      summary:'Delivery lead with twenty years in benefits-administration technology, from programmer to running a client portfolio. Steady under escalation, fluent in requirements and UAT, and better at keeping a release honest than at selling one.',
+      education:[{school:'Illinois State University', degree:'BS, Computer Science', years:(y-28)+' – '+(y-24)}], certs:[{name:'PMP', issuer:'PMI', year:String(y-9)},{name:'Delivery Excellence Award', issuer:'Alight', year:String(y-3)}] },
+    roles:[
+      {id:uid(), company:'Aon Hewitt', title:'Programmer Analyst', code:'PA', start:(y-23)+'-06', end:(y-19)+'-03', location:'Lincolnshire, IL', reason:'Promoted', bullets:['Built and maintained benefits-calculation batch jobs for three Fortune 500 clients.','Cut nightly cycle time by a third by reworking the eligibility pass.'], skills:['COBOL','SQL','Batch','Eligibility']},
+      {id:uid(), company:'Aon Hewitt', title:'Team Lead', code:'TL', start:(y-19)+'-04', end:(y-14)+'-12', location:'Lincolnshire, IL', reason:'Company became Alight', bullets:['Led a team of six analysts across two client accounts.','Owned release planning and the defect triage call.'], skills:['Team leadership','Release planning','Triage','SQL']},
+      {id:uid(), company:'Alight', title:'Control Account Manager', code:'CAM', start:(y-13)+'-01', end:(y-8)+'-06', location:'Lincolnshire, IL', reason:'Promoted', bullets:['Accountable for scope, schedule and budget on a $4M annual account.','Ran quarterly business reviews with client HR leadership.'], skills:['Account management','Budget','Client relationship','Scope control']},
+      {id:uid(), company:'Alight', title:'Performance Excellence Consultant', code:'PEC', start:(y-8)+'-07', end:(y-5)+'-02', location:'Lincolnshire, IL', reason:'Promoted', bullets:['Standardised intake and UAT across a 40-person delivery group.','Coached team leads on requirements reviews.'], skills:['Process design','UAT','Requirements','Coaching']},
+      {id:uid(), company:'Alight', title:'Program Delivery Lead', code:'PDL', start:(y-5)+'-03', end:d(58).slice(0,7), location:'Lincolnshire, IL', reason:'Role eliminated in a reorg', bullets:['Led delivery for a portfolio of benefits-administration clients.','Ran intake, triage and UAT across product releases.','Owned the client escalation path; mentored four team leads.'], skills:['Program management','UAT','Client delivery','Requirements','Escalations','Mentoring']}
+    ],
+    events:[
+      {id:uid(), date:d(58), type:'layoff', company:'Alight', title:'Laid off', notes:'Role eliminated in a reorg.'},
+      {id:uid(), date:d(50), type:'milestone', company:'', title:'Resume finalized', notes:''},
+      {id:uid(), date:d(41), type:'application', company:'Acme Corp', title:'Program Manager', salary:'$130k', notes:'Referred by a former teammate.', status:'Denied'},
+      {id:uid(), date:d(39), type:'application', company:'Beta Corp', title:'Delivery Lead', status:'Interview'},
+      {id:uid(), date:d(33), type:'application', company:'Gamma Health', title:'Product Owner', salary:'$115k', notes:'Posting says hybrid.', status:'In Progress'},
+      {id:uid(), date:d(27), type:'denial', company:'Acme Corp', title:'Program Manager', notes:'Form rejection email.'},
+      {id:uid(), date:d(22), type:'interview', company:'Beta Corp', title:'Delivery Lead', notes:'Recruiter screen, 30 min.'},
+      {id:uid(), date:d(20), type:'application', company:'Delta Software', title:'Implementation Manager', status:'In Progress'},
+      {id:uid(), date:d(12), type:'interview', company:'Beta Corp', title:'Delivery Lead', notes:'Hiring manager round.'},
+      {id:uid(), date:d(6), type:'application', company:'Epsilon Benefits', title:'Client Services Manager', salary:'$125k', status:'In Progress'}
+    ],
+    brand:{ 'aon hewitt':2, 'alight':0 }, settings:{group:'role', view:'cards'}
+  };
+}
+
+// ---------- derived ----------
+const roles = () => S.roles.slice().sort((a,b)=> a.start<b.start?-1 : a.start>b.start?1 : 0);
+const sortedEvents = () => S.events.slice().sort((a,b)=> a.date<b.date?-1 : a.date>b.date?1 : 0);
+const initials = s => (s||'').split(/\s+/).filter(Boolean).map(w=>w[0]).join('').slice(0,3).toUpperCase();
+const codeFor = title => { const w=(title||'').replace(/[^A-Za-z ]/g,'').split(/\s+/).filter(x=>x && !/^(of|and|the|for|to|a|an|in|at)$/i.test(x)); return (w.length>=2 ? w.map(x=>x[0]).join('') : (w[0]||'').slice(0,3)).slice(0,3).toUpperCase(); };
+function hashIdx(s){ let h=0; for(const c of norm(s)) h=(h*31+c.charCodeAt(0))>>>0; return h%PAIRS.length; }
+function pairFor(company){ const k=norm(company); const i = S.brand[k]!=null ? S.brand[k] : hashIdx(k); return PAIRS[i]||PAIRS[0]; }
+function layoffDate(){ const l=S.events.filter(e=>e.type==='layoff').sort((a,b)=>a.date<b.date?-1:1)[0]; return l?l.date:null; }
+function status(){
+  const rs = roles(); const cur = rs.filter(r=>!r.end);
+  if(cur.length) return {free:false, current:cur[cur.length-1]};
+  if(!rs.length) return {free:true, since:layoffDate(), days:null};
+  const lo = layoffDate(); const last = rs[rs.length-1];
+  const since = lo || isoFromDay(monthEndDay(last.end));
+  return {free:true, since, days: dayNum(todayISO())-dayNum(since), last};
+}
+function runs(){ // consecutive roles at the same company
+  const out=[]; roles().forEach(r=>{ const last=out[out.length-1]; if(last && norm(last.company)===norm(r.company)) last.roles.push(r); else out.push({company:r.company, roles:[r]}); }); return out;
+}
+function careerStats(){
+  const rs=roles(); if(!rs.length) return null;
+  // union of months employed
+  const months=new Set(); rs.forEach(r=>{ const a=monthIndex(r.start), b=monthIndex(r.end||nowYM()); for(let m=a;m<=b;m++) months.add(m); });
+  const companies=new Set(rs.map(r=>norm(r.company)));
+  const tenures = runs().map(x=>({company:x.company, months: monthIndex(x.roles[x.roles.length-1].end||nowYM()) - monthIndex(x.roles[0].start) + 1}));
+  const longest = tenures.sort((a,b)=>b.months-a.months)[0];
+  return { seasons: Math.round(months.size/12), teams: companies.size, positions: rs.length, longest };
+}
+function statusOf(app){
+  const co = norm(app.company); if(!co) return {key:'application', label:'Applied', from:null};
+  const sameCo = S.events.filter(e=>e.type==='application' && norm(e.company)===co); const matchTitle = sameCo.length>1;
+  const follow = S.events.filter(e=> e.id!==app.id && !['application','layoff','milestone'].includes(e.type) && norm(e.company)===co && (!matchTitle || norm(e.title)===norm(app.title) || !e.title) && e.date>=app.date).sort((a,b)=> a.date<b.date?1:-1);
+  if(follow.length){ const f=follow[0]; return {key:f.type, label:STATUS_LABEL[f.type], from:f}; }
+  const s = norm(app.status);
+  if(s){ if(/deni|reject|closed|no /.test(s)) return {key:'denial', label:'Denied', needs:true}; if(/interview|screen|phone/.test(s)) return {key:'interview', label:'Interviewing', needs:true}; if(/offer/.test(s) && !/no offer/.test(s)) return {key:'offer', label:'Offer', needs:true}; if(/withdr/.test(s)) return {key:'withdrawn', label:'Withdrawn', needs:true}; return {key:'application', label:app.status}; }
+  return {key:'application', label:'Applied'};
+}
+function huntStats(){
+  const apps=S.events.filter(e=>e.type==='application'); const sts=apps.map(statusOf); const count=k=>sts.filter(s=>s.key===k).length;
+  const last = sortedEvents().filter(e=>e.date<=todayISO()).pop();
+  return { apps:apps.length, open: apps.length-count('denial')-count('withdrawn'), interviews:S.events.filter(e=>e.type==='interview').length, active:count('interview'), offers:S.events.filter(e=>e.type==='offer').length, denials:count('denial'), responded:sts.filter(s=>s.key!=='application').length, sinceLast: last ? dayNum(todayISO())-dayNum(last.date) : null };
+}
+
+// ---------- header + stat line ----------
+function renderHeader(){
+  const p=S.profile, st=status(), cs=careerStats();
+  $('#p-name').textContent = p.name || 'Career Card';
+  $('#p-sub').textContent = [p.headline, p.location, cs?cs.seasons+' seasons':''].filter(Boolean).join(' · ');
+  const pill=$('#pill');
+  if(st.free){ pill.className='pill'; pill.innerHTML = `<i></i>Free agent${st.days!=null?' · day '+st.days:''}`; }
+  else { pill.className='pill active'; pill.innerHTML = `<i></i>Active · ${esc(st.current.company)}`; }
+  const h=huntStats();
+  const tile=(k,v,s)=>`<div class="s"><div class="v">${v}${s?`<small>${esc(s)}</small>`:''}</div><div class="k">${k}</div></div>`;
+  $('#statline').innerHTML = cs ? [
+    tile('Seasons', cs.seasons), tile('Teams', cs.teams), tile('Positions', cs.positions),
+    tile('Longest tenure', dur(cs.longest.months), cs.longest.company),
+    st.free ? tile('Free agent', st.days!=null?st.days+' d':'–', st.since?'since '+fmt(st.since):'') : tile('Current team', esc(st.current.company), 'since '+fmtMonth(st.current.start)),
+    h.apps ? tile('Applications', h.apps, h.open+' open') : ''
+  ].join('') : '';
+}
+
+// ---------- cards ----------
+const teamSize = name => Math.max(7, Math.min(15, Math.floor(105/Math.max(4,(name||'').length))));
+function cardHTML(r, idx, total, opts={}){
+  const [a,b]=pairFor(r.company); const p=S.profile;
+  const run = runs().find(x=>x.roles.some(z=>z.id===r.id)); const seasons = run ? run.roles : [r];
+  const bullets=(r.bullets||[]).slice(0,4), skills=(r.skills||[]).slice(0,8);
+  return `<div class="card${opts.cls?' '+opts.cls:''}" style="--a:${a};--b:${b}" data-id="${r.id}" tabindex="0" role="button" aria-label="${esc(r.company+', '+r.title)}"><div class="inner">
+    <div class="face front">
+      <div class="team" style="font-size:${teamSize(r.company)}cqw">${esc(r.company)}</div><span class="num">${pad(idx+1)}</span>
+      <div class="art"><span class="mono">${esc(initials(p.name)||'?')}</span><span class="badge">${esc(r.code||codeFor(r.title))}</span></div>
+      <div class="who">${esc(p.name||'Your name')}</div>
+      <div class="role">${esc(r.title)} · ${yearOf(r.start)} – ${yearOf(r.end)}</div>
+    </div>
+    <div class="face back">
+      <div class="hdr"><div class="t">${esc(r.company)}</div><div class="s">${esc(r.title)}${r.location?' · '+esc(r.location):''}</div></div>
+      <table><colgroup><col class="c1"><col><col class="c3"></colgroup><thead><tr><th>Season</th><th>Position</th><th class="n">Time</th></tr></thead><tbody>
+        ${seasons.map(s=>`<tr class="${s.id===r.id?'cur':''}"><td>${yearOf(s.start).slice(2)}–${s.end?yearOf(s.end).slice(2):'now'}</td><td>${esc(s.title)}</td><td class="n">${durShort(monthsBetween(s.start,s.end))}</td></tr>`).join('')}
+      </tbody></table>
+      ${bullets.length?`<ul class="bul">${bullets.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:'<div class="bul" style="color:#6b6559;font-style:italic">No highlights yet.</div>'}
+      ${skills.length?`<div class="skills">${skills.map(x=>`<span>${esc(x)}</span>`).join('')}</div>`:''}
+      <div class="foot"><span>${esc(r.reason || (r.end ? 'Ended '+fmtMonth(r.end) : 'Current'))}</span><span>${pad(idx+1)} of ${pad(total)}</span></div>
+    </div></div></div>`;
+}
+function freeCardHTML(opts={}){
+  const p=S.profile, st=status(), h=huntStats();
+  const open = (p.targets||[]).length ? p.targets.join(' · ') : (p.headline||'New role');
+  return `<div class="card free${opts.cls?' '+opts.cls:''}" style="--a:#dc4432;--b:#1f2a44" data-id="free" tabindex="0" role="button" aria-label="Free agent"><div class="inner">
+    <div class="face front">
+      <div class="team" style="font-size:${teamSize('Free agent')}cqw">Free agent</div><span class="num">now</span>
+      <div class="art"><div class="k">Open to</div><div class="open">${esc(open)}</div>${!opts.share && st.days!=null?`<div class="day">Day ${st.days}</div>`:''}</div>
+      <div class="who">${esc(p.name||'Your name')}</div>
+      <div class="role">${opts.share ? 'Available now' : (st.since ? 'Since '+fmt(st.since) : 'Unsigned')}</div>
+    </div>
+    <div class="face back">
+      <div class="hdr"><div class="t">Free agency</div><div class="s">${opts.share ? 'Open to offers' : (st.since ? 'since '+fmt(st.since) : '')}</div></div>
+      ${opts.share ? `<ul class="bul">${(p.targets||[]).map(t=>`<li>${esc(t)}</li>`).join('')||'<li>Open to the right role.</li>'}</ul>` : `
+      <div class="figs"><div><b>${h.apps}</b><small>Applied</small></div><div><b>${h.interviews}</b><small>Interviews</small></div><div><b>${h.offers}</b><small>Offers</small></div></div>
+      <div class="figs"><div><b>${h.open}</b><small>Open</small></div><div><b>${h.denials}</b><small>Denied</small></div><div><b>${h.sinceLast==null?'–':h.sinceLast+'d'}</b><small>Since last</small></div></div>
+      <div class="bul" style="flex:0"><b>Open to:</b> ${esc(open)}</div>
+      <div class="go" data-action="timeline">Open the timeline</div>`}
+    </div></div></div>`;
+}
+function summaryCardHTML(run, from, to){
+  const [a,b]=pairFor(run.company); const first=run.roles[0], last=run.roles[run.roles.length-1];
+  return `<div class="card summary" style="--a:${a};--b:${b}" data-run="${esc(run.company)}" tabindex="0" role="button" aria-label="${esc(run.company)} stack"><div class="inner">
+    <div class="face front">
+      <div class="team" style="font-size:${teamSize(run.company)}cqw">${esc(run.company)}</div><span class="num">${pad(from)}–${pad(to)}</span>
+      <div class="art"><span class="mono">${run.roles.length}<small>${run.roles.length===1?'role':'roles'}</small></span><span class="badge">${esc(last.code||codeFor(last.title))}</span></div>
+      <div class="who">${esc(S.profile.name||'Your name')}</div>
+      <div class="role">${yearOf(first.start)} – ${yearOf(last.end)} · ${dur(monthIndex(last.end||nowYM())-monthIndex(first.start)+1)}</div>
+    </div><div class="face back"></div></div></div>`;
+}
+let openRuns = new Set();
+function renderShelf(){
+  const rs=roles(), shelf=$('#shelf'), st=status();
+  if(!rs.length){ shelf.innerHTML = `<div class="empty-shelf" style="width:100%">No roles on the shelf yet.<br><button class="btn primary" id="empty-add">Add your first role</button><button class="btn" id="empty-import">Import LinkedIn or a resume</button></div>`; return; }
+  const total=rs.length; let html='';
+  if(S.settings.group==='team'){
+    let i=0;
+    runs().forEach(run=>{
+      const from=i+1, to=i+run.roles.length; const key=norm(run.company);
+      if(run.roles.length===1 || openRuns.has(key)){
+        html += `<div class="run" style="--b:${pairFor(run.company)[1]}">${run.roles.map(r=>{ const k=i++; return `<div class="slot">${cardHTML(r,k,total)}<div class="cap">${esc(r.title)}</div></div>`; }).join('')}</div>`;
+      } else {
+        const n=run.roles.length; i+=n;
+        html += `<div class="stack" data-run="${esc(key)}">${summaryCardHTML(run,from,to)}${n>1?`<div class="card under1" style="--a:${pairFor(run.company)[0]};--b:${pairFor(run.company)[1]}"><div class="inner"><div class="face front"></div></div></div>`:''}${n>2?`<div class="card under2" style="--a:${pairFor(run.company)[0]};--b:${pairFor(run.company)[1]}"><div class="inner"><div class="face front"></div></div></div>`:''}<div class="cap">${n} roles · click to spread</div></div>`;
+      }
+    });
+  } else {
+    html = rs.map((r,i)=>`<div class="slot">${cardHTML(r,i,total)}<div class="cap">${esc(r.title)}</div></div>`).join('');
+  }
+  if(st.free) html += `<div class="slot">${freeCardHTML()}<div class="cap">Free agent</div></div>`;
+  html += `<button class="ghost" id="ghost-add">+ Add a role</button>`;
+  shelf.innerHTML = html;
+  $('#shelf-k').textContent = `Career · ${total} ${total===1?'card':'cards'}`;
+}
+$('#shelf').addEventListener('click', e=>{
+  const stack=e.target.closest('.stack'); if(stack){ openRuns.add(stack.dataset.run); renderShelf(); return; }
+  const card=e.target.closest('.card'); if(card){ if(card.dataset.id==='free') openFocus('free'); else if(card.dataset.id) openFocus(card.dataset.id); return; }
+  if(e.target.id==='ghost-add'||e.target.id==='empty-add'){ prefillRole({}); openDrawer('role'); }
+  if(e.target.id==='empty-import'){ openImport('linkedin'); }
+});
+$('#shelf').addEventListener('keydown', e=>{ if(e.key!=='Enter'&&e.key!==' ') return; const card=e.target.closest('.card'); const stack=e.target.closest('.stack'); if(stack&&!card?.dataset.id){ e.preventDefault(); openRuns.add(stack.dataset.run); renderShelf(); } else if(card&&card.dataset.id){ e.preventDefault(); openFocus(card.dataset.id); } });
+$('#group-toggle').addEventListener('click', e=>{ const b=e.target.closest('button'); if(!b) return; S.settings.group=b.dataset.group; $$('#group-toggle button').forEach(x=>x.classList.toggle('on', x===b)); openRuns.clear(); save(); renderShelf(); });
+
+// focus overlay
+let focusList=[], focusIdx=0;
+function openFocus(id){
+  focusList = roles().map(r=>r.id); if(status().free) focusList.push('free');
+  focusIdx = Math.max(0, focusList.indexOf(id)); renderFocus(); $('#focus').hidden=false; setTimeout(()=>$('#focus-card .card')?.focus(), 0);
+}
+function renderFocus(){
+  const id=focusList[focusIdx]; const rs=roles();
+  $('#focus-card').innerHTML = id==='free' ? freeCardHTML({cls:''}) : cardHTML(rs.find(r=>r.id===id), rs.findIndex(r=>r.id===id), rs.length);
+  $('#focus-edit').hidden = id==='free';
+  $('#focus-prev').disabled = focusIdx===0; $('#focus-next').disabled = focusIdx===focusList.length-1;
+}
+function closeFocus(){ $('#focus').hidden=true; }
+$('#focus-card').addEventListener('click', e=>{ const go=e.target.closest('[data-action="timeline"]'); if(go){ closeFocus(); setView('timeline'); zoomFreeAgency(); return; } const c=e.target.closest('.card'); if(c) c.classList.toggle('on'); });
+$('#focus-flip').addEventListener('click', ()=>$('#focus-card .card')?.classList.toggle('on'));
+$('#focus-edit').addEventListener('click', ()=>{ const id=focusList[focusIdx]; closeFocus(); editRole(id); });
+$('#focus-prev').addEventListener('click', ()=>{ if(focusIdx>0){ focusIdx--; renderFocus(); } });
+$('#focus-next').addEventListener('click', ()=>{ if(focusIdx<focusList.length-1){ focusIdx++; renderFocus(); } });
+$('#focus-close').addEventListener('click', closeFocus);
+$('#focus').addEventListener('click', e=>{ if(e.target===$('#focus')) closeFocus(); });
+document.addEventListener('keydown', e=>{
+  if($('#focus').hidden) return;
+  if(e.key==='Escape') closeFocus(); else if(e.key==='ArrowLeft') $('#focus-prev').click(); else if(e.key==='ArrowRight') $('#focus-next').click();
+  else if((e.key==='Enter'||e.key===' ') && e.target.closest('#focus-card')){ e.preventDefault(); $('#focus-card .card')?.classList.toggle('on'); }
+});
+
+// ---------- fold ----------
+function renderFold(){
+  const p=S.profile, st=status(), h=huntStats();
+  const skillCount={}; S.roles.forEach(r=>(r.skills||[]).forEach(s=>{ const k=s.trim(); if(k) skillCount[k]=(skillCount[k]||0)+1; }));
+  const skills=Object.entries(skillCount).sort((a,b)=>b[1]-a[1]).slice(0,18);
+  const fa = st.free ? `<section class="panel"><h2>Free agency</h2>
+      <div class="figs"><div>${st.days!=null?st.days:'–'}<small>Days</small></div><div>${h.apps}<small>Applications</small></div><div>${h.interviews}<small>Interviews</small></div><div>${h.offers}<small>Offers</small></div><div>${h.apps?Math.round(100*h.responded/h.apps)+'%':'–'}<small>Response</small></div><div>${h.sinceLast==null?'–':h.sinceLast===0?'Today':h.sinceLast+'d'}<small>Last activity</small></div></div>
+      <div class="actions"><button class="btn primary sm" data-act="add-event">+ Job-hunt event</button><button class="btn sm" data-act="timeline">Open the timeline</button><button class="btn sm" data-act="log">Log</button></div></section>`
+    : `<section class="panel"><h2>Current team</h2><p><b>${esc(st.current.company)}</b> · ${esc(st.current.title)} since ${fmtMonth(st.current.start)}.</p><div class="actions"><button class="btn sm" data-act="add-event">+ Job-hunt event</button><button class="btn sm" data-act="timeline">Open the timeline</button></div></section>`;
+  const scout = `<section class="panel"><h2>Scouting report</h2>${p.summary?`<p>${esc(p.summary)}</p>`:`<p style="color:var(--muted)">Add a summary in Profile.</p>`}${skills.length?`<div class="tiles">${skills.map(([k,n])=>`<span>${esc(k)}${n>1?`<b>×${n}</b>`:''}</span>`).join('')}</div>`:''}</section>`;
+  const edu = `<section class="panel"><h2>Farm system</h2><ul class="list">${(p.education||[]).map(e=>`<li><span>${esc(e.school)}${e.degree?' · '+esc(e.degree):''}</span><span class="m">${esc(e.years||'')}</span></li>`).join('')||'<li style="color:var(--muted)">No education yet.</li>'}</ul></section>`;
+  const certs = `<section class="panel"><h2>Awards &amp; certs</h2><ul class="list">${(p.certs||[]).map(c=>`<li><span>${esc(c.name)}${c.issuer?' · '+esc(c.issuer):''}</span><span class="m">${esc(c.year||'')}</span></li>`).join('')||'<li style="color:var(--muted)">None yet.</li>'}</ul></section>`;
+  const contact = `<section class="panel"><h2>Contact</h2><ul class="list">${p.email?`<li><a href="mailto:${esc(p.email)}">${esc(p.email)}</a></li>`:''}${p.linkedin?`<li><a href="${esc(p.linkedin)}" target="_blank" rel="noopener">LinkedIn</a></li>`:''}${!p.email&&!p.linkedin?'<li style="color:var(--muted)">Add contact details in Profile.</li>':''}</ul></section>`;
+  $('#fold').innerHTML = fa + scout + `<div class="trio">${edu}${certs}${contact}</div>`;
+}
+$('#fold').addEventListener('click', e=>{ const b=e.target.closest('[data-act]'); if(!b) return; const a=b.dataset.act; if(a==='add-event'){ prefill({}); openDrawer('event'); } if(a==='timeline'){ setView('timeline'); zoomFreeAgency(); } if(a==='log') openDrawer('log'); });
+
+// ---------- view switching ----------
+function setView(v){ S.settings.view=v; $$('#view-toggle button').forEach(b=>b.classList.toggle('on', b.dataset.view===v)); $('#view-cards').hidden = v!=='cards'; $('#view-timeline').hidden = v!=='timeline'; save(); if(v==='timeline'){ if(!view.init){ fitCareer(); view.init=true; } scheduleRender(); } }
+$('#view-toggle').addEventListener('click', e=>{ const b=e.target.closest('button'); if(b) setView(b.dataset.view); });
+
+// ---------- timeline ----------
+const view = { start:0, ppd:8, init:false };
+const PAD = 28;
+let hotCompany=null, selectedId=null, hotLocked=false;
+const textW = (s, size) => s.length*size*0.58 + 6;
+function dataRange(){
+  const rs=roles(), ev=sortedEvents(); const days=[];
+  rs.forEach(r=>{ days.push(dayNum(r.start+'-01')); days.push(r.end?monthEndDay(r.end):dayNum(todayISO())); });
+  ev.forEach(e=>days.push(dayNum(e.date))); days.push(dayNum(todayISO()));
+  if(!days.length) return null; return { d0:Math.min(...days), d1:Math.max(...days) };
+}
+function innerW(){ return Math.max(200, $('#tl').clientWidth - PAD*2); }
+function minPpd(){ const r=dataRange(); if(!r) return 2; return Math.max(0.03, innerW() / ((r.d1-r.d0) + 120)); }
+function clampView(){ const r=dataRange(); if(!r) return; view.ppd=Math.min(90, Math.max(minPpd(), view.ppd)); const span=innerW()/view.ppd; const lo=r.d0-span*0.85, hi=r.d1-span*0.15; view.start=Math.min(Math.max(view.start, lo), Math.max(lo,hi)); }
+function fitRange(d0,d1){ const len=Math.max(7,(d1-d0)); view.ppd=Math.min(90, innerW()/(len*1.14)); view.start=d0-len*0.04; clampView(); }
+function fitCareer(){ const r=dataRange(); if(r) fitRange(r.d0, r.d1); }
+function zoomFreeAgency(){ const st=status(); const t=dayNum(todayISO()); if(st.free && st.since) fitRange(dayNum(st.since)-3, t+3); else fitRange(t-90, t+7); scheduleRender(); }
+function centerOn(day){ view.start=day-(innerW()/view.ppd)/2; clampView(); }
+function zoomAt(f, px){ const day=view.start+(px-PAD)/view.ppd; view.ppd=Math.min(90, Math.max(minPpd(), view.ppd*f)); view.start=day-(px-PAD)/view.ppd; clampView(); }
+let raf=0; function scheduleRender(){ if(!raf) raf=requestAnimationFrame(()=>{ raf=0; renderTimeline(); }); }
+function renderTimeline(){
+  const host=$('#tl'); if($('#view-timeline').hidden) return; let svg=host.querySelector('svg');
+  const ev=sortedEvents(), rs=roles(); const r=dataRange();
+  if(!r){ if(svg) svg.remove(); return; }
+  clampView();
+  const W=host.clientWidth, H=host.clientHeight; const X=day=>PAD+(day-view.start)*view.ppd; const today=todayISO(), td=dayNum(today);
+  const baseY=Math.round(H*0.62); const TIER=32, BASE_UP=44, BASE_DN=38, upTiers=2, dnTiers=2;
+  const visLo=view.start-60/view.ppd, visHi=view.start+(W-PAD)/view.ppd+60/view.ppd;
+  const parts=[`<defs><pattern id="hatch" patternUnits="userSpaceOnUse" width="8" height="8" patternTransform="rotate(135)"><rect width="3" height="8" fill="rgba(220,68,50,.18)"/></pattern></defs>`];
+  // axis
+  const yearPx=365*view.ppd, monthPx=30*view.ppd;
+  const firstMonth=new Date(Math.max(visLo,0)*86400000); firstMonth.setUTCDate(1); let firstLabel=true;
+  for(let m=firstMonth; ; m=new Date(Date.UTC(m.getUTCFullYear(), m.getUTCMonth()+1, 1))){
+    const day=Math.round(Date.UTC(m.getUTCFullYear(), m.getUTCMonth(), 1)/86400000); if(day>visHi) break;
+    const x=X(day); const isJan=m.getUTCMonth()===0;
+    if(monthPx>=8 || isJan) parts.push(`<line x1="${x}" x2="${x}" y1="${baseY-(isJan?7:4)}" y2="${baseY+(isJan?7:4)}" stroke="var(--line)" stroke-width="${isJan?1.5:1}"/>`);
+    const showLabel = monthPx>=44 || (monthPx>=15 && m.getUTCMonth()%3===0) || (isJan && (yearPx>=34 || m.getUTCFullYear()%5===0));
+    if(showLabel && x>-60){ const txt = monthPx>=15 ? MONTHS[m.getUTCMonth()]+((firstLabel||isJan||monthPx<44)?' '+m.getUTCFullYear():'') : String(m.getUTCFullYear()); parts.push(`<text class="month" x="${x+5}" y="${baseY+21}">${txt}</text>`); firstLabel=false; }
+    if(view.ppd>=12){ for(let w=7;w<28;w+=7){ const wd=day+w; if(wd>visHi) break; parts.push(`<line x1="${X(wd)}" x2="${X(wd)}" y1="${baseY-3}" y2="${baseY+3}" stroke="var(--muted)" stroke-width="1"/>`); } }
+  }
+  // free agency zone
+  const st=status();
+  if(st.free && st.since){ const x0=X(dayNum(st.since)), x1=X(td); parts.push(`<rect x="${x0}" y="14" width="${Math.max(0,x1-x0)}" height="${H-28}" fill="url(#hatch)"/><line x1="${x0}" x2="${x0}" y1="14" y2="${H-14}" stroke="var(--red)" stroke-width="1.2" stroke-dasharray="3 4"/>`); if(x1-x0>70) parts.push(`<text class="lbl2" x="${x0+6}" y="28" style="fill:var(--red);font-weight:600;letter-spacing:.08em;text-transform:uppercase">Free agency</text>`); }
+  parts.push(`<line x1="0" x2="${W}" y1="${baseY}" y2="${baseY}" stroke="var(--line)" stroke-width="1.5"/>`);
+  if(td>=visLo&&td<=visHi){ const tx=X(td); parts.push(`<line class="today" x1="${tx}" x2="${tx}" y1="40" y2="${H-36}"/><text class="todaytxt" x="${tx}" y="${H-42}" text-anchor="middle">Today</text>`); }
+  // spans (lanes for overlaps)
+  const lanes=[]; const spans=[];
+  rs.forEach((role,i)=>{ const a=dayNum(role.start+'-01'), b=role.end?monthEndDay(role.end):td; let lane=0; while(lanes[lane]!=null && lanes[lane]>a) lane++; lanes[lane]=b; spans.push({role,i,a,b,lane}); });
+  const SPAN_H=16, SPAN_TOP = view.ppd>=0.6 ? baseY-BASE_UP-upTiers*TIER-10 : baseY-36;
+  spans.forEach(s=>{ if(s.b<visLo||s.a>visHi) return; const x0=X(s.a), x1=X(s.b); const y=SPAN_TOP-s.lane*(SPAN_H+4); const [,b]=pairFor(s.role.company); const w=Math.max(2,x1-x0);
+    const label=`${s.role.company} · ${s.role.title}`; const show = w > textW(label,11)+8 ? label : (w > textW(s.role.company,11)+8 ? s.role.company : '');
+    parts.push(`<g class="sp" data-id="${s.role.id}"><rect x="${x0}" y="${y}" width="${w}" height="${SPAN_H}" rx="3" fill="${b}"/>${show?`<text class="span-lbl" x="${x0+6}" y="${y+12}">${esc(show)}</text>`:''}</g>`); });
+  // events
+  const byDay={}; ev.forEach(e=>{ const d=dayNum(e.date); if(d>=visLo-30&&d<=visHi+30) (byDay[d]=byDay[d]||[]).push(e); });
+  const placed=[]; Object.keys(byDay).forEach(d=>{ const list=byDay[d], n=list.length; list.forEach((e,i)=>placed.push({e, x:X(+d)+(n>1?(i-(n-1)/2)*Math.min(7,Math.max(3,view.ppd*0.7)):0)})); }); placed.sort((a,b)=>a.x-b.x);
+  const occ={up:Array.from({length:upTiers},()=>-1e9), dn:Array.from({length:dnTiers},()=>-1e9)}; const out=[];
+  placed.forEach(p=>{ const e=p.e, t=TYPES[e.type]||TYPES.milestone, up=t.dir>0, isMs=e.type==='layoff'||e.type==='milestone';
+    const l1=isMs?(e.title||t.label):(e.company||e.title||t.label); const l2=isMs?'':(e.type==='application'?(e.title||''):t.label);
+    const w=Math.max(textW(l1,isMs?12.5:12), l2?textW(l2,10.5):0); const tiers=up?occ.up:occ.dn; let tier=-1;
+    for(let i=0;i<tiers.length;i++){ if(tiers[i]<p.x-w/2-8){ tier=i; break; } }
+    const showLabel=tier>=0 && view.ppd>0.6; if(tier<0) tier=0; else tiers[tier]=p.x+w/2;
+    const len=(up?BASE_UP:BASE_DN)+tier*TIER+(e.type==='layoff'?TIER*0.4:0); const yEnd=up?baseY-len:baseY+len; const col=`var(${t.color})`;
+    const hot=(hotCompany&&norm(e.company)===hotCompany)||selectedId===e.id; const dim=hotCompany&&!hot&&!isMs;
+    let head=''; if(e.type==='interview') head=`<circle cx="${p.x}" cy="${yEnd}" r="4" fill="var(--paper)" stroke="${col}" stroke-width="2"/>`; else if(e.type==='offer') head=`<path d="M${p.x} ${yEnd-5.5} l5.5 5.5 l-5.5 5.5 l-5.5 -5.5z" fill="${col}"/>`; else if(e.type==='layoff') head=`<path d="M${p.x} ${yEnd} l13 4.5 l-13 4.5z" fill="${col}"/>`; else head=`<circle cx="${p.x}" cy="${yEnd}" r="3" fill="${col}"/>`;
+    let text=''; if(showLabel){ const lx=p.x, cls='lbl'+(isMs?' ms':''); if(up){ const y=yEnd-9; text=l2?`<text class="${cls}" x="${lx}" y="${y-13}" text-anchor="middle">${esc(l1)}</text><text class="lbl2" x="${lx}" y="${y}" text-anchor="middle">${esc(l2)}</text>`:`<text class="${cls}" x="${lx}" y="${y}" text-anchor="middle">${esc(l1)}</text>`; } else { const y=yEnd+16; text=`<text class="${cls}" x="${lx}" y="${y}" text-anchor="middle">${esc(l1)}</text>`+(l2?`<text class="lbl2" x="${lx}" y="${y+13}" text-anchor="middle">${esc(l2)}</text>`:''); } }
+    out.push(`<g class="ev${hot?' hot':''}${dim?' dim':''}" data-id="${e.id}" tabindex="0" role="button" aria-label="${esc(fmt(e.date)+' '+t.label+' '+l1)}"><line class="tick" x1="${p.x}" x2="${p.x}" y1="${baseY}" y2="${yEnd}" stroke="${col}" stroke-width="${e.type==='layoff'?3:2}" stroke-linecap="round"/>${head}${text}<rect class="hit" x="${p.x-9}" y="${Math.min(baseY,yEnd)-6}" width="18" height="${Math.abs(baseY-yEnd)+12}"/></g>`); });
+  const markup=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Career timeline">${parts.join('')}${out.join('')}</svg>`;
+  if(svg) svg.outerHTML=markup; else host.insertAdjacentHTML('afterbegin', markup);
+  svg=host.querySelector('svg');
+  svg.querySelectorAll('.ev').forEach(g=>{ g.addEventListener('pointerenter', ev=>{ if(!dragging) showTip(g.dataset.id, ev); }); g.addEventListener('pointermove', ev=>{ if(!dragging) moveTip(ev); }); g.addEventListener('pointerleave', hideTip); g.addEventListener('click', ()=>{ if(moved) return; hideTip(); edit(g.dataset.id); }); });
+  svg.querySelectorAll('.sp').forEach(g=>{ g.addEventListener('pointerenter', ev=>{ if(!dragging) showSpanTip(g.dataset.id, ev); }); g.addEventListener('pointermove', ev=>{ if(!dragging) moveTip(ev); }); g.addEventListener('pointerleave', hideTip); g.addEventListener('click', ()=>{ if(moved) return; hideTip(); openFocus(g.dataset.id); }); });
+}
+function showTip(id, ev){ const e=S.events.find(x=>x.id===id); if(!e) return; const t=TYPES[e.type]; const tip=$('#tip');
+  let body=`<div class="m">${fmt(e.date)} · ${t.label}</div><b>${esc(e.company||e.title||t.label)}</b>`; if(e.company&&e.title) body+=`<div>${esc(e.title)}</div>`;
+  if(e.type==='application'){ const s=statusOf(e); body+=`<div class="m">Status: ${esc(s.label)}${s.from?' ('+fmtShort(s.from.date)+')':''}</div>`; } if(e.salary) body+=`<div class="m">${esc(e.salary)}</div>`; if(e.notes) body+=`<div style="margin-top:4px">${esc(e.notes)}</div>`;
+  const st=status(); if(st.free&&st.since&&e.type!=='layoff') body+=`<div class="m">Day ${dayNum(e.date)-dayNum(st.since)} of free agency</div>`; tip.innerHTML=body; tip.hidden=false; moveTip(ev); }
+function showSpanTip(id, ev){ const r=S.roles.find(x=>x.id===id); if(!r) return; const tip=$('#tip'); tip.innerHTML=`<div class="m">${fmtMonth(r.start)} – ${fmtMonth(r.end)} · ${dur(monthsBetween(r.start,r.end))}</div><b>${esc(r.company)}</b><div>${esc(r.title)}</div>${r.reason?`<div class="m">${esc(r.reason)}</div>`:''}`; tip.hidden=false; moveTip(ev); }
+function moveTip(ev){ const tip=$('#tip'); const x=Math.min(ev.clientX+14, window.innerWidth-300), y=ev.clientY+16; tip.style.left=x+'px'; tip.style.top=(y+120>window.innerHeight? ev.clientY-tip.offsetHeight-12 : y)+'px'; }
+function hideTip(){ $('#tip').hidden=true; }
+let dragging=false, moved=false;
+(function(){ const el=$('#tl'); const pts=new Map(); let lastX=0, pinchDist=0, pinchMid=0;
+  el.addEventListener('pointerdown', e=>{ if(e.target.closest('.overlay')) return; pts.set(e.pointerId,{x:e.clientX,y:e.clientY}); el.setPointerCapture(e.pointerId); if(pts.size===1){ dragging=true; moved=false; lastX=e.clientX; el.classList.add('drag'); hideTip(); } if(pts.size===2){ const [a,b]=[...pts.values()]; pinchDist=Math.hypot(a.x-b.x,a.y-b.y); pinchMid=(a.x+b.x)/2; } });
+  el.addEventListener('pointermove', e=>{ if(!pts.has(e.pointerId)) return; pts.set(e.pointerId,{x:e.clientX,y:e.clientY}); const r=el.getBoundingClientRect();
+    if(pts.size===2){ const [a,b]=[...pts.values()]; const d=Math.hypot(a.x-b.x,a.y-b.y), mid=(a.x+b.x)/2; if(pinchDist>0){ zoomAt(d/pinchDist, mid-r.left); view.start-=(mid-pinchMid)/view.ppd; } pinchDist=d; pinchMid=mid; moved=true; scheduleRender(); return; }
+    if(!dragging) return; const dx=e.clientX-lastX; lastX=e.clientX; if(dx){ if(Math.abs(dx)>2) moved=true; view.start-=dx/view.ppd; scheduleRender(); } });
+  const up=e=>{ pts.delete(e.pointerId); if(pts.size<2) pinchDist=0; if(pts.size===0){ dragging=false; el.classList.remove('drag'); setTimeout(()=>{ moved=false; },0); } };
+  el.addEventListener('pointerup', up); el.addEventListener('pointercancel', up);
+  el.addEventListener('wheel', e=>{ const r=el.getBoundingClientRect(); if(e.ctrlKey||e.metaKey){ e.preventDefault(); zoomAt(Math.exp(-e.deltaY*0.01), e.clientX-r.left); scheduleRender(); return; } const dx=e.deltaX||(e.shiftKey?e.deltaY:0); if(dx){ e.preventDefault(); view.start+=dx/view.ppd; scheduleRender(); } }, {passive:false});
+  el.addEventListener('dblclick', e=>{ const r=el.getBoundingClientRect(); zoomAt(1.6, e.clientX-r.left); scheduleRender(); });
+  el.addEventListener('keydown', e=>{ if(e.target!==el) return; if(e.key==='ArrowLeft'){ view.start-=40/view.ppd; scheduleRender(); } if(e.key==='ArrowRight'){ view.start+=40/view.ppd; scheduleRender(); } if(e.key==='+'||e.key==='='){ zoomAt(1.4, el.clientWidth/2); scheduleRender(); } if(e.key==='-'){ zoomAt(1/1.4, el.clientWidth/2); scheduleRender(); } });
+  el.tabIndex=0; })();
+$('#zoom-in').addEventListener('click', ()=>{ zoomAt(1.4, $('#tl').clientWidth/2); scheduleRender(); });
+$('#zoom-out').addEventListener('click', ()=>{ zoomAt(1/1.4, $('#tl').clientWidth/2); scheduleRender(); });
+$('#zoom-career').addEventListener('click', ()=>{ fitCareer(); scheduleRender(); });
+$('#zoom-fa').addEventListener('click', zoomFreeAgency);
+$('#zoom-today').addEventListener('click', ()=>{ centerOn(dayNum(todayISO())); scheduleRender(); });
+if(window.ResizeObserver){ new ResizeObserver(()=>scheduleRender()).observe($('#tl')); }
+
+// ---------- drawer ----------
+const drawer=$('#drawer');
+function openDrawer(tab){ hideTip(); drawer.classList.toggle('wide', tab==='log'); $$('.drawer .tab').forEach(b=>b.classList.toggle('on', b.dataset.tab===tab)); ['role','event','profile','log'].forEach(t=>{ $('#pane-'+t).hidden = t!==tab; }); if(tab==='log') renderLog(); if(tab==='profile') fillProfile(); drawer.classList.add('open'); drawer.setAttribute('aria-hidden','false'); document.body.classList.add('drawer-open'); }
+function closeDrawer(){ drawer.classList.remove('open'); drawer.setAttribute('aria-hidden','true'); document.body.classList.remove('drawer-open'); if(selectedId){ selectedId=null; prefill({}); scheduleRender(); } }
+$$('.drawer .tab').forEach(b=>b.addEventListener('click', ()=>openDrawer(b.dataset.tab)));
+$('#drawer-close').addEventListener('click', closeDrawer); $('#scrim').addEventListener('click', closeDrawer);
+document.addEventListener('keydown', e=>{ if(e.key==='Escape' && drawer.classList.contains('open') && !document.querySelector('dialog[open]') && $('#focus').hidden) closeDrawer(); });
+$('#btn-add').addEventListener('click', ()=>{ prefillRole({}); openDrawer('role'); $('#r-company').focus(); });
+$('#btn-log').addEventListener('click', ()=>{ $('#more').open=false; openDrawer('log'); });
+$('#btn-profile').addEventListener('click', ()=>{ $('#more').open=false; openDrawer('profile'); });
+$('#btn-help').addEventListener('click', ()=>{ $('#more').open=false; $('#dlg-help').showModal(); });
+$('#btn-backup').addEventListener('click', ()=>{ $('#more').open=false; $('#bk-text').value=backupJSON(); $('#dlg-backup').showModal(); });
+document.addEventListener('click', e=>{ const m=$('#more'); if(m.open && !m.contains(e.target)) m.open=false; });
+
+// role form
+let roleSwatch=null;
+function renderSwatches(company){ const k=norm(company); const cur = roleSwatch!=null ? roleSwatch : (S.brand[k]!=null ? S.brand[k] : hashIdx(k)); $('#r-swatches').innerHTML = PAIRS.map((p,i)=>`<button type="button" class="sw${i===cur?' on':''}" data-i="${i}" style="--a:${p[0]};--b:${p[1]}" title="Colour pair ${i+1}"></button>`).join(''); }
+$('#r-swatches').addEventListener('click', e=>{ const b=e.target.closest('.sw'); if(!b) return; roleSwatch=+b.dataset.i; renderSwatches($('#r-company').value); });
+$('#r-company').addEventListener('input', ()=>{ roleSwatch=null; renderSwatches($('#r-company').value); });
+$('#r-title').addEventListener('input', ()=>{ if(!$('#r-code').dataset.touched) $('#r-code').value=codeFor($('#r-title').value); });
+$('#r-code').addEventListener('input', ()=>{ $('#r-code').dataset.touched='1'; });
+$('#r-current').addEventListener('change', ()=>{ $('#r-end').disabled=$('#r-current').checked; if($('#r-current').checked) $('#r-end').value=''; });
+function prefillRole(r){
+  $('#r-id').value=r.id||''; $('#r-company').value=r.company||''; $('#r-title').value=r.title||''; $('#r-code').value=r.code||''; $('#r-code').dataset.touched=r.code?'1':'';
+  $('#r-start').value=r.start||''; $('#r-end').value=r.end||''; $('#r-current').checked = !!(r.id && !r.end); $('#r-end').disabled=$('#r-current').checked;
+  $('#r-location').value=r.location||''; $('#r-reason').value=r.reason||''; $('#r-bullets').value=(r.bullets||[]).join('\n'); $('#r-skills').value=(r.skills||[]).join(', ');
+  roleSwatch=null; renderSwatches(r.company||''); $('#role-title').textContent = r.id?'Edit role':'Add a role'; $('#r-save').textContent = r.id?'Save role':'Add role'; $('#r-delete').hidden=!r.id;
+}
+function editRole(id){ const r=S.roles.find(x=>x.id===id); if(!r) return; prefillRole(r); openDrawer('role'); }
+$('#role-form').addEventListener('submit', e=>{ e.preventDefault();
+  const id=$('#r-id').value; const rec={ company:$('#r-company').value.trim(), title:$('#r-title').value.trim(), code:($('#r-code').value.trim()||codeFor($('#r-title').value)).toUpperCase().slice(0,4), start:$('#r-start').value, end:$('#r-current').checked?null:($('#r-end').value||null), location:$('#r-location').value.trim(), reason:$('#r-reason').value.trim(), bullets:$('#r-bullets').value.split('\n').map(s=>s.trim().replace(/^[-•·*]\s*/,'')).filter(Boolean), skills:$('#r-skills').value.split(',').map(s=>s.trim()).filter(Boolean) };
+  if(!rec.company||!rec.title||!rec.start){ $('#r-status').textContent='Company, title and start are needed.'; return; }
+  if(rec.end && rec.end<rec.start){ $('#r-status').textContent='It ended before it started.'; return; }
+  if(roleSwatch!=null) S.brand[norm(rec.company)]=roleSwatch;
+  if(id){ const i=S.roles.findIndex(x=>x.id===id); S.roles[i]=Object.assign({}, S.roles[i], rec); commit('Saved.'); closeDrawer(); } else { S.roles.push(Object.assign({id:uid()}, rec)); commit('Added.'); prefillRole({}); $('#r-status').textContent='Added. Add another?'; }
+});
+$('#r-cancel').addEventListener('click', ()=>{ prefillRole({}); closeDrawer(); });
+$('#r-delete').addEventListener('click', ()=>{ const id=$('#r-id').value; const r=S.roles.find(x=>x.id===id); if(!r) return; if(!confirm(`Delete ${r.title} at ${r.company}?`)) return; S.roles=S.roles.filter(x=>x.id!==id); commit('Deleted.'); prefillRole({}); closeDrawer(); });
+
+// event form
+function setFormType(){ const t=$('#f-type').value; const ms=t==='layoff'||t==='milestone'; $('#f-title-label').textContent = ms?'What happened':'Job title'; }
+$('#f-type').addEventListener('change', setFormType);
+function prefill(o){ $('#f-id').value=''; $('#f-date').value=o.date||todayISO(); $('#f-type').value=o.type||'application'; $('#f-company').value=o.company||''; $('#f-title').value=o.title||''; $('#f-salary').value=o.salary||''; $('#f-link').value=o.link||''; $('#f-notes').value=o.notes||''; $('#form-title').textContent='Add a job-hunt event'; $('#f-save').textContent='Add event'; $('#f-delete').hidden=true; setFormType(); }
+function edit(id){ const e=S.events.find(x=>x.id===id); if(!e) return; selectedId=id; $('#f-id').value=e.id; $('#f-date').value=e.date; $('#f-type').value=e.type; $('#f-company').value=e.company||''; $('#f-title').value=e.title||''; $('#f-salary').value=e.salary||''; $('#f-link').value=e.link||''; $('#f-notes').value=e.notes||''; $('#form-title').textContent='Edit event'; $('#f-save').textContent='Save changes'; $('#f-delete').hidden=false; setFormType(); openDrawer('event'); scheduleRender(); }
+$('#f-cancel').addEventListener('click', ()=>{ selectedId=null; prefill({}); closeDrawer(); });
+$('#f-delete').addEventListener('click', ()=>{ const id=$('#f-id').value; const e=S.events.find(x=>x.id===id); if(!e) return; if(!confirm(`Delete ${TYPES[e.type].label.toLowerCase()} ${e.company||e.title||''} on ${fmt(e.date)}?`)) return; S.events=S.events.filter(x=>x.id!==id); selectedId=null; commit('Deleted.'); prefill({}); closeDrawer(); });
+$('#form').addEventListener('submit', ev=>{ ev.preventDefault(); const id=$('#f-id').value;
+  const rec={ date:$('#f-date').value, type:$('#f-type').value, company:$('#f-company').value.trim(), title:$('#f-title').value.trim(), salary:$('#f-salary').value.trim(), link:$('#f-link').value.trim(), notes:$('#f-notes').value.trim() };
+  if(!rec.date){ $('#f-status').textContent='Pick a date.'; return; } if(!rec.company&&!rec.title){ $('#f-status').textContent='Give it a company or a title.'; return; }
+  if(id){ const i=S.events.findIndex(x=>x.id===id); S.events[i]=Object.assign({}, S.events[i], rec); selectedId=null; commit('Saved.'); closeDrawer(); } else { S.events.push(Object.assign({id:uid()}, rec)); commit('Added.'); prefill({type:rec.type}); $('#f-status').textContent='Added.'; } });
+
+// profile form
+function fillProfile(){ const p=S.profile; $('#p-name-in').value=p.name||''; $('#p-headline').value=p.headline||''; $('#p-location').value=p.location||''; $('#p-summary').value=p.summary||''; $('#p-targets').value=(p.targets||[]).join(', '); $('#p-email').value=p.email||''; $('#p-linkedin').value=p.linkedin||''; $('#p-education').value=(p.education||[]).map(e=>[e.school,e.degree,e.years].filter(Boolean).join(' | ')).join('\n'); $('#p-certs').value=(p.certs||[]).map(c=>[c.name,c.issuer,c.year].filter(Boolean).join(' | ')).join('\n'); }
+$('#profile-form').addEventListener('submit', e=>{ e.preventDefault(); const p=S.profile; p.name=$('#p-name-in').value.trim(); p.headline=$('#p-headline').value.trim(); p.location=$('#p-location').value.trim(); p.summary=$('#p-summary').value.trim(); p.targets=$('#p-targets').value.split(',').map(s=>s.trim()).filter(Boolean); p.email=$('#p-email').value.trim(); p.linkedin=$('#p-linkedin').value.trim();
+  p.education=$('#p-education').value.split('\n').map(l=>l.split('|').map(s=>s.trim())).filter(x=>x[0]).map(x=>({school:x[0],degree:x[1]||'',years:x[2]||''})); p.certs=$('#p-certs').value.split('\n').map(l=>l.split('|').map(s=>s.trim())).filter(x=>x[0]).map(x=>({name:x[0],issuer:x[1]||'',year:x[2]||''}));
+  commit('Saved.'); $('#p-status').textContent='Saved.'; });
+
+// log
+function renderLog(){
+  const h=huntStats(); $('#log-figs').innerHTML = `<div>${h.apps}<small>Applications</small></div><div>${h.open}<small>Open</small></div><div>${h.apps?Math.round(100*h.responded/h.apps)+'%':'–'}<small>Response</small></div><div>${h.interviews}<small>Interviews</small></div><div>${h.offers}<small>Offers</small></div><div>${h.denials}<small>Denials</small></div>`;
+  const q=norm($('#q').value), tf=$('#type-filter').value, sort=$('#sort').value; let list=sortedEvents(); if(sort==='desc') list.reverse(); if(sort==='company') list.sort((a,b)=>(norm(a.company)||'~').localeCompare(norm(b.company)||'~')||(a.date<b.date?-1:1)); if(tf) list=list.filter(e=>e.type===tf); if(q) list=list.filter(e=>[e.company,e.title,e.notes,e.status,e.salary].some(v=>norm(v).includes(q)));
+  $('#log-count').textContent = list.length===S.events.length ? `${S.events.length} events` : `${list.length} of ${S.events.length}`;
+  $('#log-body').innerHTML = list.map(e=>{ const t=TYPES[e.type]||TYPES.milestone; let st=''; if(e.type==='application'){ const s=statusOf(e); st = s.needs ? `<button class="st needs" data-add="${e.id}" data-kind="${s.key}">${esc(s.label)} · needs date</button>` : `<span class="st">${esc(s.label)}${s.from?' <span style="color:var(--muted)">'+fmtShort(s.from.date)+'</span>':''}</span>`; }
+    return `<tr data-id="${e.id}"><td class="d">${e.date}</td><td><span class="type ${e.type}"><i></i>${t.label}</span></td><td class="co">${esc(e.company||'–')}${e.link?` <a href="${esc(e.link)}" target="_blank" rel="noopener">↗</a>`:''}</td><td>${esc(e.title||'')}${e.salary?` <span style="color:var(--muted);font-family:var(--mono);font-size:11px">${esc(e.salary)}</span>`:''}</td><td>${st}</td><td class="n">${esc(e.notes||'')}</td><td><button class="btn sm edit" data-edit="${e.id}">Edit</button></td></tr>`; }).join('') || `<tr><td colspan="7" style="color:var(--muted)">No events yet.</td></tr>`;
+}
+$('#log-body').addEventListener('click', e=>{ const b=e.target.closest('button'); if(!b) return; if(b.dataset.edit) edit(b.dataset.edit); else if(b.dataset.add){ const app=S.events.find(x=>x.id===b.dataset.add); prefill({type:b.dataset.kind, company:app.company, title:app.title, date:todayISO()}); openDrawer('event'); } });
+['#q','#type-filter','#sort'].forEach(s=>$(s).addEventListener('input', renderLog));
+
+// ---------- commit / flash ----------
+function commit(msg){ if(sampleMode){ sampleMode=false; } save(); renderAll(); if(msg) flash(msg); }
+function flash(msg){ const f=$('#flash'); f.textContent=msg; f.hidden=false; clearTimeout(flash.t); flash.t=setTimeout(()=>f.hidden=true, 5000); }
+$('#btn-clear-samples').addEventListener('click', ()=>{ if(!confirm('Clear the example career and start empty?')) return; S=blank(); sampleMode=false; save(); renderAll(); prefillRole({}); openDrawer('profile'); });
+
+// ---------- script loading ----------
+const loaded={};
+function loadScript(url){ return loaded[url] || (loaded[url]=new Promise((res,rej)=>{ const s=document.createElement('script'); s.src=url; s.onload=res; s.onerror=()=>{ delete loaded[url]; rej(new Error('Could not load '+url)); }; document.head.appendChild(s); })); }
+const LIB = { xlsx:'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js', jszip:'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js', pdf:'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js', pdfWorker:'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js', mammoth:'https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js' };
+
+// ---------- CSV ----------
+function parseCSV(text, delim=','){ const rows=[]; let row=[], cell='', q=false; for(let i=0;i<text.length;i++){ const ch=text[i]; if(q){ if(ch==='"'){ if(text[i+1]==='"'){ cell+='"'; i++; } else q=false; } else cell+=ch; } else if(ch==='"') q=true; else if(ch===delim){ row.push(cell); cell=''; } else if(ch==='\n'||ch==='\r'){ if(ch==='\r'&&text[i+1]==='\n') i++; row.push(cell); rows.push(row); row=[]; cell=''; } else cell+=ch; } if(cell!==''||row.length){ row.push(cell); rows.push(row); } return rows.filter(r=>r.some(v=>String(v).trim()!=='')); }
+function csvObjects(text){ const rows=parseCSV(text.replace(/^﻿/,'')); if(!rows.length) return []; let hi=0; while(hi<rows.length-1 && rows[hi].filter(Boolean).length<2) hi++; const H=rows[hi].map(h=>h.trim()); return rows.slice(hi+1).map(r=>{ const o={}; H.forEach((h,i)=>o[h]=(r[i]||'').trim()); return o; }); }
+const pick = (o, ...names) => { for(const n of names){ const k=Object.keys(o).find(k=>k.toLowerCase()===n.toLowerCase()); if(k && o[k]) return o[k]; } return ''; };
+
+// ---------- import ----------
+const dlgImport=$('#dlg-import'); let imp=null; // {kind, roles:[], education:[], certs:[], skills:[], profile:{}, events:[]}
+function openImport(tab){ resetImport(); setImpTab(tab||'linkedin'); dlgImport.showModal(); }
+function setImpTab(t){ $$('#imp-tabs .tab').forEach(b=>b.classList.toggle('on', b.dataset.imp===t)); ['linkedin','resume','tracker'].forEach(x=>{ $('#imp-'+x).hidden = x!==t; }); }
+$('#imp-tabs').addEventListener('click', e=>{ const b=e.target.closest('.tab'); if(b){ resetImport(); setImpTab(b.dataset.imp); } });
+function resetImport(){ imp=null; $('#imp-preview').hidden=true; $('#imp-progress').hidden=true; $('#import-go').disabled=true; $('#import-note').textContent=''; $('#map-area').hidden=true; ['#file-li','#file-res','#file-tr'].forEach(s=>$(s).value=''); $('#preview').innerHTML=''; $('#imp-opts').innerHTML=''; }
+$('#btn-import').addEventListener('click', ()=>openImport('linkedin'));
+$('#import-cancel').addEventListener('click', ()=>dlgImport.close());
+function wireDrop(zoneSel, inputSel, handler){ const dz=$(zoneSel); dz.addEventListener('dragover', e=>{ e.preventDefault(); dz.classList.add('over'); }); dz.addEventListener('dragleave', ()=>dz.classList.remove('over')); dz.addEventListener('drop', e=>{ e.preventDefault(); dz.classList.remove('over'); if(e.dataTransfer.files.length) handler([...e.dataTransfer.files]); }); $(inputSel).addEventListener('change', e=>{ if(e.target.files.length) handler([...e.target.files]); }); }
+function progress(msg){ $('#imp-progress').hidden=!msg; $('#imp-progress-text').textContent=msg||''; }
+function note(msg){ $('#import-note').textContent=msg; }
+
+// LinkedIn export
+wireDrop('#dz-li', '#file-li', async files=>{
+  try{
+    progress('Reading files…'); const texts={};
+    for(const f of files){
+      if(/\.zip$/i.test(f.name)){ await loadScript(LIB.jszip); const zip=await JSZip.loadAsync(await f.arrayBuffer()); for(const name of Object.keys(zip.files)){ const base=name.split('/').pop(); if(/^(Positions|Education|Skills|Certifications|Profile)\.csv$/i.test(base)) texts[base.toLowerCase()]=await zip.files[name].async('string'); } }
+      else if(/\.csv$/i.test(f.name)){ texts[f.name.toLowerCase()]=await f.text(); }
+    }
+    if(!texts['positions.csv'] && !Object.keys(texts).length) throw new Error('No Positions.csv found. Export the full archive from LinkedIn and drop the zip.');
+    const roles=(texts['positions.csv']?csvObjects(texts['positions.csv']):[]).map(o=>({ company:pick(o,'Company Name','Company'), title:pick(o,'Title'), start:parseMonth(pick(o,'Started On','Start Date')), end:parseMonth(pick(o,'Finished On','End Date')), location:pick(o,'Location'), bullets:pick(o,'Description').split(/\n+/).map(s=>s.trim().replace(/^[-•·*]\s*/,'')).filter(Boolean), skills:[] })).filter(r=>r.company&&r.title&&r.start);
+    const education=(texts['education.csv']?csvObjects(texts['education.csv']):[]).map(o=>({ school:pick(o,'School Name'), degree:[pick(o,'Degree Name'),pick(o,'Notes')].filter(Boolean)[0]||'', years:[pick(o,'Start Date'),pick(o,'End Date')].filter(Boolean).join(' – ') })).filter(e=>e.school);
+    const certs=(texts['certifications.csv']?csvObjects(texts['certifications.csv']):[]).map(o=>({ name:pick(o,'Name'), issuer:pick(o,'Authority'), year:(pick(o,'Started On')||'').slice(-4) })).filter(c=>c.name);
+    const skills=(texts['skills.csv']?csvObjects(texts['skills.csv']):[]).map(o=>pick(o,'Name')).filter(Boolean);
+    const prof=texts['profile.csv']?csvObjects(texts['profile.csv'])[0]||{}:{};
+    const profile={ name:[pick(prof,'First Name'),pick(prof,'Last Name')].filter(Boolean).join(' '), headline:pick(prof,'Headline'), summary:pick(prof,'Summary'), location:pick(prof,'Geo Location') };
+    progress(''); showPreview({kind:'career', roles, education, certs, skills, profile, source:'LinkedIn export'});
+  }catch(err){ progress(''); note(err.message||'Could not read those files.'); }
+});
+
+// resume
+wireDrop('#dz-res', '#file-res', async files=>{
+  const f=files[0]; try{
+    progress('Reading '+f.name+'…'); let text='';
+    if(/\.pdf$/i.test(f.name)){ await loadScript(LIB.pdf); pdfjsLib.GlobalWorkerOptions.workerSrc=LIB.pdfWorker; const doc=await pdfjsLib.getDocument({data:await f.arrayBuffer()}).promise; for(let i=1;i<=doc.numPages;i++){ const page=await doc.getPage(i); const c=await page.getTextContent(); let last=null, line=''; const lines=[]; c.items.forEach(it=>{ if(last!=null && Math.abs(it.transform[5]-last)>2){ lines.push(line); line=''; } line+=(line&&!line.endsWith(' ')?' ':'')+it.str; last=it.transform[5]; }); lines.push(line); text+=lines.join('\n')+'\n'; } }
+    else if(/\.docx$/i.test(f.name)){ await loadScript(LIB.mammoth); text=(await mammoth.extractRawText({arrayBuffer:await f.arrayBuffer()})).value; }
+    else text=await f.text();
+    text=text.replace(/\r/g,'').replace(/[ \t]+\n/g,'\n').replace(/\n{3,}/g,'\n\n').trim();
+    if(text.length<80) throw new Error('Not much text came out of that file. If it is a scanned PDF, try a Word or text version.');
+    let parsed=null, how='';
+    const sample = window.claude && typeof window.claude.use==='function' ? await window.claude.use('sample').catch(()=>null) : null;
+    if(sample){ progress('Asking Claude to read the resume… (you may be asked to allow it)'); try{ parsed=await sample.json(RESUME_PROMPT+'\n\n<resume>\n'+text.slice(0,24000)+'\n</resume>', {modelTier:'default'}); how='Extracted by Claude'; }catch(e){ if(e&&e.code==='declined') how='Claude extraction declined; used the simple parser'; else how='Claude extraction failed ('+(e&&e.code||'error')+'); used the simple parser'; } }
+    if(!parsed) { parsed=heuristicResume(text); how=how||'Simple parser (no Claude here); check every row'; }
+    const roles=(parsed.roles||[]).map(r=>({ company:String(r.company||'').trim(), title:String(r.title||'').trim(), start:parseMonth(r.start), end:parseMonth(r.end), location:String(r.location||'').trim(), bullets:Array.isArray(r.bullets)?r.bullets.map(String):[], skills:Array.isArray(r.skills)?r.skills.map(String):[] })).filter(r=>r.company&&r.title&&r.start);
+    const education=(parsed.education||[]).map(e=>({ school:String(e.school||''), degree:String(e.degree||''), years:[e.start,e.end].filter(Boolean).join(' – ') })).filter(e=>e.school);
+    const certs=(parsed.certs||[]).map(c=>({ name:String(c.name||''), issuer:String(c.issuer||''), year:String(c.year||'') })).filter(c=>c.name);
+    const profile=Object.assign({}, parsed.profile||{}); const skills=Array.isArray(parsed.skills)?parsed.skills.map(String):[];
+    progress(''); showPreview({kind:'career', roles, education, certs, skills, profile, source:how});
+  }catch(err){ progress(''); note(err.message||'Could not read that file.'); }
+});
+const RESUME_PROMPT = `Read the resume between the <resume> tags and return ONLY a JSON object, no prose, in exactly this shape:
+{"profile":{"name":"","headline":"","location":"","email":"","linkedin":"","summary":""},
+ "roles":[{"company":"","title":"","start":"YYYY-MM","end":"YYYY-MM or null if current","location":"","bullets":["..."],"skills":["..."]}],
+ "education":[{"school":"","degree":"","start":"YYYY","end":"YYYY"}],
+ "certs":[{"name":"","issuer":"","year":"YYYY"}],
+ "skills":["..."]}
+Rules: one role per title held (a promotion is a new role). Dates as YYYY-MM; if only the year is known use YYYY-01; "Present" or "Current" means end is null. Keep bullets as written, trimmed, without the bullet character. skills per role are only those the resume ties to that role; the top-level skills list holds a skills section if there is one. Never invent a value; leave it empty instead.`;
+function heuristicResume(text){
+  const lines=text.split('\n').map(s=>s.trim()); const dateRe=/((?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)[a-z]*\.?\s+\d{4}|\d{1,2}\/\d{4}|\b(?:19|20)\d{2}\b)\s*(?:-|–|—|to)\s*((?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)[a-z]*\.?\s+\d{4}|\d{1,2}\/\d{4}|\b(?:19|20)\d{2}\b|Present|Current|Now)/i;
+  const roles=[]; let cur=null;
+  lines.forEach((l,i)=>{ const m=l.match(dateRe); if(m){ if(cur) roles.push(cur); const ctx=[l.replace(dateRe,'').replace(/[|,·–-]+\s*$/,'').trim(), lines[i-1]||'', lines[i-2]||''].map(s=>s.trim()).filter(s=>s && !dateRe.test(s)); const title=ctx[0]||''; const company=ctx[1]||''; cur={ company, title, start:m[1], end:/present|current|now/i.test(m[2])?null:m[2], bullets:[], skills:[] }; }
+    else if(cur && /^[-•·*]/.test(l)) cur.bullets.push(l.replace(/^[-•·*]\s*/,'')); });
+  if(cur) roles.push(cur);
+  const email=(text.match(/[\w.+-]+@[\w-]+\.[\w.]+/)||[''])[0]; const linkedin=(text.match(/linkedin\.com\/in\/[\w-]+/i)||[''])[0];
+  return { profile:{ name:lines.find(l=>l && l.length<40 && /^[A-Z][a-z]+(\s[A-Z][a-z'.-]+)+$/.test(l))||'', email, linkedin: linkedin?'https://www.'+linkedin.replace(/^www\./,''):'' }, roles, education:[], certs:[], skills:[] };
+}
+
+// tracker (xlsx/csv -> events)
+const FIELDS=[['date','Date',/date applied|applied|^date$|^when/i],['company','Company',/company|employer|org/i],['title','Job title',/^job$|title|role|position/i],['status','Status / Response',/response|status|stage|outcome|result/i],['offer','Offer?',/^offer/i],['salary','Salary',/salary|pay|comp/i],['link','Link',/link|url|posting/i],['notes','Notes',/note|comment|remark/i]];
+let tr=null;
+wireDrop('#dz-tr', '#file-tr', async files=>{ const f=files[0]; try{ progress('Reading '+f.name+'…');
+  if(/\.(csv|tsv)$/i.test(f.name)){ tr={sheets:{[f.name]:{rows:parseCSV(await f.text(), /\.tsv$/i.test(f.name)?'\t':','), links:{}}}}; }
+  else { await loadScript(LIB.xlsx); const wb=XLSX.read(await f.arrayBuffer(), {type:'array', cellDates:true}); const sheets={}; wb.SheetNames.forEach(sn=>{ const ws=wb.Sheets[sn]; if(!ws['!ref']) return; const rows=XLSX.utils.sheet_to_json(ws,{header:1,raw:true,defval:''}); const links={}; Object.keys(ws).forEach(addr=>{ if(addr[0]==='!') return; const c=ws[addr]; if(c&&c.l&&c.l.Target){ const rc=XLSX.utils.decode_cell(addr); links[rc.r+':'+rc.c]=c.l.Target; } }); if(rows.some(r=>r.some(v=>v!==''))) sheets[sn]={rows,links}; }); tr={sheets}; }
+  tr.current=Object.keys(tr.sheets)[0]; const sel=$('#m-sheet'); sel.innerHTML=Object.keys(tr.sheets).map(n=>`<option>${esc(n)}</option>`).join(''); sel.onchange=()=>{ tr.current=sel.value; buildMapping(); }; $('#map-area').hidden=false; progress(''); buildMapping(); }catch(err){ progress(''); note(err.message||'Could not read that file.'); } });
+function buildMapping(){ const {rows,links}=tr.sheets[tr.current]; let hi=0; for(let i=0;i<Math.min(rows.length,15);i++){ const strs=rows[i].filter(v=>typeof v==='string'&&v.trim()); if(strs.length>=2 && strs.some(h=>FIELDS.some(f=>f[2].test(h)))){ hi=i; break; } } const headers=rows[hi].map(h=>String(h).trim()); tr.hi=hi; tr.headers=headers; tr.links=links; const used=new Set(); const guess=re=>{ const i=headers.findIndex((h,i)=>!used.has(i)&&h&&re.test(h)); if(i>=0) used.add(i); return i; }; const map={}; FIELDS.forEach(([k,,re])=>{ map[k]=guess(re); });
+  $('#map-fields').innerHTML=FIELDS.map(([k,label])=>`<div class="maprow"><span>${label}</span><select data-k="${k}"><option value="-1">— not in this sheet —</option>${headers.map((h,i)=>`<option value="${i}" ${map[k]===i?'selected':''}>${esc(h||'(column '+(i+1)+')')}</option>`).join('')}</select></div>`).join(''); $$('#map-fields select').forEach(s=>s.addEventListener('change', previewTracker)); previewTracker(); }
+function trackerEvents(){ const {rows}=tr.sheets[tr.current]; const m={}; $$('#map-fields select').forEach(s=>{ m[s.dataset.k]=+s.value; }); const out=[]; let skipped=0; for(let r=tr.hi+1;r<rows.length;r++){ const row=rows[r]; const get=k=>m[k]>=0?row[m[k]]:''; const date=parseDate(get('date')); const company=String(get('company')||'').trim(), title=String(get('title')||'').trim(); if(!date){ if(company||title) skipped++; continue; } if(!company&&!title) continue; let link=String(get('link')||'').trim(); const lk=tr.links[r+':'+m.link]; if(lk) link=lk; if(link&&!/^https?:\/\//i.test(link)) link=/\.[a-z]{2,}/i.test(link)?'https://'+link:''; let status=String(get('status')||'').trim(); const offer=String(get('offer')||'').trim(); if(offer&&/^(y|yes|true|offer)/i.test(offer)) status='Offer'; const ev={id:uid(), date, type:'application', company, title, salary:String(get('salary')||'').trim(), link, notes:String(get('notes')||'').trim()}; if(status) ev.status=status; out.push(ev); } return {out, skipped, ok:m.date>=0&&(m.company>=0||m.title>=0)}; }
+function previewTracker(){ const {out,skipped,ok}=trackerEvents(); showPreview({kind:'events', events:out, skipped, ok, source:'Tracker'}); }
+
+// preview + commit
+function showPreview(data){
+  imp=data; $('#imp-preview').hidden=false; const pv=$('#preview'); const opts=$('#imp-opts');
+  if(data.kind==='career'){
+    $('#imp-preview-title').innerHTML=`<b>${data.roles.length} role${data.roles.length===1?'':'s'}</b>${data.education.length?`, ${data.education.length} education`:''}${data.certs.length?`, ${data.certs.length} certs`:''}${data.skills.length?`, ${data.skills.length} skills`:''} · ${esc(data.source)}. Untick what you don't want; edit anything that's off.`;
+    pv.innerHTML = `<div class="prow" style="color:var(--muted);font-size:11px;letter-spacing:.06em;text-transform:uppercase"><span></span><span>Company</span><span>Title</span><span>Start</span><span>End</span></div>` + data.roles.map((r,i)=>`<div class="prow"><input type="checkbox" data-i="${i}" checked><input type="text" data-i="${i}" data-k="company" value="${esc(r.company)}"><input type="text" data-i="${i}" data-k="title" value="${esc(r.title)}"><input type="text" data-i="${i}" data-k="start" value="${esc(r.start||'')}" placeholder="YYYY-MM"><input type="text" data-i="${i}" data-k="end" value="${esc(r.end||'')}" placeholder="now"></div>`).join('') || '<div style="padding:8px;color:var(--muted)">No roles found. Add them by hand from + Add.</div>';
+    const p=data.profile||{}; opts.innerHTML = `<label><input type="checkbox" id="io-replace"> Replace my current roles</label>${p.name||p.headline||p.summary?`<label><input type="checkbox" id="io-profile" checked> Update profile (${esc([p.name,p.headline].filter(Boolean).join(', ')||'summary')})</label>`:''}${data.education.length?`<label><input type="checkbox" id="io-edu" checked> Education</label>`:''}${data.certs.length?`<label><input type="checkbox" id="io-certs" checked> Certifications</label>`:''}`;
+    $('#import-go').disabled=!data.roles.length && !(p.name||p.summary) && !data.education.length; note(data.roles.length?'':'Nothing to import from the roles.');
+  } else {
+    $('#imp-preview-title').innerHTML=`<b>${data.events.length} application${data.events.length===1?'':'s'}</b> ready${data.skipped?`, ${data.skipped} rows skipped for unreadable dates`:''}.`;
+    pv.innerHTML = data.events.slice(0,12).map(e=>`<div class="prow" style="grid-template-columns:84px 1.2fr 1.4fr 1fr"><span class="m">${e.date}</span><span>${esc(e.company)}</span><span>${esc(e.title)}</span><span class="m">${esc(e.status||'')}</span></div>`).join('') + (data.events.length>12?`<div style="padding:6px;color:var(--muted)">… and ${data.events.length-12} more</div>`:'');
+    opts.innerHTML=''; $('#import-go').disabled=!data.ok||!data.events.length; note(data.ok?'':'Pick at least a date column and a company or title column.');
+  }
+}
+$('#preview').addEventListener('input', e=>{ const t=e.target; if(t.dataset.k && imp && imp.roles){ imp.roles[+t.dataset.i][t.dataset.k]=t.value.trim(); } });
+$('#import-go').addEventListener('click', ()=>{
+  if(!imp) return;
+  if(imp.kind==='career'){
+    const keep=$$('#preview input[type=checkbox]').filter(c=>c.checked).map(c=>+c.dataset.i);
+    const roles=keep.map(i=>imp.roles[i]).map(r=>({ id:uid(), company:r.company, title:r.title, code:codeFor(r.title), start:parseMonth(r.start), end:r.end?parseMonth(r.end):null, location:r.location||'', reason:'', bullets:r.bullets||[], skills:r.skills||[] })).filter(r=>r.company&&r.title&&r.start);
+    if($('#io-replace')?.checked){ S.roles=roles; } else { let dupes=0; roles.forEach(r=>{ if(S.roles.some(x=>norm(x.company)===norm(r.company)&&norm(x.title)===norm(r.title)&&x.start===r.start)) dupes++; else S.roles.push(r); }); if(dupes) flash(dupes+' duplicate role'+(dupes===1?'':'s')+' skipped.'); }
+    // a role that has no end after import is current: close any older open roles the user marked current by accident? leave as is.
+    const p=imp.profile||{}; if($('#io-profile')?.checked){ ['name','headline','location','summary','email','linkedin'].forEach(k=>{ if(p[k]) S.profile[k]=String(p[k]).trim(); }); }
+    if($('#io-edu')?.checked) S.profile.education=(S.profile.education||[]).concat(imp.education);
+    if($('#io-certs')?.checked) S.profile.certs=(S.profile.certs||[]).concat(imp.certs);
+    if(imp.skills&&imp.skills.length&&roles.length){ const last=roles[roles.length-1]; if(!last.skills.length) last.skills=imp.skills.slice(0,8); }
+    if(sampleMode){ S.events=[]; sampleMode=false; }
+    save(); renderAll(); dlgImport.close(); flash(`Imported ${roles.length} role${roles.length===1?'':'s'}.`);
+  } else {
+    const skip=$('#m-skipdupes').checked; let added=0, dupes=0; if(sampleMode){ S.events=[]; sampleMode=false; }
+    imp.events.forEach(e=>{ const key=e.date+'|'+norm(e.company)+'|'+norm(e.title); if(skip && S.events.some(b=>b.type==='application'&&(b.date+'|'+norm(b.company)+'|'+norm(b.title))===key)){ dupes++; return; } S.events.push(e); added++; });
+    save(); renderAll(); dlgImport.close(); flash(`Imported ${added} application${added===1?'':'s'}${dupes?`, ${dupes} duplicate${dupes===1?'':'s'} skipped`:''}.`);
+  }
+});
+
+// ---------- share / backup / downloads ----------
+const downloadsNS = (window.claude && typeof window.claude.use==='function') ? window.claude.use('downloads').catch(()=>null) : Promise.resolve(null);
+function download(name, text, mime){ downloadsNS.then(dl=>{ if(dl){ return dl.save({filename:name, data:text}).then(()=>flash('Saved '+name+'.'), err=>{ if(err&&err.code==='declined') return; flash('Download unavailable here. Use Copy instead.'); }); } try{ const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([text],{type:mime})); a.download=name; document.body.appendChild(a); a.click(); a.remove(); }catch(e){ flash('Download unavailable here. Use Copy instead.'); } }); }
+function copyText(t){ (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>flash('Copied.'), ()=>flash('Copy failed; select the text and copy it.')); }
+function backupJSON(){ return JSON.stringify(Object.assign({}, S, {exportedAt:new Date().toISOString(), app:'career-card'}), null, 2); }
+function huntCSV(){ const cols=['date','type','company','title','status','salary','link','notes']; const q=v=>{ v=String(v==null?'':v); return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v; }; return [cols.join(',')].concat(sortedEvents().map(e=>cols.map(c=>q(c==='status'&&e.type==='application'?statusOf(e).label:e[c])).join(','))).join('\n'); }
+$('#bk-download').addEventListener('click', ()=>download('career-card-backup-'+todayISO()+'.json', backupJSON(), 'application/json'));
+$('#bk-copy').addEventListener('click', ()=>copyText(backupJSON()));
+$('#bk-csv').addEventListener('click', ()=>download('job-hunt-'+todayISO()+'.csv', huntCSV(), 'text/csv'));
+$('#backup-close').addEventListener('click', ()=>$('#dlg-backup').close());
+$('#bk-reset').addEventListener('click', ()=>{ if(!confirm('Erase everything in this browser? Download a backup first if you want to keep it.')) return; S=blank(); sampleMode=false; save(); renderAll(); $('#dlg-backup').close(); });
+$('#file-bk').addEventListener('change', async e=>{ const f=e.target.files[0]; if(!f) return; try{ const o=JSON.parse(await f.text()); if(!o||!Array.isArray(o.roles)) throw 0; if(!confirm('Replace everything here with this backup?')) return; S=Object.assign(blank(), o); S.profile=Object.assign(blank().profile, o.profile||{}); sampleMode=false; save(); renderAll(); $('#dlg-backup').close(); flash('Restored.'); }catch(err){ flash('That is not a backup from this page.'); } e.target.value=''; });
+
+$('#btn-share').addEventListener('click', ()=>$('#dlg-share').showModal());
+$('#share-close').addEventListener('click', ()=>$('#dlg-share').close());
+function sharePage(){
+  const p=S.profile, rs=roles(), cs=careerStats(), contact=$('#sh-contact').checked, showFA=$('#sh-fa').checked && status().free;
+  const cardCss=$('#card-css').textContent;
+  const skillCount={}; S.roles.forEach(r=>(r.skills||[]).forEach(s=>{ const k=s.trim(); if(k) skillCount[k]=(skillCount[k]||0)+1; })); const skills=Object.entries(skillCount).sort((a,b)=>b[1]-a[1]).slice(0,18);
+  const cards = rs.map((r,i)=>`<div class="slot">${cardHTML(r,i,rs.length)}<div class="cap">${esc(r.title)}</div></div>`).join('') + (showFA?`<div class="slot">${freeCardHTML({share:true})}<div class="cap">Free agent</div></div>`:'');
+  const stat=(k,v,s)=>`<div class="s"><div class="v">${v}${s?`<small>${esc(s)}</small>`:''}</div><div class="k">${k}</div></div>`;
+  return `<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${esc(p.name||'Career')} · Career</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Righteous&family=Lilita+One&family=Barlow+Condensed:wght@500;600;700&family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&display=swap">
+<style>
+body{margin:0;background:#f2eee5;color:#1c1b18;font:14px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;padding:32px clamp(16px,4vw,48px) 64px}
+.wrap{max-width:1120px;margin:0 auto}
+.mast{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;border-bottom:2px solid #1c1b18;padding-bottom:12px}
+.mast h1{margin:0;font:700 36px/1 "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.03em;text-transform:uppercase}
+.mast .sub{font:400 13px "Libre Caslon Text",Georgia,serif;color:#55524a;margin-top:4px}
+.pill{display:inline-flex;align-items:center;gap:8px;font:700 12px/1 "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.14em;text-transform:uppercase;padding:8px 12px;border-radius:4px;background:#dc4432;color:#fff;transform:rotate(-2deg)}
+.statline{display:flex;gap:28px;flex-wrap:wrap;padding:14px 0 6px}
+.statline .v{font:700 24px/1 "Barlow Condensed","Arial Narrow",sans-serif}.statline .v small{font-size:12px;color:#8a867b;margin-left:4px;font-weight:500}
+.statline .k{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#8a867b;margin-top:4px}
+h2{font:700 11px/1 "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#dc4432;margin:0 0 10px}
+.shelf{display:flex;gap:18px;overflow-x:auto;padding:22px 6px 18px}
+.slot{flex:none;width:200px}.slot .card{width:200px}.slot .cap{font-size:11px;color:#8a867b;text-align:center;margin-top:8px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;margin-top:8px}
+.panel{background:#fbf9f4;border:1px solid #dcd6c8;border-radius:10px;padding:14px 16px}
+.panel p{margin:0 0 8px;color:#55524a;max-width:64ch}
+.tiles{display:flex;flex-wrap:wrap;gap:4px}.tiles span{background:#dc4432;color:#fff;font:700 10px/1 "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.08em;text-transform:uppercase;padding:5px 7px;border-radius:2px}
+.list{margin:0;padding:0;list-style:none;font-size:13px}.list li{padding:5px 0;border-bottom:1px solid #dcd6c8;display:flex;justify-content:space-between;gap:10px}.list li:last-child{border:0}.list .m{color:#8a867b;font-family:ui-monospace,Menlo,monospace;font-size:11.5px}
+.hint{font-size:12px;color:#8a867b;margin:4px 6px 0}
+a{color:#2a78d6}
+${cardCss}
+</style></head><body><div class="wrap">
+<header class="mast"><div><h1>${esc(p.name||'Career')}</h1><div class="sub">${esc([p.headline,p.location,cs?cs.seasons+' seasons':''].filter(Boolean).join(' · '))}</div></div>${showFA?'<span class="pill">Free agent · open to offers</span>':''}</header>
+${cs?`<div class="statline">${stat('Seasons',cs.seasons)}${stat('Teams',cs.teams)}${stat('Positions',cs.positions)}${stat('Longest tenure',dur(cs.longest.months),cs.longest.company)}</div>`:''}
+<h2 style="margin-top:14px">Career</h2><div class="shelf">${cards}</div><div class="hint">Click a card to flip it.</div>
+<div class="grid">
+${p.summary||skills.length?`<section class="panel"><h2>Scouting report</h2>${p.summary?`<p>${esc(p.summary)}</p>`:''}${skills.length?`<div class="tiles">${skills.map(([k])=>`<span>${esc(k)}</span>`).join('')}</div>`:''}</section>`:''}
+${(p.education||[]).length?`<section class="panel"><h2>Education</h2><ul class="list">${p.education.map(e=>`<li><span>${esc(e.school)}${e.degree?' · '+esc(e.degree):''}</span><span class="m">${esc(e.years||'')}</span></li>`).join('')}</ul></section>`:''}
+${(p.certs||[]).length?`<section class="panel"><h2>Awards &amp; certs</h2><ul class="list">${p.certs.map(c=>`<li><span>${esc(c.name)}${c.issuer?' · '+esc(c.issuer):''}</span><span class="m">${esc(c.year||'')}</span></li>`).join('')}</ul></section>`:''}
+${contact&&(p.email||p.linkedin)?`<section class="panel"><h2>Contact</h2><ul class="list">${p.email?`<li><a href="mailto:${esc(p.email)}">${esc(p.email)}</a></li>`:''}${p.linkedin?`<li><a href="${esc(p.linkedin)}">${esc(p.linkedin)}</a></li>`:''}</ul></section>`:''}
+</div></div>
+<scr'+'ipt>document.querySelectorAll('.card').forEach(function(c){c.addEventListener('click',function(){c.classList.toggle('on')});c.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();c.classList.toggle('on')}})});<\/script>
+</body></html>`;
+}
+$('#sh-download').addEventListener('click', ()=>download((S.profile.name||'career').toLowerCase().replace(/[^a-z0-9]+/g,'-')+'-career.html', sharePage(), 'text/html'));
+$('#sh-copy').addEventListener('click', ()=>copyText(sharePage()));
+$('#sh-preview').addEventListener('click', ()=>{ const w=window.open('about:blank'); if(w){ w.document.open(); w.document.write(sharePage()); w.document.close(); } else flash('Pop-up blocked; download or copy instead.'); });
+
+// ---------- help ----------
+$('#help-close').addEventListener('click', ()=>$('#dlg-help').close());
+document.querySelectorAll('dialog').forEach(d=>d.addEventListener('click', e=>{ if(e.target===d) d.close(); }));
+
+// ---------- boot ----------
+function renderAll(){
+  $('#sample-banner').hidden=!sampleMode;
+  $('#companies').innerHTML=[...new Set(S.roles.map(r=>r.company.trim()))].sort().map(c=>`<option value="${esc(c)}">`).join('');
+  $('#ev-companies').innerHTML=[...new Set(S.events.map(e=>(e.company||'').trim()).filter(Boolean))].sort().map(c=>`<option value="${esc(c)}">`).join('');
+  renderHeader(); renderShelf(); renderFold(); if(!$('#pane-log').hidden) renderLog(); scheduleRender();
+}
+load();
+$$('#group-toggle button').forEach(b=>b.classList.toggle('on', b.dataset.group===S.settings.group));
+prefillRole({}); prefill({});
+renderAll();
+setView(S.settings.view==='timeline'?'timeline':'cards');
+})();
+</script>
+</body>
+</html>
