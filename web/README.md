@@ -45,6 +45,13 @@ Deploy anywhere Next.js runs (Vercel is the easy path); set the same three
 environment variables there, with `NEXT_PUBLIC_SITE_URL` as the deployed
 origin.
 
+## Single-file preview
+
+`npm run artifact` bundles the client side into one HTML file (local mode,
+sample career, no account) at `careercards-preview.html`. It is what gets
+published as a claude.ai artifact for review comments; it is not the
+deployed app.
+
 ## How it fits together
 
 - `src/lib/` is pure: types, dates, derived stats, the sample career, the

@@ -43,3 +43,6 @@ next-env.d.ts
 # keep the example
 !.env.example
 AGENTS.md
+
+# single-file preview build
+careercards-preview.html
