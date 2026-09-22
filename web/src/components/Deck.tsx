@@ -70,6 +70,8 @@ export function Deck() {
   if (st.free) items.push(<div key="free" className="slot"><FreeCard S={S} onClick={() => openFocus('free')} onTimeline={onTimeline} /></div>);
   items.push(<button key="ghost" className="ghost" title="Add a role" onClick={() => openDrawer('role', { roleId: null })}>+ Add a role</button>);
 
+  const pick = (g: 'role' | 'team') => { setOpenRuns(new Set()); update((s) => ({ ...s, settings: { ...s.settings, group: g } }), { keepSample: true }); };
+
   return (
     <>
       <div className="shelf-head">
@@ -80,15 +82,21 @@ export function Deck() {
       <div className="shelf" ref={shelf} onKeyDown={(e) => { if (e.key !== 'Enter' && e.key !== ' ') return; const card = (e.target as HTMLElement).closest<HTMLElement>('.card[data-id]'); if (card) { e.preventDefault(); openFocus(card.dataset.id!); } }}>
         {items}
       </div>
-      {/* the grouping switch: a small scoreboard under the deck, lined up with the first card; the lit plate slides to the pick */}
+      {/* the grouping switch: radio dots under the deck, lined up with the first card */}
       <div className="shelf-foot">
-        <div className="scoreboard" id="group-toggle" role="tablist" aria-label="Group cards" data-on={S.settings.group}>
-          <span className="puck" aria-hidden="true" />
-          {(['role', 'team'] as const).map((g) => (
-            <button key={g} role="tab" aria-selected={S.settings.group === g} className={S.settings.group === g ? 'on' : ''} onClick={() => { setOpenRuns(new Set()); update((s) => ({ ...s, settings: { ...s.settings, group: g } }), { keepSample: true }); }}>{g === 'role' ? 'By role' : 'By team'}</button>
-          ))}
-        </div>
+        <GroupToggle group={S.settings.group} onPick={pick} />
       </div>
     </>
+  );
+}
+
+/** By role / By team as two radio dots; the pick is filled red like the dot on the free-agent pill. */
+function GroupToggle({ group, onPick }: { group: 'role' | 'team'; onPick: (g: 'role' | 'team') => void }) {
+  return (
+    <div className="gt" id="group-toggle" role="radiogroup" aria-label="Group cards">
+      {(['role', 'team'] as const).map((g) => (
+        <button key={g} role="radio" aria-checked={group === g} className={group === g ? 'on' : ''} onClick={() => onPick(g)}><i aria-hidden="true" />{g === 'role' ? 'By role' : 'By team'}</button>
+      ))}
+    </div>
   );
 }
