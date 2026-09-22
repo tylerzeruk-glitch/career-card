@@ -1,5 +1,6 @@
 .card{--a:#e8a13a;--b:#1f2a44;aspect-ratio:2.5/3.5;position:relative;perspective:1400px;cursor:pointer;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#1c1b18}
-.card .inner{position:absolute;inset:0;transition:transform .6s cubic-bezier(.2,.7,.2,1);transform-style:preserve-3d}
+/* symmetric easing: the card passes 90deg at exactly half the time, which is when the faces swap (see the end of this file) */
+.card .inner{position:absolute;inset:0;transition:transform .6s cubic-bezier(.45,0,.55,1);transform-style:preserve-3d}
 .card.on .inner{transform:rotateY(180deg)}
 @media (prefers-reduced-motion: reduce){.card .inner{transition:none}}
 .card .face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:12px;overflow:hidden;border:2px solid #fffaf0;box-shadow:-5px 0 14px rgba(0,0,0,.16),0 10px 26px rgba(0,0,0,.16)}
