@@ -79,8 +79,8 @@
 /* room above the box for the number badge */
 .card .front{padding-top:18%}
 /* the company pennant is part of the frame: it hangs off the box's top-left corner, sharing the corner's curve and the border colour, with a swallowtail on the right */
-.card .art{margin:0 0 12cqw;overflow:visible;position:relative}
-.card .team{position:absolute;top:-2px;left:-2px;z-index:2;display:block;height:12.5cqw;line-height:12.5cqw;max-width:80%;margin:0;padding:0 10cqw 0 4.6cqw;box-sizing:border-box;font-family:"Lilita One","Arial Black",Impact,sans-serif;font-weight:400;letter-spacing:.03em;text-transform:uppercase;color:var(--a);background:var(--b);text-shadow:none;border-top-left-radius:5cqw;clip-path:polygon(0 0,100% 0,calc(100% - 5.5cqw) 50%,100% 100%,0 100%);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card .art{margin:0 0 12cqw;overflow:visible;position:relative;border-top-left-radius:0}
+.card .team{position:absolute;bottom:100%;left:-2px;z-index:2;display:block;height:12.5cqw;line-height:12.5cqw;max-width:80%;margin:0;padding:0 10cqw 0 4.6cqw;box-sizing:border-box;font-family:"Lilita One","Arial Black",Impact,sans-serif;font-weight:400;letter-spacing:.03em;text-transform:uppercase;color:var(--a);background:var(--b);text-shadow:none;border-top-left-radius:5cqw;clip-path:polygon(0 0,100% 0,calc(100% - 5.5cqw) 50%,100% 100%,0 100%);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 /* the number badge sits in the space above the box */
 .card .num{top:3.2cqw;width:11cqw;height:11cqw;font-size:5.2cqw}
 .card .num.wide{font-size:4.4cqw}
@@ -98,3 +98,7 @@
 .card.free .who{align-items:center;text-align:center}
 .card.free .who .fn{color:#c9c2b2}
 .card.free .role{color:#c9c2b2;font:italic 400 5.6cqw/1.25 "Libre Caslon Text",Georgia,serif;text-transform:none;letter-spacing:0;text-align:center;margin-top:1.5%}
+/* free-agent card: the FA starburst on the box's top-right corner, name left like the others, no date line */
+.card.free .badge{left:auto;right:-5%;bottom:auto;top:-7%;transform:rotate(12deg)}
+.card.free .who{align-items:flex-start;text-align:left}
+.card.free .role{display:none}
