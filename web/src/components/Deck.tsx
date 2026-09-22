@@ -29,6 +29,7 @@ export function Deck() {
   }, [layout]);
 
   const spread = (key: string) => setOpenRuns((s) => new Set(s).add(key));
+  const restack = (key: string) => setOpenRuns((s) => { const n = new Set(s); n.delete(key); return n; });
   const onTimeline = () => { setView('timeline'); setTimeout(() => timeline.current?.zoomFreeAgency(), 0); };
 
   if (!rs.length) {
@@ -49,9 +50,15 @@ export function Deck() {
     runs(S).forEach((run) => {
       const from = i + 1, to = i + run.roles.length, key = norm(run.company), [, b] = pairFor(S, run.company);
       if (run.roles.length === 1 || openRuns.has(key)) {
-        run.roles.forEach((r) => {
+        run.roles.forEach((r, j) => {
           const k = i++;
-          items.push(<div key={r.id} className={'slot' + (run.roles.length > 1 ? ' cont' : '')} style={{ '--b': b } as React.CSSProperties}><RoleCard S={S} r={r} idx={k} total={total} onClick={() => openFocus(r.id)} /></div>);
+          items.push(
+            <div key={r.id} className={'slot' + (run.roles.length > 1 ? ' cont' : '')} style={{ '--b': b } as React.CSSProperties}>
+              {/* a spread run gets a small tab over its first card to gather it back into a stack */}
+              {run.roles.length > 1 && j === 0 && <button className="restack" title="Stack these cards again" onClick={(e) => { e.stopPropagation(); restack(key); }}><i /> Stack {run.company}</button>}
+              <RoleCard S={S} r={r} idx={k} total={total} onClick={() => openFocus(r.id)} />
+            </div>,
+          );
         });
       } else {
         const n = run.roles.length; i += n;

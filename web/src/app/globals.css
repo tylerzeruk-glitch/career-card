@@ -93,7 +93,11 @@ button,input,select,textarea{font:inherit;color:inherit}
 .shelf > *:hover,.shelf > *:focus-within{transform:translateY(-18px);z-index:60!important}
 .slot{width:var(--cw)}
 .slot .card{width:var(--cw)}
-.slot.cont::before{content:"";position:absolute;left:8%;right:8%;bottom:-8px;height:2px;background:var(--b,var(--hair));border-radius:2px;opacity:.5}
+/* the tab above the first card of a spread team run: click to gather the run back into a stack */
+.restack{position:absolute;left:0;top:-24px;display:inline-flex;align-items:center;gap:6px;border:0;background:transparent;padding:3px 8px 3px 4px;border-radius:999px;cursor:pointer;font:700 10.5px/1 var(--cond);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);white-space:nowrap;z-index:1}
+.restack i{width:9px;height:9px;border-radius:50%;background:var(--b,var(--hair))}
+.restack::after{content:"⤺";font-size:12px;margin-left:2px;color:var(--muted)}
+.restack:hover{background:var(--hover);color:var(--ink)}
 .stack{width:var(--cw);cursor:pointer;isolation:isolate}
 .stack .card{position:absolute;top:0;left:0;width:var(--cw);transition:transform .25s ease}
 .stack .card.top{position:relative}
