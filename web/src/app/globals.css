@@ -85,7 +85,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 .note-inline .btn{color:inherit;padding:2px 6px;font-size:12px}
 :root{--cw:clamp(210px,19vw,260px);--gap:22px}
 /* the deck: cards overlap from the left so the whole career fits the width; hover lifts one out */
-.shelf{display:flex;align-items:flex-start;padding:30px 6px 40px;scrollbar-width:none}
+.shelf{display:flex;align-items:flex-start;padding:38px 6px 40px;scrollbar-width:none}
 .shelf.scroll{overflow-x:auto;overflow-y:hidden;padding-inline:18px;margin-inline:-12px}
 .shelf::-webkit-scrollbar{display:none}
 .shelf > *{flex:none;position:relative;transition:transform .22s cubic-bezier(.2,.7,.2,1)}
