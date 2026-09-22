@@ -38,7 +38,8 @@
 *{box-sizing:border-box}
 html,body{margin:0;height:100%}
 [hidden]{display:none!important}
-body{background:var(--bg);color:var(--ink);font:14px/1.5 var(--sans);display:flex;flex-direction:column;padding-inline:clamp(20px,6vw,96px);padding-block:0;overflow:hidden}
+:root{--gut:clamp(20px,6vw,96px);--room:min(48px,var(--gut))}
+body{background:var(--bg);color:var(--ink);font:14px/1.5 var(--sans);display:flex;flex-direction:column;padding-inline:var(--gut);padding-block:0;overflow:hidden}
 .topbar,.stage{width:100%;max-width:1160px;margin-inline:auto}
 h1,h2,h3{margin:0;text-wrap:balance}
 a{color:var(--focus)}
@@ -60,9 +61,9 @@ button,input,select,textarea{font:inherit;color:inherit}
 /* header */
 .topbar{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-block:22px 6px;flex:none}
 .brand{display:flex;align-items:flex-start;gap:14px;flex-wrap:wrap}
-.brand .pill{margin:10px 0 0 4px}
+.brand .pill{margin:8px 0 6px 3px}
 .brand h1{font:700 30px/1 var(--cond);letter-spacing:.03em;text-transform:uppercase}
-.brand .sub{font:400 12.5px/1.5 var(--serif);color:var(--ink-2);letter-spacing:.02em;margin-top:4px}
+.brand .sub{font:400 12.5px/1.5 var(--serif);color:var(--ink-2);letter-spacing:.02em;margin-top:2px}
 .brand .line{font:500 11px/1.6 var(--mono);color:var(--muted);margin-top:3px;letter-spacing:.01em}
 .brand .line b{color:var(--ink-2);font-weight:500}
 .brand .line i{font-style:normal;margin:0 6px;opacity:.5}
@@ -79,7 +80,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 /* stage */
 .stage{flex:1;min-height:0;position:relative;display:flex;flex-direction:column;padding-bottom:12px}
 .view{flex:1;min-height:0;display:flex;flex-direction:column}
-.scroller{flex:1;min-height:0;overflow:auto;padding:0 40px 20px;margin-inline:-40px;scrollbar-width:none}
+.scroller{flex:1;min-height:0;overflow:auto;padding:0 var(--room) 20px;margin-inline:calc(-1 * var(--room));scrollbar-width:none}
 .scroller::-webkit-scrollbar{display:none}
 .shelf-head{display:flex;justify-content:space-between;align-items:center;gap:8px 10px;padding:14px 0 0;flex-wrap:wrap}
 .shelf-head .k{font:700 11px/1 var(--cond);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
@@ -90,9 +91,9 @@ button,input,select,textarea{font:inherit;color:inherit}
 .shelf{display:flex;align-items:flex-start;padding:30px 6px 40px;scrollbar-width:none}
 .shelf.scroll{overflow-x:auto;overflow-y:hidden;padding-inline:18px;margin-inline:-12px}
 .shelf::-webkit-scrollbar{display:none}
-.shelf > *{flex:none;position:relative;transform-origin:50% 140%;transform:rotate(var(--rot,0deg));transition:transform .22s cubic-bezier(.2,.7,.2,1)}
+.shelf > *{flex:none;position:relative;transition:transform .22s cubic-bezier(.2,.7,.2,1)}
 .shelf > * + *{margin-left:var(--ml,var(--gap))}
-.shelf > *:hover,.shelf > *:focus-within{transform:rotate(var(--rot,0deg)) translateY(-18px);z-index:60!important}
+.shelf > *:hover,.shelf > *:focus-within{transform:translateY(-18px);z-index:60!important}
 .slot{width:var(--cw)}
 .slot .card{width:var(--cw)}
 .slot.cont::before{content:"";position:absolute;left:8%;right:8%;bottom:-8px;height:2px;background:var(--b,var(--hair));border-radius:2px;opacity:.5}
@@ -101,9 +102,9 @@ button,input,select,textarea{font:inherit;color:inherit}
 .stack .card.top{position:relative}
 .stack .under1{transform:translate(8px,-6px) rotate(2deg);z-index:-1}
 .stack .under2{transform:translate(16px,-12px) rotate(4deg);z-index:-2}
-.ghost{width:48px;height:calc(var(--cw) * 1.4);margin-left:calc(var(--gap) + var(--fan,0px))!important;border:1.5px dashed var(--muted);border-radius:10px;display:grid;place-items:center;font:700 11px var(--cond);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);cursor:pointer;background:transparent;writing-mode:vertical-rl;padding:0}
+.ghost{width:48px;height:calc(var(--cw) * 1.4);margin-left:var(--gap)!important;border:1.5px dashed var(--muted);border-radius:10px;display:grid;place-items:center;font:700 11px var(--cond);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);cursor:pointer;background:transparent;writing-mode:vertical-rl;padding:0}
 .ghost:hover{color:var(--ink);border-color:var(--ink)}
-@media (hover:none){.shelf > *:hover{transform:rotate(var(--rot,0deg))}}
+@media (hover:none){.shelf > *:hover{transform:none}}
 
 /* fold: resume rows */
 /* perforated tear-off lines between the rows */
@@ -317,7 +318,7 @@ kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--hair);border-r
 <body>
 <header class="topbar">
   <div class="brand">
-    <div><h1 id="p-name">Career Card</h1><div class="sub" id="p-sub"></div><div class="line" id="p-line"></div><span class="pill" id="pill"><i></i>Free agent</span></div>
+    <div><h1 id="p-name">Career Card</h1><div><span class="pill" id="pill"><i></i>Free agent</span></div><div class="sub" id="p-sub"></div><div class="line" id="p-line"></div></div>
   </div>
   <div class="actions">
     <div class="toggle" id="view-toggle"><button class="on" data-view="cards">Cards</button><button data-view="timeline">Timeline</button></div>
@@ -799,16 +800,9 @@ function renderShelf(){
 function layoutShelf(){
   const shelf=$('#shelf'); const items=[...shelf.children].filter(el=>!el.classList.contains('empty-shelf')&&!el.classList.contains('ghost')); if(items.length<2){ shelf.style.setProperty('--ml','0px'); return; }
   const gap=22, n=items.length; const widths=items.map(el=>el.offsetWidth); const sum=widths.reduce((a,b)=>a+b,0); const cw=widths[0];
-  // two passes: the fan's sideways spill eats width, and the spill depends on the fan
-  let spill=0, ov=0, step=0, scroll=false;
-  for(let pass=0; pass<2; pass++){
-    const W=shelf.clientWidth-12-(48+gap)-spill; const need=sum+gap*(n-1)-W;
-    ov = need<=0 ? -gap : Math.min(cw-48, need/(n-1)); scroll = need>0 && need/(n-1) > cw-48;
-    step = (ov<=0||scroll) ? 0 : Math.min(2.4, 12/Math.max(1,n-1)) * Math.min(1, ov/(cw*0.35));
-    spill = Math.round(cw*1.4*1.4*Math.sin((n-1)/2*step*Math.PI/180));
-  }
-  shelf.style.setProperty('--ml', (-ov)+'px'); shelf.style.setProperty('--fan', spill+'px'); shelf.classList.toggle('scroll', scroll);
-  items.forEach((el,i)=>el.style.setProperty('--rot', ((i-(n-1)/2)*step).toFixed(2)+'deg'));
+  const W=shelf.clientWidth-12-(48+gap); const need=sum+gap*(n-1)-W;
+  const ov = need<=0 ? -gap : Math.min(cw-48, need/(n-1));
+  shelf.style.setProperty('--ml', (-ov)+'px'); shelf.classList.toggle('scroll', need>0 && need/(n-1) > cw-48);
 }
 if(window.ResizeObserver){ new ResizeObserver(()=>layoutShelf()).observe($('#shelf')); }
 $('#shelf').addEventListener('click', e=>{
@@ -1199,9 +1193,8 @@ body{margin:0;background:#f2eee5;color:#1c1b18;font:14px/1.5 system-ui,-apple-sy
 h2{font:700 11px/1.5 "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#dc4432;margin:0}
 .k{font:700 11px/1 "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#8a867b;margin-top:18px}
 .shelf{display:flex;align-items:flex-start;padding:30px 6px 40px;scrollbar-width:none}.shelf.scroll{overflow-x:auto;overflow-y:hidden;padding-inline:18px;margin-inline:-12px}.shelf::-webkit-scrollbar{display:none}
-.shelf > *{flex:none;position:relative;transform-origin:50% 140%;transform:rotate(var(--rot,0deg));transition:transform .22s cubic-bezier(.2,.7,.2,1)}.shelf > * + *{margin-left:var(--ml,22px)}
-.wrap{padding-inline:40px;margin-inline:-40px}
-.shelf > *:hover,.shelf > *:focus-within{transform:rotate(var(--rot,0deg)) translateY(-18px);z-index:60!important}
+.shelf > *{flex:none;position:relative;transition:transform .22s cubic-bezier(.2,.7,.2,1)}.shelf > * + *{margin-left:var(--ml,22px)}
+.shelf > *:hover,.shelf > *:focus-within{transform:translateY(-18px);z-index:60!important}
 .slot{width:clamp(210px,19vw,260px)}.slot .card{width:100%}
 .fold{max-width:880px;margin-top:6px;position:relative;padding-top:1px}
 .fold::before,.row::after{content:"";position:absolute;left:0;right:0;height:4px;background:radial-gradient(circle,#cfc8b8 1.3px,transparent 1.6px) 4px 50%/9px 4px repeat-x}
@@ -1225,7 +1218,7 @@ ${(p.certs||[]).length?row('Award inserts',`<ul class="list">${p.certs.map(c=>`<
 ${contact&&(p.email||p.linkedin)?row('Contact',`<ul class="list inline">${p.email?`<li><a href="mailto:${esc(p.email)}">${esc(p.email)}</a></li>`:''}${p.linkedin?`<li><a href="${esc(p.linkedin)}">${esc(p.linkedin)}</a></li>`:''}</ul>`):''}
 </div></div>
 <scr${''}ipt>document.querySelectorAll('.card').forEach(function(c){c.addEventListener('click',function(){c.classList.toggle('on')});c.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();c.classList.toggle('on')}})});
-function deck(){var s=document.querySelector('.shelf'),it=[].slice.call(s.children),n=it.length;if(n<2)return;var W=s.clientWidth-12,gap=22,sum=0;it.forEach(function(e){sum+=e.offsetWidth});var cw=it[0].offsetWidth,need=sum+gap*(n-1)-W;var ov=need<=0?-gap:Math.min(cw-48,need/(n-1)),sc=need>0&&need/(n-1)>cw-48;s.style.setProperty('--ml',(-ov)+'px');s.classList.toggle('scroll',sc);var step=(ov<=0||sc)?0:Math.min(2.4,12/Math.max(1,n-1))*Math.min(1,ov/(cw*.35));it.forEach(function(e,i){e.style.setProperty('--rot',((i-(n-1)/2)*step).toFixed(2)+'deg')})}
+function deck(){var s=document.querySelector('.shelf'),it=[].slice.call(s.children),n=it.length;if(n<2)return;var W=s.clientWidth-12,gap=22,sum=0;it.forEach(function(e){sum+=e.offsetWidth});var cw=it[0].offsetWidth,need=sum+gap*(n-1)-W;var ov=need<=0?-gap:Math.min(cw-48,need/(n-1));s.style.setProperty('--ml',(-ov)+'px');s.classList.toggle('scroll',need>0&&need/(n-1)>cw-48)}
 deck();window.addEventListener('resize',deck);<\/script>
 </body></html>`;
 }
