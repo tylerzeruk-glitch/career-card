@@ -387,8 +387,8 @@ kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--hair);border-r
           <div class="field"><label for="r-code">Badge</label><input id="r-code" maxlength="4" placeholder="PDL"></div>
         </div>
         <div class="row2">
-          <div class="field"><label for="r-start">Started</label><input type="month" id="r-start" required></div>
-          <div class="field"><label for="r-end">Ended</label><input type="month" id="r-end"></div>
+          <div class="field"><label for="r-start">Started</label><input type="month" id="r-start" required placeholder="YYYY-MM or Mar 2021"></div>
+          <div class="field"><label for="r-end">Ended</label><input type="month" id="r-end" placeholder="YYYY-MM, blank if current"></div>
         </div>
         <label class="check"><input type="checkbox" id="r-current"> I still work here</label>
         <div class="row2">
@@ -970,8 +970,8 @@ function prefillRole(r){
 }
 function editRole(id){ const r=S.roles.find(x=>x.id===id); if(!r) return; prefillRole(r); openDrawer('role'); }
 $('#role-form').addEventListener('submit', e=>{ e.preventDefault();
-  const id=$('#r-id').value; const rec={ company:$('#r-company').value.trim(), title:$('#r-title').value.trim(), code:($('#r-code').value.trim()||codeFor($('#r-title').value)).toUpperCase().slice(0,4), start:$('#r-start').value, end:$('#r-current').checked?null:($('#r-end').value||null), location:$('#r-location').value.trim(), reason:$('#r-reason').value.trim(), bullets:$('#r-bullets').value.split('\n').map(s=>s.trim().replace(/^[-•·*]\s*/,'')).filter(Boolean), skills:$('#r-skills').value.split(',').map(s=>s.trim()).filter(Boolean) };
-  if(!rec.company||!rec.title||!rec.start){ $('#r-status').textContent='Company, title and start are needed.'; return; }
+  const id=$('#r-id').value; const rec={ company:$('#r-company').value.trim(), title:$('#r-title').value.trim(), code:($('#r-code').value.trim()||codeFor($('#r-title').value)).toUpperCase().slice(0,4), start:parseMonth($('#r-start').value), end:$('#r-current').checked?null:(parseMonth($('#r-end').value)||null), location:$('#r-location').value.trim(), reason:$('#r-reason').value.trim(), bullets:$('#r-bullets').value.split('\n').map(s=>s.trim().replace(/^[-•·*]\s*/,'')).filter(Boolean), skills:$('#r-skills').value.split(',').map(s=>s.trim()).filter(Boolean) };
+  if(!rec.company||!rec.title||!rec.start){ $('#r-status').textContent=$('#r-start').value&&!rec.start?'Start month should look like 2021-03 or Mar 2021.':'Company, title and start are needed.'; return; }
   if(rec.end && rec.end<rec.start){ $('#r-status').textContent='It ended before it started.'; return; }
   if(roleSwatch!=null) S.brand[norm(rec.company)]=roleSwatch;
   if(id){ const i=S.roles.findIndex(x=>x.id===id); S.roles[i]=Object.assign({}, S.roles[i], rec); commit('Saved.'); closeDrawer(); } else { S.roles.push(Object.assign({id:uid()}, rec)); commit('Added.'); prefillRole({}); $('#r-status').textContent='Added. Add another?'; }
