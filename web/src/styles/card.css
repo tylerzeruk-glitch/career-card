@@ -1,0 +1,53 @@
+.card{--a:#e8a13a;--b:#1f2a44;aspect-ratio:2.5/3.5;position:relative;perspective:1400px;cursor:pointer;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#1c1b18}
+.card .inner{position:absolute;inset:0;transition:transform .6s cubic-bezier(.2,.7,.2,1);transform-style:preserve-3d}
+.card.on .inner{transform:rotateY(180deg)}
+@media (prefers-reduced-motion: reduce){.card .inner{transition:none}}
+.card .face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:12px;overflow:hidden;border:2px solid #fffaf0;box-shadow:-5px 0 14px rgba(0,0,0,.16),0 10px 26px rgba(0,0,0,.16)}
+.card .back{transform:rotateY(180deg)}
+.card .front{background:#fbf6ea;padding:6% 6.5%;display:flex;flex-direction:column;container-type:inline-size}
+.card .team{font:400 15cqw/1 "Righteous","Arial Black",Impact,sans-serif;color:var(--a);text-transform:uppercase;text-shadow:.11em .11em 0 var(--b);letter-spacing:.01em;padding-right:16%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card .num{position:absolute;top:4.5%;right:5%;width:13cqw;height:13cqw;border:1.5px solid #dc4432;border-radius:50%;display:grid;place-items:center;font:700 6cqw "Libre Caslon Text",Georgia,serif;color:#dc4432}
+.card .art{flex:1;margin:5% 0 4%;border-radius:5cqw;background:var(--a);border:2px solid var(--b);position:relative;display:grid;place-items:center;overflow:hidden}
+.card .art::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 30% 20%,rgba(255,255,255,.35),transparent 55%)}
+.card .mono{font:700 34cqw/1 "Barlow Condensed","Arial Narrow",sans-serif;color:var(--b);position:relative;z-index:1;letter-spacing:-.02em}
+.card .badge{position:absolute;left:5%;bottom:5%;width:16cqw;height:16cqw;border-radius:50%;background:#fff;border:1.5px solid #dc4432;display:grid;place-items:center;font:700 5cqw "Barlow Condensed","Arial Narrow",sans-serif;color:#dc4432;z-index:1;letter-spacing:.02em}
+.card .who{font:700 9.5cqw/1 "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.04em;text-transform:uppercase;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card .role{font:italic 400 5.6cqw/1.25 "Libre Caslon Text",Georgia,serif;color:#6b6559;text-align:center;margin-top:1.5%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card .back{background:#e9dfc9;border-color:#f3ecdc;display:flex;flex-direction:column;container-type:inline-size;padding:0 6% 5%}
+.card .hdr{background:var(--b);color:#fbf6ea;margin:0 -7.5% 3%;padding:5% 6% 4%;text-align:center}
+.card .hdr .t{font:400 9cqw/1 "Lilita One","Arial Black",Impact,sans-serif;text-transform:uppercase;letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card .hdr .s{font:700 4.6cqw/1.2 "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--a);margin-top:1.5%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card table{width:100%;border-collapse:collapse;table-layout:fixed;font:600 4.4cqw/1.2 "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.03em;text-transform:uppercase;margin-bottom:3%}
+.card th,.card td{padding:1.4% 1%;border-bottom:1px solid #cfc4a9;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card col.c1{width:22%}.card col.c3{width:17%}
+.card th{color:#6b6559;font-weight:500}
+.card td.n,.card th.n{text-align:right}
+.card tr.cur td{color:#dc4432}
+.card .bul{font:400 4.7cqw/1.4 "Libre Caslon Text",Georgia,serif;color:#2e2b25;margin:0 0 3%;padding-left:5%;overflow:hidden;flex:0 1 auto;min-height:0}
+.card .bul li{margin-bottom:1%}
+.card .skills{display:flex;flex-wrap:wrap;gap:1.5%;margin-bottom:3%;max-height:22cqw;overflow:hidden}
+.card .skills span{background:#dc4432;color:#fff;font:700 4cqw/1 "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.06em;text-transform:uppercase;padding:1.8% 2.4%;border-radius:2px;white-space:nowrap}
+.card .foot{margin-top:auto;display:flex;justify-content:space-between;gap:4%;font:italic 400 4.3cqw/1.3 "Libre Caslon Text",Georgia,serif;color:#6b6559;border-top:1px solid #cfc4a9;padding-top:2.5%}
+.card .foot span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* free agent */
+.card.free .front{background:var(--b);border-color:color-mix(in srgb,var(--b) 78%,#fff)}
+.card.free .team{color:#dc4432;text-shadow:.11em .11em 0 rgba(0,0,0,.35)}
+.card.free .num{border-color:#dc4432;background:#dc4432;color:#fbf6ea;font:700 5.4cqw "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.06em}
+.card.free .art{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.35);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:6%;text-align:center;color:#fbf6ea}
+.card.free .art::after{display:none}
+.card.free .art .k{font:700 4.6cqw "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.2em;text-transform:uppercase;opacity:.7;margin-bottom:3%}
+.card.free .art .open{font:400 7.5cqw/1.15 "Lilita One","Arial Black",Impact,sans-serif;text-transform:uppercase}
+.card.free .art .day{margin-top:5%;font:700 4.6cqw "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#dc4432}
+.card.free .who{color:#fbf6ea}
+.card.free .role{color:#c9c2b2}
+.card.free .hdr{background:#dc4432}
+.card.free .hdr .s{color:#fbf6ea}
+.card.free .figs{display:grid;grid-template-columns:repeat(3,1fr);gap:2%;margin-bottom:3%}
+.card.free .figs div{text-align:center;background:#fbf6ea;border-radius:2px;padding:4% 2%}
+.card.free .figs b{display:block;font:700 9cqw/1 "Barlow Condensed","Arial Narrow",sans-serif}
+.card.free .figs small{font:400 3.8cqw "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.1em;text-transform:uppercase;color:#6b6559}
+.card.free .go{margin-top:auto;font:700 4.6cqw "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#dc4432;text-align:center;padding:3%;border:1.5px solid #dc4432;border-radius:3px}
+/* stack summary */
+.card.summary .num{width:auto;padding:0 5%;border-radius:999px;font-size:5cqw}
+.card.summary .art .mono{font-size:22cqw}
+.card.summary .art .mono small{display:block;font:700 5cqw "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.14em;text-transform:uppercase;margin-top:2%}

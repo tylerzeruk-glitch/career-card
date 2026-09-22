@@ -66,13 +66,20 @@ Strip the document wrappers (keep `<title>`, the font link, both `<style>`
 blocks and the body) and publish with
 `capabilities: {downloads: true, sample: {}}`.
 
+## The web app
+
+`web/` is the Next.js version with accounts: the same cards, deck, rows and
+timeline, saved to a Supabase account when you sign in, with a shareable
+page at `/u/your-name` that shows the career and never the job hunt. It
+runs in local mode (this browser only) without any configuration. See
+`web/README.md` for setup. `index.html` remains the single-file version.
+
 ## Open items
 
 - Company logo lookup or illustration for the art area (needs network or the
   accounts phase). Monogram + team colours for now.
 - Accounts: login (magic link, Google, LinkedIn SSO), hosted data, share as a
   link with public and private views. That is the move from one HTML file to
-  an app with a backend. Once it exists, the Free agency row (day count,
-  applications, interviews) is owner-only: hidden from anyone else viewing
-  the page, as it already is from the Share export.
+  an app with a backend. Started in `web/`: sign-in, per-user saving and
+  the public page are there; the Free agency row and log are owner-only.
 - Past job hunts as their own free-agency zones.
