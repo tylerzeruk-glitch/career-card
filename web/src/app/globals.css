@@ -236,6 +236,16 @@ body.drawer-open .scrim{opacity:1;pointer-events:auto}
 .field textarea{min-height:52px;resize:vertical}
 .field .help{font-size:11px;color:var(--muted)}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+/* repeating rows (education, certifications) with a remove × and an add button */
+.rows{display:grid;gap:6px;margin-top:2px}
+.edu-row,.cert-row{display:grid;gap:10px;align-items:center}
+.edu-row{grid-template-columns:2fr 2fr 58px 58px 26px}
+.cert-row{grid-template-columns:2fr 2fr 58px 26px}
+.rows input{border:0;border-bottom:1px solid var(--hair);border-radius:0;padding:6px 0;background:transparent;width:100%;min-width:0}
+.rows input:focus{outline:none;border-bottom-color:var(--ink)}
+.rows .btn.icon{width:26px;height:26px;color:var(--muted);font-size:15px}
+.rows .btn.icon:hover{color:var(--ink)}
+.rows .btn.add{justify-self:start;color:var(--ink-2);padding-inline:4px}
 .row3{display:grid;grid-template-columns:2fr 2fr 1fr;gap:13px}
 .check{display:flex;gap:8px;align-items:center;font-size:13px;color:var(--ink-2)}
 .swatches{display:flex;gap:9px;flex-wrap:wrap;padding:3px}

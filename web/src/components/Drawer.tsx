@@ -2,7 +2,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useCard } from './store';
 import { useUI, type DrawerTab } from './ui';
-import type { Ev, EventType, Role, Visibility } from '@/lib/types';
+import type { Cert, Ev, EventType, Role, Visibility } from '@/lib/types';
+
+type EduRow = { school: string; degree: string; start: string; end: string };
 import { fmtShort, parseMonth, todayISO } from '@/lib/dates';
 import { PAIRS, TYPES, codeFor, hashIdx, huntStats, norm, slugify, sortedEvents, statusOf, uid } from '@/lib/derived';
 
@@ -199,6 +201,10 @@ function ProfileForm() {
   const { S, update, flash, user, slug, visibility, setMeta } = useCard();
   const p = S.profile;
   const [targets, setTargets] = useState<string[]>(p.targets || []);
+  const [edu, setEdu] = useState<EduRow[]>(() => (p.education || []).map((e) => { const ys = e.years.match(/\d{4}/g) || []; return { school: e.school, degree: e.degree, start: ys[0] || '', end: ys[1] || '' }; }));
+  const [certs, setCerts] = useState<Cert[]>(() => (p.certs || []).map((c) => ({ ...c })));
+  const setEduAt = (i: number, k: keyof EduRow, v: string) => setEdu((rows) => rows.map((r, j) => (j === i ? { ...r, [k]: v } : r)));
+  const setCertAt = (i: number, k: keyof Cert, v: string) => setCerts((rows) => rows.map((r, j) => (j === i ? { ...r, [k]: v } : r)));
   const [msg, setMsg] = useState('');
   const [pageMsg, setPageMsg] = useState('');
   const [slugIn, setSlugIn] = useState(slug || slugify(p.name));
@@ -208,8 +214,7 @@ function ProfileForm() {
   const submit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
-    const lines = (k: string) => field(fd, k).split('\n').map((l) => l.split('|').map((s) => s.trim())).filter((x) => x[0]);
-    update((s) => ({ ...s, profile: { ...s.profile, name: field(fd, 'name'), headline: field(fd, 'headline'), location: field(fd, 'location'), summary: field(fd, 'summary'), targets, email: field(fd, 'email'), linkedin: field(fd, 'linkedin'), education: lines('education').map((x) => ({ school: x[0], degree: x[1] || '', years: x[2] || '' })), certs: lines('certs').map((x) => ({ name: x[0], issuer: x[1] || '', year: x[2] || '' })) } }));
+    update((s) => ({ ...s, profile: { ...s.profile, name: field(fd, 'name'), headline: field(fd, 'headline'), location: field(fd, 'location'), summary: field(fd, 'summary'), targets, email: field(fd, 'email'), linkedin: field(fd, 'linkedin'), education: edu.map((r) => ({ school: r.school.trim(), degree: r.degree.trim(), years: [r.start.trim(), r.end.trim()].filter(Boolean).join('–') })).filter((r) => r.school), certs: certs.map((c) => ({ name: c.name.trim(), issuer: c.issuer.trim(), year: c.year.trim() })).filter((c) => c.name) } }));
     setMsg('Saved.'); flash('Saved.');
   };
   const savePage = async () => {
@@ -231,8 +236,33 @@ function ProfileForm() {
           <div className="field"><label htmlFor="p-email">Email</label><input id="p-email" name="email" type="email" defaultValue={p.email} /></div>
           <div className="field"><label htmlFor="p-linkedin">LinkedIn URL</label><input id="p-linkedin" name="linkedin" type="url" defaultValue={p.linkedin} /></div>
         </div>
-        <div className="field"><label htmlFor="p-education">Education, one per line</label><textarea id="p-education" name="education" placeholder="Illinois State University | BS, Computer Science | 1998 – 2002" defaultValue={(p.education || []).map((e) => [e.school, e.degree, e.years].filter(Boolean).join(' | ')).join('\n')} /><span className="help">School | Degree | Years</span></div>
-        <div className="field"><label htmlFor="p-certs">Certifications and awards, one per line</label><textarea id="p-certs" name="certs" placeholder="PMP | PMI | 2015" defaultValue={(p.certs || []).map((c) => [c.name, c.issuer, c.year].filter(Boolean).join(' | ')).join('\n')} /><span className="help">Name | Issuer | Year</span></div>
+        <div className="field"><label>Education</label>
+          <div className="rows">
+            {edu.map((r, i) => (
+              <div className="edu-row" key={i}>
+                <input aria-label="School" placeholder="School" value={r.school} onChange={(e) => setEduAt(i, 'school', e.target.value)} />
+                <input aria-label="Degree" placeholder="Degree" value={r.degree} onChange={(e) => setEduAt(i, 'degree', e.target.value)} />
+                <input aria-label="Start year" placeholder="Start" inputMode="numeric" maxLength={4} value={r.start} onChange={(e) => setEduAt(i, 'start', e.target.value)} />
+                <input aria-label="End year" placeholder="End" inputMode="numeric" maxLength={4} value={r.end} onChange={(e) => setEduAt(i, 'end', e.target.value)} />
+                <button type="button" className="btn icon" title="Remove" aria-label="Remove this education" onClick={() => setEdu(edu.filter((_, j) => j !== i))}>×</button>
+              </div>
+            ))}
+            <button type="button" className="btn sm add" onClick={() => setEdu([...edu, { school: '', degree: '', start: '', end: '' }])}>+ Add education</button>
+          </div>
+        </div>
+        <div className="field"><label>Certifications and awards</label>
+          <div className="rows">
+            {certs.map((c, i) => (
+              <div className="cert-row" key={i}>
+                <input aria-label="Name" placeholder="Name" value={c.name} onChange={(e) => setCertAt(i, 'name', e.target.value)} />
+                <input aria-label="Issuer" placeholder="Issuer" value={c.issuer} onChange={(e) => setCertAt(i, 'issuer', e.target.value)} />
+                <input aria-label="Year" placeholder="Year" inputMode="numeric" maxLength={4} value={c.year} onChange={(e) => setCertAt(i, 'year', e.target.value)} />
+                <button type="button" className="btn icon" title="Remove" aria-label="Remove this certification" onClick={() => setCerts(certs.filter((_, j) => j !== i))}>×</button>
+              </div>
+            ))}
+            <button type="button" className="btn sm add" onClick={() => setCerts([...certs, { name: '', issuer: '', year: '' }])}>+ Add certification</button>
+          </div>
+        </div>
         <div className="form-foot"><button className="btn primary" type="submit">Save profile</button><span className="spacer" /><span className="status">{msg}</span></div>
       </form>
 
