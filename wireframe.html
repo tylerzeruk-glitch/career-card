@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Career Card Wireframe</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Barlow+Condensed:wght@500;700&family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&display=swap">
+<style>
+:root{
+  color-scheme:light;
+  --bg:#ece7dc; --paper:#f6efe1; --paper-2:#efe6d3; --ink:#1c1b18; --ink-2:#4f4c45; --muted:#8a857a; --hair:#d9d1c0;
+  --navy:#1f2a44; --red:#dc4432; --grass:#79b283; --sky:#c6e2e2; --gold:#e8a13a;
+  --wire:#6b7a99; --wire-bg:rgba(107,122,153,.08); --note:#7a4d00; --note-bg:#fff2cf;
+  --display:"Lilita One","Arial Black",Impact,sans-serif;
+  --cond:"Barlow Condensed","Arial Narrow",sans-serif;
+  --serif:"Libre Caslon Text",Georgia,serif;
+  --sans:system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#181713; --paper:#221f19; --paper-2:#2a2620; --ink:#efe9dc; --ink-2:#c9c2b2; --muted:#8e877a; --hair:#3a352c;
+    --navy:#8ea0d6; --red:#ef6b5b; --grass:#79b283; --sky:#2f4a4d; --gold:#e8a13a;
+    --wire:#93a3c9; --wire-bg:rgba(147,163,201,.10); --note:#f0cf7a; --note-bg:#3a2e08;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#181713; --paper:#221f19; --paper-2:#2a2620; --ink:#efe9dc; --ink-2:#c9c2b2; --muted:#8e877a; --hair:#3a352c;
+  --navy:#8ea0d6; --red:#ef6b5b; --grass:#79b283; --sky:#2f4a4d; --gold:#e8a13a;
+  --wire:#93a3c9; --wire-bg:rgba(147,163,201,.10); --note:#f0cf7a; --note-bg:#3a2e08;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 var(--sans);padding-inline:clamp(16px,4vw,48px);padding-block:32px 80px}
+.wrap{max-width:1120px;margin:0 auto}
+h1{font:400 40px/1.05 var(--display);letter-spacing:.01em;margin:0 0 6px;text-wrap:balance}
+h1 span{color:var(--red)}
+.lede{max-width:64ch;color:var(--ink-2);font-size:15px;margin:0 0 8px}
+h2{font:700 13px/1 var(--cond);letter-spacing:.14em;text-transform:uppercase;color:var(--red);margin:0 0 10px}
+h3{font:400 22px/1.2 var(--display);margin:0 0 6px;letter-spacing:.01em}
+p{margin:0 0 10px}
+.board{display:grid;grid-template-columns:1fr 280px;gap:28px;margin-top:56px;align-items:start}
+@media (max-width:860px){.board{grid-template-columns:1fr}}
+.notes{font-size:13px;color:var(--ink-2);position:sticky;top:16px}
+.notes ol{padding-left:18px;margin:0}
+.notes li{margin-bottom:8px}
+.notes li::marker{color:var(--red);font-weight:700}
+.q{background:var(--note-bg);color:var(--note);border-radius:6px;padding:8px 10px;margin-top:12px;font-size:12.5px}
+.q b{display:block;letter-spacing:.08em;text-transform:uppercase;font-size:10.5px;margin-bottom:2px}
+
+/* wireframe primitives */
+.frame{background:var(--paper);border:1px solid var(--hair);border-radius:10px;padding:16px;position:relative}
+.frame.phone{width:300px;padding:12px}
+.box{border:1.5px dashed var(--wire);background:var(--wire-bg);border-radius:6px;color:var(--wire);font:500 12px/1.3 var(--cond);letter-spacing:.06em;text-transform:uppercase;display:grid;place-items:center;text-align:center;padding:8px;min-height:36px;position:relative}
+.box.solid{border-style:solid}
+.box.tall{min-height:120px}
+.tag{position:absolute;top:-9px;left:10px;background:var(--red);color:#fff;font:700 10px/1 var(--cond);letter-spacing:.1em;padding:3px 6px;border-radius:3px}
+.stack{display:grid;gap:10px}
+.row{display:flex;gap:10px;align-items:stretch}
+.row>*{flex:1}
+.row .w2{flex:2}.row .w3{flex:3}.row .fix{flex:0 0 auto}
+.callout{position:absolute;width:20px;height:20px;border-radius:50%;background:var(--ink);color:var(--paper);font:700 11px/20px var(--cond);text-align:center;z-index:3}
+
+/* masthead mock */
+.mast{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;padding-bottom:12px;border-bottom:2px solid var(--ink)}
+.mast .name{font:700 34px/1 var(--cond);letter-spacing:.02em;text-transform:uppercase}
+.mast .pos{font:400 13px var(--serif);color:var(--ink-2);letter-spacing:.04em}
+.fa{display:inline-flex;align-items:center;gap:8px;background:var(--red);color:#fff;font:700 13px/1 var(--cond);letter-spacing:.14em;text-transform:uppercase;padding:8px 12px;border-radius:4px;transform:rotate(-2deg)}
+.fa i{width:8px;height:8px;border-radius:50%;background:#fff;box-shadow:0 0 0 3px rgba(255,255,255,.35)}
+.statline{display:flex;gap:26px;flex-wrap:wrap;padding:12px 0;font-variant-numeric:tabular-nums}
+.statline div{font:700 24px/1 var(--cond)}
+.statline small{display:block;font:400 10.5px var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:4px}
+.toggle{display:inline-flex;border:1.5px solid var(--ink);border-radius:999px;overflow:hidden;font:700 12px/1 var(--cond);letter-spacing:.1em;text-transform:uppercase}
+.toggle span{padding:7px 14px}
+.toggle span.on{background:var(--ink);color:var(--paper)}
+
+/* the shelf of cards */
+.shelf{display:flex;gap:14px;overflow-x:auto;padding:22px 4px 10px;align-items:flex-end}
+.mini{flex:0 0 132px;aspect-ratio:2.5/3.5;border-radius:10px;background:#fbf6ea;border:1.5px solid var(--hair);box-shadow:0 2px 0 var(--hair),0 8px 18px rgba(0,0,0,.10);display:flex;flex-direction:column;padding:10px;color:#1c1b18;position:relative}
+.mini .team{font:400 15px/1 var(--display);color:var(--navy);text-transform:uppercase;letter-spacing:.02em}
+.mini .art{flex:1;margin:8px 0;border-radius:6px;background:var(--sky);display:grid;place-items:center;font:700 26px var(--cond);color:var(--navy)}
+.mini .who{font:700 11px/1.1 var(--cond);letter-spacing:.06em;text-transform:uppercase}
+.mini .yrs{font:400 10px var(--serif);color:#6b6559}
+.mini .n{position:absolute;top:6px;right:8px;font:400 11px var(--serif);color:var(--red)}
+.mini.free .n{display:none}
+.mini.free{background:var(--navy);color:#fff;border-color:var(--navy);transform:rotate(2deg) translateY(-6px)}
+.mini.free .team{color:var(--red)}
+.mini.free .art{background:rgba(255,255,255,.08);color:#fff;font-size:16px;text-align:center;line-height:1.1}
+.mini.free .yrs{color:#c9c2b2}
+.mini.ghost{border-style:dashed;background:transparent;box-shadow:none;color:var(--wire);border-color:var(--wire);display:grid;place-items:center;font:500 12px var(--cond);letter-spacing:.08em;text-transform:uppercase;text-align:center}
+
+/* big card anatomy with flip */
+.anat{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}
+@media (max-width:700px){.anat{grid-template-columns:1fr}}
+.flip{perspective:1400px;width:260px;margin:0 auto;cursor:pointer}
+.flip .inner{position:relative;aspect-ratio:2.5/3.5;transition:transform .7s cubic-bezier(.2,.7,.2,1);transform-style:preserve-3d}
+.flip.on .inner{transform:rotateY(180deg)}
+@media (prefers-reduced-motion: reduce){.flip .inner{transition:none}}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:12px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.18)}
+.front{background:#fbf6ea;color:#1c1b18;padding:14px;display:flex;flex-direction:column}
+.front .team{font:400 30px/.95 var(--display);color:var(--gold);text-transform:uppercase;text-shadow:3px 3px 0 var(--navy);letter-spacing:.01em}
+.front .art{flex:1;margin:10px 0;border-radius:10px;background:var(--gold);border:2px solid var(--navy);position:relative;overflow:hidden;display:grid;place-items:center}
+.front .art .mono{font:700 64px var(--cond);color:var(--navy);opacity:.9}
+.front .art .badge{position:absolute;left:10px;bottom:10px;width:34px;height:34px;border-radius:50%;background:#fff;border:1.5px solid var(--red);display:grid;place-items:center;font:700 10px var(--cond);color:var(--red)}
+.front .who{font:700 20px/1 var(--cond);letter-spacing:.04em;text-transform:uppercase;text-align:center}
+.front .role{font:italic 400 11.5px var(--serif);color:#6b6559;text-align:center;margin-top:2px}
+.front .corner{position:absolute;top:10px;right:12px;width:26px;height:26px;border:1.5px solid var(--red);border-radius:50%;display:grid;place-items:center;font:700 12px var(--serif);color:var(--red)}
+.back{transform:rotateY(180deg);background:#ede5d1;color:#1c1b18;padding:14px;display:flex;flex-direction:column;gap:8px;font-size:11px}
+.back .hdr{background:var(--navy);color:#fbf6ea;margin:-14px -14px 0;padding:14px 14px 10px;text-align:center}
+.back .hdr .t{font:400 20px/1 var(--display);text-transform:uppercase}
+.back .hdr .s{font:700 10px var(--cond);letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-top:3px}
+.back table{width:100%;border-collapse:collapse;font:600 10px var(--cond);letter-spacing:.04em;text-transform:uppercase}
+.back th,.back td{padding:4px 2px;border-bottom:1px solid #d5cbb4;text-align:left}
+.back th{color:#6b6559;font-weight:500}
+.back td.num{text-align:right;font-variant-numeric:tabular-nums}
+.back .bul{font:400 10.5px/1.4 var(--serif);color:#2e2b25;margin:0;padding-left:12px}
+.back .bul li{margin-bottom:2px}
+.back .skills{display:flex;flex-wrap:wrap;gap:3px}
+.back .skills span{background:var(--red);color:#fff;font:700 9px/1 var(--cond);letter-spacing:.06em;text-transform:uppercase;padding:4px 5px;border-radius:2px}
+.back .foot{margin-top:auto;display:flex;justify-content:space-between;font:italic 400 10px var(--serif);color:#6b6559;border-top:1px solid #d5cbb4;padding-top:6px}
+.legend{font-size:12.5px;color:var(--ink-2)}
+.legend dl{display:grid;grid-template-columns:24px 1fr;gap:6px 8px;margin:0}
+.legend dt{width:20px;height:20px;border-radius:50%;background:var(--ink);color:var(--paper);font:700 11px/20px var(--cond);text-align:center}
+.legend dd{margin:0}
+.hint{font-size:12px;color:var(--muted);text-align:center;margin-top:8px}
+
+/* timeline sketch */
+.tlx{position:relative;height:210px;background:var(--paper-2);border-radius:8px;overflow:hidden;margin-top:10px}
+.tlx .span{position:absolute;height:22px;border-radius:4px;top:70px;font:700 11px/22px var(--cond);letter-spacing:.06em;text-transform:uppercase;padding:0 8px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tlx .base{position:absolute;left:0;right:0;top:120px;height:1.5px;background:var(--ink)}
+.tlx .tick{position:absolute;width:2px;background:var(--navy);top:96px;height:24px}
+.tlx .tick.dn{top:121px;background:var(--red)}
+.tlx .lbl{position:absolute;font:500 10px var(--cond);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2)}
+.tlx .fa-zone{position:absolute;top:0;bottom:0;background:repeating-linear-gradient(135deg,rgba(220,68,50,.10) 0 6px,transparent 6px 12px);border-left:1.5px dashed var(--red)}
+.tlx .today{position:absolute;top:10px;bottom:10px;border-left:1.5px dashed var(--muted)}
+.tlx .mo{position:absolute;top:128px;font:400 10px var(--serif);color:var(--muted)}
+.tlx .zoomnote{position:absolute;right:10px;bottom:8px;font:500 10.5px var(--cond);letter-spacing:.06em;text-transform:uppercase;color:var(--red)}
+
+.decide{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:14px}
+.decide .d{background:var(--paper);border:1px solid var(--hair);border-radius:8px;padding:12px 14px;font-size:13px}
+.decide .d b{display:block;font:700 13px var(--cond);letter-spacing:.1em;text-transform:uppercase;color:var(--red);margin-bottom:4px}
+.decide .d em{display:block;color:var(--muted);font-style:normal;font-size:12px;margin-top:6px}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <h2>Wireframe · v0</h2>
+  <h1>Career Card <span>&amp;</span> Free Agent page</h1>
+  <p class="lede">A career page that borrows the grammar of a ballplayer's page: teams become companies, seasons become years, positions become job titles, and the gap after a layoff becomes free agency. Each stint is a playing card that flips to reveal the details. The job-hunt timeline stays as a second view of the same data.</p>
+  <p class="lede" style="font-size:13px;color:var(--muted)">Blue dashed boxes are wireframe placeholders. The card in board 2 is closer to real so the idea reads; everything about it is up for discussion. Names and figures are examples.</p>
+
+  <!-- BOARD 1 -->
+  <section class="board">
+    <div>
+      <h2>Board 1</h2>
+      <h3>The page at rest (desktop)</h3>
+      <div class="frame">
+        <div class="mast">
+          <div>
+            <div class="name">Tyler Zeruk</div>
+            <div class="pos">Program Delivery Lead · Chicago · 20+ seasons</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+            <span class="fa"><i></i>Free agent · day 58</span>
+            <span class="toggle"><span class="on">Cards</span><span>Timeline</span></span>
+            <span class="box solid" style="min-height:32px;padding:6px 10px">Share · Export · Edit</span>
+          </div>
+        </div>
+        <span class="callout" style="left:-8px;top:8px">1</span>
+        <span class="callout" style="right:-8px;top:8px">2</span>
+
+        <div class="statline">
+          <div>22<small>Seasons</small></div>
+          <div>3<small>Teams</small></div>
+          <div>6<small>Positions</small></div>
+          <div>14 yrs<small>Longest tenure</small></div>
+          <div>58<small>Days a free agent</small></div>
+          <div>12<small>Tryouts (apps)</small></div>
+        </div>
+        <span class="callout" style="left:-8px;top:92px">3</span>
+
+        <div class="shelf">
+          <div class="mini"><span class="n">01</span><div class="team">Aon Hewitt</div><div class="art">AH</div><div class="who">Programmer Analyst</div><div class="yrs">2003 – 2009</div></div>
+          <div class="mini"><span class="n">02</span><div class="team">Alight</div><div class="art">AL</div><div class="who">Team Lead → CAM</div><div class="yrs">2009 – 2018</div></div>
+          <div class="mini"><span class="n">03</span><div class="team">Alight</div><div class="art">AL</div><div class="who">Program Delivery Lead</div><div class="yrs">2018 – 2026</div></div>
+          <div class="mini free"><span class="n">now</span><div class="team">Free Agent</div><div class="art">Open to<br>Delivery · Program · Client Services</div><div class="who">Since Jul 26, 2026</div><div class="yrs">Day 58 · 12 tryouts · 2 interviews</div></div>
+          <div class="mini ghost">+ add a stint</div>
+        </div>
+        <span class="callout" style="left:-8px;top:190px">4</span>
+
+        <div class="stack" style="margin-top:14px">
+          <div class="row">
+            <div class="box w2 tall"><span class="tag">Free agency</span>Compact job-hunt strip: day counter, applications · interviews · offers, last activity. Sparkline of activity. Click → Timeline view.</div>
+            <div class="box tall"><span class="tag">Scouting report</span>Short summary paragraph (the resume "summary") + skills as the letter-grid tiles from the Grandsans card back</div>
+          </div>
+          <div class="row">
+            <div class="box"><span class="tag">Awards / certs</span>PMP, awards, notable projects as small pennants</div>
+            <div class="box"><span class="tag">Education</span>"Farm system": school, degree, years</div>
+            <div class="box"><span class="tag">Contact</span>Email · LinkedIn · resume download</div>
+          </div>
+        </div>
+        <span class="callout" style="left:-8px;top:392px">5</span>
+      </div>
+    </div>
+    <aside class="notes">
+      <ol>
+        <li><b>Masthead</b> reads like the top of a player page: name in condensed caps, then position · city · seasons. The status pill is the one loud element on the page.</li>
+        <li><b>Cards / Timeline</b> toggle switches the main area between the shelf and the timeline. Same data, two views. Status pill and stat line stay put.</li>
+        <li><b>Stat line</b> uses baseball-card vocabulary for career totals. Seasons = years worked, Teams = companies, Positions = distinct titles. "Tryouts" for applications is a stretch; could just say Applications.</li>
+        <li><b>The shelf</b> is the hero: one card per stint, oldest to newest, horizontally scrollable, ending with the Free Agent card (dark, tilted, clearly "now"). Click a card to flip it in place; a second click or Esc flips it back.</li>
+        <li><b>Below the fold</b> is resume material dressed in the same language. Keep it short; the cards carry the detail.</li>
+      </ol>
+      <div class="q"><b>Open question</b>One card per company, or one per role? Sketch shows one per <i>stint</i>: a company gets a second card when the role changed enough to matter (Alight #02 vs #03). Promotions inside a stint go on the back as "seasons".</div>
+    </aside>
+  </section>
+
+  <!-- BOARD 2 -->
+  <section class="board">
+    <div>
+      <h2>Board 2</h2>
+      <h3>Card anatomy: front and back</h3>
+      <div class="frame">
+        <div class="anat">
+          <div>
+            <div class="flip" id="flip" role="button" tabindex="0" aria-label="Flip the sample card">
+              <div class="inner">
+                <div class="face front">
+                  <div class="team">Alight</div>
+                  <span class="corner">03</span>
+                  <div class="art"><span class="mono">TZ</span><span class="badge">PDL</span></div>
+                  <div class="who">Tyler Zeruk</div>
+                  <div class="role">Program Delivery Lead · 2018 – 2026</div>
+                </div>
+                <div class="face back">
+                  <div class="hdr"><div class="t">Alight</div><div class="s">Program Delivery Lead · Lincolnshire, IL</div></div>
+                  <table>
+                    <thead><tr><th>Season</th><th>Position</th><th class="num">Yrs</th></tr></thead>
+                    <tbody>
+                      <tr><td>2018–21</td><td>Perf. Excellence Consultant</td><td class="num">3</td></tr>
+                      <tr><td>2021–26</td><td>Program Delivery Lead</td><td class="num">5</td></tr>
+                    </tbody>
+                  </table>
+                  <ul class="bul">
+                    <li>Led delivery for a portfolio of benefits-administration clients.</li>
+                    <li>Ran the intake, triage and UAT cycle across product releases.</li>
+                    <li>Mentored team leads; owned the client escalation path.</li>
+                  </ul>
+                  <div class="skills"><span>Program mgmt</span><span>UAT</span><span>Client delivery</span><span>Requirements</span><span>Escalations</span><span>Benefits admin</span></div>
+                  <div class="foot"><span>Left: role eliminated, Jul 2026</span><span>Card 03 of 04</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="hint">Click or tap the card to flip it</div>
+          </div>
+          <div class="legend">
+            <p><b>Front</b> is the poster: the company as a chunky wordmark (the "ORIOLES" treatment), a big art area, the person's name, and role + years in a one-line caption. The corner number is the stint's order in the career, the way a card number sits in a set.</p>
+            <dl>
+              <dt>A</dt><dd><b>Art area.</b> No photo needed. Options: monogram, company logo if you have rights, or a flat illustration in the line-drawn style of the clubs cards. Colour per company (team colours).</dd>
+              <dt>B</dt><dd><b>Position badge.</b> The baseball-on-the-card "CF" mark becomes a short role code: PDL, CAM, TL.</dd>
+              <dt>C</dt><dd><b>Back header</b> repeats the team and the city, like the card back's team bar.</dd>
+              <dt>D</dt><dd><b>Seasons table.</b> Every title held at that company, with years, in stat-table form. This is where promotions live.</dd>
+              <dt>E</dt><dd><b>Highlights.</b> Three to five resume bullets. Truncate with "more" if long; the card must stay one screen.</dd>
+              <dt>F</dt><dd><b>Skills tiles</b> in the letter-grid style. Same skill vocabulary across cards so the scouting report can roll them up.</dd>
+              <dt>G</dt><dd><b>Footer.</b> Why the stint ended ("traded", "left for", "role eliminated") and the card number in the set.</dd>
+            </dl>
+            <p style="margin-top:10px"><b>Free Agent card</b> uses the same shell, inverted: dark ground, red wordmark, "Open to" roles on the front; on the back the job-hunt figures, target roles, and a link into the timeline.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <aside class="notes">
+      <ol>
+        <li>Three visual directions are on the table, all from your references: the <b>hand-drawn red line</b> of the clubs cards, the <b>chunky riso</b> of the Grandsans card, and the <b>70s Topps</b> of the Orioles card. The mock leans Topps for the front and riso for the back. Pick one family and I'll commit to it.</li>
+        <li>Card ratio is the real one, 2.5 × 3.5. Shelf cards are ~130px wide; a flipped card enlarges to ~260px so the back is legible. On phones the flipped card takes the screen.</li>
+        <li>Flip is a plain CSS 3D transform; works without a library. Keyboard: Enter flips, Esc closes.</li>
+      </ol>
+      <div class="q"><b>Open question</b>Public or private? A shareable career page wants a stable URL and no personal job-hunt details on it. A private one can show the whole free-agency log. Sketch assumes one page with the job-hunt detail behind the Timeline view, and a "share" mode that hides it.</div>
+    </aside>
+  </section>
+
+  <!-- BOARD 3 -->
+  <section class="board">
+    <div>
+      <h2>Board 3</h2>
+      <h3>Timeline view: the career, then the free agency, zoomed</h3>
+      <div class="frame">
+        <div class="row" style="margin-bottom:8px">
+          <span class="toggle fix"><span>Cards</span><span class="on">Timeline</span></span>
+          <div class="box" style="min-height:32px">Zoom presets: Career · Free agency · − + Fit Today</div>
+        </div>
+        <div class="tlx">
+          <div class="span" style="left:2%;width:22%;background:var(--grass)">Aon Hewitt</div>
+          <div class="span" style="left:24.5%;width:29%;background:var(--navy)">Alight · Team Lead → CAM</div>
+          <div class="span" style="left:54%;width:27%;background:var(--navy)">Alight · PDL</div>
+          <div class="fa-zone" style="left:81.5%;right:0"></div>
+          <div class="span" style="left:82%;width:17%;background:var(--red)">Free agent</div>
+          <div class="base"></div>
+          <div class="tick" style="left:81.5%;height:34px;top:86px;width:3px;background:var(--ink)"></div>
+          <div class="tick" style="left:85%"></div><div class="tick" style="left:87%"></div><div class="tick" style="left:89.5%"></div><div class="tick" style="left:92%"></div><div class="tick" style="left:94%"></div>
+          <div class="tick dn" style="left:88%"></div>
+          <div class="today" style="left:96%"></div>
+          <div class="lbl" style="left:2%;top:150px">2003</div><div class="lbl" style="left:24.5%;top:150px">2009</div><div class="lbl" style="left:54%;top:150px">2018</div><div class="lbl" style="left:81.5%;top:150px;color:var(--red)">Laid off · Jul 2026</div>
+          <div class="lbl" style="left:2%;top:40px;color:var(--muted)">Company spans sit above the line; the existing event ticks (applications up, denials down) sit on it</div>
+          <div class="zoomnote">Zoom into the red zone → today's timeline page</div>
+        </div>
+        <div class="stack" style="margin-top:12px">
+          <div class="row">
+            <div class="box"><span class="tag">Same drawer</span>Add event / edit / log drawer as built, plus "Add stint" for a company span</div>
+            <div class="box"><span class="tag">Linking</span>An application that becomes an offer ends free agency and starts a new span: the timeline draws the new team automatically</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <aside class="notes">
+      <ol>
+        <li>This is the page you already have, with one addition: <b>spans</b> (company tenures) drawn as bars above the line. At career zoom the spans dominate and the ticks bunch into a red free-agency zone; zoom in and it becomes the current job-hunt timeline.</li>
+        <li>The free-agency zone is the visual bridge between the two products: on the card shelf it's the dark card, on the timeline it's the red hatched region.</li>
+        <li>Nothing from the current build is thrown away. Events, import, export, the drawer and the pan/zoom viewport carry over; spans are a second record type.</li>
+      </ol>
+      <div class="q"><b>Open question</b>Do past job hunts get recorded too? If yes, each free-agency gap is its own zone, and the stat line can show "avg. days between teams".</div>
+    </aside>
+  </section>
+
+  <!-- BOARD 4 -->
+  <section class="board">
+    <div>
+      <h2>Board 4</h2>
+      <h3>Phone</h3>
+      <div style="display:flex;gap:20px;flex-wrap:wrap;align-items:flex-start">
+        <div class="frame phone">
+          <div class="stack">
+            <div class="box solid" style="min-height:44px;text-align:left;justify-items:start">Name · position<br><span style="color:var(--red)">● Free agent · day 58</span></div>
+            <div class="box" style="min-height:30px">Cards | Timeline</div>
+            <div class="box" style="min-height:30px">22 seasons · 3 teams · 6 positions</div>
+            <div class="box tall" style="min-height:200px">Cards as a swipeable carousel, one card centred, peeking neighbours. Tap to flip.</div>
+            <div class="box">Free agency strip</div>
+            <div class="box">Scouting report</div>
+            <div class="box" style="min-height:30px">Education · Awards · Contact</div>
+          </div>
+        </div>
+        <div class="frame phone">
+          <div class="stack">
+            <div class="box solid" style="min-height:44px">Flipped card takes the screen</div>
+            <div class="box tall" style="min-height:300px">Card back, full width, scrollable inside if the highlights run long</div>
+            <div class="box" style="min-height:30px">← prev · flip back · next →</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <aside class="notes">
+      <ol>
+        <li>The shelf becomes a carousel; the flip is the same gesture.</li>
+        <li>Timeline view on a phone is the current build, which already works at 400px.</li>
+      </ol>
+    </aside>
+  </section>
+
+  <!-- DECISIONS -->
+  <section class="board" style="grid-template-columns:1fr">
+    <div>
+      <h2>Before building</h2>
+      <h3>Decisions that change the build</h3>
+      <div class="decide">
+        <div class="d"><b>1 · Card unit</b>One card per stint (company + a run of related roles). Promotions on the back.<em>Alternative: one card per role. More cards, thinner backs.</em></div>
+        <div class="d"><b>2 · Visual family</b>Topps-70s front + riso back, as mocked.<em>Alternative: the all-red hand-drawn clubs look, which is quieter and prints well.</em></div>
+        <div class="d"><b>3 · Audience</b>Private by default, with a share mode that hides the free-agency log and shows the cards and scouting report only.<em>Alternative: two separate pages.</em></div>
+        <div class="d"><b>4 · Data</b>Stints entered by hand in the drawer (there are only a few). Job-hunt events keep the tracker import. Resume bullets pasted per stint.<em>Alternative: import a LinkedIn export to seed stints.</em></div>
+        <div class="d"><b>5 · Art</b>Monogram + team colours to start; illustration or logo later.<em>Keeps the first build free of image hosting.</em></div>
+        <div class="d"><b>6 · Name</b>Working title only. "Career Card" and "Free Agent" are both placeholders.</div>
+      </div>
+      <p style="margin-top:16px;color:var(--ink-2)">Suggested build order once these are settled: stint data model and card shelf with flip → masthead and stat line → timeline spans → share mode → scouting report and the rest of the fold.</p>
+    </div>
+  </section>
+</div>
+
+<script>
+(function(){
+  const f=document.getElementById('flip');
+  const toggle=()=>f.classList.toggle('on');
+  f.addEventListener('click', toggle);
+  f.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); toggle(); } if(e.key==='Escape') f.classList.remove('on'); });
+})();
+</script>
+</body>
+</html>
