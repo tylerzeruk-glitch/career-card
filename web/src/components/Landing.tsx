@@ -1,8 +1,7 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import type { State } from '@/lib/types';
 import { sampleState } from '@/lib/sample';
-import { loadLocal } from '@/lib/storage';
 import { FreeCard, RoleCard } from './Cards';
 
 /** The red pennant, same path as the favicon. */
@@ -43,8 +42,6 @@ const GLOSSARY: [string, string][] = [
 export function Landing({ tryHref = '/app', signInHref = '/login', onTry }: { tryHref?: string; signInHref?: string; onTry?: () => void }) {
   const [S] = useState(heroState);
   const [flipped, setFlipped] = useState<Record<string, boolean>>({});
-  const [resume, setResume] = useState(false);
-  useEffect(() => { const l = loadLocal(); setResume(!!l && !l.sample && (l.state.roles.length > 0 || !!l.state.profile.name)); }, []);
   const flip = (id: string) => setFlipped((f) => ({ ...f, [id]: !f[id] }));
   const tryProps = onTry ? { href: tryHref, onClick: (e: React.MouseEvent) => { e.preventDefault(); onTry(); } } : { href: tryHref };
   const hand = [S.roles[0], S.roles[2]]; // Marine Biologist at Acme, Latex Salesman at Vandelay
@@ -68,10 +65,7 @@ export function Landing({ tryHref = '/app', signInHref = '/login', onTry }: { tr
             <a className="btn primary lg" href={signInHref}>Make your deck</a>
             <a className="btn lg" {...tryProps}>Try it with an example</a>
           </div>
-          <div className="fine">
-            Free. No account needed to try. Sign in to keep your card across devices and give it a page.
-            {resume && <> <a {...tryProps}>Continue with the card on this device →</a></>}
-          </div>
+          <div className="fine">Free. No account needed to try.<br />Sign in to keep your cards and make them shareable.</div>
         </div>
         <div className="hand" aria-label="Example cards. Click one to flip it.">
           {hand.map((r, i) => <RoleCard key={r.id} S={S} r={r} idx={S.roles.indexOf(r)} total={S.roles.length} on={!!flipped[r.id]} className={'h' + i} onClick={() => flip(r.id)} />)}
