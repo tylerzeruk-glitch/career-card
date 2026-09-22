@@ -51,7 +51,6 @@ export function Landing({ tryHref = '/app', signInHref = '/login', onTry }: { tr
       <header className="lbar">
         <a className="wordmark" href="/"><Flag /><span>CareerCards</span></a>
         <nav>
-          <a className="btn" {...tryProps}>Try it</a>
           <a className="btn primary" href={signInHref}>Sign in</a>
         </nav>
       </header>
