@@ -119,9 +119,9 @@ button,input,select,textarea{font:inherit;color:inherit}
 .gt button.on i{background:var(--red);border-color:var(--red);box-shadow:0 0 0 3px rgba(220,68,50,.18)}
 @media (prefers-reduced-motion: reduce){.gt button,.gt button i{transition:none}}
 .fold::before{content:"";position:absolute;left:0;right:0;top:0;height:4px;background:var(--perf)}
-.row{display:grid;grid-template-columns:132px 1fr;gap:16px;padding:12px 0 13px;align-items:baseline;position:relative}
+.row{display:grid;grid-template-columns:150px 1fr;gap:16px;padding:12px 0 13px;align-items:baseline;position:relative}
 .row::after{content:"";position:absolute;left:0;right:0;bottom:-2px;height:4px;background:var(--perf)}
-.row h2{font:700 11px/1.5 var(--cond);letter-spacing:.14em;text-transform:uppercase;color:var(--red)}
+.row h2{font:700 12.5px/1.5 var(--cond);letter-spacing:.14em;text-transform:uppercase;color:var(--red)}
 .row .body{min-width:0;font-size:13.5px;color:var(--ink-2)}
 .row p{margin:0 0 7px;max-width:66ch}
 .row p:last-child{margin-bottom:0}
