@@ -81,8 +81,9 @@ export function ImportDialog({ open, tab, onClose }: { open: boolean; tab: Impor
         const p = { ...s.profile };
         if (opts.profile) (['name', 'headline', 'location', 'summary', 'email', 'linkedin'] as const).forEach((k) => { const v = data.profile[k]; if (v) p[k] = String(v).trim(); });
         // Education and certifications merge like roles: replace outright, or add only what is not already there.
-        const eduKey = (e: { school: string; degree: string }) => norm(e.school) + '|' + norm(e.degree);
-        const sameEdu = (a: { school: string; degree: string }, b: { school: string; degree: string }) => eduKey(a) === eduKey(b) || (norm(a.school) === norm(b.school) && (!a.degree || !b.degree));
+        // "University of Connecticut" and "University of Connecticut School of Business" are the same school; "B.S., MIS" and "MIS" the same degree.
+        const alike = (a: string, b: string) => { const x = norm(a), y = norm(b); return !x || !y || x === y || x.includes(y) || y.includes(x); };
+        const sameEdu = (a: { school: string; degree: string }, b: { school: string; degree: string }) => norm(a.school) !== '' && alike(a.school, b.school) && alike(a.degree, b.degree);
         if (opts.edu) {
           const have = opts.replace ? [] : (p.education || []).slice();
           data.education.forEach((e) => { if (have.some((x) => sameEdu(x, e))) eduDupes++; else have.push(e); });
@@ -90,7 +91,7 @@ export function ImportDialog({ open, tab, onClose }: { open: boolean; tab: Impor
         }
         if (opts.certs) {
           const have = opts.replace ? [] : (p.certs || []).slice();
-          data.certs.forEach((c) => { if (have.some((x) => norm(x.name) === norm(c.name))) certDupes++; else have.push(c); });
+          data.certs.forEach((c) => { if (have.some((x) => norm(x.name) !== '' && alike(x.name, c.name))) certDupes++; else have.push(c); });
           p.certs = have;
         }
         if (data.skills.length && roles.length) { const last = rs[rs.length - 1]; if (last && !last.skills.length) last.skills = data.skills.slice(0, 8); }
