@@ -73,20 +73,31 @@ export function ImportDialog({ open, tab, onClose }: { open: boolean; tab: Impor
     if (!data) return;
     if (data.kind === 'career') {
       const roles = data.roles.filter((_, i) => keep.has(i)).map((r) => ({ id: uid(), company: r.company, title: r.title, code: codeFor(r.title), start: parseMonth(r.start) || '', end: r.end ? parseMonth(r.end) : null, location: r.location || '', reason: '', bullets: r.bullets || [], skills: r.skills || [] })).filter((r) => r.company && r.title && r.start);
-      let dupes = 0;
+      let dupes = 0, eduDupes = 0, certDupes = 0;
       update((s0) => {
         const s: State = sampleMode ? { ...hydrate(null), settings: s0.settings } : { ...s0 };
         let rs = opts.replace ? roles : s.roles.slice();
         if (!opts.replace) roles.forEach((r) => { if (rs.some((x) => norm(x.company) === norm(r.company) && norm(x.title) === norm(r.title) && x.start === r.start)) dupes++; else rs = [...rs, r]; });
         const p = { ...s.profile };
         if (opts.profile) (['name', 'headline', 'location', 'summary', 'email', 'linkedin'] as const).forEach((k) => { const v = data.profile[k]; if (v) p[k] = String(v).trim(); });
-        if (opts.edu) p.education = [...(p.education || []), ...data.education];
-        if (opts.certs) p.certs = [...(p.certs || []), ...data.certs];
+        // Education and certifications merge like roles: replace outright, or add only what is not already there.
+        const eduKey = (e: { school: string; degree: string }) => norm(e.school) + '|' + norm(e.degree);
+        const sameEdu = (a: { school: string; degree: string }, b: { school: string; degree: string }) => eduKey(a) === eduKey(b) || (norm(a.school) === norm(b.school) && (!a.degree || !b.degree));
+        if (opts.edu) {
+          const have = opts.replace ? [] : (p.education || []).slice();
+          data.education.forEach((e) => { if (have.some((x) => sameEdu(x, e))) eduDupes++; else have.push(e); });
+          p.education = have;
+        }
+        if (opts.certs) {
+          const have = opts.replace ? [] : (p.certs || []).slice();
+          data.certs.forEach((c) => { if (have.some((x) => norm(x.name) === norm(c.name))) certDupes++; else have.push(c); });
+          p.certs = have;
+        }
         if (data.skills.length && roles.length) { const last = rs[rs.length - 1]; if (last && !last.skills.length) last.skills = data.skills.slice(0, 8); }
         return { ...s, roles: rs, profile: p };
       });
-      if (dupes) flash(dupes + ' duplicate role' + (dupes === 1 ? '' : 's') + ' skipped.');
-      flash(`Imported ${roles.length} role${roles.length === 1 ? '' : 's'}.`); onClose();
+      const skipped = [[dupes, 'role'], [eduDupes, 'school'], [certDupes, 'certification']].filter(([n]) => n).map(([n, k]) => `${n} ${k}${n === 1 ? '' : 's'}`).join(', ');
+      flash(`Imported ${roles.length} role${roles.length === 1 ? '' : 's'}.` + (skipped ? ` Already there, skipped: ${skipped}.` : '')); onClose();
     } else {
       let added = 0, dupes = 0;
       update((s0) => {
@@ -144,7 +155,7 @@ export function ImportDialog({ open, tab, onClose }: { open: boolean; tab: Impor
               )) : <div style={{ padding: 8, color: 'var(--muted)' }}>No roles found. Add them by hand from + Add.</div>}
             </div>
             <div className="opts">
-              <label><input type="checkbox" checked={opts.replace} onChange={(e) => setOpts({ ...opts, replace: e.target.checked })} /> Replace my current roles</label>
+              <label><input type="checkbox" checked={opts.replace} onChange={(e) => setOpts({ ...opts, replace: e.target.checked })} /> Replace what I already have (roles, education, certifications)</label>
               {(data.profile.name || data.profile.headline || data.profile.summary) && <label><input type="checkbox" checked={opts.profile} onChange={(e) => setOpts({ ...opts, profile: e.target.checked })} /> Update profile ({[data.profile.name, data.profile.headline].filter(Boolean).join(', ') || 'summary'})</label>}
               {data.education.length > 0 && <label><input type="checkbox" checked={opts.edu} onChange={(e) => setOpts({ ...opts, edu: e.target.checked })} /> Education</label>}
               {data.certs.length > 0 && <label><input type="checkbox" checked={opts.certs} onChange={(e) => setOpts({ ...opts, certs: e.target.checked })} /> Certifications</label>}
