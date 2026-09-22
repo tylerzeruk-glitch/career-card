@@ -1,7 +1,7 @@
 'use client';
 import { useCallback, useEffect, useRef, useState, type CSSProperties } from 'react';
 import type { Profile, Role, State } from '@/lib/types';
-import { dur, fmt, fmtMonth, monthIndex, monthsBetween, nowYM, pad, yearOf, yrs } from '@/lib/dates';
+import { dur, fmt, fmtMonth, monthIndex, monthsBetween, nowYM, yearOf, yrs } from '@/lib/dates';
 import { codeFor, huntStats, initials, pairFor, runs, status, teamSize, type Run } from '@/lib/derived';
 
 type Vars = CSSProperties & { '--a'?: string; '--b'?: string };
