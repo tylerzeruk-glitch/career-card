@@ -10,6 +10,7 @@ import { Focus } from './Focus';
 import { Timeline } from './Timeline';
 import { Drawer, type DrawerState } from './Drawer';
 import { BackupDialog, HelpDialog, ImportDialog } from './dialogs';
+import { ThemeToggle } from './ThemeToggle';
 
 export function CareerCardApp({ user, cloud }: { user: AuthUser | null; cloud: CloudCard | null }) {
   return (
@@ -114,6 +115,7 @@ function Header() {
         <button className="btn" onClick={() => ui.openDrawer('profile')}>Profile</button>
         <button className="btn" onClick={() => ui.openDrawer('profile')}>Share</button>
         {!user && <a className="btn" href="/login">Sign in</a>}
+        <ThemeToggle />
         <details className="menu" ref={menuRef} open={menu} onToggle={(e) => setMenu((e.target as HTMLDetailsElement).open)}>
           <summary className="btn">···</summary>
           <div className="pop" onClick={() => setMenu(false)}>

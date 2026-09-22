@@ -3,6 +3,7 @@ import { useState } from 'react';
 import type { State } from '@/lib/types';
 import { sampleState } from '@/lib/sample';
 import { FreeCard, RoleCard } from './Cards';
+import { ThemeToggle } from './ThemeToggle';
 
 /** The red pennant, same path as the favicon. */
 export function Flag({ size = 22 }: { size?: number }) {
@@ -51,6 +52,7 @@ export function Landing({ tryHref = '/app', signInHref = '/login', onTry }: { tr
       <header className="lbar">
         <a className="wordmark" href="/"><Flag /><span>CareerCards</span></a>
         <nav>
+          <ThemeToggle />
           <a className="btn primary" href={signInHref}>Sign in</a>
         </nav>
       </header>

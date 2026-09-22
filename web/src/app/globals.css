@@ -45,6 +45,11 @@ a.btn{text-decoration:none;display:inline-block}
 .btn.danger{color:var(--c-den)}
 .btn.sm{padding:4px 8px;font-size:12px}
 .btn.icon{width:30px;height:30px;padding:0;display:inline-grid;place-items:center;font-size:16px}
+/* the light / dark switch; greyed out while dark mode is held back */
+.btn.theme{color:var(--ink-2);border:1px solid var(--hair);border-radius:50%}
+.btn.theme svg{display:block}
+.btn.theme:disabled{opacity:.4;cursor:not-allowed}
+.btn.theme:disabled:hover{background:transparent;color:var(--ink-2)}
 .btn:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,.card:focus-visible,.tab:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
 .menu{position:relative}
 .menu summary{list-style:none;cursor:pointer}
@@ -341,7 +346,8 @@ kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--hair);border-r
 /* sign-in page */
 .login{min-height:100%;display:grid;place-items:center;padding:24px}
 .login .box{width:min(420px,100%);background:var(--paper);border:1px solid var(--hair);border-radius:12px;padding:26px 28px}
-.login h1{font:700 26px/1 var(--cond);letter-spacing:.03em;text-transform:uppercase;margin-bottom:6px}
+.login .boxhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.login h1{font:700 26px/1 var(--cond);letter-spacing:.03em;text-transform:uppercase}
 .login p{margin:0 0 14px;color:var(--ink-2);font-size:13.5px}
 .login .field{margin-bottom:12px}
 .login .or{text-align:center;color:var(--muted);font-size:11px;letter-spacing:.14em;text-transform:uppercase;margin:14px 0}
@@ -368,7 +374,7 @@ kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--hair);border-r
 .landing p{margin:0;color:var(--ink-2)}
 .landing a{color:inherit}
 .lbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:20px}
-.lbar nav{display:flex;gap:6px}
+.lbar nav{display:flex;gap:8px;align-items:center}
 .wordmark{display:inline-flex;align-items:center;gap:8px;text-decoration:none;font:400 22px/1 var(--riso);letter-spacing:.02em;color:var(--ink)}
 .wordmark .flag{color:var(--red);margin-top:-3px}
 .landing .btn{border:1px solid transparent;font-size:13.5px}

@@ -4,6 +4,7 @@ import type { State } from '@/lib/types';
 import { careerStats, roles, skillTally, status } from '@/lib/derived';
 import { layoutDeck } from '@/lib/deck';
 import { FreeCard, RoleCard } from './Cards';
+import { ThemeToggle } from './ThemeToggle';
 
 /** The shareable page: cards you can flip, then the resume rows. Read-only, no job hunt. */
 export function PublicCard({ S }: { S: State }) {
@@ -28,6 +29,7 @@ export function PublicCard({ S }: { S: State }) {
           <div className="sub">{[p.headline, p.location].filter(Boolean).join(' · ')}</div>
           {cs && <div className="line">{([[cs.seasons, 'season'], [cs.teams, 'team'], [cs.positions, 'position']] as [number, string][]).map(stat)}</div>}
         </div>
+        <ThemeToggle />
       </header>
       <div className="k">Career</div>
       <div className="shelf" ref={shelf}>

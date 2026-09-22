@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { supabaseBrowser } from '@/lib/supabase/client';
+import { ThemeToggle } from '@/components/ThemeToggle';
 
 export default function Login() {
   const sb = supabaseBrowser();
@@ -24,7 +25,7 @@ export default function Login() {
   return (
     <div className="login">
       <div className="box">
-        <h1>Sign in</h1>
+        <div className="boxhead"><h1>Sign in</h1><ThemeToggle /></div>
         {sb ? (
           <>
             <p>Your card follows you between devices, and you can give it an address to share. Nothing from the job hunt is ever public.</p>

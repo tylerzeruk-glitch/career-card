@@ -75,6 +75,15 @@ deployed app.
 - `src/styles/card.css` is the card stylesheet, shared with the single-file
   version; `src/app/globals.css` is the page chrome.
 
+## Light and dark
+
+The dark palette is in `src/app/globals.css` but held back: `DARK_MODE` in
+`src/lib/theme.ts` is `false`, so every page is pinned light (the system
+preference is ignored) and the sun/moon toggle on each page is shown
+disabled. Set it to `true` to turn dark mode on; the toggle then remembers
+the choice in localStorage and a script in the document head applies it
+before first paint.
+
 ## Resume import
 
 Import → Resume sends the file to `src/app/api/resume/route.ts`, which
