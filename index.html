@@ -61,7 +61,8 @@ button,input,select,textarea{font:inherit;color:inherit}
 /* header */
 .topbar{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-block:22px 6px;flex:none}
 .brand{display:flex;align-items:flex-start;gap:14px;flex-wrap:wrap}
-.brand .pill{margin:8px 0 6px 3px}
+.namerow{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.brand .pill{margin:0}
 .brand h1{font:700 30px/1 var(--cond);letter-spacing:.03em;text-transform:uppercase}
 .brand .sub{font:400 12.5px/1.5 var(--serif);color:var(--ink-2);letter-spacing:.02em;margin-top:2px}
 .brand .line{display:flex;gap:14px;align-items:center;margin-top:6px;font:700 10.5px/1 var(--cond);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
@@ -321,7 +322,7 @@ kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--hair);border-r
 <body>
 <header class="topbar">
   <div class="brand">
-    <div><h1 id="p-name">Career Card</h1><div><span class="pill" id="pill"><i></i>Free agent</span></div><div class="sub" id="p-sub"></div><div class="line" id="p-line"></div></div>
+    <div><div class="namerow"><h1 id="p-name">Career Card</h1><span class="pill" id="pill"><i></i>Free agent</span></div><div class="sub" id="p-sub"></div><div class="line" id="p-line"></div></div>
   </div>
   <div class="actions">
     <div class="toggle" id="view-toggle"><button class="on" data-view="cards">Cards</button><button data-view="timeline">Timeline</button></div>
