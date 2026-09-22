@@ -100,5 +100,4 @@
 /* free-agent card: the FA starburst on the box's top-right corner, name left like the others, no date line */
 .card.free .badge{left:auto;right:-5%;bottom:auto;top:-7%;transform:rotate(12deg)}
 .card.free .who{align-items:flex-start;text-align:left}
-/* the date line is kept but invisible so the box and the name land at the same height as on the role cards */
-.card.free .role{visibility:hidden}
+.card.free .role{color:#dc4432}

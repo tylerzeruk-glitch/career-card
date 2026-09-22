@@ -71,7 +71,7 @@ export function FreeCard({ S, on, share, className, onClick, onTimeline }: { S: 
         <div className="face front">
           <div className="art"><div className="team" style={{ fontSize: Math.min(7.8, teamSize('Free agent')) + 'cqw' }}>Free agent</div><div className="k">Open to</div><div className="open">{open}</div><span className="badge" title="Free agent">FA</span></div>
           <Who name={p.name} />
-          <div className="role">{share ? 'Available now' : since ? 'Since ' + fmt(since) : 'Unsigned'}</div>
+          <div className="role">Free agent</div>
         </div>
         <div className="face back">
           <div className="hdr"><div className="t">Free agency</div><div className="s">{share ? 'Open to offers' : since ? 'since ' + fmt(since) : ''}</div></div>
