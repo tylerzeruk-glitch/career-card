@@ -465,7 +465,7 @@ kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--hair);border-r
 
     <section id="pane-log" hidden>
       <h2>Job-hunt log</h2>
-      <div class="figs" id="log-figs"></div>
+      <div class="figs" id="log-figs" style="margin-bottom:12px"></div>
       <div class="log-tools">
         <input id="q" placeholder="Search" style="min-width:150px">
         <select id="type-filter"><option value="">All types</option><option value="application">Applications</option><option value="interview">Interviews</option><option value="offer">Offers</option><option value="denial">Denials</option><option value="withdrawn">Withdrawn</option><option value="milestone">Milestones</option></select>
@@ -756,7 +756,7 @@ function freeCardHTML(opts={}){
 }
 function summaryCardHTML(run, from, to){
   const [a,b]=pairFor(run.company); const first=run.roles[0], last=run.roles[run.roles.length-1];
-  return `<div class="card summary" style="--a:${a};--b:${b}" data-run="${esc(run.company)}" tabindex="0" role="button" aria-label="${esc(run.company)} stack"><div class="inner">
+  return `<div class="card summary top" style="--a:${a};--b:${b}" data-run="${esc(run.company)}" tabindex="0" role="button" aria-label="${esc(run.company)} stack"><div class="inner">
     <div class="face front">
       <div class="team" style="font-size:${teamSize(run.company)}cqw">${esc(run.company)}</div><span class="num">${pad(from)}–${pad(to)}</span>
       <div class="art"><span class="mono">${run.roles.length}<small>${run.roles.length===1?'role':'roles'}</small></span><span class="badge">${esc(last.code||codeFor(last.title))}</span></div>
@@ -1002,7 +1002,7 @@ $('#profile-form').addEventListener('submit', e=>{ e.preventDefault(); const p=S
 
 // log
 function renderLog(){
-  const h=huntStats(); $('#log-figs').innerHTML = `<div>${h.apps}<small>Applications</small></div><div>${h.open}<small>Open</small></div><div>${h.apps?Math.round(100*h.responded/h.apps)+'%':'–'}<small>Response</small></div><div>${h.interviews}<small>Interviews</small></div><div>${h.offers}<small>Offers</small></div><div>${h.denials}<small>Denials</small></div>`;
+  const h=huntStats(); const fig=(v,k)=>`<span><b>${v}</b><small>${k}</small></span>`; $('#log-figs').innerHTML = fig(h.apps,'applications')+fig(h.open,'open')+fig(h.apps?Math.round(100*h.responded/h.apps)+'%':'–','response')+fig(h.interviews,'interviews')+fig(h.offers,'offers')+fig(h.denials,'denials');
   const q=norm($('#q').value), tf=$('#type-filter').value, sort=$('#sort').value; let list=sortedEvents(); if(sort==='desc') list.reverse(); if(sort==='company') list.sort((a,b)=>(norm(a.company)||'~').localeCompare(norm(b.company)||'~')||(a.date<b.date?-1:1)); if(tf) list=list.filter(e=>e.type===tf); if(q) list=list.filter(e=>[e.company,e.title,e.notes,e.status,e.salary].some(v=>norm(v).includes(q)));
   $('#log-count').textContent = list.length===S.events.length ? `${S.events.length} events` : `${list.length} of ${S.events.length}`;
   $('#log-body').innerHTML = list.map(e=>{ const t=TYPES[e.type]||TYPES.milestone; let st=''; if(e.type==='application'){ const s=statusOf(e); st = s.needs ? `<button class="st needs" data-add="${e.id}" data-kind="${s.key}">${esc(s.label)} · needs date</button>` : `<span class="st">${esc(s.label)}${s.from?' <span style="color:var(--muted)">'+fmtShort(s.from.date)+'</span>':''}</span>`; }
