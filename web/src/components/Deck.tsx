@@ -76,14 +76,18 @@ export function Deck() {
         {sampleMode && (
           <span className="note-inline"><span>Example career</span><button className="btn" onClick={() => { if (confirm('Clear the example career and start empty?')) { update(() => ({ profile: { name: '', headline: '', location: '', summary: '', targets: [], email: '', linkedin: '', education: [], certs: [] }, roles: [], events: [], brand: {}, settings: S.settings })); openDrawer('profile'); } }}>Clear</button></span>
         )}
-        <div className="toggle small" id="group-toggle">
-          {(['role', 'team'] as const).map((g) => (
-            <button key={g} className={S.settings.group === g ? 'on' : ''} onClick={() => { setOpenRuns(new Set()); update((s) => ({ ...s, settings: { ...s.settings, group: g } }), { keepSample: true }); }}>{g === 'role' ? 'By role' : 'By team'}</button>
-          ))}
-        </div>
       </div>
       <div className="shelf" ref={shelf} onKeyDown={(e) => { if (e.key !== 'Enter' && e.key !== ' ') return; const card = (e.target as HTMLElement).closest<HTMLElement>('.card[data-id]'); if (card) { e.preventDefault(); openFocus(card.dataset.id!); } }}>
         {items}
+      </div>
+      {/* the grouping switch: a small scoreboard under the deck, lined up with the first card; the lit plate slides to the pick */}
+      <div className="shelf-foot">
+        <div className="scoreboard" id="group-toggle" role="tablist" aria-label="Group cards" data-on={S.settings.group}>
+          <span className="puck" aria-hidden="true" />
+          {(['role', 'team'] as const).map((g) => (
+            <button key={g} role="tab" aria-selected={S.settings.group === g} className={S.settings.group === g ? 'on' : ''} onClick={() => { setOpenRuns(new Set()); update((s) => ({ ...s, settings: { ...s.settings, group: g } }), { keepSample: true }); }}>{g === 'role' ? 'By role' : 'By team'}</button>
+          ))}
+        </div>
       </div>
     </>
   );

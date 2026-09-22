@@ -5,14 +5,14 @@ const GAP = 22, MIN_STRIP = 48, GHOST_W = 48;
  * fit, never hiding more than leaves a 48px strip of each; fall back to
  * swiping when even that is not enough. Sets --ml on the shelf, and on
  * `host` the variables that line the group toggle and the resume rows up
- * with the deck (--toggle-mr, --fold-ml, --fold-w).
+ * with the deck (--deck-ml, --fold-ml, --fold-w).
  */
 export function layoutDeck(el: HTMLElement, host: HTMLElement | null, opts: { ghost?: boolean } = {}) {
   const kids = [...el.children] as HTMLElement[];
   kids.forEach((k, i) => (k.style.zIndex = String(i + 1)));
   const items = kids.filter((k) => !k.classList.contains('empty-shelf') && !k.classList.contains('ghost'));
   const setVars = (v: Record<string, string>) => host && Object.entries(v).forEach(([k, val]) => (val ? host.style.setProperty(k, val) : host.style.removeProperty(k)));
-  const clear = () => setVars({ '--toggle-mr': '', '--fold-ml': '', '--fold-w': '' });
+  const clear = () => setVars({ '--deck-ml': '', '--fold-ml': '', '--fold-w': '' });
   if (items.length < 2) { el.style.setProperty('--ml', items.length ? GAP + 'px' : '0px'); el.classList.remove('scroll'); clear(); return; }
   const n = items.length, widths = items.map((k) => k.offsetWidth), sum = widths.reduce((a, b) => a + b, 0), cw = widths[0];
   const W = el.clientWidth - 12 - (opts.ghost === false ? 0 : GHOST_W + GAP), need = sum + GAP * (n - 1) - W;
@@ -24,6 +24,6 @@ export function layoutDeck(el: HTMLElement, host: HTMLElement | null, opts: { gh
     const left = first.offsetLeft, right = last.offsetLeft + last.offsetWidth;
     if (scroll) { clear(); return; }
     const dw = right - left, w = Math.min(dw, Math.max(560, Math.round(dw * 0.84)));
-    setVars({ '--toggle-mr': Math.max(0, el.clientWidth - right) + 'px', '--fold-ml': Math.round(left + (dw - w) / 2) + 'px', '--fold-w': w + 'px' });
+    setVars({ '--deck-ml': left + 'px', '--fold-ml': Math.round(left + (dw - w) / 2) + 'px', '--fold-w': w + 'px' });
   });
 }
