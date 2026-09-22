@@ -47,7 +47,7 @@ export function Landing({ tryHref = '/app', signInHref = '/login', onTry }: { tr
   useEffect(() => { const l = loadLocal(); setResume(!!l && !l.sample && (l.state.roles.length > 0 || !!l.state.profile.name)); }, []);
   const flip = (id: string) => setFlipped((f) => ({ ...f, [id]: !f[id] }));
   const tryProps = onTry ? { href: tryHref, onClick: (e: React.MouseEvent) => { e.preventDefault(); onTry(); } } : { href: tryHref };
-  const hand = [S.roles[1], S.roles[4]];
+  const hand = [S.roles[0], S.roles[2]]; // Marine Biologist at Acme, Latex Salesman at Vandelay
 
   return (
     <div className="landing">

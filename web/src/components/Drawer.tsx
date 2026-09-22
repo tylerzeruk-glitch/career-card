@@ -111,7 +111,7 @@ function RoleForm({ roleId }: { roleId: string | null }) {
       <form className="form" autoComplete="off" onSubmit={submit}>
         <div className="field"><label htmlFor="r-company">Company (team)</label><input id="r-company" ref={companyRef} list="companies" required placeholder="Acme Corp" value={company} onChange={(e) => { setCompany(e.target.value); setSwatch(null); }} /><datalist id="companies">{companies.map((c) => <option key={c} value={c} />)}</datalist></div>
         <div className="row3">
-          <div className="field" style={{ gridColumn: 'span 2' }}><label htmlFor="r-title">Title (position)</label><input id="r-title" required placeholder="Program Delivery Lead" value={title} onChange={(e) => { setTitle(e.target.value); if (!codeTouched) setCode(codeFor(e.target.value)); }} /></div>
+          <div className="field" style={{ gridColumn: 'span 2' }}><label htmlFor="r-title">Title (position)</label><input id="r-title" required placeholder="Importer / Exporter" value={title} onChange={(e) => { setTitle(e.target.value); if (!codeTouched) setCode(codeFor(e.target.value)); }} /></div>
           <div className="field"><label htmlFor="r-code">Badge</label><input id="r-code" maxLength={4} placeholder="PDL" value={code} onChange={(e) => { setCode(e.target.value); setCodeTouched(true); }} /></div>
         </div>
         <div className="row2">
@@ -120,7 +120,7 @@ function RoleForm({ roleId }: { roleId: string | null }) {
         </div>
         <label className="check"><input type="checkbox" checked={current} onChange={(e) => setCurrent(e.target.checked)} /> I still work here</label>
         <div className="row2">
-          <div className="field"><label htmlFor="r-location">Location</label><input id="r-location" name="location" placeholder="Chicago, IL" defaultValue={r?.location || ''} /></div>
+          <div className="field"><label htmlFor="r-location">Location</label><input id="r-location" name="location" placeholder="New York, NY" defaultValue={r?.location || ''} /></div>
           <div className="field"><label htmlFor="r-reason">How it ended</label>
             <select id="r-reason" value={reasonSel} onChange={(e) => setReasonSel(e.target.value)}>
               <option value="">—</option>
@@ -181,7 +181,7 @@ function EventForm({ eventId, prefill }: { eventId: string | null; prefill: Part
             </select></div>
         </div>
         <div className="field"><label htmlFor="f-company">Company</label><input id="f-company" name="company" list="ev-companies" placeholder="Acme Corp" defaultValue={base.company || ''} /><datalist id="ev-companies">{companies.map((c) => <option key={c} value={c} />)}</datalist></div>
-        <div className="field"><label htmlFor="f-title">{ms ? 'What happened' : 'Job title'}</label><input id="f-title" name="title" placeholder="Program Delivery Lead" defaultValue={base.title || ''} /></div>
+        <div className="field"><label htmlFor="f-title">{ms ? 'What happened' : 'Job title'}</label><input id="f-title" name="title" placeholder="Importer / Exporter" defaultValue={base.title || ''} /></div>
         <div className="row2">
           <div className="field"><label htmlFor="f-salary">Salary</label><input id="f-salary" name="salary" placeholder="$120k" defaultValue={base.salary || ''} /></div>
           <div className="field"><label htmlFor="f-link">Link</label><input id="f-link" name="link" type="url" placeholder="https://" defaultValue={base.link || ''} /></div>
@@ -231,10 +231,10 @@ function ProfileForm() {
     <section>
       <form className="form" autoComplete="off" onSubmit={submit}>
         <div className="group"><div className="gh">Player</div>
-        <div className="field"><label htmlFor="p-name-in">Name</label><input id="p-name-in" name="name" placeholder="Jordan Avery" defaultValue={p.name} /></div>
+        <div className="field"><label htmlFor="p-name-in">Name</label><input id="p-name-in" name="name" placeholder="Jordyn Smith" defaultValue={p.name} /></div>
         <div className="row2">
-        <div className="field"><label htmlFor="p-headline">Headline</label><input id="p-headline" name="headline" placeholder="Program Delivery Lead" defaultValue={p.headline} /></div>
-        <div className="field"><label htmlFor="p-location">Location</label><input id="p-location" name="location" placeholder="Chicago, IL" defaultValue={p.location} /></div>
+        <div className="field"><label htmlFor="p-headline">Headline</label><input id="p-headline" name="headline" placeholder="Importer / Exporter" defaultValue={p.headline} /></div>
+        <div className="field"><label htmlFor="p-location">Location</label><input id="p-location" name="location" placeholder="New York, NY" defaultValue={p.location} /></div>
         </div>
         </div>
         <div className="group"><div className="gh">Scouting report</div>
