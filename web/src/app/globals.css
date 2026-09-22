@@ -165,21 +165,24 @@ button,input,select,textarea{font:inherit;color:inherit}
 @media (max-width:700px){.overlay.legend{display:none}}
 
 /* focus overlay for a card */
-.focus{position:fixed;inset:0;z-index:12;background:rgba(20,18,14,.55);display:flex;align-items:center;justify-content:center;gap:10px;padding:16px;animation:fade .2s ease-out}
-.focus .card{width:min(330px,80vw);animation:pop .3s cubic-bezier(.2,.7,.2,1)}
+.focus{position:fixed;inset:0;z-index:12;background:rgba(20,18,14,.5);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);display:flex;align-items:center;justify-content:center;gap:10px;padding:16px;animation:fade .2s ease-out}
+.focus .card{width:min(330px,80vw)}
+.focus .pop .card{animation:pop .25s cubic-bezier(.2,.7,.2,1)}
+#focus-card{will-change:transform}
 @keyframes fade{from{opacity:0}}
 @keyframes pop{from{transform:scale(.55) translateY(28px);opacity:0}}
 @media (prefers-reduced-motion: reduce){.focus,.focus .card{animation:none}}
 .focus .nav{background:rgba(255,255,255,.12);color:#fff;border:0;width:40px;height:40px;border-radius:50%;font-size:20px;cursor:pointer}
 .focus .nav:hover{background:rgba(255,255,255,.25)}
 .focus .column{display:flex;flex-direction:column;align-items:center;gap:14px}
-.focus .bar{display:flex;justify-content:center;gap:8px}
-.focus .bar .btn.edit{background:#fbf6ea;color:var(--ink)}
-.focus .bar .btn.edit:hover{background:#fff}
+.focus .bar{display:flex;justify-content:center;gap:10px}
+.focus .fbtn{width:40px;height:40px;border-radius:50%;border:0;padding:0;background:#fbf6ea;color:var(--ink);display:grid;place-items:center;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+.focus .fbtn:hover{background:#fff}
+.focus .fbtn svg{width:18px;height:18px;display:block}
 .focus .bar .btn{background:rgba(255,255,255,.14);color:#fff}
 .focus .bar .btn:hover{background:rgba(255,255,255,.28)}
 .focus .close{position:absolute;top:14px;right:14px}
-.focus .hint{position:absolute;top:18px;left:0;right:0;text-align:center;color:rgba(255,255,255,.7);font-size:12px}
+.focus .hint{text-align:center;color:rgba(255,255,255,.78);font-size:12px;margin-bottom:-2px}
 
 /* drawer */
 .scrim{position:fixed;inset:0;background:rgba(0,0,0,.18);z-index:9;opacity:0;pointer-events:none;transition:opacity .18s}
