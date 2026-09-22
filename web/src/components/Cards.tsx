@@ -28,7 +28,7 @@ export function RoleCard({ S, r, idx, total, on, className, onClick }: { S: Stat
       <div className="inner">
         <div className="face front">
           <div className="team" style={{ fontSize: teamSize(r.company) + 'cqw' }}>{r.company}</div>
-          <span className="num">{pad(idx + 1)}</span>
+          <span className={"num" + (idx + 1 >= 10 ? " wide" : "")}>#{idx + 1}</span>
           <div className="art"><span className="mono">{initials(p.name) || '?'}</span><span className="badge">{r.code || codeFor(r.title)}</span></div>
           <div className="who">{p.name || 'Your name'}</div>
           <div className="role">{r.title} · {yearOf(r.start)} – {yearOf(r.end)}</div>
@@ -48,7 +48,7 @@ export function RoleCard({ S, r, idx, total, on, className, onClick }: { S: Stat
           </table>
           {bullets.length ? <Bullets items={bullets} /> : <div className="bul" style={{ color: '#6b6559', fontStyle: 'italic' }}>No highlights yet.</div>}
           {skills.length ? <div className="skills">{skills.map((x, i) => <span key={i}>{x}</span>)}</div> : null}
-          <div className="foot"><span>{r.reason || (r.end ? 'Ended ' + fmtMonth(r.end) : 'Current')}</span><span>{pad(idx + 1)} of {pad(total)}</span></div>
+          <div className="foot"><span>{r.reason || (r.end ? 'Ended ' + fmtMonth(r.end) : 'Current')}</span><span>#{idx + 1} of {total}</span></div>
         </div>
       </div>
     </div>
@@ -97,7 +97,7 @@ export function SummaryCard({ S, run, from, to }: { S: State; run: Run; from: nu
       <div className="inner">
         <div className="face front">
           <div className="team" style={{ fontSize: teamSize(run.company) + 'cqw' }}>{run.company}</div>
-          <span className="num">{pad(from)}–{pad(to)}</span>
+          <span className="num">#{from}–{to}</span>
           <div className="art"><span className="mono">{run.roles.length}<small>{run.roles.length === 1 ? 'role' : 'roles'}</small></span><span className="badge">{last.code || codeFor(last.title)}</span></div>
           <div className="who">{S.profile.name || 'Your name'}</div>
           <div className="role">{yearOf(first.start)} – {yearOf(last.end)} · {dur(monthIndex(last.end || nowYM()) - monthIndex(first.start) + 1)}</div>
