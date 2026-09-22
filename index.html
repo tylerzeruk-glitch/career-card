@@ -563,7 +563,7 @@ kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--hair);border-r
   <div class="dlg">
     <h3>How this works</h3>
     <p><b>Cards.</b> One card per role, oldest to newest, like a career in a card set. Click a card to open it large, back side up so the details are right there; click again to turn it over. "By team" gathers consecutive roles at one company into a stack; click a stack to spread it.</p>
-    <p><b>Free agent.</b> When no role is current you're a free agent. The pill in the header counts the days, from your layoff event if you've added one, otherwise from the end of your last role. Add a job-hunt event (<i>+ Add → Event</i>) as you apply and interview; the free-agent card and the timeline pick them up.</p>
+    <p><b>Free agent.</b> When no role is current you're a free agent. The day count in the Free agency row runs from your layoff event if you've added one, otherwise from the end of your last role. Add a job-hunt event (<i>+ Add → Event</i>) as you apply and interview; the free-agent card and the timeline pick them up.</p>
     <p><b>Timeline.</b> Company spans sit above the line, job-hunt events sit on it. Drag to pan; pinch, <kbd>Ctrl</kbd>+scroll or double-click to zoom. "Career" fits everything, "Free agency" fits the job hunt.</p>
     <p><b>Import.</b> LinkedIn's data export (zip or CSVs), a resume (PDF, Word, text), or the job-hunt tracker spreadsheet. Every import shows a preview you can correct before saving.</p>
     <p><b>Share.</b> Builds a standalone career page with the job hunt left out.</p>
@@ -712,7 +712,7 @@ function renderHeader(){
   $('#p-name').textContent = p.name || 'Career Card';
   $('#p-sub').textContent = [p.headline, p.location].filter(Boolean).join(' · ');
   const pill=$('#pill');
-  if(st.free){ pill.className='pill'; pill.innerHTML = `<i></i>Free agent${st.days!=null?' · day '+st.days:''}`; }
+  if(st.free){ pill.className='pill'; pill.innerHTML = `<i></i>Free agent`; }
   else { pill.className='pill active'; pill.innerHTML = `<i></i>Active · ${esc(st.current.company)}`; }
   $('#p-line').innerHTML = cs ? statLine(cs) : '';
 }
@@ -747,7 +747,7 @@ function freeCardHTML(opts={}){
   return `<div class="card free${opts.cls?' '+opts.cls:''}" style="--a:#dc4432;--b:#1f2a44" data-id="free" tabindex="0" role="button" aria-label="Free agent"><div class="inner">
     <div class="face front">
       <div class="team" style="font-size:${teamSize('Free agent')}cqw">Free agent</div><span class="num">now</span>
-      <div class="art"><div class="k">Open to</div><div class="open">${esc(open)}</div>${!opts.share && st.days!=null?`<div class="day">Day ${st.days}</div>`:''}</div>
+      <div class="art"><div class="k">Open to</div><div class="open">${esc(open)}</div></div>
       <div class="who">${esc(p.name||'Your name')}</div>
       <div class="role">${opts.share ? 'Available now' : (st.since ? 'Since '+fmt(st.since) : 'Unsigned')}</div>
     </div>
