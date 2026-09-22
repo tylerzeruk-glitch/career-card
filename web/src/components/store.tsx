@@ -66,8 +66,8 @@ export function CardProvider({ children, user, cloud }: { children: ReactNode; u
       setBooted(true);
       return;
     }
-    if (local) { setS(local.state); setSample(local.sample); }
-    else { setS(sampleState()); setSample(true); }
+    if (local && !local.sample) { setS(local.state); setSample(false); }
+    else { setS({ ...sampleState(), settings: local?.state.settings ?? sampleState().settings }); setSample(true); }
     setBooted(true);
   }, [user, cloud]);
 
