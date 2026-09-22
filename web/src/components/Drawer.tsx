@@ -35,6 +35,29 @@ export function Drawer({ d }: { d: DrawerState }) {
 
 const field = (fd: FormData, k: string) => String(fd.get(k) ?? '').trim();
 
+/** Free-form entry that turns into chips: Enter (or a comma) adds one, hover a chip for its ×, Backspace on an empty box removes the last. */
+function TagInput({ id, value, onChange, placeholder }: { id: string; value: string[]; onChange: (v: string[]) => void; placeholder?: string }) {
+  const [draft, setDraft] = useState('');
+  const inputRef = useRef<HTMLInputElement>(null);
+  const add = (raw: string) => {
+    const items = raw.split(',').map((x) => x.trim()).filter(Boolean).filter((x) => !value.some((v) => v.toLowerCase() === x.toLowerCase()));
+    if (items.length) onChange([...value, ...items]);
+    setDraft('');
+  };
+  const onKey = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' || e.key === ',') { e.preventDefault(); add(draft); }
+    else if (e.key === 'Backspace' && !draft && value.length) onChange(value.slice(0, -1));
+  };
+  return (
+    <div className="tags" onClick={() => inputRef.current?.focus()}>
+      {value.map((t, i) => (
+        <span className="tag" key={t + i}>{t}<button type="button" aria-label={'Remove ' + t} title="Remove" onClick={(e) => { e.stopPropagation(); onChange(value.filter((_, j) => j !== i)); }}>×</button></span>
+      ))}
+      <input ref={inputRef} id={id} value={draft} placeholder={value.length ? '' : placeholder} onChange={(e) => setDraft(e.target.value)} onKeyDown={onKey} onBlur={() => { if (draft.trim()) add(draft); }} />
+    </div>
+  );
+}
+
 // ---------- role ----------
 /** Why a role ended. The card foot shows this instead of "Ended Mon YYYY". */
 export const REASONS = ['Promoted', 'Left for a new role', 'Role eliminated', 'Laid off', 'Contract ended', 'Company acquired', 'Company closed', 'Relocated', 'Went back to school', 'Retired'];
@@ -48,6 +71,7 @@ function RoleForm({ roleId }: { roleId: string | null }) {
   const [codeTouched, setCodeTouched] = useState(!!r?.code);
   const [current, setCurrent] = useState(!!(r && !r.end));
   const [swatch, setSwatch] = useState<number | null>(null);
+  const [skills, setSkills] = useState<string[]>(r?.skills || []);
   const [reasonSel, setReasonSel] = useState(!r?.reason ? '' : REASONS.includes(r.reason) ? r.reason : '__other');
   const [reasonOther, setReasonOther] = useState(r?.reason && !REASONS.includes(r.reason) ? r.reason : '');
   const [msg, setMsg] = useState('');
@@ -64,7 +88,7 @@ function RoleForm({ roleId }: { roleId: string | null }) {
       start: parseMonth(field(fd, 'start')) || '', end: current ? null : parseMonth(field(fd, 'end')) || null,
       location: field(fd, 'location'), reason: reasonSel === '__other' ? reasonOther.trim() : reasonSel,
       bullets: field(fd, 'bullets').split('\n').map((s) => s.trim().replace(/^[-•·*]\s*/, '')).filter(Boolean),
-      skills: field(fd, 'skills').split(',').map((s) => s.trim()).filter(Boolean),
+      skills,
     };
     if (!rec.company || !rec.title || !rec.start) { setMsg(field(fd, 'start') && !rec.start ? 'Start month should look like 2021-03 or Mar 2021.' : 'Company, title and start are needed.'); return; }
     if (rec.end && rec.end < rec.start) { setMsg('It ended before it started.'); return; }
@@ -103,7 +127,7 @@ function RoleForm({ roleId }: { roleId: string | null }) {
           </div>
         </div>
         <div className="field"><label htmlFor="r-bullets">Highlights, one per line</label><textarea id="r-bullets" name="bullets" placeholder={'Led delivery for a portfolio of clients\nRan intake, triage and UAT'} defaultValue={(r?.bullets || []).join('\n')} /></div>
-        <div className="field"><label htmlFor="r-skills">Skills, comma separated</label><input id="r-skills" name="skills" placeholder="Program management, UAT, Client delivery" defaultValue={(r?.skills || []).join(', ')} /></div>
+        <div className="field"><label htmlFor="r-skills">Skills</label><TagInput id="r-skills" value={skills} onChange={setSkills} placeholder="Type a skill and press Enter" /></div>
         <div className="field"><label>Team colors</label>
           <div className="swatches">{PAIRS.map((p, i) => <button type="button" key={i} className={'sw' + (i === curSwatch ? ' on' : '')} style={{ '--a': p[0], '--b': p[1] } as React.CSSProperties} title={'Color pair ' + (i + 1)} onClick={() => setSwatch(i)} />)}</div>
           <span className="help">Shared by every role at this company.</span>
@@ -174,6 +198,7 @@ function EventForm({ eventId, prefill }: { eventId: string | null; prefill: Part
 function ProfileForm() {
   const { S, update, flash, user, slug, visibility, setMeta } = useCard();
   const p = S.profile;
+  const [targets, setTargets] = useState<string[]>(p.targets || []);
   const [msg, setMsg] = useState('');
   const [pageMsg, setPageMsg] = useState('');
   const [slugIn, setSlugIn] = useState(slug || slugify(p.name));
@@ -184,7 +209,7 @@ function ProfileForm() {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
     const lines = (k: string) => field(fd, k).split('\n').map((l) => l.split('|').map((s) => s.trim())).filter((x) => x[0]);
-    update((s) => ({ ...s, profile: { ...s.profile, name: field(fd, 'name'), headline: field(fd, 'headline'), location: field(fd, 'location'), summary: field(fd, 'summary'), targets: field(fd, 'targets').split(',').map((x) => x.trim()).filter(Boolean), email: field(fd, 'email'), linkedin: field(fd, 'linkedin'), education: lines('education').map((x) => ({ school: x[0], degree: x[1] || '', years: x[2] || '' })), certs: lines('certs').map((x) => ({ name: x[0], issuer: x[1] || '', year: x[2] || '' })) } }));
+    update((s) => ({ ...s, profile: { ...s.profile, name: field(fd, 'name'), headline: field(fd, 'headline'), location: field(fd, 'location'), summary: field(fd, 'summary'), targets, email: field(fd, 'email'), linkedin: field(fd, 'linkedin'), education: lines('education').map((x) => ({ school: x[0], degree: x[1] || '', years: x[2] || '' })), certs: lines('certs').map((x) => ({ name: x[0], issuer: x[1] || '', year: x[2] || '' })) } }));
     setMsg('Saved.'); flash('Saved.');
   };
   const savePage = async () => {
@@ -201,7 +226,7 @@ function ProfileForm() {
         <div className="field"><label htmlFor="p-headline">Headline (position)</label><input id="p-headline" name="headline" placeholder="Program Delivery Lead" defaultValue={p.headline} /></div>
         <div className="field"><label htmlFor="p-location">Location</label><input id="p-location" name="location" placeholder="Chicago, IL" defaultValue={p.location} /></div>
         <div className="field"><label htmlFor="p-summary">Scouting report (summary)</label><textarea id="p-summary" name="summary" style={{ minHeight: 80 }} defaultValue={p.summary} /></div>
-        <div className="field"><label htmlFor="p-targets">Open to (target roles), comma separated</label><input id="p-targets" name="targets" placeholder="Delivery, Program, Client services" defaultValue={(p.targets || []).join(', ')} /></div>
+        <div className="field"><label htmlFor="p-targets">Open to (target roles)</label><TagInput id="p-targets" value={targets} onChange={setTargets} placeholder="Type a role and press Enter" /></div>
         <div className="row2">
           <div className="field"><label htmlFor="p-email">Email</label><input id="p-email" name="email" type="email" defaultValue={p.email} /></div>
           <div className="field"><label htmlFor="p-linkedin">LinkedIn URL</label><input id="p-linkedin" name="linkedin" type="url" defaultValue={p.linkedin} /></div>
