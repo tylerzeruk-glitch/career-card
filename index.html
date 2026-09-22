@@ -298,7 +298,7 @@ kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--hair);border-r
 /* free agent */
 .card.free .front{background:var(--b);border-color:color-mix(in srgb,var(--b) 78%,#fff)}
 .card.free .team{color:#dc4432;text-shadow:.11em .11em 0 rgba(0,0,0,.35)}
-.card.free .num{border-color:#fbf6ea;color:#fbf6ea}
+.card.free .num{border-color:#dc4432;background:#dc4432;color:#fbf6ea;font:700 5.4cqw "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.06em}
 .card.free .art{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.35);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:6%;text-align:center;color:#fbf6ea}
 .card.free .art::after{display:none}
 .card.free .art .k{font:700 4.6cqw "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.2em;text-transform:uppercase;opacity:.7;margin-bottom:3%}
@@ -747,7 +747,7 @@ function freeCardHTML(opts={}){
   const open = (p.targets||[]).length ? p.targets.join(' · ') : (p.headline||'New role');
   return `<div class="card free${opts.cls?' '+opts.cls:''}" style="--a:#dc4432;--b:#1f2a44" data-id="free" tabindex="0" role="button" aria-label="Free agent"><div class="inner">
     <div class="face front">
-      <div class="team" style="font-size:${teamSize('Free agent')}cqw">Free agent</div><span class="num">now</span>
+      <div class="team" style="font-size:${teamSize('Free agent')}cqw">Free agent</div><span class="num" title="Free agent">FA</span>
       <div class="art"><div class="k">Open to</div><div class="open">${esc(open)}</div></div>
       <div class="who">${esc(p.name||'Your name')}</div>
       <div class="role">${opts.share ? 'Available now' : (st.since ? 'Since '+fmt(st.since) : 'Unsigned')}</div>
