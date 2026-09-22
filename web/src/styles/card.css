@@ -10,13 +10,13 @@
 .card .team{height:15cqw;display:flex;align-items:flex-end;font:400 15cqw/1 "Righteous","Arial Black",Impact,sans-serif;color:var(--a);text-transform:uppercase;text-shadow:.11em .11em 0 var(--b);letter-spacing:.01em;padding-right:16%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:none}
 .card .num{position:absolute;top:4.5%;right:5%;width:13cqw;height:13cqw;border:1.5px solid #dc4432;border-radius:50%;display:grid;place-items:center;font:700 6cqw "Libre Caslon Text",Georgia,serif;color:#dc4432}
 .card .num.wide{font-size:5cqw}
-/* every art box is the same size: a fixed height, on the small side; the name and role sit at the bottom of the card */
-.card .art{flex:none;height:64cqw;margin:4% 0 0;border-radius:5cqw;background:var(--a);border:2px solid var(--b);position:relative;display:grid;place-items:center}
+/* every art box is the same size: the bands above and below it are fixed height, so it fills whatever is left */
+.card .art{flex:1;margin:4% 0 5%;border-radius:5cqw;background:var(--a);border:2px solid var(--b);position:relative;display:grid;place-items:center}
 .card .art::after{content:"";position:absolute;inset:0;border-radius:inherit;background:radial-gradient(circle at 30% 20%,rgba(255,255,255,.35),transparent 55%)}
 .card .mono{font:700 34cqw/1 "Barlow Condensed","Arial Narrow",sans-serif;color:var(--b);position:relative;z-index:1;letter-spacing:-.02em}
 /* the position badge: a red starburst sticker, tilted, hanging off the bottom-right corner of the art box */
-.card .badge{position:absolute;right:-5%;bottom:-7%;width:25cqw;height:25cqw;background:#dc4432;color:#fff;display:grid;place-items:center;font:700 6.2cqw "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.04em;z-index:2;transform:rotate(-12deg);clip-path:polygon(50.0% 0.0%,60.6% 10.4%,75.0% 6.7%,79.0% 21.0%,93.3% 25.0%,89.6% 39.4%,100.0% 50.0%,89.6% 60.6%,93.3% 75.0%,79.0% 79.0%,75.0% 93.3%,60.6% 89.6%,50.0% 100.0%,39.4% 89.6%,25.0% 93.3%,21.0% 79.0%,6.7% 75.0%,10.4% 60.6%,0.0% 50.0%,10.4% 39.4%,6.7% 25.0%,21.0% 21.0%,25.0% 6.7%,39.4% 10.4%);filter:drop-shadow(0 2px 2px rgba(0,0,0,.18))}
-.card .who{margin-top:auto;font:700 9.5cqw/1 "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.04em;text-transform:uppercase;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card .badge{position:absolute;left:-5%;bottom:-7%;width:25cqw;height:25cqw;background:#dc4432;color:#fff;display:grid;place-items:center;font:700 6.2cqw "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.04em;z-index:2;transform:rotate(-12deg);clip-path:polygon(50.0% 0.0%,60.6% 10.4%,75.0% 6.7%,79.0% 21.0%,93.3% 25.0%,89.6% 39.4%,100.0% 50.0%,89.6% 60.6%,93.3% 75.0%,79.0% 79.0%,75.0% 93.3%,60.6% 89.6%,50.0% 100.0%,39.4% 89.6%,25.0% 93.3%,21.0% 79.0%,6.7% 75.0%,10.4% 60.6%,0.0% 50.0%,10.4% 39.4%,6.7% 25.0%,21.0% 21.0%,25.0% 6.7%,39.4% 10.4%);filter:drop-shadow(0 2px 2px rgba(0,0,0,.18))}
+.card .who{flex:none;font:700 9.5cqw/1 "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.04em;text-transform:uppercase;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .card .role{font:italic 400 5.6cqw/1.25 "Libre Caslon Text",Georgia,serif;color:#6b6559;text-align:center;margin-top:1.5%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .card .back{background:#e9dfc9;border-color:#f3ecdc;display:flex;flex-direction:column;container-type:inline-size;padding:0 6% 5%}
 .card .hdr{background:var(--b);color:#fbf6ea;margin:0 -7.5% 3%;padding:5% 6% 4%;text-align:center}
