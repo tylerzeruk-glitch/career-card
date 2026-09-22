@@ -15,6 +15,7 @@ const res = await build({
 });
 const js = res.outputFiles[0].text.replace(/<\/script/gi, '<\\/script');
 const css = readFileSync('src/app/globals.css', 'utf8') + '\n' + readFileSync('src/styles/card.css', 'utf8');
+const icon = 'data:image/svg+xml;utf8,' + encodeURIComponent(readFileSync('src/app/icon.svg', 'utf8'));
 const fonts = 'https://fonts.googleapis.com/css2?family=Righteous&family=Lilita+One&family=Barlow+Condensed:wght@500;600;700&family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap';
 const html = `<!doctype html>
 <html lang="en">
@@ -22,6 +23,7 @@ const html = `<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>CareerCards</title>
+<link rel="icon" href="${icon}">
 <link rel="stylesheet" href="${fonts}">
 <style>
 ${css}
