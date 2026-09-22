@@ -64,9 +64,9 @@ button,input,select,textarea{font:inherit;color:inherit}
 .brand .pill{margin:8px 0 6px 3px}
 .brand h1{font:700 30px/1 var(--cond);letter-spacing:.03em;text-transform:uppercase}
 .brand .sub{font:400 12.5px/1.5 var(--serif);color:var(--ink-2);letter-spacing:.02em;margin-top:2px}
-.brand .line{font:500 11px/1.6 var(--mono);color:var(--muted);margin-top:3px;letter-spacing:.01em}
-.brand .line b{color:var(--ink-2);font-weight:500}
-.brand .line i{font-style:normal;margin:0 6px;opacity:.5}
+.brand .line{display:flex;gap:14px;align-items:center;margin-top:6px;font:700 10.5px/1 var(--cond);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.brand .line span{display:inline-flex;align-items:center;gap:6px}
+.brand .line b{display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 6px;border-radius:999px;background:var(--ink);color:var(--bg);font:700 11.5px/1 var(--cond);letter-spacing:0}
 .pill{display:inline-flex;align-items:center;gap:8px;font:700 12px/1 var(--cond);letter-spacing:.14em;text-transform:uppercase;padding:7px 11px;border-radius:4px;background:var(--red);color:#fff;transform:rotate(-2deg);white-space:nowrap}
 .pill i{width:7px;height:7px;border-radius:50%;background:#fff;box-shadow:0 0 0 3px rgba(255,255,255,.35)}
 .pill.active{background:var(--navy);transform:none}
@@ -713,10 +713,7 @@ function renderHeader(){
   else { pill.className='pill active'; pill.innerHTML = `<i></i>Active · ${esc(st.current.company)}`; }
   $('#p-line').innerHTML = cs ? statLine(cs) : '';
 }
-const statLine = cs => [
-  `<b>${cs.seasons}</b> ${cs.seasons===1?'season':'seasons'}`, `<b>${cs.teams}</b> ${cs.teams===1?'team':'teams'}`, `<b>${cs.positions}</b> ${cs.positions===1?'position':'positions'}`,
-  `longest <b>${dur(cs.longest.months)}</b> at ${esc(cs.longest.company)}`
-].join('<i>·</i>');
+const statLine = cs => [[cs.seasons,'season'],[cs.teams,'team'],[cs.positions,'position']].map(([n,k])=>`<span><b>${n}</b>${k}${n===1?'':'s'}</span>`).join('');
 
 // ---------- cards ----------
 const teamSize = name => Math.max(7, Math.min(15, Math.floor(105/Math.max(4,(name||'').length))));
@@ -1188,7 +1185,7 @@ body{margin:0;background:#f2eee5;color:#1c1b18;font:14px/1.5 system-ui,-apple-sy
 .mast{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;border-bottom:2px solid #1c1b18;padding-bottom:12px}
 .mast h1{margin:0;font:700 36px/1 "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.03em;text-transform:uppercase}
 .mast .sub{font:400 13px "Libre Caslon Text",Georgia,serif;color:#55524a;margin-top:4px}
-.mast .line{font:500 11px/1.6 ui-monospace,Menlo,monospace;color:#8a867b;margin-top:3px}.mast .line b{color:#55524a;font-weight:500}.mast .line i{font-style:normal;margin:0 6px;opacity:.5}
+.mast .line{display:flex;gap:14px;align-items:center;margin-top:6px;font:700 10.5px/1 "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#8a867b}.mast .line span{display:inline-flex;align-items:center;gap:6px}.mast .line b{display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 6px;border-radius:999px;background:#1c1b18;color:#f2eee5;font:700 11.5px/1 "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:0}
 .pill{display:inline-flex;align-items:center;gap:8px;font:700 12px/1 "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.14em;text-transform:uppercase;padding:8px 12px;border-radius:4px;background:#dc4432;color:#fff;transform:rotate(-2deg)}
 h2{font:700 11px/1.5 "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#dc4432;margin:0}
 .k{font:700 11px/1 "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#8a867b;margin-top:18px}
