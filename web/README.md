@@ -94,3 +94,5 @@ date-pattern parser and says so in the preview.
 - Company logo lookup for the card art.
 - Import libraries (SheetJS, JSZip, pdf.js, mammoth) are still loaded from
   cdnjs at import time rather than bundled.
+- A contact-us sheet for the landing page footer; the link is a mailto to
+  hello@careercards.app until then.
