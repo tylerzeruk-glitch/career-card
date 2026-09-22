@@ -73,7 +73,6 @@ export function Deck() {
   return (
     <>
       <div className="shelf-head">
-        <span className="k">Career · {total} {total === 1 ? 'card' : 'cards'}</span>
         {sampleMode && (
           <span className="note-inline"><span>Example career</span><button className="btn" onClick={() => { if (confirm('Clear the example career and start empty?')) { update(() => ({ profile: { name: '', headline: '', location: '', summary: '', targets: [], email: '', linkedin: '', education: [], certs: [] }, roles: [], events: [], brand: {}, settings: S.settings })); openDrawer('profile'); } }}>Clear</button></span>
         )}
