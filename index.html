@@ -110,7 +110,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 /* fold: resume rows */
 /* perforated tear-off lines between the rows */
 :root{--perf:radial-gradient(circle,var(--hair) 1.3px,transparent 1.6px) 4px 50%/9px 4px repeat-x}
-.fold{max-width:880px;margin-top:6px;position:relative;padding-top:1px}
+.fold{max-width:100%;margin-top:6px;position:relative;padding-top:1px}
 .fold::before{content:"";position:absolute;left:0;right:0;top:0;height:4px;background:var(--perf)}
 .row{display:grid;grid-template-columns:132px 1fr;gap:18px;padding:14px 0 15px;align-items:baseline;position:relative}
 .row::after{content:"";position:absolute;left:0;right:0;bottom:-2px;height:4px;background:var(--perf)}
@@ -805,7 +805,10 @@ function layoutShelf(){
   const ov = need<=0 ? -gap : Math.min(cw-48, need/(n-1));
   shelf.style.setProperty('--ml', (-ov)+'px'); const scroll = need>0 && need/(n-1) > cw-48; shelf.classList.toggle('scroll', scroll);
   // line the group toggle up with the right edge of the last card
-  requestAnimationFrame(()=>{ const last=items[items.length-1]; const right=last.offsetLeft+last.offsetWidth; $('#group-toggle').style.marginRight = scroll ? '' : Math.max(0, shelf.clientWidth-right)+'px'; });
+  requestAnimationFrame(()=>{ const first=items[0], last=items[items.length-1]; const left=first.offsetLeft, right=last.offsetLeft+last.offsetWidth;
+    $('#group-toggle').style.marginRight = scroll ? '' : Math.max(0, shelf.clientWidth-right)+'px';
+    // the resume rows sit centred under the deck: same left and right edges as the cards
+    const fold=$('#fold'); if(scroll){ fold.style.marginLeft=''; fold.style.width=''; } else { fold.style.marginLeft=left+'px'; fold.style.width=(right-left)+'px'; } });
 }
 if(window.ResizeObserver){ new ResizeObserver(()=>layoutShelf()).observe($('#shelf')); }
 $('#shelf').addEventListener('click', e=>{
