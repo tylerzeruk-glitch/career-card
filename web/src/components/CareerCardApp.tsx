@@ -101,7 +101,7 @@ function Header() {
         <span style={{ width: 8 }} />
         <button className="btn primary" onClick={() => ui.openDrawer('role', { roleId: null })}>+ Add</button>
         <button className="btn" onClick={() => ui.openImport('linkedin')}>Import</button>
-        <button className="btn with-icon" onClick={() => ui.openDrawer('profile')} title="Profile"><Batter />Profile</button>
+        <button className="btn" onClick={() => ui.openDrawer('profile')}>Profile</button>
         <button className="btn" onClick={() => ui.openDrawer('profile')}>Share</button>
         <details className="menu" ref={menuRef} open={menu} onToggle={(e) => setMenu((e.target as HTMLDetailsElement).open)}>
           <summary className="btn">···</summary>
@@ -119,13 +119,3 @@ function Header() {
   );
 }
 
-/** A batter at the plate, bat up over the back shoulder. */
-function Batter() {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">
-      <path d="M8.3 9.6 19.6 1.9a1.05 1.05 0 0 1 1.3 1.6L10.1 12.2z" />
-      <circle cx="13.6" cy="5.1" r="2.4" />
-      <path d="M11 8.6c1.9-.4 3.6.3 4.2 1.9l.9 4.9-1.9.4-.7-2.7-.2 3.7 2.6 5.2h-2.4l-2.2-4.4-1.6 4.4H7.4l1.9-6.3-.4-3.5c-1.1-.4-1.7-1.4-1.3-2.3l1.6-1.4c.5-.3 1.2-.4 1.8 0z" />
-    </svg>
-  );
-}
