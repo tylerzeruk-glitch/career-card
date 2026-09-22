@@ -72,5 +72,7 @@ blocks and the body) and publish with
   accounts phase). Monogram + team colours for now.
 - Accounts: login (magic link, Google, LinkedIn SSO), hosted data, share as a
   link with public and private views. That is the move from one HTML file to
-  an app with a backend.
+  an app with a backend. Once it exists, the Free agency row (day count,
+  applications, interviews) is owner-only: hidden from anyone else viewing
+  the page, as it already is from the Share export.
 - Past job hunts as their own free-agency zones.
