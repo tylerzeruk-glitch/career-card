@@ -230,17 +230,18 @@ function ProfileForm() {
   return (
     <section>
       <form className="form" autoComplete="off" onSubmit={submit}>
+        <div className="group"><div className="gh">Player</div>
         <div className="field"><label htmlFor="p-name-in">Name</label><input id="p-name-in" name="name" placeholder="Jordan Avery" defaultValue={p.name} /></div>
-        <div className="field"><label htmlFor="p-headline">Headline (position)</label><input id="p-headline" name="headline" placeholder="Program Delivery Lead" defaultValue={p.headline} /></div>
-        <div className="field"><label htmlFor="p-location">Location</label><input id="p-location" name="location" placeholder="Chicago, IL" defaultValue={p.location} /></div>
-        <div className="field"><label htmlFor="p-summary">Scouting report (summary)</label><textarea id="p-summary" name="summary" style={{ minHeight: 80 }} defaultValue={p.summary} /></div>
-        <div className="field"><label htmlFor="p-targets">Open to (target roles)</label><TagInput id="p-targets" value={targets} onChange={setTargets} placeholder="Type a role and press Enter" /></div>
-        <div className="field"><label htmlFor="p-skills">Skills (scouting report)</label><TagInput id="p-skills" value={pskills} onChange={setPskills} placeholder="Type a skill and press Enter" /><span className="help">Leave empty to show the skills gathered from your roles.</span></div>
         <div className="row2">
-          <div className="field"><label htmlFor="p-email">Email</label><input id="p-email" name="email" type="email" defaultValue={p.email} /></div>
-          <div className="field"><label htmlFor="p-linkedin">LinkedIn URL</label><input id="p-linkedin" name="linkedin" type="url" defaultValue={p.linkedin} /></div>
+        <div className="field"><label htmlFor="p-headline">Headline</label><input id="p-headline" name="headline" placeholder="Program Delivery Lead" defaultValue={p.headline} /></div>
+        <div className="field"><label htmlFor="p-location">Location</label><input id="p-location" name="location" placeholder="Chicago, IL" defaultValue={p.location} /></div>
         </div>
-        <div className="field"><label>Education</label>
+        </div>
+        <div className="group"><div className="gh">Scouting report</div>
+        <div className="field"><label htmlFor="p-summary">Summary</label><textarea id="p-summary" name="summary" style={{ minHeight: 80 }} defaultValue={p.summary} /></div>
+        <div className="field"><label htmlFor="p-skills">Skills</label><TagInput id="p-skills" value={pskills} onChange={setPskills} placeholder="Type a skill and press Enter" /><span className="help">Leave empty to show the skills gathered from your roles.</span></div>
+        </div>
+        <div className="group"><div className="gh">Farm system</div>
           <div className="rows">
             {edu.map((r, i) => (
               <div className="entry" key={i}>
@@ -257,7 +258,7 @@ function ProfileForm() {
             <button type="button" className="btn sm add" onClick={() => setEdu([...edu, { school: '', degree: '', start: '', end: '', inProgress: false }])}>+ Add education</button>
           </div>
         </div>
-        <div className="field"><label>Certifications and awards</label>
+        <div className="group"><div className="gh">Award inserts</div>
           <div className="rows">
             {certs.map((c, i) => (
               <div className="entry" key={i}>
@@ -273,10 +274,19 @@ function ProfileForm() {
             <button type="button" className="btn sm add" onClick={() => setCerts([...certs, { name: '', issuer: '', year: '', inProgress: false }])}>+ Add certification</button>
           </div>
         </div>
+        <div className="group"><div className="gh">Free agency</div>
+        <div className="field"><label htmlFor="p-targets">Open to (target roles)</label><TagInput id="p-targets" value={targets} onChange={setTargets} placeholder="Type a role and press Enter" /></div>
+        </div>
+        <div className="group"><div className="gh">Contact</div>
+        <div className="row2">
+          <div className="field"><label htmlFor="p-email">Email</label><input id="p-email" name="email" type="email" defaultValue={p.email} /></div>
+          <div className="field"><label htmlFor="p-linkedin">LinkedIn URL</label><input id="p-linkedin" name="linkedin" type="url" defaultValue={p.linkedin} /></div>
+        </div>
+        </div>
         <div className="form-foot"><button className="btn primary" type="submit">Save profile</button><span className="spacer" /><span className="status">{msg}</span></div>
       </form>
 
-      <h2 style={{ marginTop: 28 }}>Your page</h2>
+      <div className="gh" style={{ marginTop: 26 }}>Your page</div>
       {user ? (
         <div className="form">
           <div className="field"><label htmlFor="pg-slug">Address</label>

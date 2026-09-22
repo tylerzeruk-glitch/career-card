@@ -219,15 +219,19 @@ body.drawer-open .scrim{opacity:1;pointer-events:auto}
 .drawer-body{flex:1;overflow:auto;padding:6px 18px 24px}
 .drawer h2{font:700 11px/1 var(--cond);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
 @media (prefers-reduced-motion: reduce){.drawer,.scrim,.stack .card{transition:none}}
-.form{display:grid;gap:13px;margin-top:6px}
+.form{display:grid;gap:18px;margin-top:6px}
 .field{display:grid;gap:2px}
-.field label{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.field label{font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-2)}
+/* form sections: a red heading over a perforated rule, like the resume rows, so titles, labels and values read as three levels */
+.group{display:grid;gap:12px;padding-top:6px}
+.gh{font:700 12.5px/1.5 var(--cond);letter-spacing:.14em;text-transform:uppercase;color:var(--red);position:relative;padding-bottom:7px;margin-bottom:2px}
+.gh::after{content:"";position:absolute;left:0;right:0;bottom:0;height:4px;background:var(--perf)}
 .field input,.field select,.field textarea{border:0;border-bottom:1px solid var(--hair);border-radius:0;padding:6px 0;background:transparent;width:100%}
 .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-bottom-color:var(--ink)}
 /* chip entry (skills, target roles) */
 .tags{display:flex;flex-wrap:wrap;gap:6px;align-items:center;border-bottom:1px solid var(--hair);padding:4px 0 6px;cursor:text}
 .tags:focus-within{border-bottom-color:var(--ink)}
-.tags input{flex:1 1 120px;min-width:120px;border:0;padding:3px 0;background:transparent}
+.tags input{flex:1 1 90px;min-width:90px;border:0;padding:3px 0;background:transparent}
 .tags input:focus{outline:none}
 .tag{position:relative;display:inline-flex;align-items:center;background:var(--hover);color:var(--ink);border-radius:999px;padding:4px 10px;font-size:13px;line-height:1.2;white-space:nowrap;transition:padding-right .12s}
 .tag button{position:absolute;right:4px;top:50%;transform:translateY(-50%);width:16px;height:16px;border:0;border-radius:50%;background:var(--ink);color:var(--bg);font:700 12px/1 var(--sans);padding:0;cursor:pointer;opacity:0;transition:opacity .12s;display:grid;place-items:center}
