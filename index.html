@@ -168,8 +168,11 @@ button,input,select,textarea{font:inherit;color:inherit}
 @media (max-width:700px){.overlay.legend{display:none}}
 
 /* focus overlay for a card */
-.focus{position:fixed;inset:0;z-index:12;background:rgba(20,18,14,.55);display:flex;align-items:center;justify-content:center;gap:10px;padding:16px}
-.focus .card{width:min(330px,80vw)}
+.focus{position:fixed;inset:0;z-index:12;background:rgba(20,18,14,.55);display:flex;align-items:center;justify-content:center;gap:10px;padding:16px;animation:fade .2s ease-out}
+.focus .card{width:min(330px,80vw);animation:pop .3s cubic-bezier(.2,.7,.2,1)}
+@keyframes fade{from{opacity:0}}
+@keyframes pop{from{transform:scale(.55) translateY(28px);opacity:0}}
+@media (prefers-reduced-motion: reduce){.focus,.focus .card{animation:none}}
 .focus .nav{background:rgba(255,255,255,.12);color:#fff;border:0;width:40px;height:40px;border-radius:50%;font-size:20px;cursor:pointer}
 .focus .nav:hover{background:rgba(255,255,255,.25)}
 .focus .bar{position:absolute;bottom:22px;left:0;right:0;display:flex;justify-content:center;gap:6px}
@@ -368,7 +371,7 @@ kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--hair);border-r
 </main>
 
 <div class="focus" id="focus" hidden>
-  <div class="hint">Click the card to flip it · ← → to move · Esc to close</div>
+  <div class="hint">Click the card to turn it over · ← → to move · Esc to close</div>
   <button class="nav" id="focus-prev" title="Previous">‹</button>
   <div id="focus-card"></div>
   <button class="nav" id="focus-next" title="Next">›</button>
@@ -559,7 +562,7 @@ kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--hair);border-r
 <dialog id="dlg-help">
   <div class="dlg">
     <h3>How this works</h3>
-    <p><b>Cards.</b> One card per role, oldest to newest, like a career in a card set. Click a card to open it large; click again to flip it and read the back. "By team" gathers consecutive roles at one company into a stack; click a stack to spread it.</p>
+    <p><b>Cards.</b> One card per role, oldest to newest, like a career in a card set. Click a card to open it large, back side up so the details are right there; click again to turn it over. "By team" gathers consecutive roles at one company into a stack; click a stack to spread it.</p>
     <p><b>Free agent.</b> When no role is current you're a free agent. The pill in the header counts the days, from your layoff event if you've added one, otherwise from the end of your last role. Add a job-hunt event (<i>+ Add → Event</i>) as you apply and interview; the free-agent card and the timeline pick them up.</p>
     <p><b>Timeline.</b> Company spans sit above the line, job-hunt events sit on it. Drag to pan; pinch, <kbd>Ctrl</kbd>+scroll or double-click to zoom. "Career" fits everything, "Free agency" fits the job hunt.</p>
     <p><b>Import.</b> LinkedIn's data export (zip or CSVs), a resume (PDF, Word, text), or the job-hunt tracker spreadsheet. Every import shows a preview you can correct before saving.</p>
@@ -820,6 +823,9 @@ function openFocus(id){
 function renderFocus(){
   const id=focusList[focusIdx]; const rs=roles();
   $('#focus-card').innerHTML = id==='free' ? freeCardHTML({cls:''}) : cardHTML(rs.find(r=>r.id===id), rs.findIndex(r=>r.id===id), rs.length);
+  // pop in showing the front, then turn to the back so the details are what you land on
+  const c=$('#focus-card .card'); const still=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(still) c.classList.add('on'); else setTimeout(()=>c.classList.add('on'), 160);
   $('#focus-edit').hidden = id==='free';
   $('#focus-prev').disabled = focusIdx===0; $('#focus-next').disabled = focusIdx===focusList.length-1;
 }
