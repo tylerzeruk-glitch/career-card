@@ -63,7 +63,7 @@ export function Landing({ tryHref = '/app', signInHref = '/login', onTry }: { tr
         <div className="copy">
           <div className="eyebrow">The resume, reissued as a card set</div>
           <h1>Every role you&apos;ve played, on its own card.</h1>
-          <p>Front: the team, your name, the position. Back: the seasons, the highlights, the skills, and how it ended. Flip through a whole career in a minute, then share it at an address of your own.</p>
+          <p>Your career as a deck of cards. Team and position on the front. Seasons, highlights and skills on the back. Shareable at an address of your own.</p>
           <div className="cta">
             <a className="btn primary lg" href={signInHref}>Make your card</a>
             <a className="btn lg" {...tryProps}>Try it with an example</a>
