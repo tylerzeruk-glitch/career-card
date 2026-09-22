@@ -36,6 +36,8 @@ export function Drawer({ d }: { d: DrawerState }) {
 const field = (fd: FormData, k: string) => String(fd.get(k) ?? '').trim();
 
 // ---------- role ----------
+/** Why a role ended. The card foot shows this instead of "Ended Mon YYYY". */
+export const REASONS = ['Promoted', 'Left for a new role', 'Role eliminated', 'Laid off', 'Contract ended', 'Company acquired', 'Company closed', 'Relocated', 'Went back to school', 'Retired'];
 function RoleForm({ roleId }: { roleId: string | null }) {
   const { S, update, flash } = useCard();
   const { closeDrawer, openDrawer } = useUI();
@@ -46,6 +48,8 @@ function RoleForm({ roleId }: { roleId: string | null }) {
   const [codeTouched, setCodeTouched] = useState(!!r?.code);
   const [current, setCurrent] = useState(!!(r && !r.end));
   const [swatch, setSwatch] = useState<number | null>(null);
+  const [reasonSel, setReasonSel] = useState(!r?.reason ? '' : REASONS.includes(r.reason) ? r.reason : '__other');
+  const [reasonOther, setReasonOther] = useState(r?.reason && !REASONS.includes(r.reason) ? r.reason : '');
   const [msg, setMsg] = useState('');
   const companyRef = useRef<HTMLInputElement>(null);
   useEffect(() => { if (!roleId) companyRef.current?.focus(); }, [roleId]);
@@ -58,7 +62,7 @@ function RoleForm({ roleId }: { roleId: string | null }) {
     const rec: Omit<Role, 'id'> = {
       company: company.trim(), title: title.trim(), code: (code.trim() || codeFor(title)).toUpperCase().slice(0, 4),
       start: parseMonth(field(fd, 'start')) || '', end: current ? null : parseMonth(field(fd, 'end')) || null,
-      location: field(fd, 'location'), reason: field(fd, 'reason'),
+      location: field(fd, 'location'), reason: reasonSel === '__other' ? reasonOther.trim() : reasonSel,
       bullets: field(fd, 'bullets').split('\n').map((s) => s.trim().replace(/^[-•·*]\s*/, '')).filter(Boolean),
       skills: field(fd, 'skills').split(',').map((s) => s.trim()).filter(Boolean),
     };
@@ -89,7 +93,14 @@ function RoleForm({ roleId }: { roleId: string | null }) {
         <label className="check"><input type="checkbox" checked={current} onChange={(e) => setCurrent(e.target.checked)} /> I still work here</label>
         <div className="row2">
           <div className="field"><label htmlFor="r-location">Location</label><input id="r-location" name="location" placeholder="Chicago, IL" defaultValue={r?.location || ''} /></div>
-          <div className="field"><label htmlFor="r-reason">How it ended</label><input id="r-reason" name="reason" placeholder="Promoted · Left for · Role eliminated" defaultValue={r?.reason || ''} /></div>
+          <div className="field"><label htmlFor="r-reason">How it ended</label>
+            <select id="r-reason" value={reasonSel} onChange={(e) => setReasonSel(e.target.value)}>
+              <option value="">—</option>
+              {REASONS.map((x) => <option key={x} value={x}>{x}</option>)}
+              <option value="__other">Other…</option>
+            </select>
+            {reasonSel === '__other' && <input aria-label="How it ended, in your words" placeholder="In your words" value={reasonOther} onChange={(e) => setReasonOther(e.target.value)} autoFocus />}
+          </div>
         </div>
         <div className="field"><label htmlFor="r-bullets">Highlights, one per line</label><textarea id="r-bullets" name="bullets" placeholder={'Led delivery for a portfolio of clients\nRan intake, triage and UAT'} defaultValue={(r?.bullets || []).join('\n')} /></div>
         <div className="field"><label htmlFor="r-skills">Skills, comma separated</label><input id="r-skills" name="skills" placeholder="Program management, UAT, Client delivery" defaultValue={(r?.skills || []).join(', ')} /></div>

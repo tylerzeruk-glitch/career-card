@@ -32,14 +32,14 @@ function Shell() {
 
   const setView = useCallback((v: 'cards' | 'timeline') => update((s) => ({ ...s, settings: { ...s.settings, view: v } }), { keepSample: true }), [update]);
   const openDrawer = useCallback<UI['openDrawer']>((tab: DrawerTab, opts) => setDrawer((d) => ({ open: true, tab, roleId: opts?.roleId ?? (tab === 'role' ? null : d.roleId), eventId: opts?.eventId ?? (tab === 'event' ? null : d.eventId), prefill: opts?.prefill ?? null, nonce: d.nonce + 1 })), []);
-  const closeDrawer = useCallback(() => { setDrawer((d) => ({ ...d, open: false })); setSelectedId(null); }, []);
+  const closeDrawer = useCallback(() => { setDrawer((d) => ({ ...d, open: false })); setSelectedId(null); (document.activeElement as HTMLElement | null)?.blur?.(); }, []);
   const openImport = useCallback((tab: ImportTab = 'linkedin') => setImp({ open: true, tab }), []);
 
   useEffect(() => { document.body.classList.toggle('drawer-open', drawer.open); }, [drawer.open]);
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape' && drawer.open && !document.querySelector('dialog[open]') && !focusId) closeDrawer(); };
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape' && drawer.open && !document.querySelector('dialog[open]')) closeDrawer(); };
     document.addEventListener('keydown', onKey); return () => document.removeEventListener('keydown', onKey);
-  }, [drawer.open, focusId, closeDrawer]);
+  }, [drawer.open, closeDrawer]);
 
   const ui = useMemo<UI>(() => ({ view, setView, openDrawer, closeDrawer, openFocus: setFocusId, openImport, openBackup: () => setBackup(true), openHelp: () => setHelp(true), timeline, selectedId, setSelectedId }), [view, setView, openDrawer, closeDrawer, openImport, selectedId]);
 

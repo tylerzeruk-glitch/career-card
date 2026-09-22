@@ -26,10 +26,7 @@ export function Focus({ id, onClose }: { id: string; onClose: () => void }) {
     setOn(false); setPop(false);
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) { setOn(true); return; }
     const el = holder.current;
-    // The deck card this one stands for is lifted out of the deck while the big one is up.
-    const deckCard = document.querySelector<HTMLElement>(`.shelf .card[data-id="${cur}"]`);
-    if (deckCard) deckCard.style.visibility = 'hidden';
-    const src = first.current ? deckCard : null;
+    const src = first.current ? document.querySelector<HTMLElement>(`.shelf .card[data-id="${cur}"]`) : null;
     first.current = false;
     let wait = POP_MS;
     if (el && src) {
@@ -44,11 +41,24 @@ export function Focus({ id, onClose }: { id: string; onClose: () => void }) {
       }
     } else setPop(true);
     const t = setTimeout(() => setOn(true), wait);
-    return () => { clearTimeout(t); if (deckCard) deckCard.style.visibility = ''; };
+    return () => clearTimeout(t);
   }, [cur]);
+
+  // The deck card this one stands for is lifted out of the deck while the big one is up (re-applied after edits re-render the deck).
+  useEffect(() => {
+    const deckCard = document.querySelector<HTMLElement>(`.shelf .card[data-id="${cur}"]`);
+    if (!deckCard) return;
+    deckCard.style.visibility = 'hidden';
+    return () => { deckCard.style.visibility = ''; };
+  }, [cur, S]);
+
+  // The role was deleted from the drawer, or the list shrank under us: nothing left to show.
+  useEffect(() => { if (!cur || (cur !== 'free' && !rs.some((r) => r.id === cur))) onClose(); }, [cur, rs, onClose]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      // While the drawer is open the keys belong to the form; Escape closes the drawer (handled by the shell), not the card.
+      if (document.body.classList.contains('drawer-open')) return;
       if (e.key === 'Escape') onClose();
       else if (e.key === 'ArrowLeft') setIdx((i) => Math.max(0, i - 1));
       else if (e.key === 'ArrowRight') setIdx((i) => Math.min(list.length - 1, i + 1));
@@ -75,8 +85,8 @@ export function Focus({ id, onClose }: { id: string; onClose: () => void }) {
         <div className="bar">
           <button className="fbtn" title="Turn the card over" aria-label="Turn the card over" onClick={() => setOn(!on)}><FlipIcon /></button>
           {cur !== 'free'
-            ? <button className="fbtn" title="Edit this role" aria-label="Edit this role" onClick={() => { onClose(); openDrawer('role', { roleId: cur }); }}><PencilIcon /></button>
-            : <button className="fbtn" title="Edit profile" aria-label="Edit profile" onClick={() => { onClose(); openDrawer('profile'); }}><PencilIcon /></button>}
+            ? <button className="fbtn" title="Edit this role" aria-label="Edit this role" onClick={() => openDrawer('role', { roleId: cur })}><PencilIcon /></button>
+            : <button className="fbtn" title="Edit profile" aria-label="Edit profile" onClick={() => openDrawer('profile')}><PencilIcon /></button>}
         </div>
       </div>
       <button className="nav" title="Next" disabled={idx === list.length - 1} onClick={() => setIdx(idx + 1)}>›</button>

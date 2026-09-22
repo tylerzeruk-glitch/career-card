@@ -165,7 +165,9 @@ button,input,select,textarea{font:inherit;color:inherit}
 @media (max-width:700px){.overlay.legend{display:none}}
 
 /* focus overlay for a card */
-.focus{position:fixed;inset:0;z-index:12;isolation:isolate;display:flex;align-items:center;justify-content:center;gap:10px;padding:16px}
+.focus{position:fixed;inset:0;z-index:12;isolation:isolate;display:flex;align-items:center;justify-content:center;gap:10px;padding:16px;transition:padding .22s ease}
+/* editing from a focused card: the drawer slides in over the right side and the card keeps showing beside it */
+body.drawer-open .focus{padding-right:min(420px,100vw)}
 /* the dim and blur fade in on their own layer so the card itself never looks translucent */
 .focus::before{content:"";position:absolute;inset:0;z-index:-1;background:rgba(20,18,14,.5);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);animation:fade .25s ease-out}
 .focus .card{width:min(330px,80vw)}
@@ -187,8 +189,8 @@ button,input,select,textarea{font:inherit;color:inherit}
 .focus .hint{text-align:center;color:rgba(255,255,255,.78);font-size:12px;margin-bottom:-2px}
 
 /* drawer */
-.scrim{position:fixed;inset:0;background:rgba(0,0,0,.18);z-index:9;opacity:0;pointer-events:none;transition:opacity .18s}
-.drawer{position:fixed;top:0;right:0;bottom:0;width:min(420px,100vw);background:var(--paper);z-index:10;box-shadow:-8px 0 30px rgba(0,0,0,.12);transform:translateX(104%);transition:transform .22s ease,width .22s ease;display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px)}
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.18);z-index:13;opacity:0;pointer-events:none;transition:opacity .18s}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(420px,100vw);background:var(--paper);z-index:14;box-shadow:-8px 0 30px rgba(0,0,0,.12);transform:translateX(104%);transition:transform .22s ease,width .22s ease;display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px)}
 .drawer.wide{width:min(760px,100vw)}
 .drawer.open{transform:none}
 body.drawer-open .scrim{opacity:1;pointer-events:auto}
