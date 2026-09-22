@@ -97,8 +97,8 @@
 .card.free .num{font-size:4.8cqw}
 .card.free .who{align-items:center;text-align:center}
 .card.free .who .fn{color:#c9c2b2}
-.card.free .role{color:#c9c2b2;font:italic 400 5.6cqw/1.25 "Libre Caslon Text",Georgia,serif;text-transform:none;letter-spacing:0;text-align:center;margin-top:1.5%}
 /* free-agent card: the FA starburst on the box's top-right corner, name left like the others, no date line */
 .card.free .badge{left:auto;right:-5%;bottom:auto;top:-7%;transform:rotate(12deg)}
 .card.free .who{align-items:flex-start;text-align:left}
-.card.free .role{display:none}
+/* the date line is kept but invisible so the box and the name land at the same height as on the role cards */
+.card.free .role{visibility:hidden}
