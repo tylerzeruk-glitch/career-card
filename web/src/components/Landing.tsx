@@ -88,7 +88,7 @@ export function Landing({ tryHref = '/app', signInHref = '/login', onTry }: { tr
       </section>
 
       <footer className="lfoot">
-        <span><Flag size={14} /> CareerCards</span>
+        <span><Flag size={14} /> CareerCards · © {new Date().getFullYear()}</span>
         <span><a {...tryProps}>Try it</a> · <a href={signInHref}>Sign in</a></span>
       </footer>
     </div>
