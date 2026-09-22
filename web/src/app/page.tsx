@@ -1,5 +1,5 @@
 import { CareerCardApp } from '@/components/CareerCardApp';
-import { rowToCard } from '@/lib/storage';
+import { rowToCard } from '@/lib/card-row';
 import { supabaseServer } from '@/lib/supabase/server';
 import type { AuthUser, CloudCard } from '@/lib/types';
 

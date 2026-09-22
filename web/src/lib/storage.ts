@@ -2,6 +2,7 @@
 import type { CloudCard, State, Visibility } from './types';
 import { hydrate } from './derived';
 import { supabaseBrowser } from './supabase/client';
+import { rowToCard, type CardRow } from './card-row';
 
 export const LOCAL_KEY = 'careercard.v1';
 
@@ -24,22 +25,13 @@ export function clearLocal() {
   try { localStorage.removeItem(LOCAL_KEY); } catch { /* ignore */ }
 }
 
-// ---------- account storage ----------
-// The card is one row per user: the career in `data`, the job hunt in `hunt`.
-// Only `data` is ever exposed to a public page.
-
-type Row = { slug: string | null; visibility: Visibility; data: Partial<State> | null; hunt: { events?: State['events']; settings?: State['settings'] } | null; updated_at: string | null };
-
-export function rowToCard(row: Row): CloudCard {
-  const state = hydrate({ ...(row.data || {}), events: row.hunt?.events || [], settings: row.hunt?.settings } as Partial<State>);
-  return { slug: row.slug, visibility: row.visibility || 'private', state, updatedAt: row.updated_at };
-}
+// ---------- account storage (browser side; the row shape lives in card-row.ts) ----------
 
 export async function loadCloud(userId: string): Promise<CloudCard | null> {
   const sb = supabaseBrowser(); if (!sb) return null;
   const { data, error } = await sb.from('cards').select('slug,visibility,data,hunt,updated_at').eq('user_id', userId).maybeSingle();
   if (error) throw error;
-  return data ? rowToCard(data as Row) : null;
+  return data ? rowToCard(data as CardRow) : null;
 }
 
 export async function saveCloud(userId: string, state: State, meta?: { slug?: string | null; visibility?: Visibility }) {
