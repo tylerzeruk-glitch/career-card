@@ -390,7 +390,9 @@ kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--hair);border-r
 .hand .h1{left:calc(50% - var(--hw) / 2);--r:1deg;z-index:2}
 .hand .h2{right:0;--r:10deg;z-index:3}
 @media (hover:none){.hand .card:hover{--lift:0px}}
-.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;border-top:2px solid var(--line);padding-top:22px}
+/* a perforated tear-off line above the steps, like the resume rows but darker */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;padding-top:24px;position:relative}
+.steps::before{content:"";position:absolute;left:0;right:0;top:0;height:5px;background:radial-gradient(circle,var(--ink-2) 1.6px,transparent 2px) 4px 50%/10px 5px repeat-x}
 .step .n{font:400 13px/1 var(--mono);color:var(--muted)}
 .step h2{font:700 24px/1.1 var(--cond);letter-spacing:.04em;text-transform:uppercase;margin:8px 0 8px}
 .step p{font-size:14px;line-height:1.55}
