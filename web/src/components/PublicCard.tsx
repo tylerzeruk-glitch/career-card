@@ -21,12 +21,12 @@ export function PublicCard({ S }: { S: State }) {
     <div className="pub" ref={host}>
       <header className="mast">
         <div>
-          <div className="namerow" style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
+          <div className="namerow">
             <h1>{p.name || 'Career'}</h1>
             {st.free && <span className="pill">Free agent · open to offers</span>}
           </div>
-          <div className="sub" style={{ font: '400 13px var(--serif)', color: 'var(--ink-2)', marginTop: 4 }}>{[p.headline, p.location].filter(Boolean).join(' · ')}</div>
-          {cs && <div className="line" style={{ display: 'flex', gap: 14, alignItems: 'center', marginTop: 6, font: '700 10.5px/1 var(--cond)', letterSpacing: '.12em', textTransform: 'uppercase', color: 'var(--muted)' }}>{([[cs.seasons, 'season'], [cs.teams, 'team'], [cs.positions, 'position']] as [number, string][]).map(stat)}</div>}
+          <div className="sub">{[p.headline, p.location].filter(Boolean).join(' · ')}</div>
+          {cs && <div className="line">{([[cs.seasons, 'season'], [cs.teams, 'team'], [cs.positions, 'position']] as [number, string][]).map(stat)}</div>}
         </div>
       </header>
       <div className="k">Career</div>
