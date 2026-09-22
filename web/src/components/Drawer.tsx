@@ -2,9 +2,11 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useCard } from './store';
 import { useUI, type DrawerTab } from './ui';
-import type { Cert, Ev, EventType, Role, Visibility } from '@/lib/types';
+import type { Ev, EventType, Role, Visibility } from '@/lib/types';
 
-type EduRow = { school: string; degree: string; start: string; end: string };
+type EduRow = { school: string; degree: string; start: string; end: string; inProgress: boolean };
+type CertRow = { name: string; issuer: string; year: string; inProgress: boolean };
+const IN_PROGRESS = /in progress|present/i;
 import { fmtShort, parseMonth, todayISO } from '@/lib/dates';
 import { PAIRS, TYPES, codeFor, hashIdx, huntStats, norm, slugify, sortedEvents, statusOf, uid } from '@/lib/derived';
 
@@ -201,10 +203,10 @@ function ProfileForm() {
   const { S, update, flash, user, slug, visibility, setMeta } = useCard();
   const p = S.profile;
   const [targets, setTargets] = useState<string[]>(p.targets || []);
-  const [edu, setEdu] = useState<EduRow[]>(() => (p.education || []).map((e) => { const ys = e.years.match(/\d{4}/g) || []; return { school: e.school, degree: e.degree, start: ys[0] || '', end: ys[1] || '' }; }));
-  const [certs, setCerts] = useState<Cert[]>(() => (p.certs || []).map((c) => ({ ...c })));
-  const setEduAt = (i: number, k: keyof EduRow, v: string) => setEdu((rows) => rows.map((r, j) => (j === i ? { ...r, [k]: v } : r)));
-  const setCertAt = (i: number, k: keyof Cert, v: string) => setCerts((rows) => rows.map((r, j) => (j === i ? { ...r, [k]: v } : r)));
+  const [edu, setEdu] = useState<EduRow[]>(() => (p.education || []).map((e) => { const ys = e.years.match(/\d{4}/g) || []; const ip = IN_PROGRESS.test(e.years) || /[–-]\s*$/.test(e.years); return { school: e.school, degree: e.degree, start: ys[0] || '', end: ip ? '' : ys[1] || '', inProgress: ip }; }));
+  const [certs, setCerts] = useState<CertRow[]>(() => (p.certs || []).map((c) => ({ name: c.name, issuer: c.issuer, year: IN_PROGRESS.test(c.year) ? '' : c.year, inProgress: IN_PROGRESS.test(c.year) })));
+  const setEduAt = (i: number, k: keyof EduRow, v: string | boolean) => setEdu((rows) => rows.map((r, j) => (j === i ? { ...r, [k]: v } : r)));
+  const setCertAt = (i: number, k: keyof CertRow, v: string | boolean) => setCerts((rows) => rows.map((r, j) => (j === i ? { ...r, [k]: v } : r)));
   const [msg, setMsg] = useState('');
   const [pageMsg, setPageMsg] = useState('');
   const [slugIn, setSlugIn] = useState(slug || slugify(p.name));
@@ -214,7 +216,7 @@ function ProfileForm() {
   const submit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
-    update((s) => ({ ...s, profile: { ...s.profile, name: field(fd, 'name'), headline: field(fd, 'headline'), location: field(fd, 'location'), summary: field(fd, 'summary'), targets, email: field(fd, 'email'), linkedin: field(fd, 'linkedin'), education: edu.map((r) => ({ school: r.school.trim(), degree: r.degree.trim(), years: [r.start.trim(), r.end.trim()].filter(Boolean).join('–') })).filter((r) => r.school), certs: certs.map((c) => ({ name: c.name.trim(), issuer: c.issuer.trim(), year: c.year.trim() })).filter((c) => c.name) } }));
+    update((s) => ({ ...s, profile: { ...s.profile, name: field(fd, 'name'), headline: field(fd, 'headline'), location: field(fd, 'location'), summary: field(fd, 'summary'), targets, email: field(fd, 'email'), linkedin: field(fd, 'linkedin'), education: edu.map((r) => ({ school: r.school.trim(), degree: r.degree.trim(), years: r.inProgress ? (r.start.trim() ? r.start.trim() + '–present' : 'In progress') : [r.start.trim(), r.end.trim()].filter(Boolean).join('–') })).filter((r) => r.school), certs: certs.map((c) => ({ name: c.name.trim(), issuer: c.issuer.trim(), year: c.inProgress ? 'In progress' : c.year.trim() })).filter((c) => c.name) } }));
     setMsg('Saved.'); flash('Saved.');
   };
   const savePage = async () => {
@@ -239,28 +241,34 @@ function ProfileForm() {
         <div className="field"><label>Education</label>
           <div className="rows">
             {edu.map((r, i) => (
-              <div className="edu-row" key={i}>
-                <input aria-label="School" placeholder="School" value={r.school} onChange={(e) => setEduAt(i, 'school', e.target.value)} />
-                <input aria-label="Degree" placeholder="Degree" value={r.degree} onChange={(e) => setEduAt(i, 'degree', e.target.value)} />
-                <input aria-label="Start year" placeholder="Start" inputMode="numeric" maxLength={4} value={r.start} onChange={(e) => setEduAt(i, 'start', e.target.value)} />
-                <input aria-label="End year" placeholder="End" inputMode="numeric" maxLength={4} value={r.end} onChange={(e) => setEduAt(i, 'end', e.target.value)} />
-                <button type="button" className="btn icon" title="Remove" aria-label="Remove this education" onClick={() => setEdu(edu.filter((_, j) => j !== i))}>×</button>
+              <div className="entry" key={i}>
+                <div className="edu-row">
+                  <input aria-label="School" placeholder="School" value={r.school} onChange={(e) => setEduAt(i, 'school', e.target.value)} />
+                  <input aria-label="Degree" placeholder="Degree" value={r.degree} onChange={(e) => setEduAt(i, 'degree', e.target.value)} />
+                  <input aria-label="Start year" placeholder="Start" inputMode="numeric" maxLength={4} value={r.start} onChange={(e) => setEduAt(i, 'start', e.target.value)} />
+                  <input aria-label="End year" placeholder={r.inProgress ? '—' : 'End'} inputMode="numeric" maxLength={4} value={r.inProgress ? '' : r.end} disabled={r.inProgress} onChange={(e) => setEduAt(i, 'end', e.target.value)} />
+                  <button type="button" className="btn icon" title="Remove" aria-label="Remove this education" onClick={() => setEdu(edu.filter((_, j) => j !== i))}>×</button>
+                </div>
+                <label className="inprog"><input type="checkbox" checked={r.inProgress} onChange={(e) => setEduAt(i, 'inProgress', e.target.checked)} /> In progress</label>
               </div>
             ))}
-            <button type="button" className="btn sm add" onClick={() => setEdu([...edu, { school: '', degree: '', start: '', end: '' }])}>+ Add education</button>
+            <button type="button" className="btn sm add" onClick={() => setEdu([...edu, { school: '', degree: '', start: '', end: '', inProgress: false }])}>+ Add education</button>
           </div>
         </div>
         <div className="field"><label>Certifications and awards</label>
           <div className="rows">
             {certs.map((c, i) => (
-              <div className="cert-row" key={i}>
-                <input aria-label="Name" placeholder="Name" value={c.name} onChange={(e) => setCertAt(i, 'name', e.target.value)} />
-                <input aria-label="Issuer" placeholder="Issuer" value={c.issuer} onChange={(e) => setCertAt(i, 'issuer', e.target.value)} />
-                <input aria-label="Year" placeholder="Year" inputMode="numeric" maxLength={4} value={c.year} onChange={(e) => setCertAt(i, 'year', e.target.value)} />
-                <button type="button" className="btn icon" title="Remove" aria-label="Remove this certification" onClick={() => setCerts(certs.filter((_, j) => j !== i))}>×</button>
+              <div className="entry" key={i}>
+                <div className="cert-row">
+                  <input aria-label="Name" placeholder="Name" value={c.name} onChange={(e) => setCertAt(i, 'name', e.target.value)} />
+                  <input aria-label="Issuer" placeholder="Issuer" value={c.issuer} onChange={(e) => setCertAt(i, 'issuer', e.target.value)} />
+                  <input aria-label="Year" placeholder={c.inProgress ? '—' : 'Year'} inputMode="numeric" maxLength={4} value={c.inProgress ? '' : c.year} disabled={c.inProgress} onChange={(e) => setCertAt(i, 'year', e.target.value)} />
+                  <button type="button" className="btn icon" title="Remove" aria-label="Remove this certification" onClick={() => setCerts(certs.filter((_, j) => j !== i))}>×</button>
+                </div>
+                <label className="inprog"><input type="checkbox" checked={c.inProgress} onChange={(e) => setCertAt(i, 'inProgress', e.target.checked)} /> In progress</label>
               </div>
             ))}
-            <button type="button" className="btn sm add" onClick={() => setCerts([...certs, { name: '', issuer: '', year: '' }])}>+ Add certification</button>
+            <button type="button" className="btn sm add" onClick={() => setCerts([...certs, { name: '', issuer: '', year: '', inProgress: false }])}>+ Add certification</button>
           </div>
         </div>
         <div className="form-foot"><button className="btn primary" type="submit">Save profile</button><span className="spacer" /><span className="status">{msg}</span></div>
