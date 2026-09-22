@@ -74,7 +74,7 @@ export function Deck() {
     rs.forEach((r, i) => items.push(<div key={r.id} className="slot"><RoleCard S={S} r={r} idx={i} total={total} onClick={() => openFocus(r.id)} /></div>));
   }
   // in Team view with a stack spread out, a slim tab after the last team gathers everything back up
-  if (S.settings.group === 'team' && spreadRuns.length > 0) items.push(<button key="restack" className="ghost restack" title="Gather the spread cards back into their stacks" onClick={() => setOpenRuns(new Set())}>↺ Restack</button>);
+  if (S.settings.group === 'team' && spreadRuns.length > 0) items.push(<button key="restack" className="ghost restack" title="Gather the spread cards back into their stacks" onClick={() => setOpenRuns(new Set())}><span className="disc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.5-5.8" /><path d="M20 4v5h-5" /></svg></span><span className="lbl">Restack</span></button>);
   if (st.free) items.push(<div key="free" className="slot"><FreeCard S={S} onClick={() => openFocus('free')} onTimeline={onTimeline} /></div>);
   items.push(<button key="ghost" className="ghost" title="Add a role" onClick={() => openDrawer('role', { roleId: null })}>+ Add a role</button>);
 

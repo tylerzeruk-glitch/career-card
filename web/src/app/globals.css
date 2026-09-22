@@ -96,9 +96,13 @@ button,input,select,textarea{font:inherit;color:inherit}
 .slot .card{width:var(--cw)}
 /* whatever follows a slim tab keeps a full gap, so the next card never slides over it */
 .ghost + *{margin-left:var(--gap)!important}
-/* the Restack tab in the deck: same slim tab as Add a role, solid rather than dashed */
-.ghost.restack{border-style:solid;border-color:var(--ink-2);color:var(--ink-2)}
-.ghost.restack:hover{background:var(--hover);color:var(--ink)}
+/* Restack: a solid disc with a circling arrow and the word beneath, no tab outline; extra room on its left so a fanned stack never reaches it */
+.ghost.restack{border:0;writing-mode:horizontal-tb;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;margin-left:calc(var(--gap) + 18px)!important;color:var(--ink-2);letter-spacing:.1em}
+.ghost.restack .disc{width:40px;height:40px;border-radius:50%;background:var(--ink);color:var(--bg);display:grid;place-items:center;box-shadow:0 4px 12px rgba(0,0,0,.18);transition:transform .15s}
+.ghost.restack .disc svg{width:20px;height:20px}
+.ghost.restack .lbl{font:700 10.5px var(--cond);letter-spacing:.12em;text-transform:uppercase}
+.ghost.restack:hover{background:transparent;color:var(--ink)}
+.ghost.restack:hover .disc{transform:rotate(-30deg)}
 .stack{width:var(--cw);cursor:pointer;isolation:isolate}
 .stack .card{position:absolute;top:0;left:0;width:var(--cw);transition:transform .25s ease}
 .stack .card.top{position:relative}

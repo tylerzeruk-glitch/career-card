@@ -1,4 +1,4 @@
-const GAP = 22, MIN_STRIP = 48, GHOST_W = 48;
+const GAP = 22, MIN_STRIP = 48;
 
 /**
  * Lay a shelf out as a deck: overlap the cards from the left just enough to
@@ -15,8 +15,9 @@ export function layoutDeck(el: HTMLElement, host: HTMLElement | null, opts: { gh
   const clear = () => setVars({ '--deck-ml': '', '--fold-ml': '', '--fold-w': '' });
   if (items.length < 2) { el.style.setProperty('--ml', items.length ? GAP + 'px' : '0px'); el.classList.remove('scroll'); clear(); return; }
   const n = items.length, widths = items.map((k) => k.offsetWidth), sum = widths.reduce((a, b) => a + b, 0), cw = widths[0];
-  const ghosts = kids.filter((k) => k.classList.contains('ghost')).length;
-  const W = el.clientWidth - 12 - ghosts * (GHOST_W + GAP), need = sum + GAP * (n - 1) - W;
+  // the slim tabs (Add a role, Restack) take their real width plus their left margin
+  const tabs = kids.filter((k) => k.classList.contains('ghost')).reduce((a, k) => a + k.offsetWidth + (parseFloat(getComputedStyle(k).marginLeft) || GAP), 0);
+  const W = el.clientWidth - 12 - tabs, need = sum + GAP * (n - 1) - W;
   const ov = need <= 0 ? -GAP : Math.min(cw - MIN_STRIP, need / (n - 1));
   const scroll = need > 0 && need / (n - 1) > cw - MIN_STRIP;
   el.style.setProperty('--ml', -ov + 'px'); el.classList.toggle('scroll', scroll);
