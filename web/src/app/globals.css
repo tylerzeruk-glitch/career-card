@@ -247,7 +247,7 @@ body.drawer-open .scrim{opacity:1;pointer-events:auto}
 .rows .btn.icon:hover{color:var(--ink)}
 .rows .btn.add{justify-self:start;color:var(--ink-2);padding-inline:4px}
 .rows .entry{display:grid;gap:2px}
-.rows .inprog{justify-self:end;display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);cursor:pointer;margin-right:36px}
+.rows .inprog{justify-self:start;display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);cursor:pointer}
 .rows .inprog input{width:auto;border:0;margin:0}
 .rows input:disabled{color:var(--muted);border-bottom-style:dashed}
 .row3{display:grid;grid-template-columns:2fr 2fr 1fr;gap:13px}
