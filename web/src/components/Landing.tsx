@@ -87,7 +87,7 @@ export function Landing({ tryHref = '/app', signInHref = '/login', onTry }: { tr
         <div>
           <div className="eyebrow">Between teams?</div>
           <h2>The free-agent card keeps the hunt on the same shelf.</h2>
-          <p>While you&apos;re out of contract, a red card sits at the end of the deck with what you&apos;re open to, and a timeline tracks every application, interview and denial. None of it is ever on your public page.</p>
+          <p>While you&apos;re out of a contract, a red card sits at the end of the deck with what you&apos;re open to. Switch to the Timeline view to log every application, interview and denial on one line you can pan and zoom, with the days since counted for you. None of it is ever on your public page.</p>
         </div>
         <div className="glossary">
           {GLOSSARY.map(([k, v]) => <div key={k}><b>{k}</b><span>{v}</span></div>)}
