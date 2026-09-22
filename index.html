@@ -38,7 +38,8 @@
 *{box-sizing:border-box}
 html,body{margin:0;height:100%}
 [hidden]{display:none!important}
-body{background:var(--bg);color:var(--ink);font:14px/1.5 var(--sans);display:flex;flex-direction:column;padding-inline:clamp(16px,3vw,40px);padding-block:0;overflow:hidden}
+body{background:var(--bg);color:var(--ink);font:14px/1.5 var(--sans);display:flex;flex-direction:column;padding-inline:clamp(20px,6vw,96px);padding-block:0;overflow:hidden}
+.topbar,.stage{width:100%;max-width:1160px;margin-inline:auto}
 h1,h2,h3{margin:0;text-wrap:balance}
 a{color:var(--focus)}
 button,input,select,textarea{font:inherit;color:inherit}
@@ -57,69 +58,74 @@ button,input,select,textarea{font:inherit;color:inherit}
 .menu .pop .btn{text-align:left}
 
 /* header */
-.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-block:14px 8px;flex:none}
-.brand{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
-.brand h1{font:700 26px/1 var(--cond);letter-spacing:.03em;text-transform:uppercase}
-.brand .sub{font:400 12.5px var(--serif);color:var(--ink-2);letter-spacing:.02em}
+.topbar{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-block:22px 6px;flex:none}
+.brand{display:flex;align-items:flex-start;gap:14px;flex-wrap:wrap}
+.brand .pill{margin-top:4px}
+.brand h1{font:700 30px/1 var(--cond);letter-spacing:.03em;text-transform:uppercase}
+.brand .sub{font:400 12.5px/1.5 var(--serif);color:var(--ink-2);letter-spacing:.02em;margin-top:4px}
+.brand .line{font:500 11px/1.6 var(--mono);color:var(--muted);margin-top:3px;letter-spacing:.01em}
+.brand .line b{color:var(--ink-2);font-weight:500}
+.brand .line i{font-style:normal;margin:0 6px;opacity:.5}
 .pill{display:inline-flex;align-items:center;gap:8px;font:700 12px/1 var(--cond);letter-spacing:.14em;text-transform:uppercase;padding:7px 11px;border-radius:4px;background:var(--red);color:#fff;transform:rotate(-2deg);white-space:nowrap}
 .pill i{width:7px;height:7px;border-radius:50%;background:#fff;box-shadow:0 0 0 3px rgba(255,255,255,.35)}
 .pill.active{background:var(--navy);transform:none}
 .actions{display:flex;gap:2px;flex-wrap:wrap;align-items:center}
 .toggle{display:inline-flex;border:1.5px solid var(--ink);border-radius:999px;overflow:hidden;font:700 11.5px/1 var(--cond);letter-spacing:.1em;text-transform:uppercase}
-.toggle button{border:0;background:transparent;padding:7px 13px;cursor:pointer;color:var(--ink)}
+.toggle button{border:0;background:transparent;padding:7px 13px;cursor:pointer;color:var(--ink);white-space:nowrap}
 .toggle button.on{background:var(--ink);color:var(--bg)}
 .toggle.small button{padding:5px 10px;font-size:10.5px}
 
-/* stat line */
-.statline{display:flex;gap:26px;flex-wrap:wrap;padding:8px 0 4px;font-variant-numeric:tabular-nums;flex:none}
-.statline .s{min-width:0}
-.statline .v{font:700 22px/1 var(--cond)}
-.statline .v small{font:400 12px var(--cond);color:var(--muted);margin-left:4px;letter-spacing:.02em}
-.statline .k{font:400 10px var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:3px}
 
 /* stage */
 .stage{flex:1;min-height:0;position:relative;display:flex;flex-direction:column;padding-bottom:12px}
 .view{flex:1;min-height:0;display:flex;flex-direction:column}
 .scroller{flex:1;min-height:0;overflow:auto;padding-bottom:20px}
-.shelf-head{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0 4px}
-.shelf-head .k{font:700 11px/1 var(--cond);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
-.note-inline{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--info-ink);background:var(--info-bg);padding:3px 6px 3px 10px;border-radius:999px;margin-right:auto}
+.shelf-head{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:14px 0 0}
+.shelf-head .k{font:700 11px/1 var(--cond);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+.note-inline{display:inline-flex;align-items:center;gap:6px;font-size:12px;white-space:nowrap;color:var(--info-ink);background:var(--info-bg);padding:3px 6px 3px 10px;border-radius:999px;margin-right:auto}
 .note-inline .btn{color:inherit;padding:2px 6px;font-size:12px}
-.shelf{display:flex;gap:18px;overflow-x:auto;padding:16px 6px 18px;align-items:flex-start;scroll-snap-type:x proximity}
+:root{--cw:clamp(210px,19vw,260px)}
+.shelf{display:flex;gap:22px;overflow-x:auto;padding:14px 6px 16px;align-items:flex-start;scroll-snap-type:x proximity}
 .shelf > *{scroll-snap-align:start}
-.slot{flex:none;width:184px}
-.slot .card{width:184px}
-.slot .cap{font:500 11px/1.3 var(--sans);color:var(--muted);text-align:center;margin-top:8px}
-.run{display:flex;gap:18px}
+.slot{flex:none;width:var(--cw)}
+.slot .card{width:var(--cw)}
+.slot .cap{font:500 11.5px/1.3 var(--sans);color:var(--muted);text-align:center;margin-top:9px}
+.run{display:flex;gap:22px}
 .run .slot{position:relative}
-.run .slot::after{content:"";position:absolute;left:-9px;right:-9px;bottom:-8px;height:2px;background:var(--b,var(--hair));border-radius:2px;opacity:.5}
+.run .slot::after{content:"";position:absolute;left:-11px;right:-11px;bottom:-8px;height:2px;background:var(--b,var(--hair));border-radius:2px;opacity:.5}
 .run .slot:first-child::after{left:6px}.run .slot:last-child::after{right:6px}
-.stack{flex:none;width:184px;position:relative;cursor:pointer;isolation:isolate;margin-left:6px}
-.stack .card{position:absolute;top:0;left:0;width:184px;transition:transform .25s ease}
+.stack{flex:none;width:var(--cw);position:relative;cursor:pointer;isolation:isolate;margin-left:6px}
+.stack .card{position:absolute;top:0;left:0;width:var(--cw);transition:transform .25s ease}
 .stack .card.top{position:relative}
 .stack .under1{transform:translate(8px,-6px) rotate(2deg);z-index:-1}
 .stack .under2{transform:translate(16px,-12px) rotate(4deg);z-index:-2}
 .stack .cap{font:500 11px/1.3 var(--sans);color:var(--muted);text-align:center;margin-top:8px}
-.ghost{flex:none;width:184px;aspect-ratio:2.5/3.5;border:1.5px dashed var(--muted);border-radius:12px;display:grid;place-items:center;font:700 12px var(--cond);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);cursor:pointer;background:transparent}
+.ghost{flex:none;width:var(--cw);aspect-ratio:2.5/3.5;border:1.5px dashed var(--muted);border-radius:12px;display:grid;place-items:center;font:700 12px var(--cond);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);cursor:pointer;background:transparent}
 .ghost:hover{color:var(--ink);border-color:var(--ink)}
 
-/* fold */
-.fold{display:grid;grid-template-columns:2fr 3fr;gap:18px;padding-top:6px}
-@media (max-width:900px){.fold{grid-template-columns:1fr}}
-.panel{background:var(--paper);border:1px solid var(--hair);border-radius:10px;padding:14px 16px}
-.panel h2{font:700 11px/1 var(--cond);letter-spacing:.14em;text-transform:uppercase;color:var(--red);margin-bottom:10px}
-.panel p{margin:0 0 8px;color:var(--ink-2);font-size:13.5px;max-width:64ch}
-.figs{display:flex;gap:22px;flex-wrap:wrap;margin-bottom:10px}
-.figs div{font:700 22px/1 var(--cond)}
-.figs small{display:block;font:400 10px var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:3px}
+/* fold: resume rows */
+.fold{max-width:880px;margin-top:6px;border-top:1px solid var(--hair)}
+.row{display:grid;grid-template-columns:132px 1fr;gap:18px;padding:13px 0;border-bottom:1px solid var(--hair);align-items:baseline}
+.row h2{font:700 11px/1.5 var(--cond);letter-spacing:.14em;text-transform:uppercase;color:var(--red)}
+.row .body{min-width:0;font-size:13.5px;color:var(--ink-2)}
+.row p{margin:0 0 7px;max-width:66ch}
+.row p:last-child{margin-bottom:0}
+.row .empty{color:var(--muted)}
+.figs{display:flex;gap:6px 18px;flex-wrap:wrap;align-items:baseline;font-variant-numeric:tabular-nums}
+.figs span{white-space:nowrap}
+.figs b{font:700 16px/1 var(--cond);color:var(--ink);margin-right:4px}
+.figs small{font:400 10.5px var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.figs .actions{margin-left:4px}
 .tiles{display:flex;flex-wrap:wrap;gap:4px}
 .tiles span{background:var(--red);color:#fff;font:700 10px/1 var(--cond);letter-spacing:.08em;text-transform:uppercase;padding:5px 7px;border-radius:2px}
 .tiles span b{font-weight:500;opacity:.75;margin-left:4px}
-.list{margin:0;padding:0;list-style:none;font-size:13px}
-.list li{padding:5px 0;border-bottom:1px solid var(--hair);display:flex;justify-content:space-between;gap:10px}
-.list li:last-child{border-bottom:0}
+.list{margin:0;padding:0;list-style:none}
+.list li{display:flex;justify-content:space-between;gap:14px;padding:2px 0}
+.list li span:first-child{color:var(--ink)}
 .list .m{color:var(--muted);font-family:var(--mono);font-size:11.5px;white-space:nowrap}
-.trio{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:18px;grid-column:1 / -1}
+.list.inline{display:flex;flex-wrap:wrap;gap:2px 22px}
+.list.inline li{gap:8px}
+@media (max-width:640px){.row{grid-template-columns:1fr;gap:6px}}
 .empty-shelf{padding:40px 16px;text-align:center;color:var(--muted)}
 .empty-shelf .btn{margin:6px 2px 0}
 
@@ -305,7 +311,7 @@ kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--hair);border-r
 <body>
 <header class="topbar">
   <div class="brand">
-    <div><h1 id="p-name">Career Card</h1><div class="sub" id="p-sub"></div></div>
+    <div><h1 id="p-name">Career Card</h1><div class="sub" id="p-sub"></div><div class="line" id="p-line"></div></div>
     <span class="pill" id="pill"><i></i>Free agent</span>
   </div>
   <div class="actions">
@@ -322,7 +328,6 @@ kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--hair);border-r
     </div></details>
   </div>
 </header>
-<div class="statline" id="statline"></div>
 
 <main class="stage">
   <div class="overlay flash" id="flash" hidden></div>
@@ -696,19 +701,16 @@ function huntStats(){
 function renderHeader(){
   const p=S.profile, st=status(), cs=careerStats();
   $('#p-name').textContent = p.name || 'Career Card';
-  $('#p-sub').textContent = [p.headline, p.location, cs?cs.seasons+' seasons':''].filter(Boolean).join(' · ');
+  $('#p-sub').textContent = [p.headline, p.location].filter(Boolean).join(' · ');
   const pill=$('#pill');
   if(st.free){ pill.className='pill'; pill.innerHTML = `<i></i>Free agent${st.days!=null?' · day '+st.days:''}`; }
   else { pill.className='pill active'; pill.innerHTML = `<i></i>Active · ${esc(st.current.company)}`; }
-  const h=huntStats();
-  const tile=(k,v,s)=>`<div class="s"><div class="v">${v}${s?`<small>${esc(s)}</small>`:''}</div><div class="k">${k}</div></div>`;
-  $('#statline').innerHTML = cs ? [
-    tile('Seasons', cs.seasons), tile('Teams', cs.teams), tile('Positions', cs.positions),
-    tile('Longest tenure', dur(cs.longest.months), cs.longest.company),
-    st.free ? tile('Free agent', st.days!=null?st.days+' d':'–', st.since?'since '+fmt(st.since):'') : tile('Current team', esc(st.current.company), 'since '+fmtMonth(st.current.start)),
-    h.apps ? tile('Applications', h.apps, h.open+' open') : ''
-  ].join('') : '';
+  $('#p-line').innerHTML = cs ? statLine(cs) : '';
 }
+const statLine = cs => [
+  `<b>${cs.seasons}</b> ${cs.seasons===1?'season':'seasons'}`, `<b>${cs.teams}</b> ${cs.teams===1?'team':'teams'}`, `<b>${cs.positions}</b> ${cs.positions===1?'position':'positions'}`,
+  `longest <b>${dur(cs.longest.months)}</b> at ${esc(cs.longest.company)}`
+].join('<i>·</i>');
 
 // ---------- cards ----------
 const teamSize = name => Math.max(7, Math.min(15, Math.floor(105/Math.max(4,(name||'').length))));
@@ -826,15 +828,16 @@ function renderFold(){
   const p=S.profile, st=status(), h=huntStats();
   const skillCount={}; S.roles.forEach(r=>(r.skills||[]).forEach(s=>{ const k=s.trim(); if(k) skillCount[k]=(skillCount[k]||0)+1; }));
   const skills=Object.entries(skillCount).sort((a,b)=>b[1]-a[1]).slice(0,18);
-  const fa = st.free ? `<section class="panel"><h2>Free agency</h2>
-      <div class="figs"><div>${st.days!=null?st.days:'–'}<small>Days</small></div><div>${h.apps}<small>Applications</small></div><div>${h.interviews}<small>Interviews</small></div><div>${h.offers}<small>Offers</small></div><div>${h.apps?Math.round(100*h.responded/h.apps)+'%':'–'}<small>Response</small></div><div>${h.sinceLast==null?'–':h.sinceLast===0?'Today':h.sinceLast+'d'}<small>Last activity</small></div></div>
-      <div class="actions"><button class="btn primary sm" data-act="add-event">+ Job-hunt event</button><button class="btn sm" data-act="timeline">Open the timeline</button><button class="btn sm" data-act="log">Log</button></div></section>`
-    : `<section class="panel"><h2>Current team</h2><p><b>${esc(st.current.company)}</b> · ${esc(st.current.title)} since ${fmtMonth(st.current.start)}.</p><div class="actions"><button class="btn sm" data-act="add-event">+ Job-hunt event</button><button class="btn sm" data-act="timeline">Open the timeline</button></div></section>`;
-  const scout = `<section class="panel"><h2>Scouting report</h2>${p.summary?`<p>${esc(p.summary)}</p>`:`<p style="color:var(--muted)">Add a summary in Profile.</p>`}${skills.length?`<div class="tiles">${skills.map(([k,n])=>`<span>${esc(k)}${n>1?`<b>×${n}</b>`:''}</span>`).join('')}</div>`:''}</section>`;
-  const edu = `<section class="panel"><h2>Farm system</h2><ul class="list">${(p.education||[]).map(e=>`<li><span>${esc(e.school)}${e.degree?' · '+esc(e.degree):''}</span><span class="m">${esc(e.years||'')}</span></li>`).join('')||'<li style="color:var(--muted)">No education yet.</li>'}</ul></section>`;
-  const certs = `<section class="panel"><h2>Awards &amp; certs</h2><ul class="list">${(p.certs||[]).map(c=>`<li><span>${esc(c.name)}${c.issuer?' · '+esc(c.issuer):''}</span><span class="m">${esc(c.year||'')}</span></li>`).join('')||'<li style="color:var(--muted)">None yet.</li>'}</ul></section>`;
-  const contact = `<section class="panel"><h2>Contact</h2><ul class="list">${p.email?`<li><a href="mailto:${esc(p.email)}">${esc(p.email)}</a></li>`:''}${p.linkedin?`<li><a href="${esc(p.linkedin)}" target="_blank" rel="noopener">LinkedIn</a></li>`:''}${!p.email&&!p.linkedin?'<li style="color:var(--muted)">Add contact details in Profile.</li>':''}</ul></section>`;
-  $('#fold').innerHTML = fa + scout + `<div class="trio">${edu}${certs}${contact}</div>`;
+  const row=(h2,body)=>`<section class="row"><h2>${h2}</h2><div class="body">${body}</div></section>`;
+  const fig=(v,k)=>`<span><b>${v}</b><small>${k}</small></span>`;
+  const scout = row('Scouting report', (p.summary?`<p>${esc(p.summary)}</p>`:`<p class="empty">Add a summary in Profile.</p>`)+(skills.length?`<div class="tiles">${skills.map(([k,n])=>`<span>${esc(k)}${n>1?`<b>×${n}</b>`:''}</span>`).join('')}</div>`:''));
+  const edu = row('Farm system', `<ul class="list">${(p.education||[]).map(e=>`<li><span>${esc(e.school)}${e.degree?' · '+esc(e.degree):''}</span><span class="m">${esc(e.years||'')}</span></li>`).join('')||'<li class="empty">No education yet.</li>'}</ul>`);
+  const certs = row('Award inserts', `<ul class="list">${(p.certs||[]).map(c=>`<li><span>${esc(c.name)}${c.issuer?' · '+esc(c.issuer):''}</span><span class="m">${esc(c.year||'')}</span></li>`).join('')||'<li class="empty">None yet.</li>'}</ul>`);
+  const fa = st.free
+    ? row('Free agency', `<div class="figs">${fig(st.days!=null?st.days:'–','days')}${fig(h.apps,'applications')}${h.open?fig(h.open,'open'):''}${fig(h.interviews,'interviews')}${fig(h.offers,'offers')}${fig(h.apps?Math.round(100*h.responded/h.apps)+'%':'–','response')}${fig(h.sinceLast==null?'–':h.sinceLast===0?'today':h.sinceLast+'d','last activity')}<span class="actions"><button class="btn sm" data-act="add-event">+ Event</button><button class="btn sm" data-act="timeline">Timeline</button></span></div>`)
+    : row('Active roster', `<div class="figs"><span><b style="font-size:14px">${esc(st.current.company)}</b><small>${esc(st.current.title)} · since ${fmtMonth(st.current.start)}</small></span><span class="actions"><button class="btn sm" data-act="add-event">+ Event</button><button class="btn sm" data-act="timeline">Timeline</button></span></div>`);
+  const contact = row('Contact', `<ul class="list inline">${p.email?`<li><a href="mailto:${esc(p.email)}">${esc(p.email)}</a></li>`:''}${p.linkedin?`<li><a href="${esc(p.linkedin)}" target="_blank" rel="noopener">LinkedIn</a></li>`:''}${!p.email&&!p.linkedin?'<li class="empty">Add contact details in Profile.</li>':''}</ul>`);
+  $('#fold').innerHTML = scout + edu + certs + fa + contact;
 }
 $('#fold').addEventListener('click', e=>{ const b=e.target.closest('[data-act]'); if(!b) return; const a=b.dataset.act; if(a==='add-event'){ prefill({}); openDrawer('event'); } if(a==='timeline'){ setView('timeline'); zoomFreeAgency(); } if(a==='log') openDrawer('log'); });
 
@@ -1158,42 +1161,42 @@ function sharePage(){
   const cardCss=$('#card-css').textContent;
   const skillCount={}; S.roles.forEach(r=>(r.skills||[]).forEach(s=>{ const k=s.trim(); if(k) skillCount[k]=(skillCount[k]||0)+1; })); const skills=Object.entries(skillCount).sort((a,b)=>b[1]-a[1]).slice(0,18);
   const cards = rs.map((r,i)=>`<div class="slot">${cardHTML(r,i,rs.length)}<div class="cap">${esc(r.title)}</div></div>`).join('') + (showFA?`<div class="slot">${freeCardHTML({share:true})}<div class="cap">Free agent</div></div>`:'');
-  const stat=(k,v,s)=>`<div class="s"><div class="v">${v}${s?`<small>${esc(s)}</small>`:''}</div><div class="k">${k}</div></div>`;
+  const row=(h2,body)=>`<section class="row"><h2>${h2}</h2><div class="body">${body}</div></section>`;
   return `<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${esc(p.name||'Career')} · Career</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Righteous&family=Lilita+One&family=Barlow+Condensed:wght@500;600;700&family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&display=swap">
 <style>
-body{margin:0;background:#f2eee5;color:#1c1b18;font:14px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;padding:32px clamp(16px,4vw,48px) 64px}
-.wrap{max-width:1120px;margin:0 auto}
+body{margin:0;background:#f2eee5;color:#1c1b18;font:14px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;padding:36px clamp(20px,6vw,96px) 72px}
+.wrap{max-width:1160px;margin:0 auto}
 .mast{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;border-bottom:2px solid #1c1b18;padding-bottom:12px}
 .mast h1{margin:0;font:700 36px/1 "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.03em;text-transform:uppercase}
 .mast .sub{font:400 13px "Libre Caslon Text",Georgia,serif;color:#55524a;margin-top:4px}
+.mast .line{font:500 11px/1.6 ui-monospace,Menlo,monospace;color:#8a867b;margin-top:3px}.mast .line b{color:#55524a;font-weight:500}.mast .line i{font-style:normal;margin:0 6px;opacity:.5}
 .pill{display:inline-flex;align-items:center;gap:8px;font:700 12px/1 "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.14em;text-transform:uppercase;padding:8px 12px;border-radius:4px;background:#dc4432;color:#fff;transform:rotate(-2deg)}
-.statline{display:flex;gap:28px;flex-wrap:wrap;padding:14px 0 6px}
-.statline .v{font:700 24px/1 "Barlow Condensed","Arial Narrow",sans-serif}.statline .v small{font-size:12px;color:#8a867b;margin-left:4px;font-weight:500}
-.statline .k{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#8a867b;margin-top:4px}
-h2{font:700 11px/1 "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#dc4432;margin:0 0 10px}
-.shelf{display:flex;gap:18px;overflow-x:auto;padding:22px 6px 18px}
-.slot{flex:none;width:200px}.slot .card{width:200px}.slot .cap{font-size:11px;color:#8a867b;text-align:center;margin-top:8px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;margin-top:8px}
-.panel{background:#fbf9f4;border:1px solid #dcd6c8;border-radius:10px;padding:14px 16px}
-.panel p{margin:0 0 8px;color:#55524a;max-width:64ch}
+h2{font:700 11px/1.5 "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#dc4432;margin:0}
+.k{font:700 11px/1 "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#8a867b;margin-top:18px}
+.shelf{display:flex;gap:22px;overflow-x:auto;padding:14px 6px 16px}
+.slot{flex:none;width:clamp(210px,19vw,260px)}.slot .card{width:100%}.slot .cap{font-size:11.5px;color:#8a867b;text-align:center;margin-top:9px}
+.fold{max-width:880px;margin-top:6px;border-top:1px solid #dcd6c8}
+.row{display:grid;grid-template-columns:132px 1fr;gap:18px;padding:13px 0;border-bottom:1px solid #dcd6c8;align-items:baseline}
+.row .body{min-width:0;font-size:13.5px;color:#55524a}.row p{margin:0 0 7px;max-width:66ch}.row p:last-child{margin:0}
 .tiles{display:flex;flex-wrap:wrap;gap:4px}.tiles span{background:#dc4432;color:#fff;font:700 10px/1 "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.08em;text-transform:uppercase;padding:5px 7px;border-radius:2px}
-.list{margin:0;padding:0;list-style:none;font-size:13px}.list li{padding:5px 0;border-bottom:1px solid #dcd6c8;display:flex;justify-content:space-between;gap:10px}.list li:last-child{border:0}.list .m{color:#8a867b;font-family:ui-monospace,Menlo,monospace;font-size:11.5px}
-.hint{font-size:12px;color:#8a867b;margin:4px 6px 0}
+.list{margin:0;padding:0;list-style:none}.list li{display:flex;justify-content:space-between;gap:14px;padding:2px 0}.list li span:first-child{color:#1c1b18}.list .m{color:#8a867b;font-family:ui-monospace,Menlo,monospace;font-size:11.5px;white-space:nowrap}
+.list.inline{display:flex;flex-wrap:wrap;gap:2px 22px}
+.hint{font-size:12px;color:#8a867b;margin:0 6px 4px}
+@media (max-width:640px){.row{grid-template-columns:1fr;gap:6px}}
 a{color:#2a78d6}
 ${cardCss}
 </style></head><body><div class="wrap">
-<header class="mast"><div><h1>${esc(p.name||'Career')}</h1><div class="sub">${esc([p.headline,p.location,cs?cs.seasons+' seasons':''].filter(Boolean).join(' · '))}</div></div>${showFA?'<span class="pill">Free agent · open to offers</span>':''}</header>
-${cs?`<div class="statline">${stat('Seasons',cs.seasons)}${stat('Teams',cs.teams)}${stat('Positions',cs.positions)}${stat('Longest tenure',dur(cs.longest.months),cs.longest.company)}</div>`:''}
-<h2 style="margin-top:14px">Career</h2><div class="shelf">${cards}</div><div class="hint">Click a card to flip it.</div>
-<div class="grid">
-${p.summary||skills.length?`<section class="panel"><h2>Scouting report</h2>${p.summary?`<p>${esc(p.summary)}</p>`:''}${skills.length?`<div class="tiles">${skills.map(([k])=>`<span>${esc(k)}</span>`).join('')}</div>`:''}</section>`:''}
-${(p.education||[]).length?`<section class="panel"><h2>Education</h2><ul class="list">${p.education.map(e=>`<li><span>${esc(e.school)}${e.degree?' · '+esc(e.degree):''}</span><span class="m">${esc(e.years||'')}</span></li>`).join('')}</ul></section>`:''}
-${(p.certs||[]).length?`<section class="panel"><h2>Awards &amp; certs</h2><ul class="list">${p.certs.map(c=>`<li><span>${esc(c.name)}${c.issuer?' · '+esc(c.issuer):''}</span><span class="m">${esc(c.year||'')}</span></li>`).join('')}</ul></section>`:''}
-${contact&&(p.email||p.linkedin)?`<section class="panel"><h2>Contact</h2><ul class="list">${p.email?`<li><a href="mailto:${esc(p.email)}">${esc(p.email)}</a></li>`:''}${p.linkedin?`<li><a href="${esc(p.linkedin)}">${esc(p.linkedin)}</a></li>`:''}</ul></section>`:''}
+<header class="mast"><div><h1>${esc(p.name||'Career')}</h1><div class="sub">${esc([p.headline,p.location].filter(Boolean).join(' · '))}</div>${cs?`<div class="line">${statLine(cs)}</div>`:''}</div>${showFA?'<span class="pill">Free agent · open to offers</span>':''}</header>
+<div class="k">Career</div><div class="shelf">${cards}</div><div class="hint">Click a card to flip it.</div>
+<div class="fold">
+${p.summary||skills.length?row('Scouting report',(p.summary?`<p>${esc(p.summary)}</p>`:'')+(skills.length?`<div class="tiles">${skills.map(([k])=>`<span>${esc(k)}</span>`).join('')}</div>`:'')):''}
+${(p.education||[]).length?row('Farm system',`<ul class="list">${p.education.map(e=>`<li><span>${esc(e.school)}${e.degree?' · '+esc(e.degree):''}</span><span class="m">${esc(e.years||'')}</span></li>`).join('')}</ul>`):''}
+${(p.certs||[]).length?row('Award inserts',`<ul class="list">${p.certs.map(c=>`<li><span>${esc(c.name)}${c.issuer?' · '+esc(c.issuer):''}</span><span class="m">${esc(c.year||'')}</span></li>`).join('')}</ul>`):''}
+${contact&&(p.email||p.linkedin)?row('Contact',`<ul class="list inline">${p.email?`<li><a href="mailto:${esc(p.email)}">${esc(p.email)}</a></li>`:''}${p.linkedin?`<li><a href="${esc(p.linkedin)}">${esc(p.linkedin)}</a></li>`:''}</ul>`):''}
 </div></div>
-<scr'+'ipt>document.querySelectorAll('.card').forEach(function(c){c.addEventListener('click',function(){c.classList.toggle('on')});c.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();c.classList.toggle('on')}})});<\/script>
+<scr${''}ipt>document.querySelectorAll('.card').forEach(function(c){c.addEventListener('click',function(){c.classList.toggle('on')});c.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();c.classList.toggle('on')}})});<\/script>
 </body></html>`;
 }
 $('#sh-download').addEventListener('click', ()=>download((S.profile.name||'career').toLowerCase().replace(/[^a-z0-9]+/g,'-')+'-career.html', sharePage(), 'text/html'));

@@ -26,7 +26,7 @@ preceded it.
   company (current one in red), highlights, skill tiles, how it ended, card
   number in the set.
 - **Below the fold:** free-agency figures, scouting report (summary + skills
-  rolled up across roles), education ("farm system"), awards and certs,
+  rolled up across roles), education ("farm system"), award inserts (certs and awards),
   contact.
 - **Timeline view:** the pan/zoom viewport from `job-hunt-timeline`, with role
   spans above the line in company colours, a hatched free-agency zone, and the
@@ -54,7 +54,7 @@ route. SSO and hosted, shareable pages are the accounts phase.
 
 ## Share
 
-Share builds a standalone HTML career page: cards (flippable), stat line,
+Share builds a standalone HTML career page: cards (flippable), the career line,
 scouting report, education, certs, contact, and nothing from the job hunt.
 Optionally a "Free agent · open to" card with no dates or counts. Download,
 copy, or preview in a new tab. Inside an artifact, downloads go through the
