@@ -10,10 +10,10 @@ export const dynamic = 'force-dynamic';
 async function load(slug: string): Promise<State | null> {
   const sb = await supabaseServer();
   if (!sb) return null;
-  const { data } = await sb.from('public_cards').select('data').eq('slug', slug).maybeSingle();
+  const { data } = await sb.rpc('public_card', { p_slug: slug });
   if (!data) return null;
-  // the view carries the career only; events never leave the owner's row
-  return hydrate({ ...(data.data as Partial<State>), events: [] });
+  // the function returns the career column only; events never leave the owner's row
+  return hydrate({ ...(data as Partial<State>), events: [] });
 }
 
 export async function generateMetadata({ params }: PageProps<'/u/[slug]'>): Promise<Metadata> {

@@ -22,10 +22,11 @@ npm run dev
 
 That is local mode. To turn on accounts:
 
-1. Create a Supabase project. In the SQL editor, run
-   `supabase/migrations/0001_cards.sql`. It creates the `cards` table (one
-   row per user, owner-only through row-level security) and the
-   `public_cards` view that public pages read from.
+1. Create a Supabase project. In the SQL editor, run the files in
+   `supabase/migrations/` in order. They create the `cards` table (one row
+   per user, owner-only through row-level security) and the `public_card`
+   function that public pages read through. It returns only the career
+   column, and only for rows whose owner chose to share them.
 2. Authentication → Providers: turn on **Email** (magic links). Optionally
    **Google** and **LinkedIn (OIDC)**; each needs its own OAuth app with
    the callback URL Supabase shows you.
