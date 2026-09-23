@@ -27,11 +27,13 @@ export async function POST(req: NextRequest) {
   if (!(photo instanceof File) || !photo.size) return NextResponse.json({ error: 'no-photo', message: 'Add a photo first.' }, { status: 400 });
   if (photo.size > MAX_PHOTO) return NextResponse.json({ error: 'too-big', message: 'That photo is too large.' }, { status: 413 });
 
-  // the daily limit: takes stored today
+  // the limit: takes are kept for a day (picking one does not clear them), so the folder is the count
   const folder = user.id + '/takes';
   const { data: existing } = await sb.storage.from(BUCKET).list(folder, { limit: 200 });
-  const today = new Date().toISOString().slice(0, 10);
-  const madeToday = (existing || []).filter((o) => (o.created_at || '').slice(0, 10) === today).length;
+  const cutoff = Date.now() - 24 * 3600 * 1000;
+  const old = (existing || []).filter((o) => Date.parse(o.created_at || '') < cutoff);
+  if (old.length) await sb.storage.from(BUCKET).remove(old.map((o) => folder + '/' + o.name));
+  const madeToday = (existing || []).length - old.length;
   if (madeToday >= TAKES_PER_DAY) return NextResponse.json({ error: 'cap', message: 'That is the limit for today. Deal again tomorrow.' }, { status: 429 });
 
   const call = async (fidelity: boolean) => {
