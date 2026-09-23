@@ -98,10 +98,17 @@ export function Landing({ tryHref = '/app', signInHref = '/login', onTry }: { tr
         </div>
       </section>
 
-      <footer className="lfoot">
-        <span><Flag size={14} /> CareerCards · © {new Date().getFullYear()}</span>
-        <span>See something wrong? <a href="mailto:hello@careercards.app">Contact us</a> · <a href={signInHref}>Sign in</a></span>
-      </footer>
+      <SiteFoot signInHref={signInHref} />
     </div>
+  );
+}
+
+/** The footer every page ends on. `signInHref` null hides the sign-in link (signed in). */
+export function SiteFoot({ signInHref = '/login' }: { signInHref?: string | null }) {
+  return (
+    <footer className="lfoot">
+      <span><Flag size={14} /> CareerCards · © {new Date().getFullYear()}</span>
+      <span>See something wrong? <a href="mailto:hello@careercards.app">Contact us</a>{signInHref && <> · <a href={signInHref}>Sign in</a></>}</span>
+    </footer>
   );
 }

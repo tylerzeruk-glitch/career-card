@@ -11,6 +11,7 @@ import { Timeline } from './Timeline';
 import { Drawer, type DrawerState } from './Drawer';
 import { BackupDialog, HelpDialog, ImportDialog } from './dialogs';
 import { ThemeToggle } from './ThemeToggle';
+import { Flag, SiteFoot } from './Landing';
 
 export function CareerCardApp({ user, cloud }: { user: AuthUser | null; cloud: CloudCard | null }) {
   return (
@@ -71,10 +72,12 @@ function Shell() {
             <div className="scroller">
               <Deck />
               <Fold />
+              <SiteFoot signInHref={user ? null : '/login'} />
             </div>
           </section>
           <section className="view" hidden={view !== 'timeline'}>
             <Timeline active={view === 'timeline'} />
+            <SiteFoot signInHref={user ? null : '/login'} />
           </section>
         </main>
         {focusId && <Focus id={focusId} onClose={() => setFocusId(null)} />}
@@ -100,7 +103,7 @@ function Header() {
       <div className="brand">
         <div>
           <div className="namerow">
-            <h1>{p.name || 'CareerCards'}</h1>
+            <h1><Flag size={26} />{p.name || 'CareerCards'}</h1>
             {st.free ? <span className="pill"><i />Free agent</span> : <span className="pill active"><i />Active · {st.current.company}</span>}
           </div>
           <div className="sub">{[p.headline, p.location].filter(Boolean).join(' · ')}</div>

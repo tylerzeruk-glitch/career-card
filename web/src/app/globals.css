@@ -62,7 +62,8 @@ a.btn{text-decoration:none;display:inline-block}
 .brand{display:flex;align-items:flex-start;gap:14px;flex-wrap:wrap}
 .namerow{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
 .brand .pill{margin:0}
-.brand h1{font:700 30px/1 var(--cond);letter-spacing:.03em;text-transform:uppercase}
+.brand h1{display:inline-flex;align-items:center;gap:8px;font:400 30px/1 var(--riso);letter-spacing:.02em}
+.brand h1 .flag{color:var(--red);margin-top:-4px;flex:none}
 .sub{font:400 12.5px/1.5 var(--serif);color:var(--ink-2);letter-spacing:.02em;margin-top:2px}
 .line{display:flex;gap:14px;align-items:center;margin-top:6px;font:700 10.5px/1 var(--cond);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
 .line span{display:inline-flex;align-items:center;gap:6px}
@@ -424,6 +425,9 @@ kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--hair);border-r
 .glossary b{font:700 12.5px/1.4 var(--cond);letter-spacing:.14em;text-transform:uppercase;color:#ef6b5b}
 .glossary span{font-size:13.5px;color:#fbf6ea}
 .lfoot{display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:12.5px;color:var(--muted);border-top:1px solid var(--hair);padding-top:16px}
+.lfoot a{color:inherit}
+.scroller .lfoot,.view .lfoot{margin-top:40px;padding-bottom:20px}
+.view .lfoot{flex:none;margin-top:16px}
 .lfoot span{display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap}
 .lfoot a{white-space:nowrap}
 .lfoot .flag{color:var(--red)}
