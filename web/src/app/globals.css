@@ -453,7 +453,7 @@ kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--hair);border-r
    Import, Profile, Share and Sign in fold into the menu */
 @media (max-width:700px){
   .topbar{flex-direction:column;align-items:stretch;gap:22px;padding-block:14px 6px}
-  .actions{margin-top:2px}
+  .actions{margin-top:22px}
   .banner{margin-top:14px}
   .brand h1{font-size:26px}
   .actions{display:flex;align-items:center;gap:6px;flex-wrap:nowrap;width:100%}
