@@ -4,13 +4,26 @@ import { useCard } from './store';
 import { useUI } from './ui';
 import { FreeCard, RoleCard } from './Cards';
 import { roles, status } from '@/lib/derived';
+import type { State } from '@/lib/types';
 
 const FLY_MS = 420, POP_MS = 250;
 
-/** One card, large, back side up. Opens by flying out of its place in the deck, then turns over. Arrow keys move along the deck. */
+/** The app's focus: wired to the document and the drawer. */
 export function Focus({ id, onClose }: { id: string; onClose: () => void }) {
   const { S } = useCard();
   const { openDrawer, setView, timeline } = useUI();
+  return (
+    <FocusView S={S} id={id} onClose={onClose}
+      onEdit={(cur) => (cur === 'free' ? openDrawer('profile') : openDrawer('role', { roleId: cur }))}
+      onTimeline={() => { onClose(); setView('timeline'); setTimeout(() => timeline.current?.zoomFreeAgency(), 0); }} />
+  );
+}
+
+/**
+ * One card, large, back side up. Opens by flying out of its place in the deck, then turns over. Arrow keys move along
+ * the deck. `share` is the public page: no editing, and the free-agent card hides the hunt.
+ */
+export function FocusView({ S, id, onClose, share, onEdit, onTimeline }: { S: State; id: string; onClose: () => void; share?: boolean; onEdit?: (cur: string) => void; onTimeline?: () => void }) {
   const rs = roles(S);
   const list = rs.map((r) => r.id).concat(status(S).free ? ['free'] : []);
   const [idx, setIdx] = useState(Math.max(0, list.indexOf(id)));
@@ -77,16 +90,14 @@ export function Focus({ id, onClose }: { id: string; onClose: () => void }) {
         <div className="hint">Click the card to turn it over · ← → to move · Esc to close</div>
         <div id="focus-card" className={pop ? 'pop' : ''} key={cur} ref={holder}>
           {cur === 'free' ? (
-            <FreeCard S={S} on={on} onClick={() => setOn(!on)} onTimeline={() => { onClose(); setView('timeline'); setTimeout(() => timeline.current?.zoomFreeAgency(), 0); }} />
+            <FreeCard S={S} on={on} share={share} onClick={() => setOn(!on)} onTimeline={onTimeline} />
           ) : role ? (
             <RoleCard S={S} r={role} idx={rs.indexOf(role)} total={rs.length} on={on} onClick={() => setOn(!on)} />
           ) : null}
         </div>
         <div className="bar">
           <button className="fbtn" title="Turn the card over" aria-label="Turn the card over" onClick={() => setOn(!on)}><FlipIcon /></button>
-          {cur !== 'free'
-            ? <button className="fbtn" title="Edit this role" aria-label="Edit this role" onClick={() => openDrawer('role', { roleId: cur })}><PencilIcon /></button>
-            : <button className="fbtn" title="Edit profile" aria-label="Edit profile" onClick={() => openDrawer('profile')}><PencilIcon /></button>}
+          {onEdit && <button className="fbtn" title={cur !== 'free' ? 'Edit this role' : 'Edit profile'} aria-label={cur !== 'free' ? 'Edit this role' : 'Edit profile'} onClick={() => onEdit(cur)}><PencilIcon /></button>}
         </div>
       </div>
       <button className="nav" title="Next" disabled={idx === list.length - 1} onClick={() => setIdx(idx + 1)}>›</button>
