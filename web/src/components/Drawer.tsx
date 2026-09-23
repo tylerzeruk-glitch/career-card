@@ -306,13 +306,13 @@ function PortraitPicker() {
         <div className={'pv' + (over ? ' over' : '')} style={{ '--a': a, '--b': b } as React.CSSProperties} onDragOver={(e) => { e.preventDefault(); setOver(true); }} onDragLeave={() => setOver(false)} onDrop={(e) => { e.preventDefault(); setOver(false); const f = e.dataTransfer.files[0]; if (f) take(f); }}>
           {p.avatar ? <img className={isPhoto(p.avatar) ? 'photo' : 'bust'} src={avatarSrc(p.avatar, first ? pairIndexFor(S, first.company) : 0)} alt="" /> : <span className="mono">{initials(p.name) || '?'}</span>}
           {busy && <span className="wait">{busy === 'linkedin' ? 'Asking LinkedIn…' : 'Saving…'}</span>}
+          {sampleMode && p.avatar !== 'george' && !busy && <button type="button" className="btn sm reset" onClick={() => { loadExample(); setTakes([]); setMsg('George is back.'); }}>Reset George</button>}
         </div>
         <div className="pt-side">
           <div className="pt-actions">
             <button type="button" className="btn sm" disabled={!!busy} onClick={() => fileRef.current?.click()}>Choose a photo</button><input ref={fileRef} type="file" accept="image/*" onChange={(e) => { const f = e.target.files?.[0]; e.target.value = ''; if (f) take(f); }} />
             <button type="button" className="btn sm" disabled={!linkedinOn || !user || !!busy} title={liTitle} onClick={linkedin}>{LinkedInMark} Use my LinkedIn photo</button>
             {p.avatar && <button type="button" className="btn sm" disabled={!!busy} onClick={remove}>Remove</button>}
-            {sampleMode && p.avatar !== 'george' && <button type="button" className="btn sm" disabled={!!busy} onClick={() => { loadExample(); setTakes([]); setMsg('George is back.'); }}>Reset George</button>}
           </div>
           {user && p.photo && !takes.length && (
             <div className="pt-actions">

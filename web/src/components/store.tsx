@@ -43,6 +43,13 @@ const isReal = (s: State) => s.roles.length > 0 || s.events.length > 0 || !!s.pr
 /** Every visit opens on the deck; the view is a choice for the session, not a saved preference. */
 const onDeck = (s: State): State => (s.settings.view === 'cards' ? s : { ...s, settings: { ...s.settings, view: 'cards' } });
 /** The landing page's "Try it with an example" arrives with ?example (the preview sets a flag instead). */
+/** A stored card that is really the example (George, with his roles), whatever happened to its portrait: dealt afresh on the next visit rather than kept as this device's own. */
+function looksLikeExample(s: State) {
+  const g = sampleState();
+  const key = (x: State) => x.roles.map((r) => (r.company + '|' + r.title).toLowerCase()).sort().join('\n');
+  return (s.profile.name || '').trim().toLowerCase() === g.profile.name.toLowerCase() && key(s) === key(g);
+}
+
 const wantExample = () => {
   if (typeof window === 'undefined') return false;
   if ((window as unknown as { __EXAMPLE__?: boolean }).__EXAMPLE__) return true;
@@ -86,7 +93,7 @@ export function CardProvider({ children, user, cloud }: { children: ReactNode; u
     }
     // asked for the example: deal it unless this browser holds a real card of its own
     const fresh = () => { setS(onDeck({ ...sampleState(), settings: local?.state.settings ?? sampleState().settings })); setSample(true); };
-    if (local && !local.sample && isReal(local.state)) { setS(onDeck(local.state)); setSample(false); if (wantExample()) flash('This device has a card of its own. The example is under ··· → Load the example.'); }
+    if (local && !local.sample && isReal(local.state) && !looksLikeExample(local.state)) { setS(onDeck(local.state)); setSample(false); wantExample(); }
     else fresh();
     setBooted(true);
   }, [user, cloud, flash]);

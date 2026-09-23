@@ -304,6 +304,10 @@ body.drawer-open .scrim{opacity:1;pointer-events:auto}
 .portrait .pv img.photo{object-fit:cover}
 .portrait .pv img.bust{object-fit:contain;object-position:bottom}
 .portrait .pv .mono{font:700 40px/1 var(--cond);color:var(--b);letter-spacing:-.02em}
+.portrait .pv .reset{position:absolute;left:50%;bottom:6px;transform:translateX(-50%);z-index:2;opacity:0;background:var(--paper);border:1px solid var(--hair);font-size:11px;padding:3px 8px;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.18);transition:opacity .12s}
+.portrait .pv:hover .reset,.portrait .pv .reset:focus-visible{opacity:1}
+.portrait .pv .reset:hover{background:var(--ink);color:var(--bg)}
+@media (hover:none){.portrait .pv .reset{opacity:1}}
 .portrait .pv .wait{position:absolute;inset:0;background:rgba(251,246,234,.65);display:grid;place-items:center;font-size:12px;color:var(--ink)}
 .portrait .pt-side{display:grid;gap:8px;min-width:0;padding-top:2px}
 .portrait .pt-actions{display:flex;gap:6px;flex-wrap:wrap}
