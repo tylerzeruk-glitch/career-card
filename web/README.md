@@ -33,7 +33,7 @@ That is local mode. To turn on accounts:
    URL Supabase shows you (`https://<project>.supabase.co/auth/v1/callback`),
    and its client id and secret pasted into the provider's row in Supabase.
    `NEXT_PUBLIC_AUTH_PROVIDERS` lists which buttons to show: unset shows
-   all three, empty shows none, so hide any that are not configured yet.
+   all three and `none` hides them all, so hide any that are not configured yet.
 3. Authentication → URL configuration: set the site URL to where the app
    runs and add `<site>/auth/callback` to the redirect list.
 4. Copy `.env.example` to `.env.local` and fill in the project URL and the
