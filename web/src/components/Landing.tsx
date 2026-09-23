@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { State } from '@/lib/types';
 import { sampleState } from '@/lib/sample';
 import { FreeCard, RoleCard } from './Cards';
@@ -42,8 +42,17 @@ const GLOSSARY: [string, string][] = [
  */
 export function Landing({ tryHref = '/app', signInHref = '/login', onTry }: { tryHref?: string; signInHref?: string; onTry?: () => void }) {
   const [S] = useState(heroState);
+  // one card at a time pops out of the hand, then flips; a second click flips it back and settles it
+  const [out, setOut] = useState<string | null>(null);
   const [flipped, setFlipped] = useState<Record<string, boolean>>({});
-  const flip = (id: string) => setFlipped((f) => ({ ...f, [id]: !f[id] }));
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const later = (ms: number, fn: () => void) => { if (timer.current) clearTimeout(timer.current); timer.current = setTimeout(fn, ms); };
+  const flip = (id: string) => {
+    if (out === id) { setFlipped({}); later(600, () => setOut(null)); return; }
+    setFlipped({}); setOut(id); later(340, () => setFlipped({ [id]: true }));
+  };
+  useEffect(() => () => { if (timer.current) clearTimeout(timer.current); }, []);
+  const cls = (id: string, i: number) => 'h' + i + (out === id ? ' out' : '');
   const tryProps = onTry ? { href: tryHref, onClick: (e: React.MouseEvent) => { e.preventDefault(); onTry(); } } : { href: tryHref };
   const hand = [S.roles[0], S.roles[2]]; // Marine Biologist at Acme, Latex Salesman at Vandelay
 
@@ -68,9 +77,9 @@ export function Landing({ tryHref = '/app', signInHref = '/login', onTry }: { tr
           </div>
           <div className="fine">Free. No account needed to try.<br />Sign in to keep your cards and make them shareable.</div>
         </div>
-        <div className="hand" aria-label="Example cards. Click one to flip it.">
-          {hand.map((r, i) => <RoleCard key={r.id} S={S} r={r} idx={S.roles.indexOf(r)} total={S.roles.length} on={!!flipped[r.id]} className={'h' + i} onClick={() => flip(r.id)} />)}
-          <FreeCard S={S} share on={!!flipped.free} className="h2" onClick={() => flip('free')} />
+        <div className="hand" aria-label="Example cards. Click one to pick it up and flip it.">
+          {hand.map((r, i) => <RoleCard key={r.id} S={S} r={r} idx={S.roles.indexOf(r)} total={S.roles.length} on={!!flipped[r.id]} className={cls(r.id, i)} onClick={() => flip(r.id)} />)}
+          <FreeCard S={S} share on={!!flipped.free} className={cls('free', 2)} onClick={() => flip('free')} />
         </div>
       </section>
 
