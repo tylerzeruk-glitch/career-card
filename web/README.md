@@ -133,6 +133,8 @@ Links to the site unfurl with `public/og.png` (Open Graph and Twitter tags in `s
 ```
 npx next build && npx next start -p 3111
 # in another shell, with Playwright's Chromium
-node -e "import('playwright').then(async ({chromium})=>{const b=await chromium.launch();const p=await (await b.newContext({viewport:{width:1200,height:630},deviceScaleFactor:2})).newPage();await p.goto('http://127.0.0.1:3111/share-card');await p.evaluate(()=>document.fonts.ready);await p.waitForTimeout(600);await p.screenshot({path:'public/og.png'});await b.close();})"
+node -e "import('playwright').then(async ({chromium})=>{const b=await chromium.launch();const p=await (await b.newContext({viewport:{width:1200,height:630},deviceScaleFactor:2})).newPage();await p.goto('http://127.0.0.1:3111/share-card',{waitUntil:'networkidle'});const f=await p.evaluate(async()=>{await document.fonts.ready;return [...document.fonts].filter(x=>x.status==='loaded').map(x=>x.family)});console.log(f);await p.screenshot({path:'public/og.png'});await b.close();})"
 ```
+
+The printed list must include Lilita One, Barlow Condensed and Libre Caslon Text; if a font request failed, the picture has fallback type. Rerun until it does.
 
