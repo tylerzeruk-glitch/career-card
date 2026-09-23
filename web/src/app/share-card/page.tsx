@@ -14,8 +14,7 @@ export default function ShareCard() {
       <div className="copy">
         <span className="wordmark"><Flag size={30} /><span>CareerCards</span></span>
         <h1>Every role you&apos;ve played, on its own card.</h1>
-        <p>And a timeline for the job hunt, seen only by you.</p>
-        <div className="go"><Flag size={16} />Build your pack</div>
+        <p>And a timeline for the job hunt, seen only by you. Build your pack.</p>
       </div>
       <div className="hand">
         {hand.map((r, i) => <RoleCard key={r.id} S={S} r={r} idx={S.roles.indexOf(r)} total={S.roles.length} className={'h' + i} />)}

@@ -460,8 +460,7 @@ kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--hair);border-r
 .landing.share{--hw:224px;width:1200px;height:630px;max-width:none;margin:0;padding:0 64px;display:grid;grid-template-columns:minmax(0,1fr) max-content;gap:36px;align-items:center;background:var(--bg);overflow:hidden}
 .landing.share .wordmark{font-size:30px;margin-bottom:26px}
 .landing.share h1{font:700 58px/.98 var(--cond);letter-spacing:.02em;text-transform:uppercase;margin-bottom:18px}
-.landing.share p{font:400 28px/1.35 var(--serif);color:var(--ink-2);max-width:24ch;margin-top:24px}
-.landing.share .go{display:inline-flex;align-items:center;gap:10px;margin-top:30px;font:700 22px var(--cond);letter-spacing:.12em;text-transform:uppercase;color:var(--red)}
+.landing.share p{font:400 28px/1.35 var(--serif);color:var(--ink-2);max-width:26ch;margin-top:24px}
 .landing.share .hand{margin-right:8px}
 .landing.share .hand .card{transition:none;cursor:default}
 
