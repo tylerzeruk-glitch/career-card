@@ -25,7 +25,7 @@
 .card table{width:100%;border-collapse:collapse;table-layout:fixed;font:600 4.4cqw/1.2 "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.03em;text-transform:uppercase;margin-bottom:3%}
 .card th,.card td{padding:1.4% 1%;border-bottom:1px solid #cfc4a9;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .card col.c1{width:22%}.card col.c3{width:17%}
-.card th{color:#6b6559;font-weight:500}
+.card th{color:#6b6559;font-weight:500;font-size:inherit;letter-spacing:inherit}
 .card td.n,.card th.n{text-align:right}
 .card tr.cur td{color:#dc4432}
 .card .bulwrap{position:relative;display:flex;flex-direction:column;flex:0 1 auto;min-height:0;margin:0 0 3%}
