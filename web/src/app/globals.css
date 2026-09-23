@@ -389,7 +389,7 @@ kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--hair);border-r
 .menu .pop a.btn:hover{color:var(--ink)}
 
 /* landing: the front door for a signed-out visitor */
-.landing{--hw:clamp(180px,19vw,236px);max-width:1160px;margin:0 auto;padding:0 var(--gut) 40px;display:flex;flex-direction:column;gap:56px}
+.landing{--hw:clamp(150px,17.5vw,236px);max-width:1160px;margin:0 auto;padding:0 var(--gut) 40px;display:flex;flex-direction:column;gap:56px}
 .landing .eyebrow{font:700 12px/1 var(--cond);letter-spacing:.16em;text-transform:uppercase;color:var(--red);margin-bottom:14px}
 .landing p{margin:0;color:var(--ink-2)}
 .landing a{color:inherit}
@@ -401,14 +401,15 @@ kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--hair);border-r
 .landing .btn:not(.primary){border-color:var(--hair);background:var(--paper)}
 .landing .btn:not(.primary):hover{border-color:var(--ink)}
 .landing .btn.lg{padding:11px 18px;font-size:14.5px;border-radius:8px}
-.hero{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:40px;align-items:center;padding-top:16px}
+/* the hand's column is exactly as wide as the hand (plus room for the tilted outer cards), so it never crosses into the copy */
+.hero{display:grid;grid-template-columns:minmax(0,1fr) max-content;gap:32px;align-items:center;padding-top:16px}
 .hero h1{font:700 clamp(38px,5vw,60px)/.98 var(--cond);letter-spacing:.02em;text-transform:uppercase;margin-bottom:18px}
 .hero .copy p{font:400 16px/1.6 var(--serif);max-width:52ch}
 .hero .cta{display:flex;gap:10px;flex-wrap:wrap;margin-top:26px}
 .hero .fine{margin-top:14px;font-size:12.5px;color:var(--muted);max-width:52ch}
 .hero .fine a{color:var(--ink-2)}
 /* three real cards, fanned like a hand; each one flips on click */
-.handwrap{display:flex;flex-direction:column;align-items:center;gap:18px;justify-self:center}
+.handwrap{display:flex;flex-direction:column;align-items:center;gap:18px;justify-self:center;padding-inline:16px}
 .hand{position:relative;width:calc(var(--hw) * 2.15);height:calc(var(--hw) * 1.4 + 40px);margin:0 auto}
 /* the nudge under the hand, gone once a card is picked up */
 .flipme{display:inline-flex;align-items:center;gap:8px;font:700 11.5px/1 var(--cond);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);transition:opacity .3s}
