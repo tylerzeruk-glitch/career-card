@@ -124,23 +124,23 @@ export function Landing({ tryHref = '/app?example', signInHref = '/login', onTry
   );
 }
 
-/** The still is drawn at one of two sizes: wide for a desk, narrower (and taller for its width) for a phone. */
-const SHOTS = { wide: { w: 1200, h: 520 }, narrow: { w: 760, h: 500 } };
+/** The still is drawn at one of two sizes, then scaled up to the column so the type reads larger than in the app: wide for a desk, narrower for a phone. `before`/`after` are days around the free agency. */
+const SHOTS = { wide: { w: 900, h: 470, before: 16, after: 8 }, narrow: { w: 560, h: 440, before: 8, after: 4 } };
 
-/** The timeline as a picture: drawn at a fixed size, from three weeks before the layoff to a little past today, then scaled to the column. */
+/** The timeline as a picture: drawn at a fixed size, from a little before the layoff to a little past today, then scaled to the column. */
 function Still({ S }: { S: State }) {
   const box = useRef<HTMLDivElement>(null);
   const [fit, setFit] = useState({ k: 1, size: 'wide' as keyof typeof SHOTS });
   useEffect(() => {
     const el = box.current; if (!el) return;
-    const measure = () => { const cw = el.clientWidth, size = cw < 600 ? 'narrow' : 'wide'; setFit({ k: Math.min(1, cw / SHOTS[size].w), size }); };
+    const measure = () => { const cw = el.clientWidth, size = cw < 600 ? 'narrow' : 'wide'; setFit({ k: Math.min(1.4, cw / SHOTS[size].w), size }); };
     measure();
     const ro = 'ResizeObserver' in window ? new ResizeObserver(measure) : null; ro?.observe(el);
     return () => ro?.disconnect();
   }, []);
   const t = dayNum(todayISO()), s = status(S);
-  const { w, h } = SHOTS[fit.size], narrow = fit.size === 'narrow';
-  const from = (s.free && s.since ? dayNum(s.since) : t - 60) - (narrow ? 12 : 22), to = t + (narrow ? 6 : 12);
+  const { w, h, before, after } = SHOTS[fit.size];
+  const from = (s.free && s.since ? dayNum(s.since) : t - 60) - before, to = t + after;
   return (
     <div>
       <div className="shot" ref={box} style={{ height: Math.round(h * fit.k), ['--shot-w' as string]: w + 'px', ['--shot-h' as string]: h + 'px' }}>

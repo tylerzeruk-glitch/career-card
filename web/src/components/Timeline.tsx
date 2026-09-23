@@ -24,7 +24,7 @@ type View = { start: number; ppd: number; init: boolean };
 export function Timeline({ active }: { active: boolean }) {
   const { S } = useCard();
   const { openDrawer, openFocus, timeline, selectedId, setSelectedId } = useUI();
-  return <TimelineView S={S} active={active} api={timeline} selectedId={selectedId} onEvent={(id) => { setSelectedId(id); openDrawer('event', { eventId: id }); }} onSpan={openFocus} />;
+  return <TimelineView S={S} active={active} api={timeline} selectedId={selectedId} onEvent={(id) => { setSelectedId(id); openDrawer('event', { eventId: id }); }} onSpan={openFocus} onLog={() => openDrawer('log')} />;
 }
 
 type Api = { current: TimelineApi | null };
@@ -35,7 +35,7 @@ type Api = { current: TimelineApi | null };
  * take a click on an event or a role span. `still` draws a fixed picture of
  * `range` (day numbers) with no pan, zoom or hover; the caller adds the legend.
  */
-export function TimelineView({ S, active, api, selectedId = null, onEvent, onSpan, still, range }: { S: State; active: boolean; api?: Api; selectedId?: string | null; onEvent?: (id: string) => void; onSpan?: (id: string) => void; still?: boolean; range?: { from: number; to: number } }) {
+export function TimelineView({ S, active, api, selectedId = null, onEvent, onSpan, onLog, still, range }: { S: State; active: boolean; api?: Api; selectedId?: string | null; onEvent?: (id: string) => void; onSpan?: (id: string) => void; onLog?: () => void; still?: boolean; range?: { from: number; to: number } }) {
   const host = useRef<HTMLDivElement>(null);
   const tip = useRef<HTMLDivElement>(null);
   const view = useRef<View>({ start: 0, ppd: 8, init: false });
@@ -74,7 +74,7 @@ export function TimelineView({ S, active, api, selectedId = null, onEvent, onSpa
   const render = () => {
     const el = host.current; if (!el || el.hidden) return;
     const st = stateRef.current, ev = sortedEvents(st), rs = roles(st);
-    const old = el.querySelector('svg');
+    const old = el.querySelector(':scope > svg');
     if (!rs.length && !ev.length) { old?.remove(); return; }
     if (!still) clampView();
     const v = view.current, W = el.clientWidth, H = el.clientHeight, X = (day: number) => PAD + (day - v.start) * v.ppd;
@@ -130,7 +130,7 @@ export function TimelineView({ S, active, api, selectedId = null, onEvent, onSpa
       // first without reaching over a later tick (which would have to stay shorter), then allowing it
       const open = (l: number, r: number) => !(l < X(td) && r > X(td)) && !placed.some((q, qi) => qi > pi && (TYPES[q.e.type] || TYPES.milestone).dir === t.dir && q.x > l - 4 && q.x < r + 4);
       const place = (strict: boolean) => { for (let i = 0; i < tiers.length; i++) for (const [a, l, r] of [['middle', p.x - w / 2, p.x + w / 2], ['end', p.x - 7 - w, p.x - 7], ['start', p.x + 7, p.x + 7 + w]] as [string, number, number][]) if (l > 2 && r < W - 2 && clear(i, l, r) && (!strict || open(l, r))) { tier = i; anchor = a; L = l; R = r; return true; } return false; };
-      if (!place(true) && !place(false) && l2 && w1 < w - 20) { w = w1; if (place(true) || place(false)) l2 = ''; }
+      if (!place(true) && !place(false) && l2 && w1 < w - 20) { w = w1; l2 = ''; place(true) || place(false); }
       if (tier < 0) { L = p.x - w / 2; R = p.x + w / 2; for (let i = 0; i < tiers.length; i++) if (tiers[i] < L - 8) { tier = i; break; } }
       const showLabel = tier >= 0 && v.ppd > 0.6; if (tier < 0) tier = 0; else { tiers[tier] = R; done.push({ x: p.x, l: L, r: R, tier }); }
       const len = (up ? BASE_UP : BASE_DN) + tier * TIER + (e.type === 'layoff' ? TIER * 0.4 : 0); const yEnd = up ? baseY - len : baseY + len; const col = `var(${t.color})`;
@@ -194,22 +194,27 @@ export function TimelineView({ S, active, api, selectedId = null, onEvent, onSpa
   return (
     <>
       <div className={'tl' + (still ? ' still' : '')} id={still ? undefined : 'tl'} ref={host} tabIndex={still ? undefined : 0} role={still ? 'img' : undefined} aria-label="Career timeline" hidden={!active}>
-        {!still && (
-          <div className="overlay zoom">
-            <button className="btn sm" onClick={() => { fitRecent(); schedule(); }}>Recent</button>
-            <button className="btn sm" onClick={zoomFreeAgency}>Free agency</button>
-            <button className="btn sm" onClick={() => { fitCareer(); schedule(); }}>Career</button>
-            <button className="btn icon" title="Zoom out" onClick={() => { zoomAt(1 / 1.4, (host.current?.clientWidth || 800) / 2); schedule(); }}>−</button>
-            <button className="btn icon" title="Zoom in" onClick={() => { zoomAt(1.4, (host.current?.clientWidth || 800) / 2); schedule(); }}>+</button>
-            <button className="btn sm" onClick={() => { centerOn(dayNum(todayISO())); schedule(); }}>Today</button>
-          </div>
-        )}
+        <div className="overlay tools">
+          {!still && (
+            <div className="zoom">
+              <button className="btn sm" onClick={() => { fitRecent(); schedule(); }}>Recent</button>
+              <button className="btn sm" onClick={zoomFreeAgency}>Free agency</button>
+              <button className="btn sm" onClick={() => { fitCareer(); schedule(); }}>Career</button>
+              <button className="btn icon" title="Zoom out" onClick={() => { zoomAt(1 / 1.4, (host.current?.clientWidth || 800) / 2); schedule(); }}>−</button>
+              <button className="btn icon" title="Zoom in" onClick={() => { zoomAt(1.4, (host.current?.clientWidth || 800) / 2); schedule(); }}>+</button>
+              <button className="btn sm" onClick={() => { centerOn(dayNum(todayISO())); schedule(); }}>Today</button>
+            </div>
+          )}
+          {(onLog || still) && <button className="btn sm log" onClick={onLog} tabIndex={still ? -1 : undefined}><LogIcon />Event log</button>}
+        </div>
       </div>
       {!still && <TimelineLegend hidden={!active} />}
       {!still && <div className="tip" ref={tip} hidden />}
     </>
   );
 }
+
+const LogIcon = () => <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13" /><path d="M3 6h.01M3 12h.01M3 18h.01" /></svg>;
 
 /** The key to the marks, a row under the drawing so it never sits on top of it. */
 export function TimelineLegend({ hidden }: { hidden?: boolean }) {
