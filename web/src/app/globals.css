@@ -434,7 +434,7 @@ kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--hair);border-r
 .step h2{font:700 24px/1.1 var(--cond);letter-spacing:.04em;text-transform:uppercase;margin:8px 0 8px}
 .step p{font-size:14px;line-height:1.55}
 .hunt{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:40px;align-items:start;background:var(--navy);color:#fbf6ea;border-radius:14px;padding:34px 36px}
-.hunt .eyebrow{color:#ef6b5b}
+.hunt .eyebrow{color:#ef6b5b;font-size:15px}
 .hunt h2{font:700 30px/1.05 var(--cond);letter-spacing:.03em;text-transform:uppercase;margin-bottom:12px}
 .hunt p{color:#c9c2b2;font-size:14.5px;line-height:1.6}
 .glossary{display:grid;gap:0;border-top:1px solid rgba(255,255,255,.2)}
