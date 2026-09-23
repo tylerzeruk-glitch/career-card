@@ -56,6 +56,10 @@ a.btn{text-decoration:none;display:inline-block}
 .menu summary::-webkit-details-marker{display:none}
 .menu .pop{position:absolute;right:0;top:calc(100% + 4px);background:var(--paper);border:1px solid var(--hair);border-radius:8px;box-shadow:0 10px 30px rgba(0,0,0,.14);padding:4px;display:grid;min-width:170px;z-index:8}
 .menu .pop .btn{text-align:left}
+.menu .pop hr{border:0;border-top:1px solid var(--hair);margin:4px 0}
+.actions .secondary{display:contents}
+.menu .m-only{display:none}
+}
 
 /* header */
 .topbar{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-block:22px 6px;flex:none}
@@ -444,3 +448,15 @@ kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--hair);border-r
   .hunt{grid-template-columns:1fr;padding:26px 22px;gap:22px}
   .glossary div{grid-template-columns:120px 1fr}
 }
+
+/* phones: the name on its own line, then one row with the view switch on the left and the actions on the right;
+   Import, Profile, Share and Sign in fold into the menu */
+@media (max-width:700px){
+  .topbar{flex-direction:column;align-items:stretch;gap:14px;padding-block:14px 4px}
+  .brand h1{font-size:26px}
+  .actions{display:flex;align-items:center;gap:6px;flex-wrap:nowrap;width:100%}
+  .actions .toggle{margin-right:auto}
+  .actions > span[style]{display:none}
+  .actions .secondary{display:none}
+  .menu .m-only{display:grid}
+  .menu .pop{min-width:190px}

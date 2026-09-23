@@ -114,16 +114,26 @@ function Header() {
         <div className="toggle"><button className={ui.view === 'cards' ? 'on' : ''} onClick={() => ui.setView('cards')}>Cards</button><button className={ui.view === 'timeline' ? 'on' : ''} onClick={() => ui.setView('timeline')}>Timeline</button></div>
         <span style={{ width: 8 }} />
         <button className="btn primary" onClick={() => ui.openDrawer('role', { roleId: null })}>+ Add</button>
-        <button className="btn" onClick={() => ui.openImport('linkedin')}>Import</button>
-        <button className="btn" onClick={() => ui.openDrawer('profile')}>Profile</button>
-        <button className="btn" onClick={() => ui.openDrawer('profile')}>Share</button>
-        {!user && <a className="btn" href="/login">Sign in</a>}
+        {/* on a phone these four move into the menu */}
+        <span className="secondary">
+          <button className="btn" onClick={() => ui.openImport('linkedin')}>Import</button>
+          <button className="btn" onClick={() => ui.openDrawer('profile')}>Profile</button>
+          <button className="btn" onClick={() => ui.openDrawer('profile')}>Share</button>
+          {!user && <a className="btn" href="/login">Sign in</a>}
+        </span>
         <ThemeToggle />
         <details className="menu" ref={menuRef} open={menu} onToggle={(e) => setMenu((e.target as HTMLDetailsElement).open)}>
-          <summary className="btn">···</summary>
+          <summary className="btn" aria-label="More">···</summary>
           <div className="pop" onClick={() => setMenu(false)}>
             {user ? <div className="account" style={{ padding: '6px 10px' }}><span className={'sync ' + sync}><i />{sync === 'saving' ? 'Saving' : sync === 'error' ? 'Not saved' : 'Saved'}</span></div> : null}
             {user ? <div className="who" style={{ padding: '0 10px 6px', fontSize: 12, color: 'var(--muted)' }}>{user.email}</div> : null}
+            <div className="m-only">
+              <button className="btn" onClick={() => ui.openImport('linkedin')}>Import</button>
+              <button className="btn" onClick={() => ui.openDrawer('profile')}>Profile</button>
+              <button className="btn" onClick={() => ui.openDrawer('profile')}>Share</button>
+              {!user && <a className="btn" href="/login">Sign in</a>}
+              <hr />
+            </div>
             <button className="btn" onClick={() => ui.openDrawer('log')}>Job-hunt log</button>
             <button className="btn" onClick={ui.openBackup}>Backup / restore</button>
             <button className="btn" onClick={ui.openHelp}>How this works</button>
