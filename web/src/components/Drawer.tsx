@@ -9,8 +9,8 @@ type CertRow = { name: string; issuer: string; year: string; inProgress: boolean
 const IN_PROGRESS = /in progress|present/i;
 import { fmtShort, parseMonth, todayISO } from '@/lib/dates';
 import { PAIRS, TYPES, codeFor, hashIdx, huntStats, initials, looking, norm, pairFor, pairIndexFor, roles, slugify, sortedEvents, statusOf, uid } from '@/lib/derived';
-import { avatarSrc, isPhoto } from '@/lib/avatar';
-import { LOCAL_SIDE, PORTRAIT_SIDE, dropPortrait, isDataUrl, squarePhoto, storePortrait, toDataUrl } from '@/lib/portrait';
+import { avatarSrc, isPhoto, isSet } from '@/lib/avatar';
+import { LOCAL_SIDE, PORTRAIT_SIDE, dropPortrait, drawTake, isDataUrl, photoBlob, pickTake, squarePhoto, storePortrait, toDataUrl, type Take } from '@/lib/portrait';
 import { linkedinOn } from '@/lib/auth-providers';
 import { supabaseBrowser } from '@/lib/supabase/client';
 
@@ -223,6 +223,9 @@ function PortraitPicker() {
   const [msg, setMsg] = useState('');
   const [over, setOver] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
+  const [takes, setTakes] = useState<(Take | null)[]>([]); // four slots while a deal is out; null = still drawing
+  const [dealing, setDealing] = useState(false);
+  const [picking, setPicking] = useState<string | null>(null);
 
   const take = async (src: Blob) => {
     setBusy('photo'); setMsg('');
@@ -230,6 +233,7 @@ function PortraitPicker() {
       const photo = await squarePhoto(src, user ? PORTRAIT_SIDE : LOCAL_SIDE);
       const url = user ? await storePortrait(user.id, photo) : await toDataUrl(photo);
       update((s) => ({ ...s, profile: { ...s.profile, avatar: url, photo: url } }));
+      setTakes([]);
       setMsg('Saved. It shows on every card' + (user ? ' and on your page.' : '.'));
     } catch (e) { setMsg((e as Error).message || 'Could not use that photo.'); }
     setBusy(null);
@@ -260,6 +264,32 @@ function PortraitPicker() {
     else setMsg('Could not reach LinkedIn just now.');
     setBusy(null);
   };
+  /** Four takes from the image model, drawn in parallel; each lands in its slot as it arrives. */
+  const deal = async () => {
+    if (!user || !p.photo) return;
+    setDealing(true); setMsg(''); setTakes([null, null, null, null]);
+    let src: Blob;
+    try { src = await photoBlob(p.photo); } catch (e) { setMsg((e as Error).message); setDealing(false); setTakes([]); return; }
+    let firstErr = '', left = -1;
+    await Promise.all([0, 1, 2, 3].map(async (i) => {
+      try { const t = await drawTake(src); left = Math.min(left < 0 ? t.left : left, t.left); setTakes((ts) => ts.map((x, j) => (j === i ? t : x))); }
+      catch (e) { firstErr ||= (e as Error).message; setTakes((ts) => ts.map((x, j) => (j === i ? undefined as unknown as null : x))); }
+    }));
+    setTakes((ts) => ts.filter((t) => t !== undefined));
+    setDealing(false);
+    setMsg(firstErr || (left === 0 ? 'Pick one. That was the last deal for today.' : 'Pick one, or deal four more.'));
+  };
+  const pick = async (t: Take) => {
+    setPicking(t.path); setMsg('');
+    try {
+      const avatar = await pickTake(t.path);
+      update((s) => ({ ...s, profile: { ...s.profile, avatar } }));
+      setTakes([]); setMsg('Saved. It shows on every card, in each team\'s colours, and on your page.');
+    } catch (e) { setMsg((e as Error).message); }
+    setPicking(null);
+  };
+  const usePhoto = () => { if (p.photo) update((s) => ({ ...s, profile: { ...s.profile, avatar: s.profile.photo } })); setMsg('Back to the photo.'); };
+
   // back from LinkedIn: the app left a note to carry on
   useEffect(() => {
     try { if (sessionStorage.getItem(PORTRAIT_NOTE) === 'linkedin') { sessionStorage.removeItem(PORTRAIT_NOTE); linkedin(); } } catch { /* ignore */ }
@@ -280,9 +310,28 @@ function PortraitPicker() {
             <button type="button" className="btn sm" disabled={!linkedinOn || !user || !!busy} title={liTitle} onClick={linkedin}>{LinkedInMark} Use my LinkedIn photo</button>
             {p.avatar && <button type="button" className="btn sm" disabled={!!busy} onClick={remove}>Remove</button>}
           </div>
-          <span className="help">{msg || 'A headshot works best: face the camera, plain background. Drop one on the square or choose a file; it is cropped to the centre.'}</span>
+          {user && p.photo && !takes.length && (
+            <div className="pt-actions">
+              <button type="button" className="btn sm draw" disabled={!!busy || dealing} onClick={deal}>{isSet(p.avatar || '') ? 'Draw me again' : 'Draw me in the house style'}</button>
+              {isSet(p.avatar || '') && <button type="button" className="btn sm" onClick={usePhoto}>Use the photo instead</button>}
+            </div>
+          )}
+          <span className="help">{msg || (user && p.photo ? 'The model redraws your photo as a riso print like George\'s: four takes, pick one. Each deal is a few cents, so there is a daily limit.' : 'A headshot works best: face the camera, plain background. Drop one on the square or choose a file; it is cropped to the centre.')}</span>
         </div>
       </div>
+      {takes.length > 0 && (
+        <div className="takes">
+          {takes.map((t, i) => (
+            <div key={t ? t.path : 'wait' + i} className="take" style={{ '--a': a, '--b': b } as React.CSSProperties}>
+              {t ? <><img src={t.url} alt={'Take ' + (i + 1)} /><button type="button" className="btn sm use" disabled={!!picking} onClick={() => pick(t)}>{picking === t.path ? 'Saving…' : 'Use this one'}</button></> : <span className="wait">Drawing…</span>}
+            </div>
+          ))}
+          <div className="pt-actions wide">
+            <button type="button" className="btn sm" disabled={dealing || !!picking} onClick={deal}>Deal four more</button>
+            <button type="button" className="btn sm" disabled={dealing || !!picking} onClick={() => { setTakes([]); setMsg(''); }}>Keep what I have</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -41,9 +41,36 @@ export async function storePortrait(userId: string, photo: Blob): Promise<string
   return sb.storage.from(BUCKET).getPublicUrl(path(userId)).data.publicUrl + '?v=' + Date.now();
 }
 
+/** Everything stored for the player: the photo and the drawn set. */
 export async function dropPortrait(userId: string) {
   const sb = supabaseBrowser(); if (!sb) return;
-  await sb.storage.from(BUCKET).remove([path(userId)]);
+  await sb.storage.from(BUCKET).remove([path(userId), ...Array.from({ length: 10 }, (_, i) => userId + '/riso-' + i + '.png')]);
+}
+
+export type Take = { path: string; url: string };
+type Fail = { error?: string; message?: string };
+
+/** One take from the image model, via the server. Throws with a message the picker can show. */
+export async function drawTake(photo: Blob): Promise<Take & { left: number }> {
+  const fd = new FormData(); fd.append('photo', photo, 'photo.jpg');
+  const r = await fetch('/api/portrait/draw', { method: 'POST', body: fd });
+  const body = (await r.json().catch(() => ({}))) as (Take & { left: number }) | Fail;
+  if (!r.ok) throw Object.assign(new Error((body as Fail).message || 'Could not draw that.'), { code: (body as Fail).error });
+  return body as Take & { left: number };
+}
+
+/** The chosen take becomes the card set; returns the avatar address to save. */
+export async function pickTake(path: string): Promise<string> {
+  const r = await fetch('/api/portrait/pick', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ path }) });
+  const body = (await r.json().catch(() => ({}))) as { avatar?: string } & Fail;
+  if (!r.ok || !body.avatar) throw new Error(body.message || 'Could not save that take.');
+  return body.avatar;
+}
+
+/** The stored photo as bytes, for the draw route. */
+export async function photoBlob(photo: string): Promise<Blob> {
+  const r = await fetch(photo); if (!r.ok) throw new Error('Could not read your photo.');
+  return r.blob();
 }
 
 /** A portrait kept as a data URL (made while signed out) moves into the account's folder on the first save there. */

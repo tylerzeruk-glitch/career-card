@@ -99,7 +99,26 @@ it straight away: signed in, to the `portraits` storage bucket at
 store moves into the bucket on the first save after signing in. A photo
 fills the art box edge to edge (`img.photo` in `card.css`); the built-in
 busts keep their cut-out bottom edge. Redrawing the photo in the house
-style is still to come (see Not yet); `photo` is kept for that.
+style is the next step down (`photo` is kept for it).
+
+**Drawing it.** "Draw me in the house style" (signed in, photo present)
+asks for four takes at once, each a `POST /api/portrait/draw`: the photo
+goes to OpenAI's image edit endpoint with the house prompt from the
+Avatars canvas (`src/lib/riso-prompt.ts`; model and quality from
+`OPENAI_IMAGE_MODEL`, default `gpt-image-1`, and `OPENAI_IMAGE_QUALITY`,
+default `medium`; `input_fidelity: high` to hold the likeness, dropped
+if the model refuses it). The result is finished in `src/lib/riso.ts`,
+a port of the steps George went through: cream keyed out (the border's
+median colour, only where it touches the border, soft edge), the bust
+squared up bottom-anchored with everything under the arc filled with the
+shirt, stored as a 512px take under `<user id>/takes/`. "Use this one"
+(`POST /api/portrait/pick`) recolours the fabric to each of the ten team
+frame colours, stores `riso-0.png` … `riso-9.png` in the player's folder,
+clears the takes and saves the avatar as that address with a `{pair}`
+slot, which `avatarSrc` fills per card. Twelve takes a day per player
+(`TAKES_PER_DAY`), counted from the takes folder. Needs `OPENAI_API_KEY`
+on the server (Vercel, sensitive), like the Anthropic key; without it the
+button says drawing is not switched on.
 
 **The LinkedIn photo.** LinkedIn's API gives third-party apps nothing but
 sign-in, and sign-in with OpenID Connect includes a `picture` claim: a
@@ -166,11 +185,9 @@ dialog. Duplicates (same date, type, company and title) are skipped on save.
   `CONTACT_EMAIL` in `src/components/Landing.tsx` to turn it into a link.
 - Greenhouse.io integration: pull applications and their stages into the
   free-agency timeline instead of logging them by hand.
-- Player portraits, the drawn kind: an image model redraws the stored
-  headshot in the house riso style, key out the cream, fill the bust,
-  recolour the shirt per team, store one image per pair. Design: the
-  CareerCards Avatars canvas (the "Portrait flow" board). The photo step
-  is done; this is the "four takes" step.
+- Portraits: "describe yourself in a sentence" as an alternative to a
+  photo (the canvas's step 01), and a way to nudge a take (hat on, no
+  glasses) before dealing again.
 
 ## Share card
 

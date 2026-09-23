@@ -39,6 +39,9 @@ preceded it.
 - **Portrait:** a headshot for the art box, from a file, a drop, or the
   player's LinkedIn profile photo (through LinkedIn sign-in). Cropped in the
   browser, stored with the account; shown on every card and the public page.
+  "Draw me in the house style" has OpenAI's image model redraw it as a riso
+  print like George's: four takes, pick one, and the shirt takes each team's
+  colour.
 
 ## Import
 

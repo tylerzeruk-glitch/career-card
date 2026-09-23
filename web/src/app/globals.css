@@ -310,6 +310,18 @@ body.drawer-open .scrim{opacity:1;pointer-events:auto}
 .portrait .pt-actions .btn{display:inline-flex;align-items:center;gap:6px;background:var(--paper-2,rgba(0,0,0,.05))}
 .portrait .pt-actions .btn:disabled{opacity:.5;cursor:default}
 .portrait .pt-actions input{display:none}
+.portrait .pt-actions .btn.draw{background:var(--ink);color:var(--bg)}
+.portrait .pt-actions .btn.draw:hover{opacity:.88}
+/* a deal of four takes, each on the first team's colours, and the row of what to do with them */
+.takes{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}
+.takes .take{position:relative;aspect-ratio:1;border-radius:10px;background:var(--a);border:2px solid var(--b);overflow:hidden;display:grid;place-items:center}
+.takes .take img{position:absolute;left:0;bottom:0;width:100%;height:auto;display:block}
+.takes .take .use{position:absolute;left:50%;bottom:6px;transform:translateX(-50%);background:var(--paper);border:1px solid var(--hair);white-space:nowrap;font-size:11px;padding:3px 8px;box-shadow:0 2px 8px rgba(0,0,0,.18)}
+.takes .take .use:hover{background:var(--ink);color:var(--bg)}
+.takes .take .wait{font:700 11px var(--cond);letter-spacing:.12em;text-transform:uppercase;color:var(--b);animation:pulse 1.2s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.4}}
+@media (prefers-reduced-motion: reduce){.takes .take .wait{animation:none}}
+.takes .pt-actions.wide{grid-column:1/-1;display:flex;gap:6px;flex-wrap:wrap}
 .form-foot{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:4px}
 .form-foot .spacer{flex:1}
 .form-foot .status{font-size:12px;color:var(--muted)}
