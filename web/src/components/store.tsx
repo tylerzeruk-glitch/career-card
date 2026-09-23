@@ -39,6 +39,8 @@ export const useCard = () => {
 };
 
 const isReal = (s: State) => s.roles.length > 0 || s.events.length > 0 || !!s.profile.name;
+/** Every visit opens on the deck; the view is a choice for the session, not a saved preference. */
+const onDeck = (s: State): State => (s.settings.view === 'cards' ? s : { ...s, settings: { ...s.settings, view: 'cards' } });
 /** The landing page's "Try it with an example" arrives with ?example (the preview sets a flag instead). */
 const wantExample = () => {
   if (typeof window === 'undefined') return false;
@@ -49,7 +51,7 @@ const wantExample = () => {
 
 export function CardProvider({ children, user, cloud }: { children: ReactNode; user: AuthUser | null; cloud: CloudCard | null }) {
   // Start from what the server knew (the account's card), else from this browser, else the sample.
-  const [S, setS] = useState<State>(() => (cloud ? cloud.state : blank()));
+  const [S, setS] = useState<State>(() => onDeck(cloud ? cloud.state : blank()));
   const [sampleMode, setSample] = useState(false);
   const [booted, setBooted] = useState(!!cloud);
   const [slug, setSlug] = useState<string | null>(cloud?.slug ?? null);
@@ -76,14 +78,14 @@ export function CardProvider({ children, user, cloud }: { children: ReactNode; u
     const local = loadLocal();
     if (user) {
       // Signed in, no card yet. Offer to bring in what this browser has, if it is real.
-      if (local && !local.sample && isReal(local.state)) setMigration(local.state);
+      if (local && !local.sample && isReal(local.state)) setMigration(onDeck(local.state));
       else { setS(blank()); }
       setBooted(true);
       return;
     }
     // asked for the example: deal it unless this browser holds a real card of its own
-    const fresh = () => { setS({ ...sampleState(), settings: local?.state.settings ?? sampleState().settings }); setSample(true); };
-    if (local && !local.sample && isReal(local.state)) { setS(local.state); setSample(false); if (wantExample()) flash('This device has a card of its own. The example is under ··· → Load the example.'); }
+    const fresh = () => { setS(onDeck({ ...sampleState(), settings: local?.state.settings ?? sampleState().settings })); setSample(true); };
+    if (local && !local.sample && isReal(local.state)) { setS(onDeck(local.state)); setSample(false); if (wantExample()) flash('This device has a card of its own. The example is under ··· → Load the example.'); }
     else fresh();
     setBooted(true);
   }, [user, cloud, flash]);
