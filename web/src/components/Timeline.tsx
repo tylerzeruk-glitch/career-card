@@ -4,7 +4,7 @@ import { useCard } from './store';
 import { useUI, type TimelineApi } from './ui';
 import type { Ev, State } from '@/lib/types';
 import { MONTHS, dayNum, dur, fmt, fmtMonth, fmtShort, monthEndDay, monthsBetween, todayISO } from '@/lib/dates';
-import { TYPES, norm, pairFor, roles, sortedEvents, status, statusOf } from '@/lib/derived';
+import { TYPES, looking, norm, pairFor, roles, sortedEvents, status, statusOf } from '@/lib/derived';
 
 const PAD = 28;
 const esc = (s: unknown) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
@@ -198,7 +198,7 @@ export function TimelineView({ S, active, api, selectedId = null, onEvent, onSpa
           {!still && (
             <div className="zoom">
               <button className="btn sm" onClick={() => { fitRecent(); schedule(); }}>Recent</button>
-              <button className="btn sm" onClick={zoomFreeAgency}>Free agency</button>
+              {looking(S) && <button className="btn sm" onClick={zoomFreeAgency}>Free agency</button>}
               <button className="btn sm" onClick={() => { fitCareer(); schedule(); }}>Career</button>
               <button className="btn icon" title="Zoom out" onClick={() => { zoomAt(1 / 1.4, (host.current?.clientWidth || 800) / 2); schedule(); }}>−</button>
               <button className="btn icon" title="Zoom in" onClick={() => { zoomAt(1.4, (host.current?.clientWidth || 800) / 2); schedule(); }}>+</button>
@@ -208,7 +208,7 @@ export function TimelineView({ S, active, api, selectedId = null, onEvent, onSpa
           {(onLog || still) && <button className="btn sm log" onClick={onLog} tabIndex={still ? -1 : undefined}><LogIcon />Event log</button>}
         </div>
       </div>
-      {!still && <TimelineLegend hidden={!active} />}
+      {!still && <TimelineLegend hidden={!active} hunt={looking(S)} />}
       {!still && <div className="tip" ref={tip} hidden />}
     </>
   );
@@ -217,11 +217,11 @@ export function TimelineView({ S, active, api, selectedId = null, onEvent, onSpa
 const LogIcon = () => <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13" /><path d="M3 6h.01M3 12h.01M3 18h.01" /></svg>;
 
 /** The key to the marks, a row under the drawing so it never sits on top of it. */
-export function TimelineLegend({ hidden }: { hidden?: boolean }) {
+export function TimelineLegend({ hidden, hunt = true }: { hidden?: boolean; hunt?: boolean }) {
   return (
     <div className="tl-legend" hidden={hidden}>
       <span><i className="bar" style={{ background: 'var(--navy)' }} />Team</span>
-      <span><i className="bar" style={{ background: 'repeating-linear-gradient(135deg,rgba(220,68,50,.35) 0 3px,transparent 3px 6px)' }} />Free agency</span>
+      {hunt && <span><i className="bar" style={{ background: 'repeating-linear-gradient(135deg,rgba(220,68,50,.35) 0 3px,transparent 3px 6px)' }} />Free agency</span>}
       <span><i style={{ background: 'var(--c-app)' }} />Application</span>
       <span><i style={{ background: 'var(--c-int)' }} />Interview</span>
       <span><i style={{ background: 'var(--c-off)' }} />Offer</span>

@@ -49,6 +49,8 @@ export type Profile = {
   skills: string[];
   /** The portrait in the art box: a built-in key (the example's 'george') or a stored image (an address, or a data URL while the card lives in this browser only). Missing means the monogram. */
   avatar?: string;
+  /** False when the player is not looking for a team (retired, settled, just here for the deck): no free-agent card, pill, day count or hunt cues anywhere, the public page included. Missing means looking. */
+  looking?: boolean;
   /** The headshot the portrait is made from, kept so it can be redrawn later. For now the avatar is the photo itself. */
   photo?: string;
 };

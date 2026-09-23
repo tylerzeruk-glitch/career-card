@@ -78,14 +78,18 @@ export function layoffDate(S: State) {
   return l ? l.date : null;
 }
 
+/** Whether the player is on the market. Off, and nothing about free agency shows: no card, pill, day count, hatch or log cues. */
+export const looking = (S: State) => S.profile.looking !== false;
+
 export type Status =
-  | { free: false; current: Role }
+  | { free: false; current: Role | null } // a current role, or not looking (current null)
   | { free: true; since: string | null; days: number | null; last?: Role };
 
 export function status(S: State): Status {
   const rs = roles(S);
   const cur = rs.filter((r) => !r.end);
   if (cur.length) return { free: false, current: cur[cur.length - 1] };
+  if (!looking(S)) return { free: false, current: null };
   if (!rs.length) return { free: true, since: layoffDate(S), days: null };
   const lo = layoffDate(S);
   const last = rs[rs.length - 1];

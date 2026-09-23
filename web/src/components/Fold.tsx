@@ -39,14 +39,14 @@ export function Fold() {
             <span className="actions"><button className="btn sm" onClick={() => openDrawer('event', { eventId: null })}>+ Event</button><button className="btn sm" onClick={toTimeline}>Timeline</button></span>
           </div>
         </Row>
-      ) : (
+      ) : st.current ? (
         <Row h2="Active roster">
           <div className="figs">
             <span><b style={{ fontSize: 14 }}>{st.current.company}</b><small>{st.current.title} · since {fmtMonth(st.current.start)}</small></span>
             <span className="actions"><button className="btn sm" onClick={() => openDrawer('event', { eventId: null })}>+ Event</button><button className="btn sm" onClick={toTimeline}>Timeline</button></span>
           </div>
         </Row>
-      )}
+      ) : null}
       <Row h2="Contact">
         <ul className="list inline">
           {p.email ? <li><a href={'mailto:' + p.email}>{p.email}</a></li> : null}

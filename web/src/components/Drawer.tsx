@@ -8,7 +8,7 @@ type EduRow = { school: string; degree: string; start: string; end: string; inPr
 type CertRow = { name: string; issuer: string; year: string; inProgress: boolean };
 const IN_PROGRESS = /in progress|present/i;
 import { fmtShort, parseMonth, todayISO } from '@/lib/dates';
-import { PAIRS, TYPES, codeFor, hashIdx, huntStats, initials, norm, pairFor, pairIndexFor, roles, slugify, sortedEvents, statusOf, uid } from '@/lib/derived';
+import { PAIRS, TYPES, codeFor, hashIdx, huntStats, initials, looking, norm, pairFor, pairIndexFor, roles, slugify, sortedEvents, statusOf, uid } from '@/lib/derived';
 import { avatarSrc, isPhoto } from '@/lib/avatar';
 import { LOCAL_SIDE, PORTRAIT_SIDE, dropPortrait, isDataUrl, squarePhoto, storePortrait, toDataUrl } from '@/lib/portrait';
 import { linkedinOn } from '@/lib/auth-providers';
@@ -291,6 +291,7 @@ function ProfileForm() {
   const { S, update, flash, user, slug, visibility, setMeta } = useCard();
   const p = S.profile;
   const [targets, setTargets] = useState<string[]>(p.targets || []);
+  const onMarket = looking(S);
   const [pskills, setPskills] = useState<string[]>(p.skills || []);
   const [edu, setEdu] = useState<EduRow[]>(() => (p.education || []).map((e) => { const ys = e.years.match(/\d{4}/g) || []; const ip = IN_PROGRESS.test(e.years) || /[–-]\s*$/.test(e.years); return { school: e.school, degree: e.degree, start: ys[0] || '', end: ip ? '' : ys[1] || '', inProgress: ip }; }));
   const [certs, setCerts] = useState<CertRow[]>(() => (p.certs || []).map((c) => ({ name: c.name, issuer: c.issuer, year: IN_PROGRESS.test(c.year) ? '' : c.year, inProgress: IN_PROGRESS.test(c.year) })));
@@ -364,7 +365,10 @@ function ProfileForm() {
           </div>
         </div>
         <div className="group"><div className="gh">Free agency</div>
-        <div className="field"><label htmlFor="p-targets">Open to (target roles)</label><TagInput id="p-targets" value={targets} onChange={setTargets} placeholder="Type a role and press Enter" /></div>
+        <label className="check"><input type="checkbox" checked={onMarket} onChange={(e) => { const v = e.target.checked; update((s) => ({ ...s, profile: { ...s.profile, looking: v ? undefined : false } })); flash(v ? 'Free agency is on.' : 'Free agency is off. Your pack is just your cards.'); }} /> I&apos;m looking for my next team</label>
+        {onMarket
+          ? <div className="field"><label htmlFor="p-targets">Open to (target roles)</label><TagInput id="p-targets" value={targets} onChange={setTargets} placeholder="Type a role and press Enter" /></div>
+          : <span className="help">Retired, settled, or just here for the pack: with this off there is no free-agent card, pill or day count anywhere, your public page included. The job-hunt log stays under the Log tab if you ever need it.</span>}
         </div>
         <div className="group"><div className="gh">Contact</div>
         <div className="row2">

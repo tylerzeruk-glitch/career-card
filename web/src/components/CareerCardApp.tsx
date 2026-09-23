@@ -1,7 +1,7 @@
 'use client';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { AuthUser, CloudCard } from '@/lib/types';
-import { careerStats, status } from '@/lib/derived';
+import { careerStats, looking, status } from '@/lib/derived';
 import { CardProvider, useCard } from './store';
 import { UICtx, useUI, type DrawerTab, type ImportTab, type TimelineApi, type UI } from './ui';
 import { Deck } from './Deck';
@@ -111,7 +111,7 @@ function Header() {
         <div>
           <div className="namerow">
             <h1>{p.name || 'CareerCards'}</h1>
-            {st.free ? <span className="pill"><Flag size={14} />Free agent</span> : <span className="pill active"><i />Active · {st.current.company}</span>}
+            {st.free ? <span className="pill"><Flag size={14} />Free agent</span> : st.current ? <span className="pill active"><i />Active · {st.current.company}</span> : null}
           </div>
           <div className="sub">{[p.headline, p.location].filter(Boolean).join(' · ')}</div>
           <div className="line">{cs ? ([[cs.seasons, 'season'], [cs.teams, 'team'], [cs.positions, 'position']] as [number, string][]).map(stat) : null}</div>
@@ -141,7 +141,7 @@ function Header() {
               {!user && <a className="btn" href="/login">Sign in</a>}
               <hr />
             </div>
-            <button className="btn" onClick={() => ui.openDrawer('log')}>Job-hunt log</button>
+            {looking(S) && <button className="btn" onClick={() => ui.openDrawer('log')}>Job-hunt log</button>}
             {!user && <button className="btn" onClick={loadExample}>Load the example</button>}
             <button className="btn" onClick={ui.openBackup}>Backup / restore</button>
             <button className="btn" onClick={ui.openHelp}>How this works</button>
