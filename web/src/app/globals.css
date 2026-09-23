@@ -252,7 +252,9 @@ body.drawer-open .scrim{opacity:1;pointer-events:auto}
 .tabs{display:flex;gap:2px;flex-wrap:wrap}
 .tab{border:0;background:transparent;padding:6px 10px;border-radius:6px;cursor:pointer;color:var(--muted);font:700 12px var(--cond);letter-spacing:.08em;text-transform:uppercase}
 .tab.on{color:var(--ink);background:var(--hover)}
-.drawer-body{flex:1;overflow:auto;padding:6px 18px 24px}
+/* no bottom padding on the scroller itself, so a sticky footer sits flush with its bottom edge; the room goes inside the content */
+.drawer-body{flex:1;overflow:auto;padding:6px 18px 0}
+.drawer-body > *{padding-bottom:24px}
 .drawer h2{font:700 11px/1 var(--cond);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
 @media (prefers-reduced-motion: reduce){.drawer,.scrim,.stack .card{transition:none}}
 .form{display:grid;gap:18px;margin-top:6px}
@@ -331,7 +333,7 @@ body.drawer-open .scrim{opacity:1;pointer-events:auto}
 .form-foot .status{font-size:12px;color:var(--muted)}
 .form-foot .status.unsaved{color:var(--red);font-weight:600}
 /* once the profile form has changes, its footer sticks to the bottom of the flyout until they are saved */
-.form-foot.floating{position:sticky;bottom:0;z-index:3;background:var(--paper);margin:0 -18px -24px;padding:12px 18px 14px;border-top:1px solid var(--hair);box-shadow:0 -10px 24px rgba(0,0,0,.08)}
+.form-foot.floating{position:sticky;bottom:0;z-index:3;background:color-mix(in srgb,var(--paper) 82%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);margin:0 -18px;padding:12px 18px 14px;border-top:1px solid var(--hair);box-shadow:0 -10px 24px rgba(0,0,0,.08)}
 
 .log-tools{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:8px}
 .log-tools input,.log-tools select{border:0;border-bottom:1px solid var(--hair);border-radius:0;padding:5px 0;background:transparent}
