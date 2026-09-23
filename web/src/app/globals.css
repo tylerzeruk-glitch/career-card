@@ -408,7 +408,14 @@ kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--hair);border-r
 .hero .fine{margin-top:14px;font-size:12.5px;color:var(--muted);max-width:52ch}
 .hero .fine a{color:var(--ink-2)}
 /* three real cards, fanned like a hand; each one flips on click */
-.hand{position:relative;width:calc(var(--hw) * 2.15);height:calc(var(--hw) * 1.4 + 40px);margin:0 auto;justify-self:center}
+.handwrap{display:flex;flex-direction:column;align-items:center;gap:18px;justify-self:center}
+.hand{position:relative;width:calc(var(--hw) * 2.15);height:calc(var(--hw) * 1.4 + 40px);margin:0 auto}
+/* the nudge under the hand, gone once a card is picked up */
+.flipme{display:inline-flex;align-items:center;gap:8px;font:700 11.5px/1 var(--cond);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);transition:opacity .3s}
+.flipme svg{color:var(--red);animation:spin-hint 2.4s ease-in-out infinite}
+.flipme.off{opacity:0}
+@keyframes spin-hint{0%,60%,100%{transform:rotate(0)}30%{transform:rotate(180deg)}}
+@media (prefers-reduced-motion: reduce){.flipme svg{animation:none}}
 .hand .card{position:absolute;bottom:0;width:var(--hw);transform-origin:50% 115%;transform:rotate(var(--r)) translateY(var(--lift,0px));transition:transform .22s cubic-bezier(.2,.7,.2,1)}
 /* the picked card comes to the middle of the hand, squares up and grows, then flips (see Landing) */
 .hand .card.out{z-index:9;transform:translate(var(--dx,0px),-4%) rotate(0deg) scale(var(--pop,1.32));transition:transform .34s cubic-bezier(.2,.7,.2,1)}
@@ -445,7 +452,7 @@ kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--hair);border-r
   .landing{--hw:clamp(120px,30vw,190px);--pop:1.18;gap:44px}
   .lfoot{flex-direction:column;align-items:flex-start;gap:8px}
   .hero{grid-template-columns:1fr;gap:30px}
-  .hand{order:-1;margin-bottom:10px}
+  .handwrap{order:-1;margin-bottom:10px}
   .steps{grid-template-columns:1fr;gap:18px}
   .hunt{grid-template-columns:1fr;padding:26px 22px;gap:22px}
   .glossary div{grid-template-columns:120px 1fr}

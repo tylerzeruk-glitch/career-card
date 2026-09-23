@@ -77,9 +77,15 @@ export function Landing({ tryHref = '/app', signInHref = '/login', onTry }: { tr
           </div>
           <div className="fine">Free. No account needed to try.<br />Sign in to keep your cards and make them shareable.</div>
         </div>
-        <div className="hand" aria-label="Example cards. Click one to pick it up and flip it.">
-          {hand.map((r, i) => <RoleCard key={r.id} S={S} r={r} idx={S.roles.indexOf(r)} total={S.roles.length} on={!!flipped[r.id]} className={cls(r.id, i)} onClick={() => flip(r.id)} />)}
-          <FreeCard S={S} share on={!!flipped.free} className={cls('free', 2)} onClick={() => flip('free')} />
+        <div className="handwrap">
+          <div className="hand" aria-label="Example cards. Click one to pick it up and flip it.">
+            {hand.map((r, i) => <RoleCard key={r.id} S={S} r={r} idx={S.roles.indexOf(r)} total={S.roles.length} on={!!flipped[r.id]} className={cls(r.id, i)} onClick={() => flip(r.id)} />)}
+            <FreeCard S={S} share on={!!flipped.free} className={cls('free', 2)} onClick={() => flip('free')} />
+          </div>
+          <div className={'flipme' + (out ? ' off' : '')} aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12a9 9 0 0 1 15.5-6.3" /><path d="M18.5 2v4h-4" /><path d="M21 12a9 9 0 0 1-15.5 6.3" /><path d="M5.5 22v-4h4" /></svg>
+            Tap a card to flip it over
+          </div>
         </div>
       </section>
 
