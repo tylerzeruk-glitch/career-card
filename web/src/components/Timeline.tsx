@@ -53,8 +53,8 @@ export function Timeline({ active }: { active: boolean }) {
   };
   const fitRange = (d0: number, d1: number) => { const v = view.current, len = Math.max(7, d1 - d0); v.ppd = Math.min(90, innerW() / (len * 1.14)); v.start = d0 - len * 0.04; clampView(); };
   const fitCareer = () => { const r = dataRange(stateRef.current); fitRange(r.d0, r.d1); };
-  /** The opening view: the last four months, today three quarters of the way across, so the hunt is what you see first. */
-  const fitRecent = () => { const v = view.current, t = dayNum(todayISO()), days = 120; v.ppd = Math.min(90, Math.max(minPpd(), innerW() / days)); v.start = t - days * 0.76; clampView(); };
+  /** The opening view: the last four months (ten weeks on a phone), today three quarters of the way across, so the hunt is what you see first. */
+  const fitRecent = () => { const v = view.current, t = dayNum(todayISO()), days = innerW() < 480 ? 75 : 120; v.ppd = Math.min(90, Math.max(minPpd(), innerW() / days)); v.start = t - days * 0.76; clampView(); };
   const zoomFreeAgency = () => { const st = status(stateRef.current), t = dayNum(todayISO()); if (st.free && st.since) fitRange(dayNum(st.since) - 3, t + 3); else fitRange(t - 90, t + 7); schedule(); };
   const centerOn = (day: number) => { const v = view.current; v.start = day - innerW() / v.ppd / 2; clampView(); };
   const zoomAt = (f: number, px: number) => { const v = view.current; const day = v.start + (px - PAD) / v.ppd; v.ppd = Math.min(90, Math.max(minPpd(), v.ppd * f)); v.start = day - (px - PAD) / v.ppd; clampView(); };

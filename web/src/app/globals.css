@@ -468,4 +468,11 @@ kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--hair);border-r
   .row.private::after{left:var(--gut);right:var(--gut)}
   .row.private .hint-q{display:none}
   .row.private .only{display:block}
+  /* the page itself scrolls on phones (no fixed-height shell with an inner panel), so Safari's toolbars can show the page through them */
+  html,body{height:auto;min-height:100%}
+  .app{height:auto;overflow:visible}
+  .stage{flex:none;display:block;overflow:visible}
+  .view{display:block;min-height:0}
+  .scroller{overflow:visible;padding-bottom:0}
+  .tl{height:min(68vh,560px);flex:none}
 }
