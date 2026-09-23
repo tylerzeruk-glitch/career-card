@@ -452,7 +452,8 @@ kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--hair);border-r
 .glossary span{font-size:13.5px;color:#fbf6ea}
 /* the timeline exhibit on the landing page: the real component, read-only */
 .peek{display:flex;flex-direction:column;gap:22px}
-.peek-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:40px;align-items:end}
+.peek-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:40px;align-items:start}
+.peek-head p{margin-top:2px}
 .peek h2{font:700 30px/1.05 var(--cond);letter-spacing:.03em;text-transform:uppercase}
 .peek-head p{font:400 14.5px/1.6 var(--serif);max-width:60ch}
 /* the still: drawn once at a fixed size, then scaled to the column like a photograph */
