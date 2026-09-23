@@ -8,7 +8,7 @@ import { Deck } from './Deck';
 import { Fold } from './Fold';
 import { Focus } from './Focus';
 import { Timeline } from './Timeline';
-import { Drawer, type DrawerState } from './Drawer';
+import { Drawer, PORTRAIT_NOTE, type DrawerState } from './Drawer';
 import { BackupDialog, HelpDialog, ImportDialog } from './dialogs';
 import { ThemeToggle } from './ThemeToggle';
 import { Flag, SiteFoot } from './Landing';
@@ -34,6 +34,13 @@ function Shell() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const timeline = useRef<TimelineApi | null>(null);
   const view = S.settings.view === 'timeline' ? 'timeline' : 'cards';
+  useEffect(() => {
+    const q = new URLSearchParams(window.location.search);
+    if (q.get('portrait') !== 'linkedin') return;
+    try { sessionStorage.setItem(PORTRAIT_NOTE, 'linkedin'); } catch { /* the picker just will not continue on its own */ }
+    q.delete('portrait'); const rest = q.toString(); history.replaceState(null, '', window.location.pathname + (rest ? '?' + rest : ''));
+    setDrawer((d) => ({ ...d, open: true, tab: 'profile', nonce: d.nonce + 1 }));
+  }, []);
 
   const setView = useCallback((v: 'cards' | 'timeline') => update((s) => ({ ...s, settings: { ...s.settings, view: v } }), { keepSample: true }), [update]);
   const openDrawer = useCallback<UI['openDrawer']>((tab: DrawerTab, opts) => setDrawer((d) => ({ open: true, tab, roleId: opts?.roleId ?? (tab === 'role' ? null : d.roleId), eventId: opts?.eventId ?? (tab === 'event' ? null : d.eventId), prefill: opts?.prefill ?? null, nonce: d.nonce + 1 })), []);

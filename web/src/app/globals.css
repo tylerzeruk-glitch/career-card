@@ -296,6 +296,20 @@ body.drawer-open .scrim{opacity:1;pointer-events:auto}
 .sw{width:26px;height:26px;border-radius:50%;border:0;padding:0;cursor:pointer;background:linear-gradient(135deg,var(--a) 50%,var(--b) 50%);box-shadow:inset 0 0 0 1px rgba(0,0,0,.14)}
 .sw:hover{box-shadow:inset 0 0 0 1px rgba(0,0,0,.14),0 0 0 2px var(--paper),0 0 0 3px var(--hair)}
 .sw.on,.sw.on:hover{box-shadow:inset 0 0 0 1px rgba(0,0,0,.14),0 0 0 2px var(--paper),0 0 0 4px var(--ink)}
+/* the portrait picker: a preview drawn like a card's art box, then the ways to fill it */
+.portrait{display:flex;gap:14px;align-items:flex-start}
+.portrait .pv{width:104px;height:104px;flex:none;border-radius:12px;background:var(--a);border:2px solid var(--b);position:relative;overflow:hidden;display:grid;place-items:center}
+.portrait .pv.over{outline:2px dashed var(--ink);outline-offset:3px}
+.portrait .pv img{position:absolute;inset:0;width:100%;height:100%;display:block}
+.portrait .pv img.photo{object-fit:cover}
+.portrait .pv img.bust{object-fit:contain;object-position:bottom}
+.portrait .pv .mono{font:700 40px/1 var(--cond);color:var(--b);letter-spacing:-.02em}
+.portrait .pv .wait{position:absolute;inset:0;background:rgba(251,246,234,.65);display:grid;place-items:center;font-size:12px;color:var(--ink)}
+.portrait .pt-side{display:grid;gap:8px;min-width:0;padding-top:2px}
+.portrait .pt-actions{display:flex;gap:6px;flex-wrap:wrap}
+.portrait .pt-actions .btn{display:inline-flex;align-items:center;gap:6px;background:var(--paper-2,rgba(0,0,0,.05))}
+.portrait .pt-actions .btn:disabled{opacity:.5;cursor:default}
+.portrait .pt-actions input{display:none}
 .form-foot{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:4px}
 .form-foot .spacer{flex:1}
 .form-foot .status{font-size:12px;color:var(--muted)}

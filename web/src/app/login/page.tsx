@@ -3,8 +3,7 @@ import { useState } from 'react';
 import { supabaseBrowser } from '@/lib/supabase/client';
 import { Flag } from '@/components/Landing';
 import { ThemeToggle } from '@/components/ThemeToggle';
-
-type Provider = 'google' | 'linkedin_oidc' | 'apple';
+import { enabledProviders, type Provider } from '@/lib/auth-providers';
 
 /**
  * The "Continue with" buttons. Each needs its provider turned on in Supabase
@@ -16,7 +15,6 @@ const PROVIDERS: { id: Provider; label: string; icon: React.ReactNode }[] = [
   { id: 'linkedin_oidc', label: 'Continue with LinkedIn', icon: <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><rect width="24" height="24" rx="3" fill="#0A66C2" /><path fill="#fff" d="M6.9 9.5h2.6V18H6.9zM8.2 5.3a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zM11.2 9.5h2.5v1.2c.4-.7 1.3-1.4 2.7-1.4 2.8 0 3.3 1.8 3.3 4.2V18h-2.6v-3.9c0-.9 0-2.1-1.3-2.1s-1.5 1-1.5 2.1V18h-2.6V9.5z" /></svg> },
   { id: 'apple', label: 'Continue with Apple', icon: <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M16.4 12.7c0-2.4 2-3.6 2.1-3.7-1.1-1.7-2.9-1.9-3.5-1.9-1.5-.2-2.9.9-3.7.9-.8 0-1.9-.9-3.2-.8-1.6 0-3.1 1-4 2.4-1.7 3-.4 7.3 1.2 9.7.8 1.2 1.8 2.5 3 2.4 1.2 0 1.7-.8 3.1-.8s1.9.8 3.2.8c1.3 0 2.2-1.2 3-2.4.9-1.4 1.3-2.7 1.4-2.8-.1 0-2.6-1-2.6-3.8zM14 5.5c.7-.8 1.1-2 1-3.1-1 0-2.2.7-2.9 1.5-.6.7-1.2 1.9-1 3 1.1.1 2.2-.6 2.9-1.4z" /></svg> },
 ];
-const enabled = (process.env.NEXT_PUBLIC_AUTH_PROVIDERS ?? 'google,linkedin_oidc,apple').split(',').map((s) => s.trim()).filter(Boolean);
 
 export default function Login() {
   const sb = supabaseBrowser();
@@ -36,7 +34,7 @@ export default function Login() {
     const { error } = await sb.auth.signInWithOAuth({ provider, options: { redirectTo: redirectTo() } });
     if (error) setMsg({ ok: false, text: error.message });
   };
-  const providers = PROVIDERS.filter((p) => enabled.includes(p.id));
+  const providers = PROVIDERS.filter((p) => enabledProviders.includes(p.id));
 
   return (
     <div className="login">

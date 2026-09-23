@@ -5,6 +5,7 @@ import { blank } from '@/lib/derived';
 import { sampleState } from '@/lib/sample';
 import { clearLocal, loadLocal, saveCloud, saveLocal } from '@/lib/storage';
 import { supabaseBrowser } from '@/lib/supabase/client';
+import { isDataUrl, liftPortrait } from '@/lib/portrait';
 
 export type SyncStatus = 'local' | 'saved' | 'saving' | 'error';
 
@@ -97,8 +98,17 @@ export function CardProvider({ children, user, cloud }: { children: ReactNode; u
     if (!dirty.current) return;
     setSync('saving');
     if (saveT.current) clearTimeout(saveT.current);
-    saveT.current = setTimeout(() => {
-      saveCloud(user.id, S).then(() => { setSync('saved'); dirty.current = false; }, (e) => { console.error(e); setSync('error'); flash('Could not save to your account. Your changes are still on this page.'); });
+    saveT.current = setTimeout(async () => {
+      try {
+        let s = S;
+        if (isDataUrl(s.profile.avatar)) { // made while signed out: into the account's storage first
+          const url = await liftPortrait(user.id, s.profile.avatar);
+          s = { ...s, profile: { ...s.profile, avatar: url, photo: url } };
+          setS(s);
+        }
+        await saveCloud(user.id, s);
+        setSync('saved'); dirty.current = false;
+      } catch (e) { console.error(e); setSync('error'); flash('Could not save to your account. Your changes are still on this page.'); }
     }, 700);
   }, [S, sampleMode, booted, user, flash]);
 

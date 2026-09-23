@@ -86,9 +86,39 @@ A profile can carry an `avatar`. The example career's is the built-in
 from one riso-style portrait with the cream keyed out, the bust filled to a
 flat bottom and the shirt recoloured to the pair's frame colour. `RoleCard`
 shows it in the art box in place of the monogram (`src/lib/avatar.ts`
-picks the file; the single-file preview inlines them). Generating a
-player's own portrait from a photo (OpenAI image model, then the same
-processing) is the next step.
+picks the file; the single-file preview inlines them).
+
+Players add their own under Profile → Player → Portrait (`PortraitPicker`
+in `src/components/Drawer.tsx`). A headshot comes from a file, a drop on
+the preview square, or the player's LinkedIn profile photo. The browser
+crops the centre square and scales it (`src/lib/portrait.ts`), then saves
+it straight away: signed in, to the `portraits` storage bucket at
+`<user id>/photo.jpg` (public read, owner write; migration
+`0003_portraits.sql`) and the address goes on the profile as `avatar` and
+`photo`; signed out, as a small data URL inside the local card, which the
+store moves into the bucket on the first save after signing in. A photo
+fills the art box edge to edge (`img.photo` in `card.css`); the built-in
+busts keep their cut-out bottom edge. Redrawing the photo in the house
+style is still to come (see Not yet); `photo` is kept for that.
+
+**The LinkedIn photo.** LinkedIn's API gives third-party apps nothing but
+sign-in, and sign-in with OpenID Connect includes a `picture` claim: a
+short-lived address of the profile photo on LinkedIn's CDN, refreshed each
+time the player signs in or links with LinkedIn. `GET
+/api/portrait/linkedin` reads it from the signed-in user's `linkedin_oidc`
+identity, fetches the bytes (the browser cannot, there is no CORS) and
+hands them back; the picker then treats them like a chosen file. If the
+account has no LinkedIn identity the picker calls `linkIdentity`, which
+sends the player through LinkedIn and back to `/?portrait=linkedin`, where
+the app reopens the Profile drawer and the picker carries on; if the
+address has expired it sends them through a fresh LinkedIn sign-in the
+same way. Needs, in Supabase Auth: the LinkedIn (OIDC) provider configured
+with a LinkedIn app that has the "Sign In with LinkedIn using OpenID
+Connect" product (scopes `openid profile email`), and **Allow manual
+linking** turned on (Authentication → Settings) so a player who signed in
+with email or Google can link LinkedIn. Then include `linkedin_oidc` in
+`NEXT_PUBLIC_AUTH_PROVIDERS`; until it is, the button shows as "Coming
+soon".
 
 ## Light and dark
 
@@ -136,9 +166,11 @@ dialog. Duplicates (same date, type, company and title) are skipped on save.
   `CONTACT_EMAIL` in `src/components/Landing.tsx` to turn it into a link.
 - Greenhouse.io integration: pull applications and their stages into the
   free-agency timeline instead of logging them by hand.
-- Player portraits: upload a photo, an OpenAI image model redraws it in the
-  house riso style, key out the cream, fill the bust, recolour the shirt per
-  team, store one image per pair. Design: the CareerCards Avatars canvas.
+- Player portraits, the drawn kind: an image model redraws the stored
+  headshot in the house riso style, key out the cream, fill the bust,
+  recolour the shirt per team, store one image per pair. Design: the
+  CareerCards Avatars canvas (the "Portrait flow" board). The photo step
+  is done; this is the "four takes" step.
 
 ## Share card
 

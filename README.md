@@ -33,6 +33,9 @@ preceded it.
   job-hunt events on the line. Career / Free agency / − / + / Today presets.
 - **Drawer:** Role, Event, Profile and Log tabs. Team colours are chosen per
   company from ten validated pairs; a stable default is derived from the name.
+- **Portrait:** a headshot for the art box, from a file, a drop, or the
+  player's LinkedIn profile photo (through LinkedIn sign-in). Cropped in the
+  browser, stored with the account; shown on every card and the public page.
 
 ## Import
 

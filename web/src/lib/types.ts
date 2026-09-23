@@ -47,8 +47,10 @@ export type Profile = {
   certs: Cert[];
   /** The scouting-report skills. Empty means: gather them from the roles. */
   skills: string[];
-  /** The portrait in the art box: a built-in key (the example's 'george') or, later, a stored image. Missing means the monogram. */
+  /** The portrait in the art box: a built-in key (the example's 'george') or a stored image (an address, or a data URL while the card lives in this browser only). Missing means the monogram. */
   avatar?: string;
+  /** The headshot the portrait is made from, kept so it can be redrawn later. For now the avatar is the photo itself. */
+  photo?: string;
 };
 
 export type Settings = { group: 'role' | 'team'; view: 'cards' | 'timeline' };

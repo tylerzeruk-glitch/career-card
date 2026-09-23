@@ -8,7 +8,11 @@ type EduRow = { school: string; degree: string; start: string; end: string; inPr
 type CertRow = { name: string; issuer: string; year: string; inProgress: boolean };
 const IN_PROGRESS = /in progress|present/i;
 import { fmtShort, parseMonth, todayISO } from '@/lib/dates';
-import { PAIRS, TYPES, codeFor, hashIdx, huntStats, norm, slugify, sortedEvents, statusOf, uid } from '@/lib/derived';
+import { PAIRS, TYPES, codeFor, hashIdx, huntStats, initials, norm, pairFor, pairIndexFor, roles, slugify, sortedEvents, statusOf, uid } from '@/lib/derived';
+import { avatarSrc, isPhoto } from '@/lib/avatar';
+import { LOCAL_SIDE, PORTRAIT_SIDE, dropPortrait, isDataUrl, squarePhoto, storePortrait, toDataUrl } from '@/lib/portrait';
+import { linkedinOn } from '@/lib/auth-providers';
+import { supabaseBrowser } from '@/lib/supabase/client';
 
 export type DrawerState = { open: boolean; tab: DrawerTab; roleId: string | null; eventId: string | null; prefill: Partial<Ev> | null; nonce: number };
 
@@ -199,6 +203,90 @@ function EventForm({ eventId, prefill }: { eventId: string | null; prefill: Part
 }
 
 // ---------- profile + page settings ----------
+/** Where the browser lands after LinkedIn: the callback sends it home with this, and the picker carries on. */
+export const LINKEDIN_RETURN = '/?portrait=linkedin';
+export const PORTRAIT_NOTE = 'careercard.portrait';
+
+const LinkedInMark = <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><rect width="24" height="24" rx="3" fill="#0A66C2" /><path fill="#fff" d="M6.9 9.5h2.6V18H6.9zM8.2 5.3a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zM11.2 9.5h2.5v1.2c.4-.7 1.3-1.4 2.7-1.4 2.8 0 3.3 1.8 3.3 4.2V18h-2.6v-3.9c0-.9 0-2.1-1.3-2.1s-1.5 1-1.5 2.1V18h-2.6V9.5z" /></svg>;
+
+/**
+ * Profile → Player → Portrait. A headshot from a file, a drop, or the player's LinkedIn profile photo;
+ * cropped square in the browser and saved as soon as it is picked: into the account's storage, or as a
+ * small data URL inside the local card (it moves to the account on sign-in). Shown on every card.
+ */
+function PortraitPicker() {
+  const { S, update, user } = useCard();
+  const p = S.profile;
+  const first = roles(S)[0];
+  const [a, b] = first ? pairFor(S, first.company) : PAIRS[0];
+  const [busy, setBusy] = useState<'photo' | 'linkedin' | null>(null);
+  const [msg, setMsg] = useState('');
+  const [over, setOver] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
+
+  const take = async (src: Blob) => {
+    setBusy('photo'); setMsg('');
+    try {
+      const photo = await squarePhoto(src, user ? PORTRAIT_SIDE : LOCAL_SIDE);
+      const url = user ? await storePortrait(user.id, photo) : await toDataUrl(photo);
+      update((s) => ({ ...s, profile: { ...s.profile, avatar: url, photo: url } }));
+      setMsg('Saved. It shows on every card' + (user ? ' and on your page.' : '.'));
+    } catch (e) { setMsg((e as Error).message || 'Could not use that photo.'); }
+    setBusy(null);
+  };
+  const remove = () => {
+    const stored = user && p.avatar && isPhoto(p.avatar) && !isDataUrl(p.avatar);
+    update((s) => { const { avatar: _a, photo: _p, ...rest } = s.profile; return { ...s, profile: rest }; });
+    if (stored) dropPortrait(user.id).catch(() => { /* the file is orphaned at worst */ });
+    setMsg('Removed. Cards show your initials.');
+  };
+  const linkedin = async () => {
+    const sb = supabaseBrowser();
+    if (!user || !sb) { setMsg('Sign in first, then link LinkedIn.'); return; }
+    setBusy('linkedin'); setMsg('');
+    const r = await fetch('/api/portrait/linkedin').catch(() => null);
+    if (r?.ok) { await take(await r.blob()); return; }
+    const err = r ? ((await r.json().catch(() => ({}))) as { error?: string }).error : 'network';
+    const options = { redirectTo: (process.env.NEXT_PUBLIC_SITE_URL || window.location.origin) + '/auth/callback?next=' + encodeURIComponent(LINKEDIN_RETURN) };
+    if (err === 'not-linked') {
+      setMsg('Taking you to LinkedIn to link it…');
+      const { error } = await sb.auth.linkIdentity({ provider: 'linkedin_oidc', options });
+      if (error) setMsg(error.message);
+    } else if (err === 'expired') {
+      setMsg('LinkedIn needs a fresh sign-in to hand over the photo…');
+      const { error } = await sb.auth.signInWithOAuth({ provider: 'linkedin_oidc', options });
+      if (error) setMsg(error.message);
+    } else if (err === 'no-photo') setMsg('Your LinkedIn profile has no photo to pull.');
+    else setMsg('Could not reach LinkedIn just now.');
+    setBusy(null);
+  };
+  // back from LinkedIn: the app left a note to carry on
+  useEffect(() => {
+    try { if (sessionStorage.getItem(PORTRAIT_NOTE) === 'linkedin') { sessionStorage.removeItem(PORTRAIT_NOTE); linkedin(); } } catch { /* ignore */ }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const liTitle = !linkedinOn ? 'Coming soon' : !user ? 'Sign in to use this' : undefined;
+  return (
+    <div className="field"><label>Portrait</label>
+      <div className="portrait">
+        <div className={'pv' + (over ? ' over' : '')} style={{ '--a': a, '--b': b } as React.CSSProperties} onDragOver={(e) => { e.preventDefault(); setOver(true); }} onDragLeave={() => setOver(false)} onDrop={(e) => { e.preventDefault(); setOver(false); const f = e.dataTransfer.files[0]; if (f) take(f); }}>
+          {p.avatar ? <img className={isPhoto(p.avatar) ? 'photo' : 'bust'} src={avatarSrc(p.avatar, first ? pairIndexFor(S, first.company) : 0)} alt="" /> : <span className="mono">{initials(p.name) || '?'}</span>}
+          {busy && <span className="wait">{busy === 'linkedin' ? 'Asking LinkedIn…' : 'Saving…'}</span>}
+        </div>
+        <div className="pt-side">
+          <div className="pt-actions">
+            <button type="button" className="btn sm" disabled={!!busy} onClick={() => fileRef.current?.click()}>Choose a photo</button><input ref={fileRef} type="file" accept="image/*" onChange={(e) => { const f = e.target.files?.[0]; e.target.value = ''; if (f) take(f); }} />
+            <button type="button" className="btn sm" disabled={!linkedinOn || !user || !!busy} title={liTitle} onClick={linkedin}>{LinkedInMark} Use my LinkedIn photo</button>
+            {p.avatar && <button type="button" className="btn sm" disabled={!!busy} onClick={remove}>Remove</button>}
+          </div>
+          <span className="help">{msg || 'A headshot works best: face the camera, plain background. Drop one on the square or choose a file; it is cropped to the centre.'}</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function ProfileForm() {
   const { S, update, flash, user, slug, visibility, setMeta } = useCard();
   const p = S.profile;
@@ -232,6 +320,7 @@ function ProfileForm() {
       <form className="form" autoComplete="off" onSubmit={submit}>
         <div className="group"><div className="gh">Player</div>
         <div className="field"><label htmlFor="p-name-in">Name</label><input id="p-name-in" name="name" placeholder="George Costanza" defaultValue={p.name} /></div>
+        <PortraitPicker />
         <div className="row2">
         <div className="field"><label htmlFor="p-headline">Headline</label><input id="p-headline" name="headline" placeholder="Importer / Exporter" defaultValue={p.headline} /></div>
         <div className="field"><label htmlFor="p-location">Location</label><input id="p-location" name="location" placeholder="New York, NY" defaultValue={p.location} /></div>
