@@ -366,6 +366,29 @@ dialog::backdrop{background:rgba(0,0,0,.35)}
 .dlg button.link:hover{color:var(--ink)}
 .maprow{display:grid;grid-template-columns:140px 1fr;gap:8px;align-items:center;margin-bottom:6px;font-size:13px}
 .maprow select{border:0;border-bottom:1px solid var(--hair);padding:5px 0;background:transparent;border-radius:0}
+/* free agency: its own box at the top of the profile, tinted like the owner-only row under the deck, with a switch */
+.fabox{background:rgba(31,42,68,.07);border-radius:12px;padding:16px 18px 18px;gap:10px}
+.fabox .gh{color:var(--navy);margin-bottom:4px}
+.fabox .field input{border-bottom-color:var(--hair)}
+.switch{position:relative;display:inline-flex;align-items:center;gap:10px;cursor:pointer;font-size:13.5px;color:var(--ink);user-select:none}
+.switch input{position:absolute;opacity:0;width:0;height:0}
+.switch .track{flex:none;width:38px;height:22px;border-radius:999px;background:var(--muted);position:relative;transition:background .15s}
+.switch .track::after{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.28);transition:transform .15s}
+.switch input:checked + .track{background:var(--red)}
+.switch input:checked + .track::after{transform:translateX(16px)}
+.switch input:focus-visible + .track{outline:2px solid var(--focus);outline-offset:2px}
+@media (prefers-reduced-motion: reduce){.switch .track,.switch .track::after{transition:none}}
+/* the page settings: set apart from the profile form in a tinted, rounded box; the visibility pick uses the deck's radio dots */
+.pagebox{margin-top:26px;background:var(--hover);border-radius:12px;padding:16px 18px 18px}
+.pagebox .gh{margin-bottom:6px}
+.pagebox .form{margin-top:0;gap:14px}
+.pagebox .field .lbl{font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-2)}
+.pagebox .field input{border-bottom-color:var(--hair)}
+.pagebox .gt.vis{flex-direction:column;align-items:flex-start;gap:0;margin-top:2px;font-size:13px}
+.pagebox .gt.vis button{padding:6px 0}
+.pagebox .form-foot{margin-top:2px}
+.pagebox .btn.open{border:1px solid var(--ink);color:var(--ink);background:var(--paper);padding-inline:12px}
+.pagebox .btn.open:hover{background:var(--ink);color:var(--bg)}
 .opts{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;margin-top:8px}
 .opts label{display:flex;gap:6px;align-items:center}
 .dlg-foot{display:flex;gap:6px;justify-content:flex-end;align-items:center;flex-wrap:wrap;margin-top:14px}

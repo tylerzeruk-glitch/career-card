@@ -368,6 +368,12 @@ function ProfileForm() {
   return (
     <section>
       <form className="form" autoComplete="off" onSubmit={submit}>
+        <div className="group fabox"><div className="gh">Free agency</div>
+        <label className="switch"><input type="checkbox" role="switch" checked={onMarket} onChange={(e) => { const v = e.target.checked; update((s) => ({ ...s, profile: { ...s.profile, looking: v ? undefined : false } })); flash(v ? 'Free agency is on.' : 'Free agency is off. Your pack is just your cards.'); }} /><span className="track" aria-hidden="true" /><span className="txt">I&apos;m looking for my next team</span></label>
+        {onMarket
+          ? <div className="field"><label htmlFor="p-targets">Open to (target roles)</label><TagInput id="p-targets" value={targets} onChange={setTargets} placeholder="Type a role and press Enter" /></div>
+          : <span className="help">Retired, settled, or just here for the pack: with this off there is no free-agent card, pill or day count anywhere, your public page included. The job-hunt log stays under the Log tab if you ever need it.</span>}
+        </div>
         <div className="group"><div className="gh">Player</div>
         <div className="field"><label htmlFor="p-name-in">Name</label><input id="p-name-in" name="name" placeholder="George Costanza" defaultValue={p.name} /></div>
         <PortraitPicker />
@@ -413,12 +419,6 @@ function ProfileForm() {
             <button type="button" className="btn sm add" onClick={() => setCerts([...certs, { name: '', issuer: '', year: '', inProgress: false }])}>+ Add certification</button>
           </div>
         </div>
-        <div className="group"><div className="gh">Free agency</div>
-        <label className="check"><input type="checkbox" checked={onMarket} onChange={(e) => { const v = e.target.checked; update((s) => ({ ...s, profile: { ...s.profile, looking: v ? undefined : false } })); flash(v ? 'Free agency is on.' : 'Free agency is off. Your pack is just your cards.'); }} /> I&apos;m looking for my next team</label>
-        {onMarket
-          ? <div className="field"><label htmlFor="p-targets">Open to (target roles)</label><TagInput id="p-targets" value={targets} onChange={setTargets} placeholder="Type a role and press Enter" /></div>
-          : <span className="help">Retired, settled, or just here for the pack: with this off there is no free-agent card, pill or day count anywhere, your public page included. The job-hunt log stays under the Log tab if you ever need it.</span>}
-        </div>
         <div className="group"><div className="gh">Contact</div>
         <div className="row2">
           <div className="field"><label htmlFor="p-email">Email</label><input id="p-email" name="email" type="email" defaultValue={p.email} /></div>
@@ -428,29 +428,31 @@ function ProfileForm() {
         <div className="form-foot"><button className="btn primary" type="submit">Save profile</button><span className="spacer" /><span className="status">{msg}</span></div>
       </form>
 
-      <div className="gh" style={{ marginTop: 26 }}>Your page</div>
+      <section className="pagebox">
+      <div className="gh">Your page</div>
       {user ? (
         <div className="form">
           <div className="field"><label htmlFor="pg-slug">Address</label>
             <div style={{ display: 'flex', alignItems: 'baseline', gap: 4 }}><span style={{ color: 'var(--muted)', fontSize: 12.5, whiteSpace: 'nowrap' }}>{origin}/u/</span><input id="pg-slug" value={slugIn} onChange={(e) => setSlugIn(e.target.value)} placeholder="jordan-avery" /></div>
           </div>
-          <div className="field"><label>Who can see it</label>
-            <div className="opts">
+          <div className="field"><span className="lbl" id="vis-label">Who can see it</span>
+            <div className="gt vis" role="radiogroup" aria-labelledby="vis-label">
               {([['private', 'Only me'], ['unlisted', 'Anyone with the link'], ['public', 'Public']] as [Visibility, string][]).map(([v, l]) => (
-                <label key={v}><input type="radio" name="vis" checked={vis === v} onChange={() => setVis(v)} /> {l}</label>
+                <button type="button" key={v} role="radio" aria-checked={vis === v} className={vis === v ? 'on' : ''} onClick={() => setVis(v)}><i aria-hidden="true" />{l}</button>
               ))}
             </div>
             <span className="help">The page shows your cards, scouting report, farm system, awards and contact. Never the job hunt.</span>
           </div>
           <div className="form-foot">
             <button className="btn primary" type="button" onClick={savePage}>Save page settings</button>
-            {slug && visibility !== 'private' && <a className="btn" href={'/u/' + slug} target="_blank" rel="noopener">Open your page ↗</a>}
+            {slug && visibility !== 'private' && <a className="btn open" href={'/u/' + slug} target="_blank" rel="noopener">Open your page ↗</a>}
             <span className="spacer" /><span className="status">{pageMsg}</span>
           </div>
         </div>
       ) : (
         <p style={{ color: 'var(--ink-2)', fontSize: 13.5, margin: 0 }}>Sign in to give your card an address you can send to people. <a href="/login">Sign in</a></p>
       )}
+      </section>
     </section>
   );
 }
