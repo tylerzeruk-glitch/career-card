@@ -456,6 +456,15 @@ kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--hair);border-r
 .peek-head p{margin-top:2px}
 .peek h2{font:700 30px/1.05 var(--cond);letter-spacing:.03em;text-transform:uppercase}
 .peek-head p{font:400 14.5px/1.6 var(--serif);max-width:60ch}
+/* the share card: a 1200 x 630 still of the hero, screenshotted into public/og.png */
+.landing.share{--hw:224px;width:1200px;height:630px;max-width:none;margin:0;padding:0 64px;display:grid;grid-template-columns:minmax(0,1fr) max-content;gap:36px;align-items:center;background:var(--bg);overflow:hidden}
+.landing.share .wordmark{font-size:30px;margin-bottom:26px}
+.landing.share h1{font:700 50px/.98 var(--cond);letter-spacing:.02em;text-transform:uppercase;margin-bottom:18px}
+.landing.share p{font:400 18px/1.55 var(--serif);color:var(--ink-2);max-width:44ch}
+.landing.share .url{display:inline-flex;align-items:center;gap:8px;margin-top:28px;font:700 15px var(--cond);letter-spacing:.14em;text-transform:uppercase;color:var(--red)}
+.landing.share .hand{margin-right:8px}
+.landing.share .hand .card{transition:none;cursor:default}
+
 /* the still: drawn once at a fixed size, then scaled to the column like a photograph */
 .shot{position:relative;overflow:hidden;width:100%}
 .shot-in{position:absolute;left:0;top:0;transform-origin:0 0}

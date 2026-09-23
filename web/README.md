@@ -125,3 +125,14 @@ date-pattern parser and says so in the preview.
 - Player portraits: upload a photo, an OpenAI image model redraws it in the
   house riso style, key out the cream, fill the bust, recolour the shirt per
   team, store one image per pair. Design: the CareerCards Avatars canvas.
+
+## Share card
+
+Links to the site unfurl with `public/og.png` (Open Graph and Twitter tags in `src/app/layout.tsx`). The picture is a screenshot of the hidden `/share-card` route, which renders the hero at 1200 x 630. To regenerate it after a design change:
+
+```
+npx next build && npx next start -p 3111
+# in another shell, with Playwright's Chromium
+node -e "import('playwright').then(async ({chromium})=>{const b=await chromium.launch();const p=await (await b.newContext({viewport:{width:1200,height:630},deviceScaleFactor:2})).newPage();await p.goto('http://127.0.0.1:3111/share-card');await p.evaluate(()=>document.fonts.ready);await p.waitForTimeout(600);await p.screenshot({path:'public/og.png'});await b.close();})"
+```
+

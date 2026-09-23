@@ -18,7 +18,7 @@ export function Flag({ size = 22 }: { size?: number }) {
 }
 
 /** The example career with fixed ids, so the server and the browser render the same cards. */
-function heroState(): State {
+export function heroState(): State {
   const s = sampleState();
   s.roles.forEach((r, i) => (r.id = 'hero-role-' + i));
   s.events.forEach((e, i) => (e.id = 'hero-ev-' + i));
