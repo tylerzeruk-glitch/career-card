@@ -27,7 +27,7 @@ export function PublicCard({ S }: { S: State }) {
         <a className="wordmark" href="/"><Flag /><span>CareerCards</span></a>
         <nav>
           <ThemeToggle />
-          <a className="btn primary" href="/">Make your own deck</a>
+          <a className="btn primary" href="/">Make your own pack</a>
         </nav>
       </header>
       <div className="brand mast">

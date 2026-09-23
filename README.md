@@ -2,7 +2,7 @@
 
 A career page in the grammar of a ballplayer's page: teams are companies,
 seasons are years, positions are titles, and the gap after a layoff is free
-agency. One playing card per role, fanned into a deck (hover lifts a card, click opens it); a career line; a timeline with
+agency. One trading card per role, fanned into a pack (hover lifts a card, click opens it); a career line; a timeline with
 company spans; and the job-hunt tracker folded in as the free-agency record.
 
 Single file, no build step, no server. Data lives in the browser's local
@@ -68,7 +68,7 @@ blocks and the body) and publish with
 
 ## The web app
 
-`web/` is the Next.js version with accounts: the same cards, deck, rows and
+`web/` is the Next.js version with accounts: the same cards, pack, rows and
 timeline, saved to a Supabase account when you sign in, with a shareable
 page at `/u/your-name` that shows the career and never the job hunt. It
 runs in local mode (this browser only) without any configuration. See

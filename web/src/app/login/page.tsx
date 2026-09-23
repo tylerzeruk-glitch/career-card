@@ -48,7 +48,7 @@ export default function Login() {
         <h1>Sign in</h1>
         {sb ? (
           <>
-            <p>Your deck follows you between devices, and you can give it an address to share. Nothing from the job hunt is ever public.</p>
+            <p>Your pack follows you between devices, and you can give it an address to share. Nothing from the job hunt is ever public.</p>
             <form onSubmit={magic}>
               <div className="field"><label htmlFor="email">Email</label><input id="email" type="email" required placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} /></div>
               <button className="btn wide primary" type="submit" disabled={busy}>{busy ? 'Sending…' : 'Email me a sign-in link'}</button>
@@ -64,7 +64,7 @@ export default function Login() {
             {msg && <div className={'msg ' + (msg.ok ? 'ok' : 'err')}>{msg.text}</div>}
           </>
         ) : (
-          <p>Sign-in is not set up on this deployment. The app still works on this device; use Backup to move your deck.</p>
+          <p>Sign-in is not set up on this deployment. The app still works on this device; use Backup to move your pack.</p>
         )}
         <a className="back" href="/">← Back</a>
       </div>

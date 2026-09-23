@@ -25,7 +25,7 @@ function heroState(): State {
 
 const STEPS = [
   { n: '01', h: 'Import', p: 'Drop in a resume PDF or a LinkedIn export. Claude reads it and deals the cards. You fix whatever it got wrong.' },
-  { n: '02', h: 'Detail', p: 'Pick team colors, write the highlights, say how each season ended. Group the deck by role or by team.' },
+  { n: '02', h: 'Detail', p: 'Pick team colors, write the highlights, say how each season ended. Group the pack by role or by team.' },
   { n: '03', h: 'Share', p: 'Turn on your page at careercards.app/u/you. Only the career goes out. The job hunt stays with you.' },
 ];
 
@@ -71,9 +71,9 @@ export function Landing({ tryHref = '/app?example', signInHref = '/login', onTry
         <div className="copy">
           <div className="eyebrow">The resume, reissued as a card set</div>
           <h1>Every role you&apos;ve played, on its own card.</h1>
-          <p>Your career as a deck of cards. Team and position on the front. Seasons, highlights and skills on the back. Shareable at an address of your own.</p>
+          <p>Your career as a pack of cards. Team and position on the front. Seasons, highlights and skills on the back. Shareable at an address of your own.</p>
           <div className="cta">
-            <a className="btn primary lg" href={signInHref}>Make your deck</a>
+            <a className="btn primary lg" href={signInHref}>Make your pack</a>
             <a className="btn lg" {...tryProps}>Try it with an example</a>
           </div>
           <div className="fine">Free. No account needed to try.<br />Sign in to keep your cards and make them shareable.</div>
@@ -99,7 +99,7 @@ export function Landing({ tryHref = '/app?example', signInHref = '/login', onTry
         <div>
           <div className="eyebrow">Between teams?</div>
           <h2>The free-agent card keeps the hunt on the same shelf.</h2>
-          <p>While you&apos;re out of a contract, a blue card sits at the end of the deck with what you&apos;re open to. Switch to the Timeline view to log every application, interview and denial on one line you can pan and zoom, with the days since counted for you. None of it is ever on your public page.</p>
+          <p>While you&apos;re out of a contract, a blue card sits at the end of the pack with what you&apos;re open to. Switch to the Timeline view to log every application, interview and denial on one line you can pan and zoom, with the days since counted for you. None of it is ever on your public page.</p>
         </div>
         <div className="glossary">
           {GLOSSARY.map(([k, v]) => <div key={k}><b>{k}</b><span>{v}</span></div>)}

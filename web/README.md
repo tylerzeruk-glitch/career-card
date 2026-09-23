@@ -1,6 +1,6 @@
 # CareerCards (web app)
 
-The Next.js version of CareerCards: the same cards, deck, resume rows and
+The Next.js version of CareerCards: the same cards, pack, resume rows and
 timeline as `../index.html`, plus accounts. It runs in two modes:
 
 - **Local mode** (no sign-in): the card lives in this browser's localStorage,
@@ -60,7 +60,7 @@ deployed app.
 ## How it fits together
 
 - `src/lib/` is pure: types, dates, derived stats, the sample career, the
-  import parsers, and the deck layout maths. No React, no DOM state.
+  import parsers, and the pack layout maths. No React, no DOM state.
 - `src/components/store.tsx` holds the document and decides where it is
   saved. Local mode writes localStorage on every change; signed in, it
   upserts the row (debounced) and shows a saved/saving dot in the menu.

@@ -39,7 +39,7 @@ export function Deck() {
         <div className="empty-shelf" style={{ width: '100%' }}>
           <div className="k">Your shelf is empty</div>
           <h2>Deal your first cards.</h2>
-          <p>The quickest way is a resume: Claude reads it and fills in every role, school and certification for you to check. Or build the deck by hand.</p>
+          <p>The quickest way is a resume: Claude reads it and fills in every role, school and certification for you to check. Or build the pack by hand.</p>
           <div className="choices">
             <button className="btn primary" onClick={() => openImport('resume')}>Import a resume</button>
             <button className="btn" onClick={() => openImport('linkedin')}>Import LinkedIn</button>
