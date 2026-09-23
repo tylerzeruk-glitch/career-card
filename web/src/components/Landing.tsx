@@ -4,7 +4,9 @@ import type { State } from '@/lib/types';
 import { sampleState } from '@/lib/sample';
 import { FreeCard, RoleCard } from './Cards';
 import { ThemeToggle } from './ThemeToggle';
-import { TimelineView } from './Timeline';
+import { TimelineLegend, TimelineView } from './Timeline';
+import { dayNum, todayISO } from '@/lib/dates';
+import { status } from '@/lib/derived';
 
 /** The red pennant, same path as the favicon. */
 export function Flag({ size = 22 }: { size?: number }) {
@@ -112,12 +114,41 @@ export function Landing({ tryHref = '/app?example', signInHref = '/login', onTry
             <div className="eyebrow">The timeline</div>
             <h2>The job hunt, on one line.</h2>
           </div>
-          <p>Every application, interview, offer and denial in order, with the days counted since the last day of the last season. Drag to pan, pinch or scroll to zoom, hover for the details. This is George&apos;s hunt; yours is only ever visible to you.</p>
+          <p>Every application, interview, offer and denial in order, with the days counted since the last day of the last season. In the app you pan, zoom and hover for the details. This is George&apos;s hunt; yours is only ever visible to you.</p>
         </div>
-        <TimelineView S={S} active />
+        <Still S={S} />
       </section>
 
       <SiteFoot signInHref={signInHref} />
+    </div>
+  );
+}
+
+/** The still is drawn at one of two sizes: wide for a desk, narrower (and taller for its width) for a phone. */
+const SHOTS = { wide: { w: 1200, h: 520 }, narrow: { w: 760, h: 500 } };
+
+/** The timeline as a picture: drawn at a fixed size, from three weeks before the layoff to a little past today, then scaled to the column. */
+function Still({ S }: { S: State }) {
+  const box = useRef<HTMLDivElement>(null);
+  const [fit, setFit] = useState({ k: 1, size: 'wide' as keyof typeof SHOTS });
+  useEffect(() => {
+    const el = box.current; if (!el) return;
+    const measure = () => { const cw = el.clientWidth, size = cw < 600 ? 'narrow' : 'wide'; setFit({ k: Math.min(1, cw / SHOTS[size].w), size }); };
+    measure();
+    const ro = 'ResizeObserver' in window ? new ResizeObserver(measure) : null; ro?.observe(el);
+    return () => ro?.disconnect();
+  }, []);
+  const t = dayNum(todayISO()), s = status(S);
+  const { w, h } = SHOTS[fit.size], narrow = fit.size === 'narrow';
+  const from = (s.free && s.since ? dayNum(s.since) : t - 60) - (narrow ? 12 : 22), to = t + (narrow ? 6 : 12);
+  return (
+    <div>
+      <div className="shot" ref={box} style={{ height: Math.round(h * fit.k), ['--shot-w' as string]: w + 'px', ['--shot-h' as string]: h + 'px' }}>
+        <div className="shot-in" style={{ transform: `scale(${fit.k})` }}>
+          <TimelineView key={fit.size} S={S} active still range={{ from, to }} />
+        </div>
+      </div>
+      <TimelineLegend />
     </div>
   );
 }

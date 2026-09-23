@@ -32,10 +32,10 @@ type Api = { current: TimelineApi | null };
 /**
  * The pan/zoom timeline. The SVG is built as markup (it is a drawing, not a
  * form) and events are delegated from the container. `onEvent` / `onSpan`
- * take a click on an event or a role span; without them the timeline is a
- * read-only exhibit (the landing page).
+ * take a click on an event or a role span. `still` draws a fixed picture of
+ * `range` (day numbers) with no pan, zoom or hover; the caller adds the legend.
  */
-export function TimelineView({ S, active, api, selectedId = null, onEvent, onSpan }: { S: State; active: boolean; api?: Api; selectedId?: string | null; onEvent?: (id: string) => void; onSpan?: (id: string) => void }) {
+export function TimelineView({ S, active, api, selectedId = null, onEvent, onSpan, still, range }: { S: State; active: boolean; api?: Api; selectedId?: string | null; onEvent?: (id: string) => void; onSpan?: (id: string) => void; still?: boolean; range?: { from: number; to: number } }) {
   const host = useRef<HTMLDivElement>(null);
   const tip = useRef<HTMLDivElement>(null);
   const view = useRef<View>({ start: 0, ppd: 8, init: false });
@@ -61,6 +61,7 @@ export function TimelineView({ S, active, api, selectedId = null, onEvent, onSpa
     v.start = Math.min(Math.max(v.start, lo), Math.max(lo, hi));
   };
   const fitRange = (d0: number, d1: number) => { const v = view.current, len = Math.max(7, d1 - d0); v.ppd = Math.min(90, innerW() / (len * 1.14)); v.start = d0 - len * 0.04; clampView(); };
+  const fitExact = (d0: number, d1: number) => { const v = view.current; v.ppd = innerW() / Math.max(7, d1 - d0); v.start = d0; };
   const fitCareer = () => { const r = dataRange(stateRef.current); fitRange(r.d0, r.d1); };
   /** The opening view: the last four months (ten weeks on a phone), today three quarters of the way across, so the hunt is what you see first. */
   const fitRecent = () => { const v = view.current, t = dayNum(todayISO()), days = innerW() < 480 ? 75 : 120; v.ppd = Math.min(90, Math.max(minPpd(), innerW() / days)); v.start = t - days * 0.76; clampView(); };
@@ -75,12 +76,12 @@ export function TimelineView({ S, active, api, selectedId = null, onEvent, onSpa
     const st = stateRef.current, ev = sortedEvents(st), rs = roles(st);
     const old = el.querySelector('svg');
     if (!rs.length && !ev.length) { old?.remove(); return; }
-    clampView();
+    if (!still) clampView();
     const v = view.current, W = el.clientWidth, H = el.clientHeight, X = (day: number) => PAD + (day - v.start) * v.ppd;
     const today = todayISO(), td = dayNum(today);
     // label tiers grow with the height: two at the minimum height, up to four on a tall view
     const baseY = Math.round(H * 0.62), TIER = 32, BASE_UP = 44, BASE_DN = 38;
-    const upTiers = Math.max(2, Math.min(4, Math.floor((baseY - 70 - BASE_UP) / TIER))), dnTiers = Math.max(2, Math.min(4, Math.floor((H - baseY - 60 - BASE_DN) / TIER)));
+    const upTiers = Math.max(2, Math.min(5, Math.floor((baseY - 70 - BASE_UP) / TIER))), dnTiers = Math.max(2, Math.min(4, Math.floor((H - baseY - 60 - BASE_DN) / TIER)));
     const visLo = v.start - 60 / v.ppd, visHi = v.start + (W - PAD) / v.ppd + 60 / v.ppd;
     const parts: string[] = ['<defs><pattern id="hatch" patternUnits="userSpaceOnUse" width="8" height="8" patternTransform="rotate(135)"><rect width="3" height="8" fill="rgba(220,68,50,.18)"/></pattern></defs>'];
     // axis
@@ -91,7 +92,7 @@ export function TimelineView({ S, active, api, selectedId = null, onEvent, onSpa
       const x = X(day), isJan = m.getUTCMonth() === 0;
       if (monthPx >= 8 || isJan) parts.push(`<line x1="${x}" x2="${x}" y1="${baseY - (isJan ? 7 : 4)}" y2="${baseY + (isJan ? 7 : 4)}" stroke="var(--line)" stroke-width="${isJan ? 1.5 : 1}"/>`);
       const showLabel = monthPx >= 44 || (monthPx >= 15 && m.getUTCMonth() % 3 === 0) || (isJan && (yearPx >= 34 || m.getUTCFullYear() % 5 === 0));
-      if (showLabel && x > -60) { const txt = monthPx >= 15 ? MONTHS[m.getUTCMonth()] + (firstLabel || isJan || monthPx < 44 ? ' ' + m.getUTCFullYear() : '') : String(m.getUTCFullYear()); parts.push(`<text class="month" x="${x + 5}" y="${baseY + 21}">${txt}</text>`); firstLabel = false; }
+      if (showLabel && x > (still ? 0 : -60)) { const txt = monthPx >= 15 ? MONTHS[m.getUTCMonth()] + (firstLabel || isJan || monthPx < 44 ? ' ' + m.getUTCFullYear() : '') : String(m.getUTCFullYear()); parts.push(`<text class="month" x="${x + 5}" y="${baseY + 21}">${txt}</text>`); firstLabel = false; }
       if (v.ppd >= 12) for (let w = 7; w < 28; w += 7) { const wd = day + w; if (wd > visHi) break; parts.push(`<line x1="${X(wd)}" x2="${X(wd)}" y1="${baseY - 3}" y2="${baseY + 3}" stroke="var(--muted)" stroke-width="1"/>`); }
     }
     // free agency zone
@@ -106,8 +107,10 @@ export function TimelineView({ S, active, api, selectedId = null, onEvent, onSpa
     spans.forEach((sp) => {
       if (sp.b < visLo || sp.a > visHi) return;
       const x0 = X(sp.a), x1 = X(sp.b), y = SPAN_TOP - sp.lane * (SPAN_H + 4), [, b] = pairFor(st, sp.role.company), w = Math.max(2, x1 - x0);
-      const label = `${sp.role.company} · ${sp.role.title}`; const show = w > textW(label, 11) + 8 ? label : w > textW(sp.role.company, 11) + 8 ? sp.role.company : '';
-      parts.push(`<g class="sp" data-id="${sp.role.id}"><rect x="${x0}" y="${y}" width="${w}" height="${SPAN_H}" rx="3" fill="${b}"/>${show ? `<text class="span-lbl" x="${x0 + 6}" y="${y + 12}">${esc(show)}</text>` : ''}</g>`);
+      // the label sits at the start of the bar, or at the left edge when the bar starts off screen, so a long season still says whose it is
+      const lx = Math.max(x0, 0) + 6, room = x1 - lx;
+      const label = `${sp.role.company} · ${sp.role.title}`; const show = room > textW(label, 11) + 4 ? label : room > textW(sp.role.company, 11) + 4 ? sp.role.company : '';
+      parts.push(`<g class="sp" data-id="${sp.role.id}"><rect x="${x0}" y="${y}" width="${w}" height="${SPAN_H}" rx="3" fill="${b}"/>${show ? `<text class="span-lbl" x="${lx}" y="${y + 12}">${esc(show)}</text>` : ''}</g>`);
     });
     // events
     const byDay: Record<number, Ev[]> = {}; ev.forEach((e) => { const d = dayNum(e.date); if (d >= visLo - 30 && d <= visHi + 30) (byDay[d] ||= []).push(e); });
@@ -115,12 +118,21 @@ export function TimelineView({ S, active, api, selectedId = null, onEvent, onSpa
     Object.keys(byDay).forEach((d) => { const list = byDay[+d], n = list.length; list.forEach((e, i) => placed.push({ e, x: X(+d) + (n > 1 ? (i - (n - 1) / 2) * Math.min(7, Math.max(3, v.ppd * 0.7)) : 0) })); });
     placed.sort((a, b) => a.x - b.x);
     const occ = { up: Array.from({ length: upTiers }, () => -1e9), dn: Array.from({ length: dnTiers }, () => -1e9) }; const out: string[] = [];
-    placed.forEach((p) => {
+    // labels already placed on each side, so a new one is not crossed by a taller tick and its own tick does not cross a lower label
+    const laid = { up: [] as { x: number; l: number; r: number; tier: number }[], dn: [] as { x: number; l: number; r: number; tier: number }[] };
+    placed.forEach((p, pi) => {
       const e = p.e, t = TYPES[e.type] || TYPES.milestone, up = t.dir > 0, isMs = e.type === 'layoff' || e.type === 'milestone';
-      const l1 = isMs ? e.title || t.label : e.company || e.title || t.label; const l2 = isMs ? '' : e.type === 'application' ? e.title || '' : t.label;
-      const w = Math.max(textW(l1, isMs ? 12.5 : 12, 700, isMs ? 0.08 : 0.06), l2 ? textW(l2, 10.5, 600, 0.08) : 0); const tiers = up ? occ.up : occ.dn; let tier = -1;
-      for (let i = 0; i < tiers.length; i++) if (tiers[i] < p.x - w / 2 - 8) { tier = i; break; }
-      const showLabel = tier >= 0 && v.ppd > 0.6; if (tier < 0) tier = 0; else tiers[tier] = p.x + w / 2;
+      const l1 = isMs ? e.title || t.label : e.company || e.title || t.label; let l2 = isMs ? '' : e.type === 'application' ? e.title || '' : t.label;
+      const w1 = textW(l1, isMs ? 12.5 : 12, 700, isMs ? 0.08 : 0.06); let w = Math.max(w1, l2 ? textW(l2, 10.5, 600, 0.08) : 0); const tiers = up ? occ.up : occ.dn, done = up ? laid.up : laid.dn;
+      // a label sits centered on its tick, or hangs to one side of it, on the lowest tier where no taller tick runs through it and its own tick runs through no lower label
+      let tier = -1, anchor = 'middle', L = p.x - w / 2, R = p.x + w / 2;
+      const clear = (i: number, l: number, r: number) => tiers[i] < l - 8 && !done.some((q) => (q.tier > i && q.x > l - 4 && q.x < r + 4) || (q.tier < i && p.x > q.l - 4 && p.x < q.r + 4));
+      // first without reaching over a later tick (which would have to stay shorter), then allowing it
+      const open = (l: number, r: number) => !(l < X(td) && r > X(td)) && !placed.some((q, qi) => qi > pi && (TYPES[q.e.type] || TYPES.milestone).dir === t.dir && q.x > l - 4 && q.x < r + 4);
+      const place = (strict: boolean) => { for (let i = 0; i < tiers.length; i++) for (const [a, l, r] of [['middle', p.x - w / 2, p.x + w / 2], ['end', p.x - 7 - w, p.x - 7], ['start', p.x + 7, p.x + 7 + w]] as [string, number, number][]) if (l > 2 && r < W - 2 && clear(i, l, r) && (!strict || open(l, r))) { tier = i; anchor = a; L = l; R = r; return true; } return false; };
+      if (!place(true) && !place(false) && l2 && w1 < w - 20) { w = w1; if (place(true) || place(false)) l2 = ''; }
+      if (tier < 0) { L = p.x - w / 2; R = p.x + w / 2; for (let i = 0; i < tiers.length; i++) if (tiers[i] < L - 8) { tier = i; break; } }
+      const showLabel = tier >= 0 && v.ppd > 0.6; if (tier < 0) tier = 0; else { tiers[tier] = R; done.push({ x: p.x, l: L, r: R, tier }); }
       const len = (up ? BASE_UP : BASE_DN) + tier * TIER + (e.type === 'layoff' ? TIER * 0.4 : 0); const yEnd = up ? baseY - len : baseY + len; const col = `var(${t.color})`;
       const hot = selRef.current === e.id;
       let head = '';
@@ -129,7 +141,7 @@ export function TimelineView({ S, active, api, selectedId = null, onEvent, onSpa
       else if (e.type === 'layoff') head = `<path d="M${p.x} ${yEnd} l13 4.5 l-13 4.5z" fill="${col}"/>`;
       else head = `<circle cx="${p.x}" cy="${yEnd}" r="3" fill="${col}"/>`;
       let text = '';
-      if (showLabel) { const lx = p.x, cls = 'lbl' + (isMs ? ' ms' : ''); if (up) { const y = yEnd - 9; text = l2 ? `<text class="${cls}" x="${lx}" y="${y - 13}" text-anchor="middle">${esc(l1)}</text><text class="lbl2" x="${lx}" y="${y}" text-anchor="middle">${esc(l2)}</text>` : `<text class="${cls}" x="${lx}" y="${y}" text-anchor="middle">${esc(l1)}</text>`; } else { const y = yEnd + 16; text = `<text class="${cls}" x="${lx}" y="${y}" text-anchor="middle">${esc(l1)}</text>` + (l2 ? `<text class="lbl2" x="${lx}" y="${y + 13}" text-anchor="middle">${esc(l2)}</text>` : ''); } }
+      if (showLabel) { const lx = anchor === 'middle' ? p.x : anchor === 'start' ? L : R, cls = 'lbl' + (isMs ? ' ms' : ''); if (up) { const y = yEnd - 9; text = l2 ? `<text class="${cls}" x="${lx}" y="${y - 13}" text-anchor="${anchor}">${esc(l1)}</text><text class="lbl2" x="${lx}" y="${y}" text-anchor="${anchor}">${esc(l2)}</text>` : `<text class="${cls}" x="${lx}" y="${y}" text-anchor="${anchor}">${esc(l1)}</text>`; } else { const y = yEnd + 16; text = `<text class="${cls}" x="${lx}" y="${y}" text-anchor="${anchor}">${esc(l1)}</text>` + (l2 ? `<text class="lbl2" x="${lx}" y="${y + 13}" text-anchor="${anchor}">${esc(l2)}</text>` : ''); } }
       out.push(`<g class="ev${hot ? ' hot' : ''}" data-id="${e.id}" tabindex="0" role="button" aria-label="${esc(fmt(e.date) + ' ' + t.label + ' ' + l1)}"><line class="tick" x1="${p.x}" x2="${p.x}" y1="${baseY}" y2="${yEnd}" stroke="${col}" stroke-width="${e.type === 'layoff' ? 3 : 2}" stroke-linecap="round"/>${head}${text}<rect class="hit" x="${p.x - 9}" y="${Math.min(baseY, yEnd) - 6}" width="18" height="${Math.abs(baseY - yEnd) + 12}"/></g>`);
     });
     const markup = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Career timeline">${parts.join('')}${out.join('')}</svg>`;
@@ -156,9 +168,9 @@ export function TimelineView({ S, active, api, selectedId = null, onEvent, onSpa
 
   // ----- wiring -----
   useEffect(() => { if (!api) return; api.current = { fitCareer: () => { fitCareer(); schedule(); }, zoomFreeAgency }; return () => { api.current = null; }; }); // eslint-disable-line react-hooks/exhaustive-deps
-  useEffect(() => { if (active) { if (!view.current.init) { fitRecent(); view.current.init = true; } schedule(); } }); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { if (active) { if (!view.current.init) { if (range) fitExact(range.from, range.to); else fitRecent(); view.current.init = true; } schedule(); } }); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
-    const el = host.current; if (!el) return;
+    const el = host.current; if (!el || still) return;
     const pts = new Map<number, { x: number; y: number }>(); let lastX = 0, pinchDist = 0, pinchMid = 0;
     const onDown = (e: PointerEvent) => { if ((e.target as HTMLElement).closest('.overlay')) return; pts.set(e.pointerId, { x: e.clientX, y: e.clientY }); el.setPointerCapture(e.pointerId); if (pts.size === 1) { drag.current.dragging = true; drag.current.moved = false; lastX = e.clientX; el.classList.add('drag'); hideTip(); } if (pts.size === 2) { const [a, b] = [...pts.values()]; pinchDist = Math.hypot(a.x - b.x, a.y - b.y); pinchMid = (a.x + b.x) / 2; } };
     const onMove = (e: PointerEvent) => {
@@ -181,25 +193,34 @@ export function TimelineView({ S, active, api, selectedId = null, onEvent, onSpa
 
   return (
     <>
-      <div className="tl" id="tl" ref={host} tabIndex={0} aria-label="Career timeline" hidden={!active}>
-        <div className="overlay legend">
-          <span><i className="bar" style={{ background: 'var(--navy)' }} />Team</span>
-          <span><i className="bar" style={{ background: 'repeating-linear-gradient(135deg,rgba(220,68,50,.35) 0 3px,transparent 3px 6px)' }} />Free agency</span>
-          <span><i style={{ background: 'var(--c-app)' }} />Application</span>
-          <span><i style={{ background: 'var(--c-int)' }} />Interview</span>
-          <span><i style={{ background: 'var(--c-off)' }} />Offer</span>
-          <span><i className="down" style={{ background: 'var(--c-den)' }} />Denial</span>
-        </div>
-        <div className="overlay zoom">
-          <button className="btn sm" onClick={() => { fitRecent(); schedule(); }}>Recent</button>
-          <button className="btn sm" onClick={zoomFreeAgency}>Free agency</button>
-          <button className="btn sm" onClick={() => { fitCareer(); schedule(); }}>Career</button>
-          <button className="btn icon" title="Zoom out" onClick={() => { zoomAt(1 / 1.4, (host.current?.clientWidth || 800) / 2); schedule(); }}>−</button>
-          <button className="btn icon" title="Zoom in" onClick={() => { zoomAt(1.4, (host.current?.clientWidth || 800) / 2); schedule(); }}>+</button>
-          <button className="btn sm" onClick={() => { centerOn(dayNum(todayISO())); schedule(); }}>Today</button>
-        </div>
+      <div className={'tl' + (still ? ' still' : '')} id={still ? undefined : 'tl'} ref={host} tabIndex={still ? undefined : 0} role={still ? 'img' : undefined} aria-label="Career timeline" hidden={!active}>
+        {!still && (
+          <div className="overlay zoom">
+            <button className="btn sm" onClick={() => { fitRecent(); schedule(); }}>Recent</button>
+            <button className="btn sm" onClick={zoomFreeAgency}>Free agency</button>
+            <button className="btn sm" onClick={() => { fitCareer(); schedule(); }}>Career</button>
+            <button className="btn icon" title="Zoom out" onClick={() => { zoomAt(1 / 1.4, (host.current?.clientWidth || 800) / 2); schedule(); }}>−</button>
+            <button className="btn icon" title="Zoom in" onClick={() => { zoomAt(1.4, (host.current?.clientWidth || 800) / 2); schedule(); }}>+</button>
+            <button className="btn sm" onClick={() => { centerOn(dayNum(todayISO())); schedule(); }}>Today</button>
+          </div>
+        )}
       </div>
-      <div className="tip" ref={tip} hidden />
+      {!still && <TimelineLegend hidden={!active} />}
+      {!still && <div className="tip" ref={tip} hidden />}
     </>
+  );
+}
+
+/** The key to the marks, a row under the drawing so it never sits on top of it. */
+export function TimelineLegend({ hidden }: { hidden?: boolean }) {
+  return (
+    <div className="tl-legend" hidden={hidden}>
+      <span><i className="bar" style={{ background: 'var(--navy)' }} />Team</span>
+      <span><i className="bar" style={{ background: 'repeating-linear-gradient(135deg,rgba(220,68,50,.35) 0 3px,transparent 3px 6px)' }} />Free agency</span>
+      <span><i style={{ background: 'var(--c-app)' }} />Application</span>
+      <span><i style={{ background: 'var(--c-int)' }} />Interview</span>
+      <span><i style={{ background: 'var(--c-off)' }} />Offer</span>
+      <span><i className="down" style={{ background: 'var(--c-den)' }} />Denial</span>
+    </div>
   );
 }
