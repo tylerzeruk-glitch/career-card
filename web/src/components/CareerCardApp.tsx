@@ -125,7 +125,7 @@ function Header() {
         <span className="secondary">
           <button className="btn" onClick={() => ui.openImport('linkedin')}>Import</button>
           <button className="btn" onClick={() => ui.openDrawer('profile')}>Profile</button>
-          <button className="btn" onClick={() => ui.openDrawer('profile')}>Share</button>
+          <button className="btn" onClick={() => ui.openDrawer('share')}>Share</button>
           {!user && <a className="btn" href="/login">Sign in</a>}
         </span>
         <ThemeToggle />
@@ -137,7 +137,7 @@ function Header() {
             <div className="m-only">
               <button className="btn" onClick={() => ui.openImport('linkedin')}>Import</button>
               <button className="btn" onClick={() => ui.openDrawer('profile')}>Profile</button>
-              <button className="btn" onClick={() => ui.openDrawer('profile')}>Share</button>
+              <button className="btn" onClick={() => ui.openDrawer('share')}>Share</button>
               {!user && <a className="btn" href="/login">Sign in</a>}
               <hr />
             </div>

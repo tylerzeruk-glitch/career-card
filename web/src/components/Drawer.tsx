@@ -24,7 +24,7 @@ export function Drawer({ d }: { d: DrawerState }) {
       <aside className={'drawer' + (d.open ? ' open' : '') + (d.tab === 'log' ? ' wide' : '')} aria-hidden={!d.open}>
         <div className="drawer-head">
           <div className="tabs">
-            {(['role', 'event', 'profile', 'log'] as DrawerTab[]).map((t) => (
+            {(['role', 'event', 'profile', 'share', 'log'] as DrawerTab[]).map((t) => (
               <button key={t} className={'tab' + (d.tab === t ? ' on' : '')} onClick={() => openDrawer(t, t === 'role' ? { roleId: null } : t === 'event' ? { eventId: null } : undefined)}>{t[0].toUpperCase() + t.slice(1)}</button>
             ))}
           </div>
@@ -34,6 +34,7 @@ export function Drawer({ d }: { d: DrawerState }) {
           {d.tab === 'role' && <RoleForm key={'r' + d.nonce} roleId={d.roleId} />}
           {d.tab === 'event' && <EventForm key={'e' + d.nonce} eventId={d.eventId} prefill={d.prefill} />}
           {d.tab === 'profile' && <ProfileForm key={'p' + d.nonce} />}
+          {d.tab === 'share' && <SharePanel key={'s' + d.nonce} />}
           {d.tab === 'log' && <Log />}
         </div>
       </aside>
@@ -215,7 +216,9 @@ const LinkedInMark = <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden
  * small data URL inside the local card (it moves to the account on sign-in). Shown on every card.
  */
 function PortraitPicker() {
-  const { S, update, user } = useCard();
+  const { S, update, user, sampleMode, loadExample } = useCard();
+  // playing with the example's portrait keeps it the example: the next visit deals George afresh
+  const keep = { keepSample: true };
   const p = S.profile;
   const first = roles(S)[0];
   const [a, b] = first ? pairFor(S, first.company) : PAIRS[0];
@@ -232,7 +235,7 @@ function PortraitPicker() {
     try {
       const photo = await squarePhoto(src, user ? PORTRAIT_SIDE : LOCAL_SIDE);
       const url = user ? await storePortrait(user.id, photo) : await toDataUrl(photo);
-      update((s) => ({ ...s, profile: { ...s.profile, avatar: url, photo: url } }));
+      update((s) => ({ ...s, profile: { ...s.profile, avatar: url, photo: url } }), keep);
       setTakes([]);
       setMsg('Saved. It shows on every card' + (user ? ' and on your page.' : '.'));
     } catch (e) { setMsg((e as Error).message || 'Could not use that photo.'); }
@@ -240,7 +243,7 @@ function PortraitPicker() {
   };
   const remove = () => {
     const stored = user && p.avatar && isPhoto(p.avatar) && !isDataUrl(p.avatar);
-    update((s) => { const { avatar: _a, photo: _p, ...rest } = s.profile; return { ...s, profile: rest }; });
+    update((s) => { const { avatar: _a, photo: _p, ...rest } = s.profile; return { ...s, profile: rest }; }, keep);
     if (stored) dropPortrait(user.id).catch(() => { /* the file is orphaned at worst */ });
     setMsg('Removed. Cards show your initials.');
   };
@@ -283,12 +286,12 @@ function PortraitPicker() {
     setPicking(t.path); setMsg('');
     try {
       const avatar = await pickTake(t.path);
-      update((s) => ({ ...s, profile: { ...s.profile, avatar } }));
+      update((s) => ({ ...s, profile: { ...s.profile, avatar } }), keep);
       setTakes([]); setMsg('Saved. It shows on every card, in each team\'s colours, and on your page.');
     } catch (e) { setMsg((e as Error).message); }
     setPicking(null);
   };
-  const usePhoto = () => { if (p.photo) update((s) => ({ ...s, profile: { ...s.profile, avatar: s.profile.photo } })); setMsg('Back to the photo.'); };
+  const usePhoto = () => { if (p.photo) update((s) => ({ ...s, profile: { ...s.profile, avatar: s.profile.photo } }), keep); setMsg('Back to the photo.'); };
 
   // back from LinkedIn: the app left a note to carry on
   useEffect(() => {
@@ -309,6 +312,7 @@ function PortraitPicker() {
             <button type="button" className="btn sm" disabled={!!busy} onClick={() => fileRef.current?.click()}>Choose a photo</button><input ref={fileRef} type="file" accept="image/*" onChange={(e) => { const f = e.target.files?.[0]; e.target.value = ''; if (f) take(f); }} />
             <button type="button" className="btn sm" disabled={!linkedinOn || !user || !!busy} title={liTitle} onClick={linkedin}>{LinkedInMark} Use my LinkedIn photo</button>
             {p.avatar && <button type="button" className="btn sm" disabled={!!busy} onClick={remove}>Remove</button>}
+            {sampleMode && p.avatar !== 'george' && <button type="button" className="btn sm" disabled={!!busy} onClick={() => { loadExample(); setTakes([]); setMsg('George is back.'); }}>Reset George</button>}
           </div>
           {user && p.photo && !takes.length && (
             <div className="pt-actions">
@@ -317,6 +321,7 @@ function PortraitPicker() {
             </div>
           )}
           <span className="help">{msg || (user && p.photo ? 'The model redraws your photo as a riso print like George\'s: four takes, pick one. Each deal is a few cents, so there is a daily limit.' : 'A headshot works best: face the camera, plain background. Drop one on the square or choose a file; it is cropped to the centre.')}</span>
+          {!user && <span className="help nudge"><b>Sign in</b> and your photo gets drawn in the house style, like George: a riso portrait in every team&apos;s colours. <a href="/login">Sign in</a></span>}
         </div>
       </div>
       {takes.length > 0 && (
@@ -337,7 +342,7 @@ function PortraitPicker() {
 }
 
 function ProfileForm() {
-  const { S, update, flash, user, slug, visibility, setMeta } = useCard();
+  const { S, update, flash } = useCard();
   const p = S.profile;
   const [targets, setTargets] = useState<string[]>(p.targets || []);
   const onMarket = looking(S);
@@ -352,22 +357,12 @@ function ProfileForm() {
   const setEduAt = (i: number, k: keyof EduRow, v: string | boolean) => setEdu((rows) => rows.map((r, j) => (j === i ? { ...r, [k]: v } : r)));
   const setCertAt = (i: number, k: keyof CertRow, v: string | boolean) => setCerts((rows) => rows.map((r, j) => (j === i ? { ...r, [k]: v } : r)));
   const [msg, setMsg] = useState('');
-  const [pageMsg, setPageMsg] = useState('');
-  const [slugIn, setSlugIn] = useState(slug || slugify(p.name));
-  const [vis, setVis] = useState<Visibility>(visibility);
-  const origin = typeof window !== 'undefined' ? window.location.origin : '';
 
   const submit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
     update((s) => ({ ...s, profile: { ...s.profile, name: field(fd, 'name'), headline: field(fd, 'headline'), location: field(fd, 'location'), summary: field(fd, 'summary'), targets, skills: pskills, email: field(fd, 'email'), linkedin: field(fd, 'linkedin'), education: edu.map((r) => ({ school: r.school.trim(), degree: r.degree.trim(), years: r.inProgress ? (r.start.trim() ? r.start.trim() + '–present' : 'In progress') : [r.start.trim(), r.end.trim()].filter(Boolean).join('–') })).filter((r) => r.school), certs: certs.map((c) => ({ name: c.name.trim(), issuer: c.issuer.trim(), year: c.inProgress ? 'In progress' : c.year.trim() })).filter((c) => c.name) } }));
     setDirty(false); setMsg('Saved.'); flash('Saved.');
-  };
-  const savePage = async () => {
-    const s = slugify(slugIn); setSlugIn(s);
-    if (vis !== 'private' && s.length < 3) { setPageMsg('Pick an address of at least 3 characters.'); return; }
-    const err = await setMeta({ slug: s || null, visibility: vis });
-    setPageMsg(err || (vis === 'private' ? 'Saved. Your page is private.' : 'Saved.'));
   };
 
   return (
@@ -433,31 +428,6 @@ function ProfileForm() {
         <div className={'form-foot' + (dirty ? ' floating' : '')}><button className="btn primary" type="submit">Save profile</button><span className="spacer" /><span className={'status' + (dirty ? ' unsaved' : '')}>{dirty ? 'Unsaved changes' : msg}</span></div>
       </form>
 
-      <section className="pagebox">
-      <div className="gh">Your page</div>
-      {user ? (
-        <div className="form">
-          <div className="field"><label htmlFor="pg-slug">Address</label>
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: 4 }}><span style={{ color: 'var(--muted)', fontSize: 12.5, whiteSpace: 'nowrap' }}>{origin}/u/</span><input id="pg-slug" value={slugIn} onChange={(e) => setSlugIn(e.target.value)} placeholder="jordan-avery" /></div>
-          </div>
-          <div className="field"><span className="lbl" id="vis-label">Who can see it</span>
-            <div className="gt vis" role="radiogroup" aria-labelledby="vis-label">
-              {([['private', 'Only me'], ['unlisted', 'Anyone with the link'], ['public', 'Public']] as [Visibility, string][]).map(([v, l]) => (
-                <button type="button" key={v} role="radio" aria-checked={vis === v} className={vis === v ? 'on' : ''} onClick={() => setVis(v)}><i aria-hidden="true" />{l}</button>
-              ))}
-            </div>
-            <span className="help">The page shows your cards, scouting report, farm system, awards and contact. Never the job hunt.</span>
-          </div>
-          <div className="form-foot">
-            <button className="btn primary" type="button" onClick={savePage}>Save page settings</button>
-            {slug && visibility !== 'private' && <a className="btn open" href={'/u/' + slug} target="_blank" rel="noopener">Open your page ↗</a>}
-            <span className="spacer" /><span className="status">{pageMsg}</span>
-          </div>
-        </div>
-      ) : (
-        <p style={{ color: 'var(--ink-2)', fontSize: 13.5, margin: 0 }}>Sign in to give your card an address you can send to people. <a href="/login">Sign in</a></p>
-      )}
-      </section>
     </section>
   );
 }
@@ -504,6 +474,55 @@ function Log() {
           </tbody>
         </table>
       </div>
+    </section>
+  );
+}
+
+/** The Share tab: the page's address, who can see it, open it, copy the link. Sign in to have one. */
+function SharePanel() {
+  const { S, user, slug, visibility, setMeta } = useCard();
+  const p = S.profile;
+  const [pageMsg, setPageMsg] = useState('');
+  const [slugIn, setSlugIn] = useState(slug || slugify(p.name));
+  const [vis, setVis] = useState<Visibility>(visibility);
+  const origin = typeof window !== 'undefined' ? window.location.origin : '';
+  const [copied, setCopied] = useState(false);
+  const savePage = async () => {
+    const s = slugify(slugIn); setSlugIn(s);
+    if (vis !== 'private' && s.length < 3) { setPageMsg('Pick an address of at least 3 characters.'); return; }
+    const err = await setMeta({ slug: s || null, visibility: vis });
+    setPageMsg(err || (vis === 'private' ? 'Saved. Your page is private.' : 'Saved.'));
+  };
+  const copyLink = async () => {
+    try { await navigator.clipboard.writeText(origin + '/u/' + slug); setCopied(true); setTimeout(() => setCopied(false), 1800); } catch { setPageMsg('Could not copy. The address is ' + origin + '/u/' + slug); }
+  };
+  return (
+    <section>
+      <section className="pagebox first">
+      <div className="gh">Your page</div>
+      {user ? (
+        <div className="form">
+          <div className="field"><label htmlFor="pg-slug">Address</label>
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: 4 }}><span style={{ color: 'var(--muted)', fontSize: 12.5, whiteSpace: 'nowrap' }}>{origin}/u/</span><input id="pg-slug" value={slugIn} onChange={(e) => setSlugIn(e.target.value)} placeholder="jordan-avery" /></div>
+          </div>
+          <div className="field"><span className="lbl" id="vis-label">Who can see it</span>
+            <div className="gt vis" role="radiogroup" aria-labelledby="vis-label">
+              {([['private', 'Only me'], ['unlisted', 'Anyone with the link'], ['public', 'Public']] as [Visibility, string][]).map(([v, l]) => (
+                <button type="button" key={v} role="radio" aria-checked={vis === v} className={vis === v ? 'on' : ''} onClick={() => setVis(v)}><i aria-hidden="true" />{l}</button>
+              ))}
+            </div>
+            <span className="help">The page shows your cards, scouting report, farm system, awards and contact. Never the job hunt.</span>
+          </div>
+          <div className="form-foot">
+            <button className="btn primary" type="button" onClick={savePage}>Save page settings</button>
+            {slug && visibility !== 'private' && <><a className="btn open" href={'/u/' + slug} target="_blank" rel="noopener">Open your page ↗</a><button className="btn open" type="button" onClick={copyLink}>{copied ? 'Copied' : 'Copy link'}</button></>}
+            <span className="spacer" /><span className="status">{pageMsg}</span>
+          </div>
+        </div>
+      ) : (
+        <p style={{ color: 'var(--ink-2)', fontSize: 13.5, margin: 0 }}>Sign in to give your card an address you can send to people. <a href="/login">Sign in</a></p>
+      )}
+      </section>
     </section>
   );
 }

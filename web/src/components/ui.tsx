@@ -2,7 +2,7 @@
 import { createContext, useContext, type MutableRefObject } from 'react';
 import type { Ev } from '@/lib/types';
 
-export type DrawerTab = 'role' | 'event' | 'profile' | 'log';
+export type DrawerTab = 'role' | 'event' | 'profile' | 'share' | 'log';
 export type ImportTab = 'linkedin' | 'resume' | 'tracker';
 
 export type TimelineApi = { fitCareer: () => void; zoomFreeAgency: () => void };

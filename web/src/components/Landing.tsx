@@ -27,7 +27,7 @@ export function heroState(): State {
 
 const STEPS = [
   { n: '01', h: 'Import', p: 'Drop in a resume PDF or a LinkedIn export. Claude reads it and deals the cards. You fix whatever it got wrong.' },
-  { n: '02', h: 'Detail', p: 'Pick team colors, write the highlights, say how each season ended. Group the pack by role or by team.' },
+  { n: '02', h: 'Detail', p: 'Pick team colors, write the highlights, say how each season ended. Add a photo and have it drawn in the house style, like George, in every team\'s colors.' },
   { n: '03', h: 'Share', p: 'Turn on your page at careercards.app/u/you. Only the career goes out. The job hunt stays with you.' },
 ];
 
@@ -78,7 +78,7 @@ export function Landing({ tryHref = '/app?example', signInHref = '/login', onTry
             <a className="btn primary lg" href={signInHref}>Make your pack</a>
             <a className="btn lg" {...tryProps}>Try it with an example</a>
           </div>
-          <div className="fine">Free. No account needed to try.<br />Sign in to keep your cards and make them shareable.</div>
+          <div className="fine">Free. No account needed to try.<br />Sign in to keep your cards, share them, and get your portrait drawn.</div>
         </div>
         <div className="handwrap">
           {out && <div className="hand-dim" onClick={() => flip(out)} aria-hidden="true" />}

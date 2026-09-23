@@ -383,6 +383,9 @@ dialog::backdrop{background:rgba(0,0,0,.35)}
 @media (prefers-reduced-motion: reduce){.switch .track,.switch .track::after{transition:none}}
 /* the page settings: set apart from the profile form in a tinted, rounded box; the visibility pick uses the deck's radio dots */
 .pagebox{margin-top:26px;background:var(--hover);border-radius:12px;padding:16px 18px 18px}
+.pagebox.first{margin-top:8px}
+.portrait .help.nudge{color:var(--ink-2)}
+.portrait .help.nudge b{color:var(--red)}
 .pagebox .gh{margin-bottom:6px}
 .pagebox .form{margin-top:0;gap:14px}
 .pagebox .field .lbl{font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-2)}
