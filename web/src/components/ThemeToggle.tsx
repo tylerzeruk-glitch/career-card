@@ -5,12 +5,12 @@ import { DARK_MODE, THEME_KEY, type Theme } from '@/lib/theme';
 /** Sun / moon. Disabled, with a note, while dark mode is held back. */
 export function ThemeToggle({ className = '' }: { className?: string }) {
   const [theme, setTheme] = useState<Theme>('light');
-  useEffect(() => { setTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light'); }, []);
+  useEffect(() => { setTheme(document.documentElement.getAttribute('data-cc-theme') === 'dark' ? 'dark' : 'light'); }, []);
   const flip = () => {
     if (!DARK_MODE) return;
     const next: Theme = theme === 'dark' ? 'light' : 'dark';
     setTheme(next);
-    document.documentElement.setAttribute('data-theme', next);
+    document.documentElement.setAttribute('data-cc-theme', next);
     try { localStorage.setItem(THEME_KEY, next); } catch { /* ignore */ }
   };
   const dark = theme === 'dark';

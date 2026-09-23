@@ -12,7 +12,7 @@
   --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
 }
 @media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
+  :root:not([data-cc-theme="light"]){
     color-scheme:dark;
     --bg:#171613; --paper:#1f1d19; --hover:#2a2722; --ink:#efeae0; --ink-2:#c3bdb0; --muted:#8a857a; --hair:#33302a; --line:#efeae0;
     --focus:#3987e5; --red:#ef6b5b;
@@ -20,7 +20,7 @@
     --ok-bg:#123b12; --ok-ink:#9fe09f; --warn-bg:#3a2e08; --warn-ink:#f4d28a; --info-bg:#172a45; --info-ink:#b9d2f5;
   }
 }
-:root[data-theme="dark"]{
+:root[data-cc-theme="dark"]{
   color-scheme:dark;
   --bg:#171613; --paper:#1f1d19; --hover:#2a2722; --ink:#efeae0; --ink-2:#c3bdb0; --muted:#8a857a; --hair:#33302a; --line:#efeae0;
   --focus:#3987e5; --red:#ef6b5b;
