@@ -397,7 +397,7 @@ kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--hair);border-r
 
 /* landing: the front door for a signed-out visitor */
 .landing{--hw:clamp(150px,17.5vw,236px);max-width:1160px;margin:0 auto;padding:0 var(--gut) 40px;display:flex;flex-direction:column;gap:56px}
-.landing .eyebrow{font:700 12px/1 var(--cond);letter-spacing:.16em;text-transform:uppercase;color:var(--red);margin-bottom:14px}
+.landing .eyebrow{font:700 15px/1 var(--cond);letter-spacing:.16em;text-transform:uppercase;color:var(--red);margin-bottom:14px}
 .landing p{margin:0;color:var(--ink-2)}
 .landing a{color:inherit}
 .lbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:20px}
@@ -443,7 +443,7 @@ kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--hair);border-r
 .step h2{font:700 24px/1.1 var(--cond);letter-spacing:.04em;text-transform:uppercase;margin:8px 0 8px}
 .step p{font-size:14px;line-height:1.55}
 .hunt{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:40px;align-items:start;background:var(--navy);color:#fbf6ea;border-radius:14px;padding:34px 36px}
-.hunt .eyebrow{color:#ef6b5b;font-size:15px}
+.hunt .eyebrow{color:#ef6b5b}
 .hunt h2{font:700 30px/1.05 var(--cond);letter-spacing:.03em;text-transform:uppercase;margin-bottom:12px}
 .hunt p{color:#c9c2b2;font-size:14.5px;line-height:1.6}
 .glossary{display:grid;gap:0;border-top:1px solid rgba(255,255,255,.2)}
