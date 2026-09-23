@@ -380,7 +380,9 @@ kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--hair);border-r
 /* public page */
 /* the public page: the landing page's header bar, the app's masthead, the deck, the fold, the site footer */
 .pub{max-width:1160px;margin:0 auto;padding:0 var(--gut) 40px}
-.pub .mast{margin-top:30px}
+.pub .mast{margin-top:30px;padding-bottom:18px;position:relative}
+/* a dark perforated line under the masthead, like the one above the landing page's steps */
+.pub .mast::after{content:"";position:absolute;left:0;right:0;bottom:0;height:5px;background:radial-gradient(circle,var(--ink-2) 1.6px,transparent 2px) 4px 50%/10px 5px repeat-x}
 .pub .flipme{display:flex;justify-content:center;margin:-22px 0 6px}
 .pub .lfoot{margin-top:44px}
 .menu .pop a.btn{text-decoration:none;color:var(--ink-2)}
