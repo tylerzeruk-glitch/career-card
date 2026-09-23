@@ -27,6 +27,8 @@ type Store = {
   flash: (msg: string) => void;
   flashMsg: string | null;
   signOut: () => Promise<void>;
+  /** Deal the example career again (local mode). */
+  loadExample: () => void;
 };
 
 const Ctx = createContext<Store | null>(null);
@@ -37,6 +39,13 @@ export const useCard = () => {
 };
 
 const isReal = (s: State) => s.roles.length > 0 || s.events.length > 0 || !!s.profile.name;
+/** The landing page's "Try it with an example" arrives with ?example (the preview sets a flag instead). */
+const wantExample = () => {
+  if (typeof window === 'undefined') return false;
+  if ((window as unknown as { __EXAMPLE__?: boolean }).__EXAMPLE__) return true;
+  if (new URLSearchParams(window.location.search).has('example')) { try { window.history.replaceState(null, '', window.location.pathname); } catch { /* ignore */ } return true; }
+  return false;
+};
 
 export function CardProvider({ children, user, cloud }: { children: ReactNode; user: AuthUser | null; cloud: CloudCard | null }) {
   // Start from what the server knew (the account's card), else from this browser, else the sample.
@@ -52,6 +61,12 @@ export function CardProvider({ children, user, cloud }: { children: ReactNode; u
   const saveT = useRef<ReturnType<typeof setTimeout> | null>(null);
   const dirty = useRef(false);
 
+  const flash = useCallback((msg: string) => {
+    setFlashMsg(msg);
+    if (flashT.current) clearTimeout(flashT.current);
+    flashT.current = setTimeout(() => setFlashMsg(null), 5000);
+  }, []);
+
   // Local mode boot (runs in the browser only, so localStorage is available).
   useEffect(() => {
     if (cloud) {
@@ -66,16 +81,12 @@ export function CardProvider({ children, user, cloud }: { children: ReactNode; u
       setBooted(true);
       return;
     }
-    if (local && !local.sample) { setS(local.state); setSample(false); }
-    else { setS({ ...sampleState(), settings: local?.state.settings ?? sampleState().settings }); setSample(true); }
+    // asked for the example: deal it unless this browser holds a real card of its own
+    const fresh = () => { setS({ ...sampleState(), settings: local?.state.settings ?? sampleState().settings }); setSample(true); };
+    if (local && !local.sample && isReal(local.state)) { setS(local.state); setSample(false); if (wantExample()) flash('This device has a card of its own. The example is under ··· → Load the example.'); }
+    else fresh();
     setBooted(true);
-  }, [user, cloud]);
-
-  const flash = useCallback((msg: string) => {
-    setFlashMsg(msg);
-    if (flashT.current) clearTimeout(flashT.current);
-    flashT.current = setTimeout(() => setFlashMsg(null), 5000);
-  }, []);
+  }, [user, cloud, flash]);
 
   // Persist on every change after boot: locally, or to the account (debounced).
   useEffect(() => {
@@ -96,6 +107,7 @@ export function CardProvider({ children, user, cloud }: { children: ReactNode; u
   }, []);
   const replace = useCallback<Store['replace']>((s, sample = false) => { dirty.current = true; setS(s); setSample(sample); }, []);
   const reset = useCallback(() => { dirty.current = true; setS(blank()); setSample(false); }, []);
+  const loadExample = useCallback(() => { if (isReal(S) && !sampleMode && !confirm('Replace the card on this device with the example career?')) return; dirty.current = true; setS(sampleState()); setSample(true); }, [S, sampleMode]);
 
   const setMeta = useCallback<Store['setMeta']>(async (m) => {
     if (!user) return 'Sign in to publish a page.';
@@ -123,8 +135,8 @@ export function CardProvider({ children, user, cloud }: { children: ReactNode; u
     window.location.href = '/';
   }, []);
 
-  const value = useMemo<Store>(() => ({ S, sampleMode, user, slug, visibility, sync, update, replace, reset, setMeta, migration, migrate, flash, flashMsg, signOut }),
-    [S, sampleMode, user, slug, visibility, sync, update, replace, reset, setMeta, migration, migrate, flash, flashMsg, signOut]);
+  const value = useMemo<Store>(() => ({ S, sampleMode, user, slug, visibility, sync, update, replace, reset, setMeta, migration, migrate, flash, flashMsg, signOut, loadExample }),
+    [S, sampleMode, user, slug, visibility, sync, update, replace, reset, setMeta, migration, migrate, flash, flashMsg, signOut, loadExample]);
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }

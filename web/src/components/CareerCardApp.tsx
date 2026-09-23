@@ -91,7 +91,7 @@ function Shell() {
 }
 
 function Header() {
-  const { S, user, sync, signOut } = useCard();
+  const { S, user, sync, signOut, loadExample } = useCard();
   const ui = useUI();
   const p = S.profile, st = status(S), cs = careerStats(S);
   const [menu, setMenu] = useState(false);
@@ -135,6 +135,7 @@ function Header() {
               <hr />
             </div>
             <button className="btn" onClick={() => ui.openDrawer('log')}>Job-hunt log</button>
+            {!user && <button className="btn" onClick={loadExample}>Load the example</button>}
             <button className="btn" onClick={ui.openBackup}>Backup / restore</button>
             <button className="btn" onClick={ui.openHelp}>How this works</button>
             {user && <button className="btn" onClick={signOut}>Sign out</button>}

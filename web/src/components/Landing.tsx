@@ -40,7 +40,7 @@ const GLOSSARY: [string, string][] = [
  * The front door for a visitor who is not signed in. `onTry` swaps in for the
  * link when the page runs without a server (the single-file preview).
  */
-export function Landing({ tryHref = '/app', signInHref = '/login', onTry }: { tryHref?: string; signInHref?: string; onTry?: () => void }) {
+export function Landing({ tryHref = '/app?example', signInHref = '/login', onTry }: { tryHref?: string; signInHref?: string; onTry?: () => void }) {
   const [S] = useState(heroState);
   // one card at a time pops out of the hand, then flips; a second click flips it back and settles it
   const [out, setOut] = useState<string | null>(null);

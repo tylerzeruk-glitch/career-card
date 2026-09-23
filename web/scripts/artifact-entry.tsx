@@ -7,7 +7,7 @@ import { Landing } from '@/components/Landing';
 function Preview() {
   const [page, setPage] = useState<'landing' | 'app'>('landing');
   if (page === 'app') return <CareerCardApp user={null} cloud={null} />;
-  return <Landing onTry={() => setPage('app')} signInHref="https://careercards.app/login" />;
+  return <Landing onTry={() => { (window as unknown as { __EXAMPLE__?: boolean }).__EXAMPLE__ = true; setPage('app'); }} signInHref="https://careercards.app/login" />;
 }
 
 createRoot(document.getElementById('root')!).render(<Preview />);

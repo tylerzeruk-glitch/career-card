@@ -14,7 +14,7 @@ import { layoutDeck } from '@/lib/deck';
  * up with the deck by setting CSS variables on the scroller.
  */
 export function Deck() {
-  const { S, sampleMode, update } = useCard();
+  const { S, sampleMode, update, user, loadExample } = useCard();
   const { openFocus, openDrawer, openImport, setView, timeline } = useUI();
   const shelf = useRef<HTMLDivElement>(null);
   const [openRuns, setOpenRuns] = useState<Set<string>>(() => new Set());
@@ -44,6 +44,7 @@ export function Deck() {
             <button className="btn primary" onClick={() => openImport('resume')}>Import a resume</button>
             <button className="btn" onClick={() => openImport('linkedin')}>Import LinkedIn</button>
             <button className="btn" onClick={() => openDrawer('role', { roleId: null })}>Add a role by hand</button>
+            {!user && <button className="btn" onClick={loadExample}>Load the example career</button>}
           </div>
         </div>
       </div>
