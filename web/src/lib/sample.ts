@@ -23,6 +23,7 @@ export function sampleState(): State {
         { name: 'Salesperson of the Year', issuer: 'Vandelay', year: String(y - 3) },
       ],
       skills: [],
+      avatar: 'george',
     },
     roles: [
       { id: uid(), company: 'Acme Corp', title: 'Marine Biologist', code: 'MB', start: y - 16 + '-06', end: y - 13 + '-03', location: 'Boston, MA', reason: 'Promoted', bullets: ['Tagged and tracked 300 sea turtles across two field seasons.', 'Pulled a Titleist from the blowhole of a beached whale. The sea was angry that day.'], skills: ['Field research', 'Whale rescue', 'Diving', 'Reporting'] },

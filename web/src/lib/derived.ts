@@ -39,10 +39,13 @@ export function hashIdx(s: string) {
   for (const c of norm(s)) h = (h * 31 + c.charCodeAt(0)) >>> 0;
   return h % PAIRS.length;
 }
-export function pairFor(S: Pick<State, 'brand'>, company: string): [string, string] {
+export function pairIndexFor(S: Pick<State, 'brand'>, company: string): number {
   const k = norm(company);
   const i = S.brand[k] != null ? S.brand[k] : hashIdx(k);
-  return PAIRS[i] || PAIRS[0];
+  return PAIRS[i] ? i : 0;
+}
+export function pairFor(S: Pick<State, 'brand'>, company: string): [string, string] {
+  return PAIRS[pairIndexFor(S, company)];
 }
 
 export const blank = (): State => ({

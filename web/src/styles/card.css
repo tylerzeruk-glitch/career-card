@@ -101,3 +101,6 @@
 .card.free .badge{left:auto;right:-5%;bottom:auto;top:-7%;transform:rotate(12deg)}
 .card.free .who{align-items:flex-start;text-align:left}
 .card.free .role{color:#dc4432}
+/* a portrait in the art box: bottom-anchored, edge to edge, clipped to the box */
+.card .art .pic{position:absolute;inset:0;overflow:hidden;border-radius:inherit;border-top-left-radius:0;z-index:1}
+.card .art .pic img{position:absolute;left:0;bottom:0;width:100%;height:auto;display:block}

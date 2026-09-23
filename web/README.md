@@ -79,6 +79,17 @@ deployed app.
 - `src/styles/card.css` is the card stylesheet, shared with the single-file
   version; `src/app/globals.css` is the page chrome.
 
+## Portraits
+
+A profile can carry an `avatar`. The example career's is the built-in
+`george`: ten PNGs under `public/avatars/`, one per team colour pair, made
+from one riso-style portrait with the cream keyed out, the bust filled to a
+flat bottom and the shirt recoloured to the pair's frame colour. `RoleCard`
+shows it in the art box in place of the monogram (`src/lib/avatar.ts`
+picks the file; the single-file preview inlines them). Generating a
+player's own portrait from a photo (OpenAI image model, then the same
+processing) is the next step.
+
 ## Light and dark
 
 The dark palette is in `src/app/globals.css` but held back: `DARK_MODE` in
@@ -111,3 +122,6 @@ date-pattern parser and says so in the preview.
   hello@careercards.app until then.
 - Greenhouse.io integration: pull applications and their stages into the
   free-agency timeline instead of logging them by hand.
+- Player portraits: upload a photo, an OpenAI image model redraws it in the
+  house riso style, key out the cream, fill the bust, recolour the shirt per
+  team, store one image per pair. Design: the CareerCards Avatars canvas.

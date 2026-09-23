@@ -2,7 +2,8 @@
 import { useCallback, useEffect, useRef, useState, type CSSProperties } from 'react';
 import type { Profile, Role, State } from '@/lib/types';
 import { dur, fmt, fmtMonth, monthIndex, monthsBetween, nowYM, yearOf, yrs } from '@/lib/dates';
-import { codeFor, huntStats, initials, pairFor, runs, status, teamSize, type Run } from '@/lib/derived';
+import { codeFor, huntStats, initials, pairFor, pairIndexFor, runs, status, teamSize, type Run } from '@/lib/derived';
+import { avatarSrc } from '@/lib/avatar';
 
 type Vars = CSSProperties & { '--a'?: string; '--b'?: string };
 const vars = (a: string, b: string): Vars => ({ '--a': a, '--b': b });
@@ -34,7 +35,7 @@ export function RoleCard({ S, r, idx, total, on, className, onClick }: { S: Stat
       <div className="inner">
         <div className="face front">
           <span className={"num" + (idx + 1 >= 10 ? " wide" : "")}>#{idx + 1}</span>
-          <div className="art"><div className="team" style={{ fontSize: Math.min(7.8, teamSize(r.company)) + 'cqw' }}>{r.company}</div><span className="mono">{initials(p.name) || '?'}</span><span className="badge">{r.code || codeFor(r.title)}</span></div>
+          <div className="art"><div className="team" style={{ fontSize: Math.min(7.8, teamSize(r.company)) + 'cqw' }}>{r.company}</div>{p.avatar ? <span className="pic"><img src={avatarSrc(p.avatar, pairIndexFor(S, r.company))} alt="" /></span> : <span className="mono">{initials(p.name) || '?'}</span>}<span className="badge">{r.code || codeFor(r.title)}</span></div>
           <Who name={p.name} />
           <div className="role"><span className="ttl">{r.title}</span><span className="yrs"> · {yearOf(r.start)} – {yearOf(r.end)}</span></div>
         </div>
