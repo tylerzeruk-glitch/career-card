@@ -172,28 +172,33 @@ a.btn{text-decoration:none;display:inline-block}
 .empty-shelf .choices .btn.primary{border-color:var(--ink);background:var(--ink)}
 
 /* timeline */
-.tl{flex:1;min-height:240px;position:relative;background:var(--paper);border-radius:10px;overflow:hidden;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;border:1px solid var(--hair)}
+/* the timeline sits on the page itself, between two perforated lines like a resume row, in the site's label type */
+.tl{flex:1;min-height:240px;position:relative;background:transparent;border-radius:0;overflow:hidden;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;border:0;margin-top:6px}
+.tl::before,.tl::after{content:"";position:absolute;left:0;right:0;height:4px;background:var(--perf);z-index:1;pointer-events:none}
+.tl::before{top:0}.tl::after{bottom:0}
 .tl.drag{cursor:grabbing}
 .tl svg{display:block;width:100%;height:100%}
-.tl text{font-family:var(--sans);fill:var(--ink);pointer-events:none}
+.tl text{font-family:var(--cond);fill:var(--ink);pointer-events:none}
 .tl .month{font-family:var(--mono);font-size:11px;fill:var(--muted)}
-.tl .lbl{font-size:12px;fill:var(--ink)}
-.tl .lbl.ms{font-weight:600;font-size:12.5px}
-.tl .lbl2{font-size:10.5px;fill:var(--muted)}
+.tl .lbl{font:700 12px var(--cond);letter-spacing:.06em;text-transform:uppercase;fill:var(--ink)}
+.tl .lbl.ms{font-size:12.5px;letter-spacing:.08em}
+.tl .lbl2{font:600 10.5px var(--cond);letter-spacing:.08em;text-transform:uppercase;fill:var(--muted)}
 .tl .span-lbl{font:700 11px var(--cond);letter-spacing:.06em;text-transform:uppercase;fill:#fff}
 .tl .ev,.tl .sp{cursor:pointer}
 .tl .ev .hit{fill:transparent;stroke:none}
 .tl .ev.dim{opacity:.25}
 .tl .ev.hot .tick{stroke-width:3.5}
-.tl .today{stroke:var(--muted);stroke-dasharray:2 5;stroke-width:1.2}
-.tl .todaytxt{font-family:var(--mono);font-size:11px;fill:var(--muted)}
+.tl .today{stroke:var(--red);stroke-dasharray:2 5;stroke-width:1.4}
+.tl .todaytxt{font:700 11px var(--cond);letter-spacing:.14em;text-transform:uppercase;fill:var(--red)}
 .overlay{position:absolute;display:flex;align-items:center;gap:2px;z-index:2}
-.overlay.legend{left:14px;bottom:10px;gap:14px;font-size:11.5px;color:var(--muted)}
+.overlay.legend{left:14px;bottom:12px;gap:14px;font:700 10.5px var(--cond);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
 .legend span{display:inline-flex;align-items:center;gap:6px}
 .legend i{display:inline-block;width:2px;height:11px;border-radius:1px}
 .legend i.down{transform:translateY(3px)}
 .legend i.bar{width:14px;height:8px;border-radius:2px}
-.overlay.zoom{right:10px;bottom:8px;background:var(--paper);border-radius:8px;padding:2px}
+.overlay.zoom{right:10px;bottom:8px;background:var(--paper);border:1px solid var(--hair);border-radius:8px;padding:2px}
+.overlay.zoom .btn{font:700 11px var(--cond);letter-spacing:.1em;text-transform:uppercase}
+.overlay.zoom .btn.icon{font:400 16px var(--sans)}
 .overlay.flash{left:50%;top:12px;transform:translateX(-50%);font-size:12px;color:var(--ok-ink);background:var(--ok-bg);padding:6px 12px;border-radius:999px;max-width:80%;z-index:5}
 .overlay.note{right:14px;top:12px;font-size:12px;color:var(--info-ink);background:var(--info-bg);padding:4px 6px 4px 10px;border-radius:999px;gap:6px}
 .overlay.note .btn{color:inherit;padding:2px 6px;font-size:12px}

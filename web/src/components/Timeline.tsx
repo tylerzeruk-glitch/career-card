@@ -8,7 +8,15 @@ import { TYPES, norm, pairFor, roles, sortedEvents, status, statusOf } from '@/l
 
 const PAD = 28;
 const esc = (s: unknown) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
-const textW = (s: string, size: number) => s.length * size * 0.58 + 6;
+/** Label widths, measured in the label's real face (uppercase condensed, tracked) so labels never collide; a rough guess on the server. */
+let ctx: CanvasRenderingContext2D | null | undefined;
+const COND = '"Barlow Condensed","Arial Narrow",sans-serif';
+const textW = (s: string, size: number, weight = 700, track = 0.06) => {
+  if (ctx === undefined) ctx = typeof document !== 'undefined' ? document.createElement('canvas').getContext('2d') : null;
+  if (!ctx) return s.length * size * 0.58 + 6;
+  ctx.font = `${weight} ${size}px ${COND}`;
+  return ctx.measureText(s.toUpperCase()).width + Math.max(0, s.length - 1) * size * track + 6;
+};
 
 type View = { start: number; ppd: number; init: boolean };
 
@@ -45,6 +53,8 @@ export function Timeline({ active }: { active: boolean }) {
   };
   const fitRange = (d0: number, d1: number) => { const v = view.current, len = Math.max(7, d1 - d0); v.ppd = Math.min(90, innerW() / (len * 1.14)); v.start = d0 - len * 0.04; clampView(); };
   const fitCareer = () => { const r = dataRange(stateRef.current); fitRange(r.d0, r.d1); };
+  /** The opening view: the last four months, today three quarters of the way across, so the hunt is what you see first. */
+  const fitRecent = () => { const v = view.current, t = dayNum(todayISO()), days = 120; v.ppd = Math.min(90, Math.max(minPpd(), innerW() / days)); v.start = t - days * 0.76; clampView(); };
   const zoomFreeAgency = () => { const st = status(stateRef.current), t = dayNum(todayISO()); if (st.free && st.since) fitRange(dayNum(st.since) - 3, t + 3); else fitRange(t - 90, t + 7); schedule(); };
   const centerOn = (day: number) => { const v = view.current; v.start = day - innerW() / v.ppd / 2; clampView(); };
   const zoomAt = (f: number, px: number) => { const v = view.current; const day = v.start + (px - PAD) / v.ppd; v.ppd = Math.min(90, Math.max(minPpd(), v.ppd * f)); v.start = day - (px - PAD) / v.ppd; clampView(); };
@@ -59,7 +69,9 @@ export function Timeline({ active }: { active: boolean }) {
     clampView();
     const v = view.current, W = el.clientWidth, H = el.clientHeight, X = (day: number) => PAD + (day - v.start) * v.ppd;
     const today = todayISO(), td = dayNum(today);
-    const baseY = Math.round(H * 0.62), TIER = 32, BASE_UP = 44, BASE_DN = 38, upTiers = 2, dnTiers = 2;
+    // label tiers grow with the height: two at the minimum height, up to four on a tall view
+    const baseY = Math.round(H * 0.62), TIER = 32, BASE_UP = 44, BASE_DN = 38;
+    const upTiers = Math.max(2, Math.min(4, Math.floor((baseY - 70 - BASE_UP) / TIER))), dnTiers = Math.max(2, Math.min(4, Math.floor((H - baseY - 60 - BASE_DN) / TIER)));
     const visLo = v.start - 60 / v.ppd, visHi = v.start + (W - PAD) / v.ppd + 60 / v.ppd;
     const parts: string[] = ['<defs><pattern id="hatch" patternUnits="userSpaceOnUse" width="8" height="8" patternTransform="rotate(135)"><rect width="3" height="8" fill="rgba(220,68,50,.18)"/></pattern></defs>'];
     // axis
@@ -75,9 +87,9 @@ export function Timeline({ active }: { active: boolean }) {
     }
     // free agency zone
     const s = status(st);
-    if (s.free && s.since) { const x0 = X(dayNum(s.since)), x1 = X(td); parts.push(`<rect x="${x0}" y="14" width="${Math.max(0, x1 - x0)}" height="${H - 28}" fill="url(#hatch)"/><line x1="${x0}" x2="${x0}" y1="14" y2="${H - 14}" stroke="var(--red)" stroke-width="1.2" stroke-dasharray="3 4"/>`); if (x1 - x0 > 70) parts.push(`<text class="lbl2" x="${x0 + 6}" y="28" style="fill:var(--red);font-weight:600;letter-spacing:.08em;text-transform:uppercase">Free agency</text>`); }
+    if (s.free && s.since) { const x0 = X(dayNum(s.since)), x1 = X(td); parts.push(`<rect x="${x0}" y="14" width="${Math.max(0, x1 - x0)}" height="${H - 28}" fill="url(#hatch)"/><line x1="${x0}" x2="${x0}" y1="14" y2="${H - 14}" stroke="var(--red)" stroke-width="1.2" stroke-dasharray="3 4"/>`); if (x1 - x0 > 70) parts.push(`<text class="lbl2" x="${x0 + 6}" y="26" style="fill:var(--red);font-weight:700;letter-spacing:.14em;text-transform:uppercase">Free agency</text>`); }
     parts.push(`<line x1="0" x2="${W}" y1="${baseY}" y2="${baseY}" stroke="var(--line)" stroke-width="1.5"/>`);
-    if (td >= visLo && td <= visHi) { const tx = X(td); parts.push(`<line class="today" x1="${tx}" x2="${tx}" y1="40" y2="${H - 36}"/><text class="todaytxt" x="${tx}" y="${H - 42}" text-anchor="middle">Today</text>`); }
+    if (td >= visLo && td <= visHi) { const tx = X(td); parts.push(`<line class="today" x1="${tx}" x2="${tx}" y1="34" y2="${H - 30}"/><text class="todaytxt" x="${tx}" y="26" text-anchor="middle">Today</text>`); }
     // spans in lanes
     const lanes: number[] = []; const spans: { role: State['roles'][0]; a: number; b: number; lane: number }[] = [];
     rs.forEach((role) => { const a = dayNum(role.start + '-01'), b = role.end ? monthEndDay(role.end) : td; let lane = 0; while (lanes[lane] != null && lanes[lane] > a) lane++; lanes[lane] = b; spans.push({ role, a, b, lane }); });
@@ -97,7 +109,7 @@ export function Timeline({ active }: { active: boolean }) {
     placed.forEach((p) => {
       const e = p.e, t = TYPES[e.type] || TYPES.milestone, up = t.dir > 0, isMs = e.type === 'layoff' || e.type === 'milestone';
       const l1 = isMs ? e.title || t.label : e.company || e.title || t.label; const l2 = isMs ? '' : e.type === 'application' ? e.title || '' : t.label;
-      const w = Math.max(textW(l1, isMs ? 12.5 : 12), l2 ? textW(l2, 10.5) : 0); const tiers = up ? occ.up : occ.dn; let tier = -1;
+      const w = Math.max(textW(l1, isMs ? 12.5 : 12, 700, isMs ? 0.08 : 0.06), l2 ? textW(l2, 10.5, 600, 0.08) : 0); const tiers = up ? occ.up : occ.dn; let tier = -1;
       for (let i = 0; i < tiers.length; i++) if (tiers[i] < p.x - w / 2 - 8) { tier = i; break; }
       const showLabel = tier >= 0 && v.ppd > 0.6; if (tier < 0) tier = 0; else tiers[tier] = p.x + w / 2;
       const len = (up ? BASE_UP : BASE_DN) + tier * TIER + (e.type === 'layoff' ? TIER * 0.4 : 0); const yEnd = up ? baseY - len : baseY + len; const col = `var(${t.color})`;
@@ -135,7 +147,7 @@ export function Timeline({ active }: { active: boolean }) {
 
   // ----- wiring -----
   useEffect(() => { timeline.current = { fitCareer: () => { fitCareer(); schedule(); }, zoomFreeAgency }; return () => { timeline.current = null; }; }); // eslint-disable-line react-hooks/exhaustive-deps
-  useEffect(() => { if (active) { if (!view.current.init) { fitCareer(); view.current.init = true; } schedule(); } }); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { if (active) { if (!view.current.init) { fitRecent(); view.current.init = true; } schedule(); } }); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
     const el = host.current; if (!el) return;
     const pts = new Map<number, { x: number; y: number }>(); let lastX = 0, pinchDist = 0, pinchMid = 0;
@@ -170,8 +182,9 @@ export function Timeline({ active }: { active: boolean }) {
           <span><i className="down" style={{ background: 'var(--c-den)' }} />Denial</span>
         </div>
         <div className="overlay zoom">
-          <button className="btn sm" onClick={() => { fitCareer(); schedule(); }}>Career</button>
+          <button className="btn sm" onClick={() => { fitRecent(); schedule(); }}>Recent</button>
           <button className="btn sm" onClick={zoomFreeAgency}>Free agency</button>
+          <button className="btn sm" onClick={() => { fitCareer(); schedule(); }}>Career</button>
           <button className="btn icon" title="Zoom out" onClick={() => { zoomAt(1 / 1.4, (host.current?.clientWidth || 800) / 2); schedule(); }}>−</button>
           <button className="btn icon" title="Zoom in" onClick={() => { zoomAt(1.4, (host.current?.clientWidth || 800) / 2); schedule(); }}>+</button>
           <button className="btn sm" onClick={() => { centerOn(dayNum(todayISO())); schedule(); }}>Today</button>

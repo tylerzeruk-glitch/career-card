@@ -28,6 +28,7 @@ const html = `<!doctype html>
 <link rel="icon" href="${icon}">
 <link rel="stylesheet" href="${fonts}">
 <style>
+#root{height:100%}
 ${css}
 </style>
 </head>
