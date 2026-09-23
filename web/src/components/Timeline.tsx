@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useRef } from 'react';
 import { useCard } from './store';
-import { useUI } from './ui';
+import { useUI, type TimelineApi } from './ui';
 import type { Ev, State } from '@/lib/types';
 import { MONTHS, dayNum, dur, fmt, fmtMonth, fmtShort, monthEndDay, monthsBetween, todayISO } from '@/lib/dates';
 import { TYPES, norm, pairFor, roles, sortedEvents, status, statusOf } from '@/lib/derived';
@@ -20,13 +20,22 @@ const textW = (s: string, size: number, weight = 700, track = 0.06) => {
 
 type View = { start: number; ppd: number; init: boolean };
 
-/**
- * The pan/zoom timeline. The SVG is built as markup (it is a drawing, not a
- * form) and events are delegated from the container.
- */
+/** The app's timeline: wired to the document, the drawer and the focus view. */
 export function Timeline({ active }: { active: boolean }) {
   const { S } = useCard();
   const { openDrawer, openFocus, timeline, selectedId, setSelectedId } = useUI();
+  return <TimelineView S={S} active={active} api={timeline} selectedId={selectedId} onEvent={(id) => { setSelectedId(id); openDrawer('event', { eventId: id }); }} onSpan={openFocus} />;
+}
+
+type Api = { current: TimelineApi | null };
+
+/**
+ * The pan/zoom timeline. The SVG is built as markup (it is a drawing, not a
+ * form) and events are delegated from the container. `onEvent` / `onSpan`
+ * take a click on an event or a role span; without them the timeline is a
+ * read-only exhibit (the landing page).
+ */
+export function TimelineView({ S, active, api, selectedId = null, onEvent, onSpan }: { S: State; active: boolean; api?: Api; selectedId?: string | null; onEvent?: (id: string) => void; onSpan?: (id: string) => void }) {
   const host = useRef<HTMLDivElement>(null);
   const tip = useRef<HTMLDivElement>(null);
   const view = useRef<View>({ start: 0, ppd: 8, init: false });
@@ -146,7 +155,7 @@ export function Timeline({ active }: { active: boolean }) {
   };
 
   // ----- wiring -----
-  useEffect(() => { timeline.current = { fitCareer: () => { fitCareer(); schedule(); }, zoomFreeAgency }; return () => { timeline.current = null; }; }); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { if (!api) return; api.current = { fitCareer: () => { fitCareer(); schedule(); }, zoomFreeAgency }; return () => { api.current = null; }; }); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => { if (active) { if (!view.current.init) { fitRecent(); view.current.init = true; } schedule(); } }); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
     const el = host.current; if (!el) return;
@@ -162,7 +171,7 @@ export function Timeline({ active }: { active: boolean }) {
     const onWheel = (e: WheelEvent) => { const r = el.getBoundingClientRect(); if (e.ctrlKey || e.metaKey) { e.preventDefault(); zoomAt(Math.exp(-e.deltaY * 0.01), e.clientX - r.left); schedule(); return; } const dx = e.deltaX || (e.shiftKey ? e.deltaY : 0); if (dx) { e.preventDefault(); view.current.start += dx / view.current.ppd; schedule(); } };
     const onDbl = (e: MouseEvent) => { const r = el.getBoundingClientRect(); zoomAt(1.6, e.clientX - r.left); schedule(); };
     const onKey = (e: KeyboardEvent) => { if (e.target !== el) return; if (e.key === 'ArrowLeft') { view.current.start -= 40 / view.current.ppd; schedule(); } if (e.key === 'ArrowRight') { view.current.start += 40 / view.current.ppd; schedule(); } if (e.key === '+' || e.key === '=') { zoomAt(1.4, el.clientWidth / 2); schedule(); } if (e.key === '-') { zoomAt(1 / 1.4, el.clientWidth / 2); schedule(); } };
-    const onClick = (e: MouseEvent) => { if (drag.current.moved) return; const g = (e.target as HTMLElement).closest<HTMLElement>('.ev,.sp'); if (!g) return; hideTip(); if (g.classList.contains('ev')) { setSelectedId(g.dataset.id!); openDrawer('event', { eventId: g.dataset.id! }); } else openFocus(g.dataset.id!); };
+    const onClick = (e: MouseEvent) => { if (drag.current.moved) return; const g = (e.target as HTMLElement).closest<HTMLElement>('.ev,.sp'); if (!g) return; if (g.classList.contains('ev')) { if (onEvent) { hideTip(); onEvent(g.dataset.id!); } } else if (onSpan) { hideTip(); onSpan(g.dataset.id!); } };
     const onLeave = () => hideTip();
     el.addEventListener('pointerdown', onDown); el.addEventListener('pointermove', onMove); el.addEventListener('pointerup', onUp); el.addEventListener('pointercancel', onUp);
     el.addEventListener('wheel', onWheel, { passive: false }); el.addEventListener('dblclick', onDbl); el.addEventListener('keydown', onKey); el.addEventListener('click', onClick); el.addEventListener('pointerleave', onLeave);

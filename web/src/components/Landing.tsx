@@ -4,6 +4,7 @@ import type { State } from '@/lib/types';
 import { sampleState } from '@/lib/sample';
 import { FreeCard, RoleCard } from './Cards';
 import { ThemeToggle } from './ThemeToggle';
+import { TimelineView } from './Timeline';
 
 /** The red pennant, same path as the favicon. */
 export function Flag({ size = 22 }: { size?: number }) {
@@ -103,6 +104,17 @@ export function Landing({ tryHref = '/app?example', signInHref = '/login', onTry
         <div className="glossary">
           {GLOSSARY.map(([k, v]) => <div key={k}><b>{k}</b><span>{v}</span></div>)}
         </div>
+      </section>
+
+      <section className="peek">
+        <div className="peek-head">
+          <div>
+            <div className="eyebrow">The timeline</div>
+            <h2>The job hunt, on one line.</h2>
+          </div>
+          <p>Every application, interview, offer and denial in order, with the days counted since the last day of the last season. Drag to pan, pinch or scroll to zoom, hover for the details. This is George&apos;s hunt; yours is only ever visible to you.</p>
+        </div>
+        <TimelineView S={S} active />
       </section>
 
       <SiteFoot signInHref={signInHref} />
