@@ -193,6 +193,26 @@ dialog. Duplicates (same date, type, company and title) are skipped on save.
   photo (the canvas's step 01), and a way to nudge a take (hat on, no
   glasses) before dealing again.
 
+## Sign-in email
+
+Supabase Auth sends the magic-link email from its own templates, so the
+site's look lives in `supabase/templates/`: `magic-link.html` (a returning
+player) and `confirm-signup.html` (a first sign-in, which Supabase sends
+from the Confirm signup template instead). Both are table-based email
+HTML: the wordmark as an image served from the site
+(`public/email/wordmark.png`, made from the Flag and the Lilita One
+wordmark at 2x), the site's colours, a real button on the confirmation
+link and the plain link under it. Email clients do not load web fonts, so
+the type falls back to Arial Narrow and Georgia where the site has Barlow
+Condensed and Libre Caslon.
+
+To install them: Supabase dashboard → Authentication → Email Templates.
+Under **Magic Link** set the subject to `Your CareerCards sign-in link`
+and paste `magic-link.html` as the body; under **Confirm signup** set the
+subject to `Welcome to CareerCards: confirm your email` and paste
+`confirm-signup.html`. Keep the `{{ .ConfirmationURL }}` placeholders as
+they are. The wordmark image must be deployed before the first send.
+
 ## Share card
 
 Links to the site unfurl with `public/og.png` (Open Graph and Twitter tags in `src/app/layout.tsx`). The picture is a screenshot of the hidden `/share-card` route, which renders the hero at 1200 x 630. To regenerate it after a design change:
