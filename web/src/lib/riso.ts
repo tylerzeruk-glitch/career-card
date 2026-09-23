@@ -126,15 +126,39 @@ function squareAndFill(r: Raw): { canvas: Raw; shirt: RGB } {
   }
   const src = ch[0].length > 50 ? ch : low;
   const shirt: RGB = [median(src[0]), median(src[1]), median(src[2])];
-  // under the arc: per column from the lowest opaque pixel; outside the bust from the arc's ends
+  // Any gap under or beside the bust is filled by continuing the shirt's own print: rows are mirrored upward
+  // under the arc, columns mirrored inward beside the shoulders, sampled a little inside the edge so the
+  // drawing's own outline is painted over rather than left standing as a line. A flat colour only when the
+  // bust is too small to sample.
+  const INSET = Math.max(10, Math.round(side * 0.04)), STRIP = Math.max(16, Math.round(side * 0.1)); // sample well inside the edge, in wide strips, so the outline and its highlights stay out of the fill
+  const px = (x: number, y: number) => (y * side + x) * 4;
+  const copy = (to: number, from: number) => { c[to] = c[from]; c[to + 1] = c[from + 1]; c[to + 2] = c[from + 2]; c[to + 3] = 255; };
+  const flat = (i: number) => { c[i] = shirt[0]; c[i + 1] = shirt[1]; c[i + 2] = shirt[2]; c[i + 3] = 255; };
   const lowest = (x: number) => { for (let y = side - 1; y >= 0; y--) if (A(x, y) > 0) return y; return -1; };
+  const highest = (x: number) => { for (let y = 0; y < side; y++) if (A(x, y) > 0) return y; return -1; };
   let x0 = -1, x1 = -1; for (let x = 0; x < side; x++) if (lowest(x) >= 0) { if (x0 < 0) x0 = x; x1 = x; }
-  // the shoulders run out to both edges: outside the bust the fill starts at the height of the arc's ends
+  // under the arc, per column
+  for (let x = x0; x <= x1; x++) {
+    const lo = lowest(x), from = Math.max(lo - INSET / 2, 0), srcEnd = lo - INSET, span = srcEnd - highest(x) - INSET;
+    for (let y = from; y < side; y++) {
+      if (span < 4) flat(px(x, y));
+      else copy(px(x, y), px(x, srcEnd - 1 - ((y - from) % span)));
+    }
+  }
+  // beside the shoulders: from the arc's ends down, continuing each shoulder's slope out to the frame rather than cutting straight across
   const edge = Math.min(lowest(x0), lowest(x1));
-  for (let x = 0; x < side; x++) {
-    const inside = x >= x0 && x <= x1;
-    const from = inside ? Math.max(lowest(x) - 5, 0) : edge; // a few px up, over the arc's own outline
-    for (let y = from; y < side; y++) { const i = (y * side + x) * 4; c[i] = shirt[0]; c[i + 1] = shirt[1]; c[i + 2] = shirt[2]; c[i + 3] = 255; }
+  const bound = (y: number) => { let xl = -1, xr = -1; for (let x = 0; x < side; x++) if (A(x, y) > 0) { if (xl < 0) xl = x; xr = x; } return [xl, xr]; };
+  const K = Math.max(8, Math.round(side * 0.08)), [la, ra] = bound(Math.max(0, edge - K));
+  const slopeL = la < 0 ? 0 : Math.min(0, (x0 - la) / K), slopeR = ra < 0 ? 0 : Math.max(0, (x1 - ra) / K); // px per row, outward
+  for (let y = edge; y < side; y++) {
+    const [xl, xr] = bound(y);
+    if (xl < 0) { for (let x = 0; x < side; x++) flat(px(x, y)); continue; }
+    const lb = Math.max(0, Math.floor(x0 + slopeL * (y - edge))), rb = Math.min(side - 1, Math.ceil(x1 + slopeR * (y - edge))); // the shoulder line, carried on
+    const width = xr - xl + 1, strip = Math.min(STRIP, Math.floor((width - 2 * INSET) / 2));
+    if (strip < 4) { for (let x = lb; x < xl; x++) flat(px(x, y)); for (let x = xr + 1; x <= rb; x++) flat(px(x, y)); continue; }
+    const ls = xl + INSET, rs = xr - INSET; // where the sampled strips start, inward
+    for (let x = lb; x < ls; x++) copy(px(x, y), px(ls + ((ls - 1 - x) % strip), y));
+    for (let x = rs + 1; x <= rb; x++) copy(px(x, y), px(rs - ((x - rs - 1) % strip), y));
   }
   return { canvas: { data: c, w: side, h: side }, shirt };
 }
