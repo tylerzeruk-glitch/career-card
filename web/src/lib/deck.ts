@@ -5,7 +5,7 @@ const GAP = 22, MIN_STRIP = 48;
  * fit, never hiding more than leaves a 48px strip of each; fall back to
  * swiping when even that is not enough. Sets --ml on the shelf, and on
  * `host` the variables that line the group toggle and the resume rows up
- * with the deck (--deck-ml, --fold-ml, --fold-w).
+ * with the deck's left edge and width (--deck-ml, --fold-ml, --fold-w).
  */
 export function layoutDeck(el: HTMLElement, host: HTMLElement | null, opts: { ghost?: boolean } = {}) {
   const kids = [...el.children] as HTMLElement[];
@@ -22,10 +22,11 @@ export function layoutDeck(el: HTMLElement, host: HTMLElement | null, opts: { gh
   const scroll = need > 0 && need / (n - 1) > cw - MIN_STRIP;
   el.style.setProperty('--ml', -ov + 'px'); el.classList.toggle('scroll', scroll);
   requestAnimationFrame(() => {
-    const first = items[0], last = items[n - 1];
-    const left = first.offsetLeft, right = last.offsetLeft + last.offsetWidth;
-    if (scroll) { clear(); return; }
-    const dw = right - left, w = Math.min(dw, Math.max(560, Math.round(dw * 0.84)));
-    setVars({ '--deck-ml': left + 'px', '--fold-ml': Math.round(left + (dw - w) / 2) + 'px', '--fold-w': w + 'px' });
+    if (scroll || !host) { clear(); return; }
+    // measured against the host's content box, which is what the rows' margin-left is relative to
+    const first = items[0].getBoundingClientRect(), last = items[n - 1].getBoundingClientRect(), hr = host.getBoundingClientRect();
+    const left = Math.round(first.left - hr.left - (parseFloat(getComputedStyle(host).paddingLeft) || 0)), dw = Math.round(last.right - first.left);
+    // the resume rows sit under the deck, flush with its left edge and as wide as it is
+    setVars({ '--deck-ml': left + 'px', '--fold-ml': left + 'px', '--fold-w': dw + 'px' });
   });
 }

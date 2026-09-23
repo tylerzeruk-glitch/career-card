@@ -5,7 +5,7 @@ import { careerStats, roles, skillTally, status } from '@/lib/derived';
 import { layoutDeck } from '@/lib/deck';
 import { FreeCard, RoleCard } from './Cards';
 import { ThemeToggle } from './ThemeToggle';
-import { Flag } from './Landing';
+import { Flag, SiteFoot } from './Landing';
 
 /** The shareable page: cards you can flip, then the resume rows. Read-only, no job hunt. */
 export function PublicCard({ S }: { S: State }) {
@@ -21,7 +21,14 @@ export function PublicCard({ S }: { S: State }) {
 
   return (
     <div className="pub" ref={host}>
-      <header className="mast">
+      <header className="lbar">
+        <a className="wordmark" href="/"><Flag /><span>CareerCards</span></a>
+        <nav>
+          <ThemeToggle />
+          <a className="btn primary" href="/">Make your own deck</a>
+        </nav>
+      </header>
+      <div className="brand mast">
         <div>
           <div className="namerow">
             <h1>{p.name || 'Career'}</h1>
@@ -30,21 +37,22 @@ export function PublicCard({ S }: { S: State }) {
           <div className="sub">{[p.headline, p.location].filter(Boolean).join(' · ')}</div>
           {cs && <div className="line">{([[cs.seasons, 'season'], [cs.teams, 'team'], [cs.positions, 'position']] as [number, string][]).map(stat)}</div>}
         </div>
-        <ThemeToggle />
-      </header>
-      <div className="k">Career</div>
+      </div>
       <div className="shelf" ref={shelf}>
         {rs.map((r, i) => <div key={r.id} className="slot"><RoleCard S={S} r={r} idx={i} total={rs.length} on={!!flipped[r.id]} onClick={() => flip(r.id)} /></div>)}
         {st.free && <div className="slot"><FreeCard S={S} share on={!!flipped.free} onClick={() => flip('free')} /></div>}
       </div>
-      <div className="hint">Hover to lift a card; click to flip it.</div>
+      <div className={'flipme' + (Object.values(flipped).some(Boolean) ? ' off' : '')} aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12a9 9 0 0 1 15.5-6.3" /><path d="M18.5 2v4h-4" /><path d="M21 12a9 9 0 0 1-15.5 6.3" /><path d="M5.5 22v-4h4" /></svg>
+        Tap a card to flip it over
+      </div>
       <div className="fold">
         {(p.summary || skills.length > 0) && <section className="row"><h2>Scouting report</h2><div className="body">{p.summary && <p>{p.summary}</p>}{skills.length > 0 && <div className="tiles">{skills.map(([k]) => <span key={k}>{k}</span>)}</div>}</div></section>}
         {p.education.length > 0 && <section className="row"><h2>Farm system</h2><div className="body"><ul className="list">{p.education.map((e, i) => <li key={i}><span>{e.school}{e.degree ? ' · ' + e.degree : ''}</span><span className="m">{e.years}</span></li>)}</ul></div></section>}
         {p.certs.length > 0 && <section className="row"><h2>Award inserts</h2><div className="body"><ul className="list">{p.certs.map((c, i) => <li key={i}><span>{c.name}{c.issuer ? ' · ' + c.issuer : ''}</span><span className="m">{c.year}</span></li>)}</ul></div></section>}
         {(p.email || p.linkedin) && <section className="row"><h2>Contact</h2><div className="body"><ul className="list inline">{p.email && <li><a href={'mailto:' + p.email}>{p.email}</a></li>}{p.linkedin && <li><a href={p.linkedin} target="_blank" rel="noopener">LinkedIn</a></li>}</ul></div></section>}
       </div>
-      <div className="foot">Made with <a href="/">CareerCards</a>.</div>
+      <SiteFoot signInHref="/login" />
     </div>
   );
 }

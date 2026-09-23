@@ -378,13 +378,11 @@ kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--hair);border-r
 .login .back:hover{color:var(--ink)}
 
 /* public page */
-.pub{max-width:1160px;margin:0 auto;padding:36px var(--gut) 72px}
-.pub .mast{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;border-bottom:2px solid var(--line);padding-bottom:12px}
-.pub .mast h1{font:700 36px/1 var(--cond);letter-spacing:.03em;text-transform:uppercase}
-.pub .k{font:700 11px/1 var(--cond);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-top:18px}
-.pub .hint{font-size:12px;color:var(--muted);margin:0 6px 4px}
-.pub .foot{margin-top:28px;font-size:12px;color:var(--muted)}
-.pub .foot a{color:inherit}
+/* the public page: the landing page's header bar, the app's masthead, the deck, the fold, the site footer */
+.pub{max-width:1160px;margin:0 auto;padding:0 var(--gut) 40px}
+.pub .mast{margin-top:30px}
+.pub .flipme{display:flex;justify-content:center;margin:-22px 0 6px}
+.pub .lfoot{margin-top:44px}
 .menu .pop a.btn{text-decoration:none;color:var(--ink-2)}
 .menu .pop a.btn:hover{color:var(--ink)}
 
@@ -397,9 +395,9 @@ kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--hair);border-r
 .lbar nav{display:flex;gap:8px;align-items:center}
 .wordmark{display:inline-flex;align-items:center;gap:8px;text-decoration:none;font:400 22px/1 var(--riso);letter-spacing:.02em;color:var(--ink)}
 .wordmark .flag{color:var(--red);margin-top:-3px}
-.landing .btn{border:1px solid transparent;font-size:13.5px}
-.landing .btn:not(.primary){border-color:var(--hair);background:var(--paper)}
-.landing .btn:not(.primary):hover{border-color:var(--ink)}
+.landing .btn,.pub .btn{border:1px solid transparent;font-size:13.5px}
+.landing .btn:not(.primary),.pub .btn:not(.primary){border-color:var(--hair);background:var(--paper)}
+.landing .btn:not(.primary):hover,.pub .btn:not(.primary):hover{border-color:var(--ink)}
 .landing .btn.lg{padding:11px 18px;font-size:14.5px;border-radius:8px}
 /* the hand's column is exactly as wide as the hand (plus room for the tilted outer cards), so it never crosses into the copy */
 .hero{display:grid;grid-template-columns:minmax(0,1fr) max-content;gap:32px;align-items:center;padding-top:16px}
