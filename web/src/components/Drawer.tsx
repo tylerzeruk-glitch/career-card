@@ -341,6 +341,11 @@ function ProfileForm() {
   const p = S.profile;
   const [targets, setTargets] = useState<string[]>(p.targets || []);
   const onMarket = looking(S);
+  // the form saves on Save profile; once anything in it changes the footer floats at the bottom of the flyout as a nudge
+  const [dirty, setDirty] = useState(false);
+  const mark = (e?: { target: EventTarget | null }) => { if (!(e?.target instanceof Element && e.target.closest('.fabox'))) setDirty(true); }; // the free-agency box saves as it goes
+  // target roles live in the free-agency box, which saves as it goes, like its switch
+  const setTargetsNow = (v: string[]) => { setTargets(v); update((s) => ({ ...s, profile: { ...s.profile, targets: v } })); };
   const [pskills, setPskills] = useState<string[]>(p.skills || []);
   const [edu, setEdu] = useState<EduRow[]>(() => (p.education || []).map((e) => { const ys = e.years.match(/\d{4}/g) || []; const ip = IN_PROGRESS.test(e.years) || /[–-]\s*$/.test(e.years); return { school: e.school, degree: e.degree, start: ys[0] || '', end: ip ? '' : ys[1] || '', inProgress: ip }; }));
   const [certs, setCerts] = useState<CertRow[]>(() => (p.certs || []).map((c) => ({ name: c.name, issuer: c.issuer, year: IN_PROGRESS.test(c.year) ? '' : c.year, inProgress: IN_PROGRESS.test(c.year) })));
@@ -356,7 +361,7 @@ function ProfileForm() {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
     update((s) => ({ ...s, profile: { ...s.profile, name: field(fd, 'name'), headline: field(fd, 'headline'), location: field(fd, 'location'), summary: field(fd, 'summary'), targets, skills: pskills, email: field(fd, 'email'), linkedin: field(fd, 'linkedin'), education: edu.map((r) => ({ school: r.school.trim(), degree: r.degree.trim(), years: r.inProgress ? (r.start.trim() ? r.start.trim() + '–present' : 'In progress') : [r.start.trim(), r.end.trim()].filter(Boolean).join('–') })).filter((r) => r.school), certs: certs.map((c) => ({ name: c.name.trim(), issuer: c.issuer.trim(), year: c.inProgress ? 'In progress' : c.year.trim() })).filter((c) => c.name) } }));
-    setMsg('Saved.'); flash('Saved.');
+    setDirty(false); setMsg('Saved.'); flash('Saved.');
   };
   const savePage = async () => {
     const s = slugify(slugIn); setSlugIn(s);
@@ -367,11 +372,11 @@ function ProfileForm() {
 
   return (
     <section>
-      <form className="form" autoComplete="off" onSubmit={submit}>
+      <form className="form" autoComplete="off" onSubmit={submit} onInput={mark}>
         <div className="group fabox"><div className="gh">Free agency</div>
         <label className="switch"><input type="checkbox" role="switch" checked={onMarket} onChange={(e) => { const v = e.target.checked; update((s) => ({ ...s, profile: { ...s.profile, looking: v ? undefined : false } })); flash(v ? 'Free agency is on.' : 'Free agency is off. Your pack is just your cards.'); }} /><span className="track" aria-hidden="true" /><span className="txt">I&apos;m looking for my next team</span></label>
         {onMarket
-          ? <div className="field"><label htmlFor="p-targets">Open to (target roles)</label><TagInput id="p-targets" value={targets} onChange={setTargets} placeholder="Type a role and press Enter" /></div>
+          ? <div className="field"><label htmlFor="p-targets">Open to (target roles)</label><TagInput id="p-targets" value={targets} onChange={setTargetsNow} placeholder="Type a role and press Enter" /></div>
           : <span className="help">Retired, settled, or just here for the pack: with this off there is no free-agent card, pill or day count anywhere, your public page included. The job-hunt log stays under the Log tab if you ever need it.</span>}
         </div>
         <div className="group"><div className="gh">Player</div>
@@ -384,7 +389,7 @@ function ProfileForm() {
         </div>
         <div className="group"><div className="gh">Scouting report</div>
         <div className="field"><label htmlFor="p-summary">Summary</label><textarea id="p-summary" name="summary" style={{ minHeight: 80 }} defaultValue={p.summary} /></div>
-        <div className="field"><label htmlFor="p-skills">Skills</label><TagInput id="p-skills" value={pskills} onChange={setPskills} placeholder="Type a skill and press Enter" /><span className="help">Leave empty to show the skills gathered from your roles.</span></div>
+        <div className="field"><label htmlFor="p-skills">Skills</label><TagInput id="p-skills" value={pskills} onChange={(v) => { setPskills(v); mark(); }} placeholder="Type a skill and press Enter" /><span className="help">Leave empty to show the skills gathered from your roles.</span></div>
         </div>
         <div className="group"><div className="gh">Farm system</div>
           <div className="rows">
@@ -395,12 +400,12 @@ function ProfileForm() {
                   <input aria-label="Degree" placeholder="Degree" value={r.degree} onChange={(e) => setEduAt(i, 'degree', e.target.value)} />
                   <input aria-label="Start year" placeholder="Start" inputMode="numeric" maxLength={4} value={r.start} onChange={(e) => setEduAt(i, 'start', e.target.value)} />
                   <input aria-label="End year" placeholder={r.inProgress ? '—' : 'End'} inputMode="numeric" maxLength={4} value={r.inProgress ? '' : r.end} disabled={r.inProgress} onChange={(e) => setEduAt(i, 'end', e.target.value)} />
-                  <button type="button" className="btn icon" title="Remove" aria-label="Remove this education" onClick={() => setEdu(edu.filter((_, j) => j !== i))}>×</button>
+                  <button type="button" className="btn icon" title="Remove" aria-label="Remove this education" onClick={() => { setEdu(edu.filter((_, j) => j !== i)); mark(); }}>×</button>
                 </div>
                 <label className="inprog"><input type="checkbox" checked={r.inProgress} onChange={(e) => setEduAt(i, 'inProgress', e.target.checked)} /> In progress</label>
               </div>
             ))}
-            <button type="button" className="btn sm add" onClick={() => setEdu([...edu, { school: '', degree: '', start: '', end: '', inProgress: false }])}>+ Add education</button>
+            <button type="button" className="btn sm add" onClick={() => { setEdu([...edu, { school: '', degree: '', start: '', end: '', inProgress: false }]); mark(); }}>+ Add education</button>
           </div>
         </div>
         <div className="group"><div className="gh">Award inserts</div>
@@ -411,21 +416,21 @@ function ProfileForm() {
                   <input aria-label="Name" placeholder="Name" value={c.name} onChange={(e) => setCertAt(i, 'name', e.target.value)} />
                   <input aria-label="Issuer" placeholder="Issuer" value={c.issuer} onChange={(e) => setCertAt(i, 'issuer', e.target.value)} />
                   <input aria-label="Year" placeholder={c.inProgress ? '—' : 'Year'} inputMode="numeric" maxLength={4} value={c.inProgress ? '' : c.year} disabled={c.inProgress} onChange={(e) => setCertAt(i, 'year', e.target.value)} />
-                  <button type="button" className="btn icon" title="Remove" aria-label="Remove this certification" onClick={() => setCerts(certs.filter((_, j) => j !== i))}>×</button>
+                  <button type="button" className="btn icon" title="Remove" aria-label="Remove this certification" onClick={() => { setCerts(certs.filter((_, j) => j !== i)); mark(); }}>×</button>
                 </div>
                 <label className="inprog"><input type="checkbox" checked={c.inProgress} onChange={(e) => setCertAt(i, 'inProgress', e.target.checked)} /> In progress</label>
               </div>
             ))}
-            <button type="button" className="btn sm add" onClick={() => setCerts([...certs, { name: '', issuer: '', year: '', inProgress: false }])}>+ Add certification</button>
+            <button type="button" className="btn sm add" onClick={() => { setCerts([...certs, { name: '', issuer: '', year: '', inProgress: false }]); mark(); }}>+ Add certification</button>
           </div>
         </div>
         <div className="group"><div className="gh">Contact</div>
         <div className="row2">
           <div className="field"><label htmlFor="p-email">Email</label><input id="p-email" name="email" type="email" defaultValue={p.email} /></div>
-          <div className="field"><label htmlFor="p-linkedin">LinkedIn URL</label><input id="p-linkedin" name="linkedin" type="url" defaultValue={p.linkedin} /></div>
+          <div className="field"><label htmlFor="p-linkedin">LinkedIn URL</label><input id="p-linkedin" name="linkedin" type="url" placeholder="https://www.linkedin.com/in/you" defaultValue={p.linkedin === '#' ? '' : p.linkedin} /></div>
         </div>
         </div>
-        <div className="form-foot"><button className="btn primary" type="submit">Save profile</button><span className="spacer" /><span className="status">{msg}</span></div>
+        <div className={'form-foot' + (dirty ? ' floating' : '')}><button className="btn primary" type="submit">Save profile</button><span className="spacer" /><span className={'status' + (dirty ? ' unsaved' : '')}>{dirty ? 'Unsaved changes' : msg}</span></div>
       </form>
 
       <section className="pagebox">

@@ -325,6 +325,9 @@ body.drawer-open .scrim{opacity:1;pointer-events:auto}
 .form-foot{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:4px}
 .form-foot .spacer{flex:1}
 .form-foot .status{font-size:12px;color:var(--muted)}
+.form-foot .status.unsaved{color:var(--red);font-weight:600}
+/* once the profile form has changes, its footer sticks to the bottom of the flyout until they are saved */
+.form-foot.floating{position:sticky;bottom:0;z-index:3;background:var(--paper);margin:0 -18px -24px;padding:12px 18px 14px;border-top:1px solid var(--hair);box-shadow:0 -10px 24px rgba(0,0,0,.08)}
 
 .log-tools{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:8px}
 .log-tools input,.log-tools select{border:0;border-bottom:1px solid var(--hair);border-radius:0;padding:5px 0;background:transparent}

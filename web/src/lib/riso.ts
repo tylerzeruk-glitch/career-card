@@ -15,16 +15,18 @@ const EDGE_FULL = 72;   // distance at which an edge pixel counts as fully foreg
 const EDGE_NONE = 12;   // ... and below which it is background
 const EDGE_REACH = 2;   // how far in from the background the edge treatment goes, px
 const KEY_BAND = 10;    // border band the background colour is read from
-const TAKE_SIDE = 512;  // a stored take
-const SET_SIDE = 420;   // one card portrait, like the built-in ones
+const TAKE_SIDE = 1024; // a stored take keeps the model's full size
+const SET_SIDE = 600;   // one card portrait, crisp on a retina card in the focus view
 
 async function decode(png: Buffer): Promise<Raw> {
   const { data, info } = await sharp(png).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
   return { data: new Uint8Array(data.buffer, data.byteOffset, data.byteLength), w: info.width, h: info.height };
 }
+/** Never upscaled; a few inks and a flat shirt take a palette PNG well, at a fraction of the size. */
 function encode(r: Raw, side: number): Promise<Buffer> {
+  const out = Math.min(side, r.w);
   return sharp(Buffer.from(r.data.buffer, r.data.byteOffset, r.data.byteLength), { raw: { width: r.w, height: r.h, channels: 4 } })
-    .resize(side, side, { kernel: 'lanczos3', fit: 'fill' }).png({ compressionLevel: 9 }).toBuffer();
+    .resize(out, out, { kernel: 'lanczos3', fit: 'fill' }).png({ compressionLevel: 9, palette: true, quality: 90, dither: 0.2 }).toBuffer();
 }
 
 const median = (xs: number[]) => { const s = xs.slice().sort((a, b) => a - b); return s.length ? s[s.length >> 1] : 0; };
@@ -115,23 +117,22 @@ function squareAndFill(r: Raw): { canvas: Raw; shirt: RGB } {
   const c = new Uint8Array(side * side * 4);
   for (let y = 0; y < h; y++) c.set(data.subarray(y * w * 4, (y + 1) * w * 4), ((y + oy) * side + ox) * 4);
   const A = (x: number, y: number) => c[(y * side + x) * 4 + 3];
-  // the shirt colour: the median slate pixel in the lower third
-  const ch: number[][] = [[], [], []], all: number[][] = [[], [], []];
+  // the shirt colour: the median slate pixel in the lower third, else the median of the bust's lowest rows (whatever it wears)
+  const ch: number[][] = [[], [], []], low: number[][] = [[], [], []];
   for (let y = side - Math.floor(h / 3); y < side; y++) for (let x = 0; x < side; x++) {
     const i = (y * side + x) * 4; if (c[i + 3] <= 200) continue;
-    all[0].push(c[i]); all[1].push(c[i + 1]); all[2].push(c[i + 2]);
+    if (y >= side - Math.max(4, Math.floor(h * 0.06))) { low[0].push(c[i]); low[1].push(c[i + 1]); low[2].push(c[i + 2]); }
     if (isSlate(c[i], c[i + 1], c[i + 2])) { ch[0].push(c[i]); ch[1].push(c[i + 1]); ch[2].push(c[i + 2]); }
   }
-  const src = ch[0].length > 50 ? ch : all;
+  const src = ch[0].length > 50 ? ch : low;
   const shirt: RGB = [median(src[0]), median(src[1]), median(src[2])];
   // under the arc: per column from the lowest opaque pixel; outside the bust from the arc's ends
   const lowest = (x: number) => { for (let y = side - 1; y >= 0; y--) if (A(x, y) > 0) return y; return -1; };
   let x0 = -1, x1 = -1; for (let x = 0; x < side; x++) if (lowest(x) >= 0) { if (x0 < 0) x0 = x; x1 = x; }
-  // a bust that runs edge to edge (the example's George) is filled out to the sides too; one that ends short of them keeps the team colour there
-  const toEdges = x0 <= side * 0.03 && x1 >= side * 0.97, edge = Math.min(lowest(x0), lowest(x1));
+  // the shoulders run out to both edges: outside the bust the fill starts at the height of the arc's ends
+  const edge = Math.min(lowest(x0), lowest(x1));
   for (let x = 0; x < side; x++) {
     const inside = x >= x0 && x <= x1;
-    if (!inside && !toEdges) continue;
     const from = inside ? Math.max(lowest(x) - 5, 0) : edge; // a few px up, over the arc's own outline
     for (let y = from; y < side; y++) { const i = (y * side + x) * 4; c[i] = shirt[0]; c[i + 1] = shirt[1]; c[i + 2] = shirt[2]; c[i + 3] = 255; }
   }

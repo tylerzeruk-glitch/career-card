@@ -110,10 +110,11 @@ default `medium`; `input_fidelity: high` to hold the likeness, dropped
 if the model refuses it). The result is finished in `src/lib/riso.ts`,
 a port of the steps George went through: cream keyed out (the border's
 median colour, only where it touches the border, soft edge), the bust
-squared up bottom-anchored with everything under the arc filled with the
-shirt, stored as a 512px take under `<user id>/takes/`. "Use this one"
+squared up bottom-anchored with everything under the arc, and out to
+both edges, filled with the shirt), stored at the model's full size as a
+palette PNG under `<user id>/takes/`. "Use this one"
 (`POST /api/portrait/pick`) recolours the fabric to each of the ten team
-frame colours, stores `riso-0.png` … `riso-9.png` in the player's folder,
+frame colours, stores `riso-0.png` … `riso-9.png` (600px palette PNGs) in the player's folder,
 clears the takes and saves the avatar as that address with a `{pair}`
 slot, which `avatarSrc` fills per card. Twelve takes a day per player
 (`TAKES_PER_DAY`), counted from the takes folder. Needs `OPENAI_API_KEY`
