@@ -10,7 +10,10 @@ import { PAIRS } from './derived';
 type Raw = { data: Uint8Array; w: number; h: number };
 type RGB = [number, number, number];
 
-const CREAM_TOL = 28;   // distance from the border colour that still counts as background
+const CREAM_TOL = 40;   // distance from the border colour that still counts as background (the print's grain included)
+const EDGE_FULL = 72;   // distance at which an edge pixel counts as fully foreground
+const EDGE_NONE = 12;   // ... and below which it is background
+const EDGE_REACH = 2;   // how far in from the background the edge treatment goes, px
 const KEY_BAND = 10;    // border band the background colour is read from
 const TAKE_SIDE = 512;  // a stored take
 const SET_SIDE = 420;   // one card portrait, like the built-in ones
@@ -54,10 +57,10 @@ function keyOut(r: Raw): Raw {
     const take = (x: number, y: number) => { const i = (y * w + x) * 4; ch[0].push(data[i]); ch[1].push(data[i + 1]); ch[2].push(data[i + 2]); };
     for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if (y < KEY_BAND || y >= h - KEY_BAND || x < KEY_BAND || x >= w - KEY_BAND) take(x, y);
     const bg: RGB = [median(ch[0]), median(ch[1]), median(ch[2])];
-    const near = new Uint8Array(w * h);
+    const dist = new Float32Array(w * h), near = new Uint8Array(w * h);
     for (let p = 0, i = 0; p < w * h; p++, i += 4) {
       const dr = data[i] - bg[0], dg = data[i + 1] - bg[1], db = data[i + 2] - bg[2];
-      near[p] = Math.sqrt(dr * dr + dg * dg + db * db) <= CREAM_TOL ? 1 : 0;
+      dist[p] = Math.sqrt(dr * dr + dg * dg + db * db); near[p] = dist[p] <= CREAM_TOL ? 1 : 0;
     }
     // flood from the border through near-background pixels
     const isBg = new Uint8Array(w * h); const stack: number[] = [];
@@ -65,13 +68,37 @@ function keyOut(r: Raw): Raw {
     for (let x = 0; x < w; x++) { push(x); push((h - 1) * w + x); }
     for (let y = 0; y < h; y++) { push(y * w); push(y * w + w - 1); }
     while (stack.length) { const p = stack.pop()!; const x = p % w, y = (p - x) / w; if (x > 0) push(p - 1); if (x < w - 1) push(p + 1); if (y > 0) push(p - w); if (y < h - 1) push(p + w); }
-    const a = new Uint8Array(w * h); for (let p = 0; p < w * h; p++) a[p] = isBg[p] ? 0 : 255;
-    // a 3x3 blur on the alpha for a soft edge
-    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
-      let s = 0, n = 0;
-      for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { const xx = x + dx, yy = y + dy; if (xx >= 0 && yy >= 0 && xx < w && yy < h) { s += a[yy * w + xx]; n++; } }
-      data[(y * w + x) * 4 + 3] = Math.round(s / n);
+    // the edge: pixels a step or two in from the background are part cream; give them that much transparency and take the cream out of their colour
+    let ring = isBg;
+    for (let k = 0; k < EDGE_REACH; k++) {
+      const next = new Uint8Array(ring);
+      for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const p = y * w + x; if (ring[p]) continue; if ((x > 0 && ring[p - 1]) || (x < w - 1 && ring[p + 1]) || (y > 0 && ring[p - w]) || (y < h - 1 && ring[p + w])) next[p] = 1; }
+      ring = next;
     }
+    for (let p = 0, i = 0; p < w * h; p++, i += 4) {
+      if (isBg[p]) { data[i + 3] = 0; continue; }
+      if (!ring[p]) continue;
+      const a = clip((dist[p] - EDGE_NONE) / (EDGE_FULL - EDGE_NONE), 0, 1);
+      if (a <= 0) { data[i + 3] = 0; continue; }
+      for (let c = 0; c < 3; c++) data[i + c] = clip(Math.round((data[i + c] - (1 - a) * bg[c]) / a), 0, 255);
+      data[i + 3] = Math.round(a * 255);
+    }
+  }
+  // keep the bust alone: the largest connected shape; specks of print grain and stray marks go
+  {
+    const seen = new Int32Array(w * h).fill(-1); const sizes: number[] = []; const stack: number[] = [];
+    for (let s = 0; s < w * h; s++) {
+      if (seen[s] >= 0 || data[s * 4 + 3] === 0) continue;
+      const id = sizes.length; let n = 0; seen[s] = id; stack.push(s);
+      while (stack.length) {
+        const p = stack.pop()!; n++; const x = p % w, y = (p - x) / w;
+        const go = (q: number) => { if (seen[q] < 0 && data[q * 4 + 3] > 0) { seen[q] = id; stack.push(q); } };
+        if (x > 0) go(p - 1); if (x < w - 1) go(p + 1); if (y > 0) go(p - w); if (y < h - 1) go(p + w);
+      }
+      sizes.push(n);
+    }
+    let big = 0; sizes.forEach((n, i) => { if (n > sizes[big]) big = i; });
+    for (let p = 0; p < w * h; p++) if (seen[p] >= 0 && seen[p] !== big) data[p * 4 + 3] = 0;
   }
   // trim to the bust
   let x0 = w, x1 = -1, y0 = h, y1 = -1;
@@ -100,9 +127,12 @@ function squareAndFill(r: Raw): { canvas: Raw; shirt: RGB } {
   // under the arc: per column from the lowest opaque pixel; outside the bust from the arc's ends
   const lowest = (x: number) => { for (let y = side - 1; y >= 0; y--) if (A(x, y) > 0) return y; return -1; };
   let x0 = -1, x1 = -1; for (let x = 0; x < side; x++) if (lowest(x) >= 0) { if (x0 < 0) x0 = x; x1 = x; }
-  const edge = Math.min(lowest(x0), lowest(x1));
+  // a bust that runs edge to edge (the example's George) is filled out to the sides too; one that ends short of them keeps the team colour there
+  const toEdges = x0 <= side * 0.03 && x1 >= side * 0.97, edge = Math.min(lowest(x0), lowest(x1));
   for (let x = 0; x < side; x++) {
-    const from = x >= x0 && x <= x1 ? Math.max(lowest(x) - 5, 0) : edge; // a few px up, over the arc's own outline
+    const inside = x >= x0 && x <= x1;
+    if (!inside && !toEdges) continue;
+    const from = inside ? Math.max(lowest(x) - 5, 0) : edge; // a few px up, over the arc's own outline
     for (let y = from; y < side; y++) { const i = (y * side + x) * 4; c[i] = shirt[0]; c[i + 1] = shirt[1]; c[i + 2] = shirt[2]; c[i + 3] = 255; }
   }
   return { canvas: { data: c, w: side, h: side }, shirt };
