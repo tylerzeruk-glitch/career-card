@@ -78,6 +78,7 @@ export function Landing({ tryHref = '/app', signInHref = '/login', onTry }: { tr
           <div className="fine">Free. No account needed to try.<br />Sign in to keep your cards and make them shareable.</div>
         </div>
         <div className="handwrap">
+          {out && <div className="hand-dim" onClick={() => flip(out)} aria-hidden="true" />}
           <div className="hand" aria-label="Example cards. Click one to pick it up and flip it.">
             {hand.map((r, i) => <RoleCard key={r.id} S={S} r={r} idx={S.roles.indexOf(r)} total={S.roles.length} on={!!flipped[r.id]} className={cls(r.id, i)} onClick={() => flip(r.id)} />)}
             <FreeCard S={S} share on={!!flipped.free} className={cls('free', 2)} onClick={() => flip('free')} />

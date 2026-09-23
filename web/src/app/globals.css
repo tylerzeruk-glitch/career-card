@@ -419,6 +419,7 @@ kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--hair);border-r
 .hand .card{position:absolute;bottom:0;width:var(--hw);transform-origin:50% 115%;transform:rotate(var(--r)) translateY(var(--lift,0px));transition:transform .22s cubic-bezier(.2,.7,.2,1)}
 /* the picked card comes to the middle of the hand, squares up and grows, then flips (see Landing) */
 .hand .card.out{z-index:9;transform:translate(var(--dx,0px),-4%) rotate(0deg) scale(var(--pop,1.32));transition:transform .34s cubic-bezier(.2,.7,.2,1)}
+.hand-dim{display:none}
 .hand .h0.out{--dx:calc(var(--hw) * .575)}
 .hand .h2.out{--dx:calc(var(--hw) * -.575)}
 .hand .card:hover,.hand .card:focus-visible{--lift:-16px;z-index:5}
@@ -453,6 +454,9 @@ kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--hair);border-r
   .lfoot{flex-direction:column;align-items:flex-start;gap:8px}
   .hero{grid-template-columns:1fr;gap:30px}
   .handwrap{order:-1;margin-bottom:10px}
+  /* on a phone the picked card grows to about double, centred, over a dimmed and blurred page; tapping the page settles it */
+  .hand-dim{display:block;position:fixed;inset:0;z-index:8;background:rgba(20,18,14,.3);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);animation:fade .25s ease-out}
+  .hand .card.out{transform-origin:50% 50%;transform:translate(var(--dx,0px),12%) rotate(0deg) scale(2.15)}
   .steps{grid-template-columns:1fr;gap:18px}
   .hunt{grid-template-columns:1fr;padding:26px 22px;gap:22px}
   .glossary div{grid-template-columns:120px 1fr}
