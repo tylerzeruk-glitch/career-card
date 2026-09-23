@@ -6,7 +6,7 @@ import { huntStats, skillTally, status } from '@/lib/derived';
 
 const Row = ({ h2, children, tone, hint }: { h2: string; children: React.ReactNode; tone?: 'private'; hint?: string }) => (
   <section className={'row' + (tone ? ' ' + tone : '')}>
-    <h2>{h2}{hint && <span className="hint-q" tabIndex={0} role="img" aria-label={hint} data-tip={hint}>?</span>}</h2>
+    <h2>{h2}{hint && <span className="hint-q" tabIndex={0} role="img" aria-label={hint} data-tip={hint}>?</span>}{hint && <span className="only" aria-hidden="true">{hint}</span>}</h2>
     <div className="body">{children}</div>
   </section>
 );

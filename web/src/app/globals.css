@@ -149,6 +149,7 @@ a.btn{text-decoration:none;display:inline-block}
 .hint-q{position:relative;display:inline-grid;place-items:center;width:15px;height:15px;border-radius:50%;border:1.5px solid var(--navy);color:var(--navy);font:700 10px/1 var(--sans);letter-spacing:0;cursor:help;flex:none}
 .hint-q::after{content:attr(data-tip);position:absolute;left:50%;bottom:calc(100% + 7px);transform:translateX(-50%);background:var(--ink);color:var(--bg);font:400 12px/1.3 var(--sans);letter-spacing:0;text-transform:none;padding:6px 9px;border-radius:5px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .12s;box-shadow:0 6px 20px rgba(0,0,0,.18)}
 .hint-q:hover::after,.hint-q:focus-visible::after{opacity:1}
+.row .only{display:none;font:400 11.5px/1.3 var(--serif);letter-spacing:0;text-transform:none;color:var(--navy);opacity:.8}
 .row .body{min-width:0;font-size:13.5px;color:var(--ink-2)}
 .row p{margin:0 0 7px;max-width:66ch}
 .row p:last-child{margin-bottom:0}
@@ -453,14 +454,18 @@ kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--hair);border-r
 /* phones: the name on its own line, then one row with the view switch on the left and the actions on the right;
    Import, Profile, Share and Sign in fold into the menu */
 @media (max-width:700px){
-  .topbar{flex-direction:column;align-items:stretch;gap:22px;padding-block:14px 6px}
-  .actions{margin-top:22px}
-  .banner{margin-top:14px}
+  .topbar{flex-direction:column;align-items:stretch;gap:0;padding-block:14px 6px}
   .brand h1{font-size:26px}
-  .actions{display:flex;align-items:center;gap:6px;flex-wrap:nowrap;width:100%}
-  .actions .toggle{margin-right:auto}
-  .actions > span[style]{display:none}
-  .actions .secondary{display:none}
+  .topbar .actions{display:flex;align-items:center;gap:6px;flex-wrap:nowrap;width:100%;margin-top:14px}
+  .topbar .actions .toggle{margin-right:auto}
+  .topbar .actions > span[style]{display:none}
+  .topbar .actions .secondary{display:none}
   .menu .m-only{display:grid}
   .menu .pop{min-width:190px}
+  .banner{margin-top:12px}
+  /* the owner-only row runs edge to edge as a band, with its note written out since there is no hover */
+  .row.private{margin-inline:calc(-1 * var(--gut));padding-inline:var(--gut);border-radius:0}
+  .row.private::after{left:var(--gut);right:var(--gut)}
+  .row.private .hint-q{display:none}
+  .row.private .only{display:block}
 }
