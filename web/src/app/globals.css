@@ -336,6 +336,8 @@ dialog::backdrop{background:rgba(0,0,0,.35)}
 .prow input[type=text]{border:0;border-bottom:1px solid transparent;background:transparent;padding:2px 0;width:100%;font-size:12.5px}
 .prow input[type=text]:focus{outline:none;border-bottom-color:var(--ink)}
 .prow .m{font-family:var(--mono);font-size:11px;color:var(--muted)}
+.dlg button.link{background:none;border:0;padding:0;color:var(--ink-2);text-decoration:underline;font:inherit;font-size:13px;cursor:pointer}
+.dlg button.link:hover{color:var(--ink)}
 .maprow{display:grid;grid-template-columns:140px 1fr;gap:8px;align-items:center;margin-bottom:6px;font-size:13px}
 .maprow select{border:0;border-bottom:1px solid var(--hair);padding:5px 0;background:transparent;border-radius:0}
 .opts{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;margin-top:8px}
@@ -392,6 +394,7 @@ kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--hair);border-r
 .pub .mast::after{content:"";position:absolute;left:0;right:0;bottom:0;height:5px;background:radial-gradient(circle,var(--ink-2) 1.6px,transparent 2px) 4px 50%/10px 5px repeat-x}
 .pub .flipme{display:flex;justify-content:center;margin:-22px 0 6px}
 .pub .lfoot{margin-top:44px}
+.lfoot .soon{color:var(--muted);cursor:default}
 .menu .pop a.btn{text-decoration:none;color:var(--ink-2)}
 .menu .pop a.btn:hover{color:var(--ink)}
 

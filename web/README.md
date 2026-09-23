@@ -109,6 +109,19 @@ on the server and a signed-in user, so the key is never exposed to
 anonymous traffic. Without either, the browser falls back to the
 date-pattern parser and says so in the preview.
 
+## Job-hunt tracker import
+
+Import → Job-hunt tracker opens the workbook in the browser (SheetJS) and,
+for a signed-in user, sends the chosen sheet as tab-separated text to
+`src/app/api/tracker/route.ts`. Claude (Sonnet; the sheet is small,
+structured text) returns the events it records in the timeline's own
+terms: an application per row, plus interview, offer, denial or withdrawal
+events wherever the sheet has a date for them, and the row's status text
+kept on the application. Signed out, or if Claude is unavailable, the
+columns are matched by header and each row becomes an application; both
+paths land in the same preview, and either can be switched to from the
+dialog. Duplicates (same date, type, company and title) are skipped on save.
+
 ## Not yet
 
 - Clean up the Role, Event and Profile drawer forms: fewer fields up front,
@@ -118,8 +131,9 @@ date-pattern parser and says so in the preview.
 - Company logo lookup for the card art.
 - Import libraries (SheetJS, JSZip, pdf.js, mammoth) are still loaded from
   cdnjs at import time rather than bundled.
-- A contact-us sheet for the landing page footer; the link is a mailto to
-  hello@careercards.app until then.
+- A contact-us sheet for the landing page footer. Until hello@careercards.app
+  forwards to a real inbox the footer's "Contact us" is plain text; set
+  `CONTACT_EMAIL` in `src/components/Landing.tsx` to turn it into a link.
 - Greenhouse.io integration: pull applications and their stages into the
   free-agency timeline instead of logging them by hand.
 - Player portraits: upload a photo, an OpenAI image model redraws it in the

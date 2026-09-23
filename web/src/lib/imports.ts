@@ -69,7 +69,7 @@ export type CareerImport = {
   profile: Partial<Profile>;
   source: string;
 };
-export type EventsImport = { kind: 'events'; events: Ev[]; skipped: number; ok: boolean; source: string };
+export type EventsImport = { kind: 'events'; events: Ev[]; skipped: number; ok: boolean; source: string; note?: string };
 export type ImportData = CareerImport | EventsImport;
 
 const splitBullets = (s: string) => s.split(/\n+/).map((x) => x.trim().replace(/^[-•·*]\s*/, '')).filter(Boolean);
@@ -175,6 +175,26 @@ export async function readTracker(f: File): Promise<Tracker> {
   return { sheets, current: names[0] };
 }
 
+/** The sheet as tab-separated lines for Claude: dates as YYYY-MM-DD, everything else as written, trailing empty rows and columns dropped. */
+export function sheetText(sheet: Sheet, maxRows = 600): string {
+  const cell = (v: unknown) => v instanceof Date ? (isNaN(v.getTime()) ? '' : v.toISOString().slice(0, 10)) : String(v ?? '').replace(/[\t\r\n]+/g, ' ').trim();
+  const rows = sheet.rows.map((r) => r.map(cell));
+  const width = rows.reduce((w, r) => { let n = r.length; while (n > 0 && !r[n - 1]) n--; return Math.max(w, n); }, 0);
+  const lines = rows.map((r, i) => {
+    const cells = r.slice(0, width);
+    // a hyperlink on a cell counts as its text when the cell itself is a label
+    cells.forEach((c, j) => { const l = sheet.links[i + ':' + j]; if (l && c && !/^https?:\/\//i.test(c)) cells[j] = c + ' <' + l + '>'; });
+    return cells.join('\t');
+  }).filter((l) => l.replace(/\t/g, '').trim());
+  return lines.slice(0, maxRows).join('\n');
+}
+
+/** Claude's answer for a sheet, shaped like the header-mapped import so the dialog treats both alike. */
+export function claudeEvents(x: { events: Omit<Ev, 'id'>[]; skipped: number; note?: string }): EventsImport {
+  const events: Ev[] = x.events.map((e) => { const ev: Ev = { id: uid(), date: e.date, type: e.type, company: e.company || '', title: e.title || '', salary: e.salary || '', link: e.link || '', notes: e.notes || '' }; if (e.status) ev.status = e.status; return ev; });
+  return { kind: 'events', events, skipped: x.skipped || 0, ok: true, source: 'Read by Claude', note: x.note || '' };
+}
+
 /** Find the header row and guess a column for each field. */
 export function guessMapping(sheet: Sheet) {
   const { rows } = sheet; let hi = 0;
@@ -206,5 +226,5 @@ export function trackerEvents(sheet: Sheet, hi: number, m: Record<string, number
     if (status) ev.status = status;
     out.push(ev);
   }
-  return { kind: 'events', events: out, skipped, ok: m.date >= 0 && (m.company >= 0 || m.title >= 0), source: 'Tracker' };
+  return { kind: 'events', events: out, skipped, ok: m.date >= 0 && (m.company >= 0 || m.title >= 0), source: 'Matched by column header' };
 }

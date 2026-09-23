@@ -44,8 +44,9 @@ preceded it.
   Claude through the `sample` capability (viewer consents, viewer pays);
   elsewhere, or if declined, a date-pattern parser produces a rough draft.
   Every path lands in an editable preview before anything is saved.
-- **Job-hunt tracker:** the xlsx/csv importer from `job-hunt-timeline`, mapping
-  the Application Tracker columns to application events.
+- **Job-hunt tracker:** any xlsx/csv of applications. Signed in, Claude reads
+  the sheet and maps each row to timeline events (application, interview,
+  offer, denial); otherwise columns are matched by header.
 - **Backup:** JSON of the whole state, restored from the ··· menu.
 
 LinkedIn's API does not expose positions to third-party apps, so "sign in with

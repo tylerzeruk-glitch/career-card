@@ -2,10 +2,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { useCard } from './store';
 import type { ImportTab } from './ui';
-import type { State } from '@/lib/types';
+import type { Ev, EventType, State } from '@/lib/types';
 import { parseMonth, todayISO } from '@/lib/dates';
-import { codeFor, hydrate, norm, sortedEvents, statusOf, uid } from '@/lib/derived';
-import { FIELDS, guessMapping, heuristicResume, readLinkedIn, readTracker, resumeText, trackerEvents, type CareerImport, type ImportData, type Tracker } from '@/lib/imports';
+import { TYPES, codeFor, hydrate, norm, sortedEvents, statusOf, uid } from '@/lib/derived';
+import { FIELDS, claudeEvents, guessMapping, heuristicResume, readLinkedIn, readTracker, resumeText, sheetText, trackerEvents, type CareerImport, type ImportData, type Tracker } from '@/lib/imports';
 
 /** A native <dialog> that opens and closes with `open`. */
 function Modal({ open, onClose, children, className }: { open: boolean; onClose: () => void; children: React.ReactNode; className?: string }) {
@@ -27,6 +27,13 @@ function DropZone({ label, accept, multiple, onFiles }: { label: string; accept:
       {label}<input type="file" accept={accept} multiple={multiple} onChange={(e) => { if (e.target.files?.length) onFiles([...e.target.files]); e.target.value = ''; }} />
     </label>
   );
+}
+
+/** ": 12 applications, 3 interviews, 1 denial" */
+function summarize(events: Ev[]) {
+  const n: Record<string, number> = {}; events.forEach((e) => (n[e.type] = (n[e.type] || 0) + 1));
+  const parts = Object.keys(n).map((k) => n[k] + ' ' + (TYPES[k as EventType]?.label || k).toLowerCase() + (n[k] === 1 ? '' : 's'));
+  return parts.length > 1 ? ': ' + parts.join(', ') : '';
 }
 
 export function ImportDialog({ open, tab, onClose }: { open: boolean; tab: ImportTab; onClose: () => void }) {
@@ -64,9 +71,19 @@ export function ImportDialog({ open, tab, onClose }: { open: boolean; tab: Impor
       preview(d); setBusy(''); if (why) setNote(why);
     } catch (e) { fail(e); }
   };
-  const onTracker = async (files: File[]) => { try { setBusy('Reading ' + files[0].name + '…'); const tr = await readTracker(files[0]); setTracker(tr); const m = guessMapping(tr.sheets[tr.current]); setMapping(m); setData(trackerEvents(tr.sheets[tr.current], m.hi, m.map)); setBusy(''); } catch (e) { fail(e); } };
+  // A sheet is read two ways: signed in, Claude reads whatever layout it is in; otherwise (or on request) columns are matched by header.
+  const byHeader = (tr: Tracker, why = '') => { const m = guessMapping(tr.sheets[tr.current]); setMapping(m); setData(trackerEvents(tr.sheets[tr.current], m.hi, m.map)); setBusy(''); setNote(why); };
+  const byClaude = async (tr: Tracker) => {
+    setMapping(null); setData(null); setBusy('Asking Claude to read ' + tr.current + '…');
+    const res = await fetch('/api/tracker', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ sheet: tr.current, text: sheetText(tr.sheets[tr.current]) }) });
+    if (res.ok) { const d = claudeEvents(await res.json()); setData(d); setBusy(''); setNote(d.note || ''); return; }
+    const err = await res.json().catch(() => ({})) as { error?: string; message?: string };
+    byHeader(tr, (err.error === 'not-configured' ? 'Claude extraction is not set up here' : err.message || 'Claude could not read it') + ', so the columns were matched by header instead.');
+  };
+  const readSheet = (tr: Tracker, mode: 'claude' | 'header') => (mode === 'claude' && user ? byClaude(tr) : Promise.resolve(byHeader(tr, user ? '' : 'Sign in and Claude reads any layout; for now the columns were matched by header.'))).catch(fail);
+  const onTracker = async (files: File[]) => { try { setBusy('Reading ' + files[0].name + '…'); const tr = await readTracker(files[0]); setTracker(tr); await readSheet(tr, 'claude'); } catch (e) { fail(e); } };
   const remap = (k: string, v: number) => { if (!tracker || !mapping) return; const map = { ...mapping.map, [k]: v }; setMapping({ ...mapping, map }); setData(trackerEvents(tracker.sheets[tracker.current], mapping.hi, map)); };
-  const pickSheet = (name: string) => { if (!tracker) return; const tr = { ...tracker, current: name }; setTracker(tr); const m = guessMapping(tr.sheets[name]); setMapping(m); setData(trackerEvents(tr.sheets[name], m.hi, m.map)); };
+  const pickSheet = (name: string) => { if (!tracker) return; const tr = { ...tracker, current: name }; setTracker(tr); readSheet(tr, mapping ? 'header' : 'claude'); };
   const editRole = (i: number, k: 'company' | 'title' | 'start' | 'end', v: string) => { if (!data || data.kind !== 'career') return; const roles = data.roles.slice(); roles[i] = { ...roles[i], [k]: v }; setData({ ...data, roles }); };
 
   const go = () => {
@@ -104,10 +121,10 @@ export function ImportDialog({ open, tab, onClose }: { open: boolean; tab: Impor
       update((s0) => {
         const s: State = sampleMode ? { ...s0, events: [] } : { ...s0 };
         const events = s.events.slice();
-        data.events.forEach((e) => { const key = e.date + '|' + norm(e.company) + '|' + norm(e.title); if (opts.skipDupes && events.some((b) => b.type === 'application' && b.date + '|' + norm(b.company) + '|' + norm(b.title) === key)) { dupes++; return; } events.push(e); added++; });
+        data.events.forEach((e) => { const key = e.date + '|' + e.type + '|' + norm(e.company) + '|' + norm(e.title); if (opts.skipDupes && events.some((b) => b.date + '|' + b.type + '|' + norm(b.company) + '|' + norm(b.title) === key)) { dupes++; return; } events.push(e); added++; });
         return { ...s, events };
       });
-      flash(`Imported ${added} application${added === 1 ? '' : 's'}${dupes ? `, ${dupes} duplicate${dupes === 1 ? '' : 's'} skipped` : ''}.`); onClose();
+      flash(`Imported ${added} event${added === 1 ? '' : 's'}${dupes ? `, ${dupes} already there` : ''}.`); onClose();
     }
   };
   void replace; void S;
@@ -124,17 +141,18 @@ export function ImportDialog({ open, tab, onClose }: { open: boolean; tab: Impor
         {t === 'resume' && <div><p>PDF, Word (.docx) or plain text. {user ? 'Claude reads it and pulls out the roles, dates, highlights, education and contact details; you check the result before anything is saved.' : 'A date-pattern parser finds the roles; sign in and Claude reads the resume properly instead.'}</p><DropZone label="Drop a resume here, or click to choose" accept=".pdf,.docx,.txt,.md" onFiles={onResume} /></div>}
         {t === 'tracker' && (
           <div>
-            <p>Excel or CSV of applications. Columns are matched by header (the Application Tracker layout maps automatically) and each row becomes an application event on the timeline.</p>
+            <p>Excel or CSV of your applications, in whatever layout you keep it. {user ? 'Claude reads the sheet and turns each row into events on the timeline: the application, plus any interview, offer or denial dates it finds. You check the result before anything is saved.' : 'Columns are matched by header and each row becomes an application; sign in and Claude reads any layout, dates and all.'}</p>
             <DropZone label="Drop a spreadsheet here, or click to choose" accept=".xlsx,.xls,.xlsm,.csv,.tsv" onFiles={onTracker} />
+            {tracker && Object.keys(tracker.sheets).length > 1 && <div className="maprow" style={{ marginTop: 10 }}><span>Sheet</span><select value={tracker.current} onChange={(e) => pickSheet(e.target.value)}>{Object.keys(tracker.sheets).map((n) => <option key={n}>{n}</option>)}</select></div>}
+            {tracker && !mapping && !busy && <p style={{ marginTop: 6 }}><button className="link" onClick={() => readSheet(tracker, 'header')}>Match the columns by hand instead</button></p>}
+            {tracker && mapping && user && !busy && <p style={{ marginTop: 6 }}><button className="link" onClick={() => readSheet(tracker, 'claude')}>Ask Claude to read it instead</button></p>}
             {tracker && mapping && (
               <div>
-                <div className="maprow"><span>Sheet</span><select value={tracker.current} onChange={(e) => pickSheet(e.target.value)}>{Object.keys(tracker.sheets).map((n) => <option key={n}>{n}</option>)}</select></div>
                 {FIELDS.map(([k, label]) => (
                   <div className="maprow" key={k}><span>{label}</span>
                     <select value={mapping.map[k]} onChange={(e) => remap(k, +e.target.value)}><option value={-1}>— not in this sheet —</option>{mapping.headers.map((h, i) => <option key={i} value={i}>{h || '(column ' + (i + 1) + ')'}</option>)}</select>
                   </div>
                 ))}
-                <div className="opts"><label><input type="checkbox" checked={opts.skipDupes} onChange={(e) => setOpts({ ...opts, skipDupes: e.target.checked })} /> Skip rows that already exist</label></div>
               </div>
             )}
           </div>
@@ -165,11 +183,12 @@ export function ImportDialog({ open, tab, onClose }: { open: boolean; tab: Impor
         )}
         {data && data.kind === 'events' && (
           <div>
-            <p style={{ marginTop: 10 }}><b>{data.events.length} application{data.events.length === 1 ? '' : 's'}</b> ready{data.skipped ? `, ${data.skipped} rows skipped for unreadable dates` : ''}.</p>
+            <p style={{ marginTop: 10 }}><b>{data.events.length} event{data.events.length === 1 ? '' : 's'}</b> ready{summarize(data.events)}{data.skipped ? `; ${data.skipped} row${data.skipped === 1 ? '' : 's'} skipped for unreadable dates` : ''} · {data.source}.</p>
             <div className="preview">
-              {data.events.slice(0, 12).map((e) => <div className="prow" key={e.id} style={{ gridTemplateColumns: '84px 1.2fr 1.4fr 1fr' }}><span className="m">{e.date}</span><span>{e.company}</span><span>{e.title}</span><span className="m">{e.status || ''}</span></div>)}
-              {data.events.length > 12 && <div style={{ padding: 6, color: 'var(--muted)' }}>… and {data.events.length - 12} more</div>}
+              {data.events.slice(0, 14).map((e) => <div className="prow" key={e.id} style={{ gridTemplateColumns: '84px 84px 1.2fr 1.4fr 1fr' }}><span className="m">{e.date}</span><span className="m">{TYPES[e.type]?.label || e.type}</span><span>{e.company}</span><span>{e.title}</span><span className="m">{e.status || ''}</span></div>)}
+              {data.events.length > 14 && <div style={{ padding: 6, color: 'var(--muted)' }}>… and {data.events.length - 14} more</div>}
             </div>
+            <div className="opts"><label><input type="checkbox" checked={opts.skipDupes} onChange={(e) => setOpts({ ...opts, skipDupes: e.target.checked })} /> Skip events that are already on the timeline</label></div>
             {!data.ok && <p style={{ color: 'var(--muted)' }}>Pick at least a date column and a company or title column.</p>}
           </div>
         )}
@@ -212,7 +231,7 @@ export function HelpDialog({ open, onClose }: { open: boolean; onClose: () => vo
         <p><b>Cards.</b> One card per role, oldest to newest, like a career in a card set. Click a card to open it large, back side up so the details are right there; click again to turn it over. &quot;By team&quot; gathers consecutive roles at one company into a stack; click a stack to spread it.</p>
         <p><b>Free agent.</b> When no role is current you&apos;re a free agent. The day count in the Free agency row runs from your layoff event if you&apos;ve added one, otherwise from the end of your last role. Add a job-hunt event (<i>+ Add → Event</i>) as you apply and interview; the free-agent card and the timeline pick them up.</p>
         <p><b>Timeline.</b> Company spans sit above the line, job-hunt events sit on it. Drag to pan; pinch, <kbd>Ctrl</kbd>+scroll or double-click to zoom. &quot;Career&quot; fits everything, &quot;Free agency&quot; fits the job hunt.</p>
-        <p><b>Import.</b> LinkedIn&apos;s data export (zip or CSVs), a resume (PDF, Word, text), or the job-hunt tracker spreadsheet. Every import shows a preview you can correct before saving.</p>
+        <p><b>Import.</b> LinkedIn&apos;s data export (zip or CSVs), a resume (PDF, Word, text), or the spreadsheet you track applications in, whatever its layout. Every import shows a preview you can correct before saving.</p>
         <p><b>Your page.</b> Sign in and give your card an address. It shows the career and never the job hunt, and it is private until you say otherwise.</p>
         <p><b>Saving.</b> Automatic: in this browser, or in your account once you sign in.</p>
         <div className="dlg-foot"><button className="btn" onClick={onClose}>Close</button></div>
