@@ -452,7 +452,9 @@ kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--hair);border-r
 /* phones: the name on its own line, then one row with the view switch on the left and the actions on the right;
    Import, Profile, Share and Sign in fold into the menu */
 @media (max-width:700px){
-  .topbar{flex-direction:column;align-items:stretch;gap:14px;padding-block:14px 4px}
+  .topbar{flex-direction:column;align-items:stretch;gap:22px;padding-block:14px 6px}
+  .actions{margin-top:2px}
+  .banner{margin-top:14px}
   .brand h1{font-size:26px}
   .actions{display:flex;align-items:center;gap:6px;flex-wrap:nowrap;width:100%}
   .actions .toggle{margin-right:auto}
