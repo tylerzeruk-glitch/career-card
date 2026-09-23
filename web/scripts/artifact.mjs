@@ -29,6 +29,10 @@ const html = `<!doctype html>
 <link rel="stylesheet" href="${fonts}">
 <style>
 #root{height:100%}
+/* the preview's own page switcher; not part of the site */
+.pv-bar{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);z-index:50;display:flex;gap:2px;padding:3px;background:rgba(28,27,24,.92);border-radius:999px;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+.pv-bar button{border:0;background:transparent;color:#c9c2b2;font:700 11px "Barlow Condensed",sans-serif;letter-spacing:.12em;text-transform:uppercase;padding:7px 12px;border-radius:999px;cursor:pointer}
+.pv-bar button.on{background:#f2eee5;color:#1c1b18}
 ${css}
 </style>
 </head>
