@@ -50,7 +50,7 @@ export function Fold() {
       <Row h2="Contact">
         <ul className="list inline">
           {p.email ? <li><a href={'mailto:' + p.email}>{p.email}</a></li> : null}
-          {p.linkedin ? <li><a href={p.linkedin} target="_blank" rel="noopener">LinkedIn</a></li> : null}
+          {p.linkedin ? <li><a href={p.linkedin} target={p.linkedin === '#' ? undefined : '_blank'} rel="noopener" title={p.linkedin === '#' ? 'Example only' : undefined} onClick={p.linkedin === '#' ? (e) => e.preventDefault() : undefined}>LinkedIn</a></li> : null}
           {!p.email && !p.linkedin ? <li className="empty">Add contact details in Profile.</li> : null}
         </ul>
       </Row>

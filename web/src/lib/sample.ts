@@ -14,7 +14,7 @@ export function sampleState(): State {
       location: 'New York, NY',
       targets: ['Importing', 'Exporting'],
       email: 'george@example.com',
-      linkedin: 'https://www.linkedin.com/in/george-costanza',
+      linkedin: '#', // the example's link goes nowhere: a real address would land on a real person
       summary:
         'Fifteen years across marine biology and latex sales, two fields that come up together less often than you would think. Steady under pressure, good in a room, and since a certain summer, doing the opposite of every instinct. The results speak for themselves.',
       education: [{ school: 'Queens College', degree: 'BA, Architecture', years: y - 20 + ' – ' + (y - 16) }],
