@@ -5,6 +5,7 @@ import { careerStats, roles, skillTally, status } from '@/lib/derived';
 import { layoutDeck } from '@/lib/deck';
 import { FreeCard, RoleCard } from './Cards';
 import { ThemeToggle } from './ThemeToggle';
+import { Flag } from './Landing';
 
 /** The shareable page: cards you can flip, then the resume rows. Read-only, no job hunt. */
 export function PublicCard({ S }: { S: State }) {
@@ -24,7 +25,7 @@ export function PublicCard({ S }: { S: State }) {
         <div>
           <div className="namerow">
             <h1>{p.name || 'Career'}</h1>
-            {st.free && <span className="pill">Free agent · open to offers</span>}
+            {st.free && <span className="pill"><Flag size={14} />Free agent · open to offers</span>}
           </div>
           <div className="sub">{[p.headline, p.location].filter(Boolean).join(' · ')}</div>
           {cs && <div className="line">{([[cs.seasons, 'season'], [cs.teams, 'team'], [cs.positions, 'position']] as [number, string][]).map(stat)}</div>}

@@ -11,7 +11,7 @@ import { Timeline } from './Timeline';
 import { Drawer, type DrawerState } from './Drawer';
 import { BackupDialog, HelpDialog, ImportDialog } from './dialogs';
 import { ThemeToggle } from './ThemeToggle';
-import { SiteFoot } from './Landing';
+import { Flag, SiteFoot } from './Landing';
 
 export function CareerCardApp({ user, cloud }: { user: AuthUser | null; cloud: CloudCard | null }) {
   return (
@@ -104,7 +104,7 @@ function Header() {
         <div>
           <div className="namerow">
             <h1>{p.name || 'CareerCards'}</h1>
-            {st.free ? <span className="pill"><i />Free agent</span> : <span className="pill active"><i />Active · {st.current.company}</span>}
+            {st.free ? <span className="pill"><Flag size={14} />Free agent</span> : <span className="pill active"><i />Active · {st.current.company}</span>}
           </div>
           <div className="sub">{[p.headline, p.location].filter(Boolean).join(' · ')}</div>
           <div className="line">{cs ? ([[cs.seasons, 'season'], [cs.teams, 'team'], [cs.positions, 'position']] as [number, string][]).map(stat) : null}</div>
