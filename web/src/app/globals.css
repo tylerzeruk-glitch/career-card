@@ -59,7 +59,6 @@ a.btn{text-decoration:none;display:inline-block}
 .menu .pop hr{border:0;border-top:1px solid var(--hair);margin:4px 0}
 .actions .secondary{display:contents}
 .menu .m-only{display:none}
-}
 
 /* header */
 .topbar{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-block:22px 6px;flex:none}
@@ -464,3 +463,4 @@ kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--hair);border-r
   .actions .secondary{display:none}
   .menu .m-only{display:grid}
   .menu .pop{min-width:190px}
+}
