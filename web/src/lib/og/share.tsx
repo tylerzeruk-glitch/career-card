@@ -1,7 +1,7 @@
 import { ImageResponse } from 'next/og';
 import type { State } from '../types';
 import { careerStats, codeFor, initials, looking, pairFor, pairIndexFor, roles, status } from '../derived';
-import { avatarSrc, isPhoto } from '../avatar';
+import { avatarSrc } from '../avatar';
 
 /**
  * The share image for a player's page: name, headline and a hand of their three most recent cards,
@@ -11,7 +11,10 @@ import { avatarSrc, isPhoto } from '../avatar';
 export const SHARE_SIZE = { width: 1200, height: 630 };
 
 const CW = 236, CH = Math.round(CW * 1.4); // one card, 2.5 : 3.5
-const q = (n: number) => Math.round((n * CW) / 100); // the card's cqw, in px
+// the site's card is a container whose units (cqw) are shares of its content width, inside 8% side padding; the same here
+const PAD = Math.round(CW * 0.08), CQ = CW - 2 * PAD;
+const q = (n: number) => Math.round((n * CQ) / 100); // the card's cqw, in px
+const CARD_PAD = `${Math.round(CW * 0.18)}px ${PAD}px ${Math.round(CW * 0.07)}px`;
 
 /** The site's three faces, served from public/fonts and kept once per server. */
 let fontCache: Promise<{ name: string; data: ArrayBuffer; weight: 400 | 700; style: 'normal' }[]> | null = null;
@@ -87,16 +90,15 @@ function RoleFront({ S, r, idx, site, rot }: { S: State; r: State['roles'][numbe
   const [a, b] = pairFor(S, r.company), p = S.profile, [fn, ln] = splitName(p.name);
   const av = p.avatar ? avatarSrc(p.avatar, pairIndexFor(S, r.company)) : '';
   const src = av ? (av.startsWith('/') ? site + av : av) : '';
-  const photo = !!p.avatar && isPhoto(p.avatar);
-  const inner = CW - 2 * Math.round(CW * 0.08); // the art box is square so a bust never loses its head
+  const inner = CQ; // the art box is square so a bust never loses its head
   void idx; void fn;
   return (
-    <div style={{ position: 'absolute', bottom: 0, width: CW, height: CH, transformOrigin: '50% 115%', transform: `rotate(${rot}deg)`, display: 'flex', flexDirection: 'column', background: '#fbf6ea', borderRadius: 0, border: '2px solid #fffaf0', boxShadow: '-5px 0 14px rgba(0,0,0,.16), 0 10px 26px rgba(0,0,0,.16)', padding: `${Math.round(CW * 0.15)}px ${Math.round(CW * 0.08)}px ${Math.round(CW * 0.06)}px`, color: '#1c1b18' }}>
+    <div style={{ position: 'absolute', bottom: 0, width: CW, height: CH, transformOrigin: `${CW / 2}px ${Math.round(CH * 1.15)}px`, transform: `rotate(${rot}deg)`, display: 'flex', flexDirection: 'column', background: '#fbf6ea', borderRadius: 0, border: '2px solid #fffaf0', boxShadow: '-5px 0 14px rgba(0,0,0,.16), 0 10px 26px rgba(0,0,0,.16)', padding: CARD_PAD, color: '#1c1b18' }}>
       <Frame color={b} />
-      <div style={{ position: 'relative', display: 'flex', width: inner, height: inner, marginBottom: q(11), borderRadius: q(5), borderTopLeftRadius: 0, background: a, border: `2px solid ${b}`, alignItems: 'center', justifyContent: 'center', overflow: 'visible' }}>
+      <div style={{ position: 'relative', display: 'flex', width: inner, height: inner, marginBottom: q(12), borderRadius: q(5), borderTopLeftRadius: 0, background: a, border: `2px solid ${b}`, alignItems: 'center', justifyContent: 'center', overflow: 'visible' }}>
         <Pennant text={r.company} a={a} b={b} />
         <div style={{ position: 'absolute', left: 0, top: 0, right: 0, bottom: 0, borderRadius: q(5), borderTopLeftRadius: 0, overflow: 'hidden', display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}>
-          {src ? <img src={src} width={inner - 4} height={inner - 4} style={{ objectFit: photo ? 'cover' : 'contain', objectPosition: 'bottom' }} alt="" />
+          {src ? <div style={{ width: inner - 4, height: inner - 4, backgroundImage: `url(${src})`, backgroundSize: `${inner - 4}px ${inner - 4}px`, backgroundRepeat: 'no-repeat' }} />
             : <div style={{ display: 'flex', fontFamily: BARLOW, fontSize: q(34), letterSpacing: '-0.02em', color: b, marginBottom: q(4) }}>{initials(p.name) || '?'}</div>}
         </div>
         <Badge code={r.code || codeFor(r.title)} />
@@ -109,9 +111,9 @@ function RoleFront({ S, r, idx, site, rot }: { S: State; r: State['roles'][numbe
 function FreeFront({ S, rot }: { S: State; rot: number }) {
   const p = S.profile, [fn, ln] = splitName(p.name), open = (p.targets || []).slice(0, 3).join(' · ');
   return (
-    <div style={{ position: 'absolute', bottom: 0, width: CW, height: CH, transformOrigin: '50% 115%', transform: `rotate(${rot}deg)`, display: 'flex', flexDirection: 'column', background: '#1f2a44', borderRadius: 0, border: '2px solid #3a466a', boxShadow: '-5px 0 14px rgba(0,0,0,.16), 0 10px 26px rgba(0,0,0,.16)', padding: `${Math.round(CW * 0.15)}px ${Math.round(CW * 0.08)}px ${Math.round(CW * 0.06)}px`, color: '#fbf6ea' }}>
+    <div style={{ position: 'absolute', bottom: 0, width: CW, height: CH, transformOrigin: `${CW / 2}px ${Math.round(CH * 1.15)}px`, transform: `rotate(${rot}deg)`, display: 'flex', flexDirection: 'column', background: '#1f2a44', borderRadius: 0, border: '2px solid #3a466a', boxShadow: '-5px 0 14px rgba(0,0,0,.16), 0 10px 26px rgba(0,0,0,.16)', padding: CARD_PAD, color: '#fbf6ea' }}>
       <Frame color="#dc4432" />
-      <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', width: CW - 2 * Math.round(CW * 0.08), height: CW - 2 * Math.round(CW * 0.08), marginBottom: q(11), borderRadius: q(5), borderTopLeftRadius: 0, background: 'rgba(255,255,255,.07)', border: '2px solid rgba(255,255,255,.35)', alignItems: 'center', justifyContent: 'center', padding: '6%', textAlign: 'center' }}>
+      <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', width: CQ, height: CQ, marginBottom: q(12), borderRadius: q(5), borderTopLeftRadius: 0, background: 'rgba(255,255,255,.07)', border: '2px solid rgba(255,255,255,.35)', alignItems: 'center', justifyContent: 'center', padding: '6%', textAlign: 'center' }}>
         <Pennant text="Free agent" a="#fbf6ea" b="#dc4432" wide />
         <div style={{ display: 'flex', fontFamily: BARLOW, fontSize: q(4.6), letterSpacing: '0.2em', textTransform: 'uppercase', opacity: 0.7, marginBottom: q(3) }}>Open to</div>
         <div style={{ display: 'flex', fontFamily: LILITA, fontSize: q(7.5), lineHeight: 1.15, textTransform: 'uppercase', textAlign: 'center' }}>{open || 'Offers'}</div>
