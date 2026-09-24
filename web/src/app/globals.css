@@ -53,6 +53,10 @@ a.btn{text-decoration:none;display:inline-block}
 .btn:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,.card:focus-visible,.tab:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
 .menu{position:relative}
 .menu summary{list-style:none;cursor:pointer}
+/* the ··· menu: a ringed round button like the theme switch; solid dots so it reads at a glance */
+.menu summary.more{border:1px solid var(--hair);border-radius:50%;color:var(--ink-2)}
+.menu summary.more svg{display:block}
+.menu[open] summary.more,.menu summary.more:hover{background:var(--ink);border-color:var(--ink);color:var(--bg)}
 .menu summary::-webkit-details-marker{display:none}
 .menu .pop{position:absolute;right:0;top:calc(100% + 4px);background:var(--paper);border:1px solid var(--hair);border-radius:8px;box-shadow:0 10px 30px rgba(0,0,0,.14);padding:4px;display:grid;min-width:170px;z-index:8}
 .menu .pop .btn{text-align:left}
@@ -581,6 +585,10 @@ kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--hair);border-r
   .topbar .actions .secondary{display:none}
   .menu .m-only{display:grid}
   .menu .pop{min-width:190px}
+  /* on phones the menu holds Import, Profile, Share and Sign in, so it gets a full-size ink ring and a bigger tap target */
+  .topbar .actions .menu summary.more{width:40px;height:40px;border:1.5px solid var(--ink);color:var(--ink);margin-left:4px}
+  .topbar .actions .menu summary.more svg{width:20px;height:20px}
+  .topbar .actions .menu[open] summary.more{background:var(--ink);color:var(--bg)}
   .banner{margin-top:12px}
   /* the owner-only row runs edge to edge as a band, with its note written out since there is no hover */
   .row.private{margin-inline:calc(-1 * var(--gut));padding-inline:var(--gut);border-radius:0}

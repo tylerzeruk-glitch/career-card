@@ -130,7 +130,7 @@ function Header() {
         </span>
         <ThemeToggle />
         <details className="menu" ref={menuRef} open={menu} onToggle={(e) => setMenu((e.target as HTMLDetailsElement).open)}>
-          <summary className="btn" aria-label="More">···</summary>
+          <summary className="btn icon more" aria-label="More"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><circle cx="3.5" cy="9" r="2" fill="currentColor"/><circle cx="9" cy="9" r="2" fill="currentColor"/><circle cx="14.5" cy="9" r="2" fill="currentColor"/></svg></summary>
           <div className="pop" onClick={() => setMenu(false)}>
             {user ? <div className="account" style={{ padding: '6px 10px' }}><span className={'sync ' + sync}><i />{sync === 'saving' ? 'Saving' : sync === 'error' ? 'Not saved' : 'Saved'}</span></div> : null}
             {user ? <div className="who" style={{ padding: '0 10px 6px', fontSize: 12, color: 'var(--muted)' }}>{user.email}</div> : null}
