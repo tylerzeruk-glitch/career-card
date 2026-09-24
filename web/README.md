@@ -215,7 +215,20 @@ they are. The wordmark image must be deployed before the first send.
 
 ## Share card
 
-Links to the site unfurl with `public/og.png` (Open Graph and Twitter tags in `src/app/layout.tsx`). The picture is a screenshot of the hidden `/share-card` route, which renders the hero at 1200 x 630. To regenerate it after a design change:
+A player's page unfurls with their own cards. `src/app/u/[slug]/opengraph-image.tsx`
+draws a 1200 x 630 picture on request from the same data as the page:
+name, headline, the season count, and a hand of their three most recent
+cards (the free-agent card takes the last slot when they are on the
+market), rebuilt for the Open Graph renderer in `src/lib/og/share.tsx`
+(flex and absolute positioning only, so the card front is redrawn there
+rather than from `card.css`; the three faces are served from
+`public/fonts`). The page's metadata sets the title and description to
+match. A page that is not shared gets the example's picture, as it 404s.
+`/share-card/opengraph-image` draws the example the same way, as the
+reference for the renderer. LinkedIn caches unfurls hard; its Post
+Inspector refreshes one.
+
+The root URL keeps a static picture. Links to the site unfurl with `public/og.png` (Open Graph and Twitter tags in `src/app/layout.tsx`). The picture is a screenshot of the hidden `/share-card` route, which renders the hero at 1200 x 630. To regenerate it after a design change:
 
 ```
 npx next build && npx next start -p 3111

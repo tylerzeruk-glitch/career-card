@@ -1,26 +1,17 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { PublicCard } from '@/components/PublicCard';
-import { hydrate } from '@/lib/derived';
-import { supabaseServer } from '@/lib/supabase/server';
-import type { State } from '@/lib/types';
+import { loadPublicCard as load } from '@/lib/public-card';
 
 export const dynamic = 'force-dynamic';
-
-async function load(slug: string): Promise<State | null> {
-  const sb = await supabaseServer();
-  if (!sb) return null;
-  const { data } = await sb.rpc('public_card', { p_slug: slug });
-  if (!data) return null;
-  // the function returns the career column only; events never leave the owner's row
-  return hydrate({ ...(data as Partial<State>), events: [] });
-}
 
 export async function generateMetadata({ params }: PageProps<'/u/[slug]'>): Promise<Metadata> {
   const { slug } = await params;
   const S = await load(slug);
   if (!S) return { title: 'CareerCards' };
-  return { title: (S.profile.name || 'Career') + ' · CareerCards', description: S.profile.summary || S.profile.headline || undefined, robots: { index: false } };
+  const title = (S.profile.name || 'Career') + ' · CareerCards', description = S.profile.headline || S.profile.summary || 'A career as a card set.';
+  // the picture comes from opengraph-image.tsx beside this file: their own cards
+  return { title, description, robots: { index: false }, openGraph: { title, description, type: 'profile', siteName: 'CareerCards' }, twitter: { card: 'summary_large_image', title, description } };
 }
 
 /** Someone's card at its address. Shows the career, never the job hunt. */
