@@ -124,7 +124,9 @@ export async function shareImage(S: State, site: string, slug?: string) {
   const handW = Math.round(CW * 2.15), handH = CH + 40;
   const stat = cs ? [[cs.seasons, 'season'], [cs.teams, 'team'], [cs.positions, 'position']].map(([v, k]) => `${v} ${k}${v === 1 ? '' : 's'}`).join('  ·  ') : '';
   const sub = [p.headline, p.location].filter(Boolean).join(' · ');
-  const first = roleCards[0] ? Math.max(0, rs.indexOf(roleCards[0])) : 0;
+  const first = (p.name || '').trim().split(/\s+/)[0];
+  const cta = first ? `View ${first}\u2019s cards and make your own.` : 'View the cards and make your own.';
+  const firstIdx = roleCards[0] ? Math.max(0, rs.indexOf(roleCards[0])) : 0;
   return new ImageResponse(
     (
       <div style={{ width: '100%', height: '100%', display: 'flex', background: '#f2eee5', color: '#1c1b18', padding: '0 64px', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -135,12 +137,13 @@ export async function shareImage(S: State, site: string, slug?: string) {
           </div>
           {free ? <div style={{ display: 'flex', alignSelf: 'flex-start', alignItems: 'center', background: '#dc4432', color: '#fff', fontFamily: BARLOW, fontSize: 16, letterSpacing: '0.14em', textTransform: 'uppercase', padding: '8px 12px', borderRadius: 4, transform: 'rotate(-2deg)', marginBottom: 16 }}><svg width="16" height="16" viewBox="0 0 64 64"><path d={FLAG} fill="#fff" /></svg><span style={{ marginLeft: 8 }}>Free agent · open to offers</span></div> : null}
           <div style={{ display: 'flex', fontFamily: BARLOW, fontSize: 60, lineHeight: 0.98, letterSpacing: '0.02em', textTransform: 'uppercase', marginBottom: 14 }}>{p.name || 'Career'}</div>
-          {sub ? <div style={{ display: 'flex', fontFamily: CASLON, fontSize: 24, lineHeight: 1.4, color: '#55524a' }}>{sub}</div> : null}
-          {stat ? <div style={{ display: 'flex', marginTop: 18, fontFamily: BARLOW, fontSize: 15, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#8a867b' }}>{stat}</div> : null}
-          <div style={{ display: 'flex', marginTop: 34, fontFamily: BARLOW, fontSize: 15, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#8a867b' }}>{slug ? 'careercards.app/u/' + slug : 'careercards.app'}</div>
+          {sub ? <div style={{ display: 'flex', fontFamily: CASLON, fontSize: 30, lineHeight: 1.35, color: '#55524a' }}>{sub}</div> : null}
+          {stat ? <div style={{ display: 'flex', marginTop: 16, fontFamily: BARLOW, fontSize: 19, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#8a867b' }}>{stat}</div> : null}
+          <div style={{ display: 'flex', marginTop: 30, fontFamily: CASLON, fontSize: 24, lineHeight: 1.35, color: '#1c1b18' }}>{cta}</div>
+          <div style={{ display: 'flex', marginTop: 12, fontFamily: BARLOW, fontSize: 18, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#dc4432' }}>{slug ? 'careercards.app/u/' + slug : 'careercards.app'}</div>
         </div>
         <div style={{ position: 'relative', display: 'flex', width: handW, height: handH, marginRight: 8 }}>
-          {roleCards.map((r, i) => <div key={r.id} style={{ position: 'absolute', left: Math.round(lefts[i] * CW), bottom: 0, width: CW, height: CH, display: 'flex' }}><RoleFront S={S} r={r} idx={first + i} site={site} rot={rots[i]} /></div>)}
+          {roleCards.map((r, i) => <div key={r.id} style={{ position: 'absolute', left: Math.round(lefts[i] * CW), bottom: 0, width: CW, height: CH, display: 'flex' }}><RoleFront S={S} r={r} idx={firstIdx + i} site={site} rot={rots[i]} /></div>)}
           {free ? <div style={{ position: 'absolute', left: Math.round(lefts[n - 1] * CW), bottom: 0, width: CW, height: CH, display: 'flex' }}><FreeFront S={S} rot={rots[n - 1]} /></div> : null}
         </div>
       </div>
