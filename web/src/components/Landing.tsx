@@ -101,7 +101,7 @@ export function Landing({ tryHref = '/app?example', signInHref = '/login', onTry
         <div>
           <div className="eyebrow">Between teams?</div>
           <h2>The free-agent card keeps the hunt on the same shelf.</h2>
-          <p>While you&apos;re out of a contract, a blue card sits at the end of the pack with what you&apos;re open to. Switch to the Timeline view to log every application, interview and denial on one line you can pan and zoom, with the days since counted for you. None of it is ever on your public page.</p>
+          <p>While you&apos;re out of a contract, a blue card sits at the end of the pack with what you&apos;re open to. Switch to the Timeline view to log every application, interview and denial on one line you can pan and zoom, with the days since counted for you. No need to type it all in by hand: import the spreadsheet you already track applications in and the rows land on the timeline. None of it is ever on your public page.</p>
         </div>
         <div className="glossary">
           {GLOSSARY.map(([k, v]) => <div key={k}><b>{k}</b><span>{v}</span></div>)}
