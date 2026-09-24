@@ -113,7 +113,9 @@
 .card .front{padding:18% 8% 7%}
 .card .front::before,.card .back::before{content:"";position:absolute;inset:2.6cqw;border:1.5px solid var(--b);border-radius:4.2cqw;pointer-events:none;z-index:0}
 .card.free .front::before{border-color:#dc4432}
-.card .num{top:3.4cqw;right:7.4%}
+/* the number badge tucks into the frame's top-right corner, the same distance from both lines */
+.card .num{top:3.9cqw;right:3.9cqw}
 /* the back's header band sits inside the rule and shares its top corners */
 .card .back{padding:0 8% 6.5%}
-.card .hdr{margin:2.6cqw calc(-8% + 2.6cqw) 3%;border-radius:4.2cqw 4.2cqw 0 0}
+/* the band's negative margin is a share of the content width, the padding a share of the card, so the 8% is scaled by 1/0.84 to land on the rule (a hair past it: the rule paints on top) */
+.card .hdr{margin:2.55cqw calc(-9.6% + 2.6cqw) 3%;border-radius:4.2cqw 4.2cqw 0 0}
