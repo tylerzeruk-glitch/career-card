@@ -71,6 +71,12 @@ function splitName(name: string) {
   const n = (name || '').trim(), i = n.lastIndexOf(' ');
   return i > 0 ? [n.slice(0, i), n.slice(i + 1)] : ['', n];
 }
+/** The name on a share card: first name and last initial, "George C." */
+function shortName(name: string) {
+  const w = (name || '').trim().replace(/,.*$/, '').split(/\s+/).filter(Boolean);
+  if (!w.length) return 'Your name';
+  return w.length === 1 ? w[0] : w[0] + ' ' + w[w.length - 1][0].toUpperCase() + '.';
+}
 
 function RoleFront({ S, r, idx, site, rot }: { S: State; r: State['roles'][number]; idx: number; site: string; rot: number }) {
   const [a, b] = pairFor(S, r.company), p = S.profile, [fn, ln] = splitName(p.name);
@@ -89,7 +95,7 @@ function RoleFront({ S, r, idx, site, rot }: { S: State; r: State['roles'][numbe
         </div>
         <Badge code={r.code || codeFor(r.title)} />
       </div>
-      <Who name={p.name} fn="" ln={ln} />
+      <Who name={p.name} fn="" ln={shortName(p.name)} />
     </div>
   );
 }
@@ -104,7 +110,7 @@ function FreeFront({ S, rot }: { S: State; rot: number }) {
         <div style={{ display: 'flex', fontFamily: LILITA, fontSize: q(7.5), lineHeight: 1.15, textTransform: 'uppercase', textAlign: 'center' }}>{open || 'Offers'}</div>
         <Badge code="FA" right />
       </div>
-      <div style={{ display: 'flex', fontFamily: LILITA, fontSize: q(10), letterSpacing: '0.02em', textTransform: 'uppercase', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', width: '100%' }}>{ln || p.name || 'Your name'}</div>
+      <div style={{ display: 'flex', fontFamily: LILITA, fontSize: q(10), letterSpacing: '0.02em', textTransform: 'uppercase', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', width: '100%' }}>{shortName(p.name)}</div>
       {void fn}
     </div>
   );
