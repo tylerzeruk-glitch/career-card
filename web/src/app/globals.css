@@ -587,7 +587,7 @@ kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--hair);border-r
   /* the deck is a swipe carousel: one card at a time, snapping, the next one peeking in; dots under it say where you are */
   :root{--cw:72vw}
   /* a horizontal scroller clips vertically too, so the padding leaves room for the whole card shadow (it reaches about 36px below the card) */
-  .shelf.swipe{overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;gap:14px;padding:24px calc((100vw - var(--cw)) / 2) 44px;margin-inline:calc(-1 * var(--gut));justify-content:flex-start;scrollbar-width:none}
+  .shelf.swipe{overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;gap:14px;padding:46px calc((100vw - var(--cw)) / 2) 44px;margin:-22px calc(-1 * var(--gut)) 0;justify-content:flex-start;scrollbar-width:none} /* headroom for a fanned stack and its shadow, as on the desktop shelf */
   .shelf.swipe::-webkit-scrollbar{display:none}
   .shelf.swipe > *{margin-left:0!important;scroll-snap-align:center}
   .shelf.swipe > *:hover,.shelf.swipe > *:focus-within{transform:none}
