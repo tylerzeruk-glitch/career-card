@@ -552,13 +552,17 @@ kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--hair);border-r
 .lfoot a{white-space:nowrap}
 .lfoot .flag{color:var(--red)}
 @media (max-width:820px){
-  .landing{--hw:clamp(120px,30vw,190px);--pop:1.18;gap:44px}
+  /* the hand runs margin to margin on a phone: the cards are the point. --pop keeps a picked card inside the screen */
+  .landing{--hw:clamp(170px,48vw,220px);--pop:1.85;gap:44px}
+  .hand{width:calc(var(--hw) * 1.95)}
+  .handwrap{padding-inline:0}
+  .landing .eyebrow{white-space:normal}
   .lfoot{flex-direction:column;align-items:flex-start;gap:8px}
   .hero{grid-template-columns:1fr;gap:30px}
   .handwrap{order:-1;margin-bottom:10px}
   /* on a phone the picked card grows to about double, centred, over a dimmed and blurred page; tapping the page settles it */
   .hand-dim{display:block;position:fixed;inset:0;z-index:8;background:rgba(20,18,14,.3);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);animation:fade .25s ease-out}
-  .hand .card.out{transform-origin:50% 50%;transform:translate(var(--dx,0px),12%) rotate(0deg) scale(2.15)}
+  .hand .card.out{transform-origin:50% 50%;transform:translate(var(--dx,0px),12%) rotate(0deg) scale(var(--pop))}
   .steps{grid-template-columns:1fr;gap:18px}
   .hunt{grid-template-columns:1fr;padding:26px 22px;gap:22px}
   .glossary div{grid-template-columns:120px 1fr}
