@@ -31,6 +31,8 @@ preceded it.
 - **Timeline view:** the pan/zoom viewport from `job-hunt-timeline`, with role
   spans above the line in company colours, a hatched free-agency zone, and the
   job-hunt events on the line. Career / Free agency / − / + / Today presets.
+- **Phones:** the deck becomes a swipe carousel, one card at a time with the
+  next peeking in and dots underneath; it opens on the newest card.
 - **Drawer:** Role, Event, Profile, Share and Log tabs. Team colours are chosen per
   company from ten validated pairs; a stable default is derived from the name.
 - **Free agency off:** a switch under Profile → Free agency for anyone retired,

@@ -3,6 +3,7 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react
 import { useCard } from './store';
 import { useUI } from './ui';
 import { FreeCard, RoleCard, SummaryCard, UnderCard } from './Cards';
+import { ShelfDots } from './ShelfDots';
 import { norm, pairFor, roles, runs, status } from '@/lib/derived';
 
 import { layoutDeck } from '@/lib/deck';
@@ -96,6 +97,7 @@ export function Deck() {
       <div className="shelf" ref={shelf} onKeyDown={(e) => { if (e.key !== 'Enter' && e.key !== ' ') return; const card = (e.target as HTMLElement).closest<HTMLElement>('.card[data-id]'); if (card) { e.preventDefault(); openFocus(card.dataset.id!); } }}>
         {items}
       </div>
+      <ShelfDots shelf={shelf} count={items.length - 1} />
       {/* the grouping switch: radio dots under the deck, lined up with the first card */}
       <div className="shelf-foot">
         <GroupToggle group={S.settings.group} onPick={pick} />

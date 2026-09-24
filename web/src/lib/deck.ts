@@ -1,4 +1,7 @@
+import { centerOn, shelfItems } from '@/components/ShelfDots';
+
 const GAP = 22, MIN_STRIP = 48;
+export const PHONE = '(max-width: 700px)';
 
 /**
  * Lay a shelf out as a deck: overlap the cards from the left just enough to
@@ -13,6 +16,13 @@ export function layoutDeck(el: HTMLElement, host: HTMLElement | null, opts: { gh
   const items = kids.filter((k) => !k.classList.contains('empty-shelf') && !k.classList.contains('ghost'));
   const setVars = (v: Record<string, string>) => host && Object.entries(v).forEach(([k, val]) => (val ? host.style.setProperty(k, val) : host.style.removeProperty(k)));
   const clear = () => setVars({ '--deck-ml': '', '--fold-ml': '', '--fold-w': '' });
+  // a phone: a swipe carousel instead of a deck (styles under .shelf.swipe), parked on the newest card the first time
+  if (typeof window !== 'undefined' && window.matchMedia(PHONE).matches) {
+    el.classList.add('swipe'); el.classList.remove('scroll'); el.style.setProperty('--ml', GAP + 'px'); clear();
+    if (!el.dataset.parked && items.length) { el.dataset.parked = '1'; const cards = shelfItems(el); centerOn(el, cards[cards.length - 1], false); }
+    return;
+  }
+  el.classList.remove('swipe');
   if (items.length < 2) { el.style.setProperty('--ml', items.length ? GAP + 'px' : '0px'); el.classList.remove('scroll'); clear(); return; }
   const n = items.length, widths = items.map((k) => k.offsetWidth), sum = widths.reduce((a, b) => a + b, 0), cw = widths[0];
   // the slim tabs (Add a role, Restack) take their real width plus their left margin

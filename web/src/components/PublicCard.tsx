@@ -4,6 +4,7 @@ import type { State } from '@/lib/types';
 import { careerStats, roles, skillTally, status } from '@/lib/derived';
 import { layoutDeck } from '@/lib/deck';
 import { FreeCard, RoleCard } from './Cards';
+import { ShelfDots } from './ShelfDots';
 import { FocusView } from './Focus';
 import { ThemeToggle } from './ThemeToggle';
 import { Flag, SiteFoot } from './Landing';
@@ -44,6 +45,7 @@ export function PublicCard({ S }: { S: State }) {
         {rs.map((r, i) => <div key={r.id} className="slot"><RoleCard S={S} r={r} idx={i} total={rs.length} onClick={() => flip(r.id)} /></div>)}
         {st.free && <div className="slot"><FreeCard S={S} share onClick={() => flip('free')} /></div>}
       </div>
+      <ShelfDots shelf={shelf} count={rs.length + (st.free ? 1 : 0)} />
       <div className={'flipme' + (touched ? ' off' : '')} aria-hidden="true">
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12a9 9 0 0 1 15.5-6.3" /><path d="M18.5 2v4h-4" /><path d="M21 12a9 9 0 0 1-15.5 6.3" /><path d="M5.5 22v-4h4" /></svg>
         Tap a card to flip it over
