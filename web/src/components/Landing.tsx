@@ -154,7 +154,7 @@ function Still({ S }: { S: State }) {
 }
 
 /** Where "Contact me" goes: a Cloudflare Email Routing forward to the owner's inbox (no mailbox behind it). Empty makes the link inert. */
-const CONTACT_EMAIL = 'hello@careercards.app';
+const CONTACT_EMAIL = 'contact@careercards.app';
 
 /** The footer every page ends on. `signInHref` null hides the sign-in link (signed in). */
 export function SiteFoot({ signInHref = '/login' }: { signInHref?: string | null }) {

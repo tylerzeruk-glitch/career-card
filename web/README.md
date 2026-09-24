@@ -185,7 +185,7 @@ dialog. Duplicates (same date, type, company and title) are skipped on save.
 - Import libraries (SheetJS, JSZip, pdf.js, mammoth) are still loaded from
   cdnjs at import time rather than bundled.
 - A contact sheet for the landing page footer. "Contact me" is a mailto to
-  hello@careercards.app, which Cloudflare Email Routing forwards to the
+  contact@careercards.app, which Cloudflare Email Routing forwards to the
   owner's inbox (the domain's DNS is at Cloudflare; Email → Email Routing on
   the zone, a verified destination address, a custom address that sends to
   it; no mailbox exists). `CONTACT_EMAIL` in `src/components/Landing.tsx`
