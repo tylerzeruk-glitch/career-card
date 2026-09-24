@@ -9,6 +9,37 @@ import { FocusView } from './Focus';
 import { ThemeToggle } from './ThemeToggle';
 import { Flag, SiteFoot } from './Landing';
 
+/** The download button fetches the PDF itself, so it can say what is happening while the server sets the sheet (a second or two), then hands the file to the browser. */
+function ResumeButton({ href, name }: { href: string; name: string }) {
+  const [state, setState] = useState<'idle' | 'busy' | 'done' | 'error'>('idle');
+  const go = async (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (state === 'busy') { e.preventDefault(); return; }
+    if (!('fetch' in window) || !('URL' in window)) return; // the plain link does the job
+    e.preventDefault();
+    setState('busy');
+    try {
+      const r = await fetch(href, { cache: 'no-store' });
+      if (!r.ok) throw new Error(String(r.status));
+      const blob = await r.blob();
+      const m = /filename="([^"]+)"/.exec(r.headers.get('content-disposition') || '');
+      const file = m ? m[1] : (name || 'career').trim().replace(/[^\w]+/g, '-').replace(/^-+|-+$/g, '') + '-resume.pdf';
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = file; document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 60_000);
+      setState('done'); setTimeout(() => setState('idle'), 4000);
+    } catch { setState('error'); setTimeout(() => setState('idle'), 5000); }
+  };
+  return (
+    <a className={'btn outline dl' + (state === 'busy' ? ' busy' : '')} href={href} download onClick={go} aria-live="polite" aria-busy={state === 'busy'}>
+      {state === 'busy' ? <><span className="ring" aria-hidden="true" />Preparing your resume…</>
+        : state === 'done' ? <><CheckIcon />Downloaded</>
+        : state === 'error' ? <><DownloadIcon />Couldn\u2019t build it. Try again</>
+        : <><DownloadIcon />Download as a resume (PDF)</>}
+    </a>
+  );
+}
+
+const CheckIcon = () => <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10" /></svg>;
 const DownloadIcon = () => <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 3v12" /><path d="m7 10 5 5 5-5" /><path d="M5 21h14" /></svg>;
 
 /** The shareable page: cards you can flip, then the resume rows. Read-only, no job hunt. */
@@ -57,7 +88,7 @@ export function PublicCard({ S, slug, resumeHref }: { S: State; slug: string; re
         {(p.summary || skills.length > 0) && <section className="row"><h2>Scouting report</h2><div className="body">{p.summary && <p>{p.summary}</p>}{skills.length > 0 && <div className="tiles">{skills.map(([k]) => <span key={k}>{k}</span>)}</div>}</div></section>}
         {p.education.length > 0 && <section className="row"><h2>Farm system</h2><div className="body"><ul className="list">{p.education.map((e, i) => <li key={i}><span>{e.school}{e.degree ? ' · ' + e.degree : ''}</span><span className="m">{e.years}</span></li>)}</ul></div></section>}
         {p.certs.length > 0 && <section className="row"><h2>Award inserts</h2><div className="body"><ul className="list">{p.certs.map((c, i) => <li key={i}><span>{c.name}{c.issuer ? ' · ' + c.issuer : ''}</span><span className="m">{c.year}</span></li>)}</ul></div></section>}
-        <section className="row"><h2>Stat sheet</h2><div className="body"><a className="btn outline dl" href={resumeHref || '/u/' + slug + '/resume'} download><DownloadIcon />Download as a resume (PDF)</a><span className="hint">The same rows as this page, on one sheet.</span></div></section>
+        <section className="row"><h2>Stat sheet</h2><div className="body"><ResumeButton href={resumeHref || '/u/' + slug + '/resume'} name={p.name} /><span className="hint">The same rows as this page, on one sheet.</span></div></section>
         {(p.email || p.linkedin) && <section className="row"><h2>Contact</h2><div className="body"><ul className="list inline">{p.email && <li><a href={'mailto:' + p.email}>{p.email}</a></li>}{p.linkedin && <li><a href={p.linkedin} target={p.linkedin === '#' ? undefined : '_blank'} rel="noopener" title={p.linkedin === '#' ? 'Example only' : undefined} onClick={p.linkedin === '#' ? (e) => e.preventDefault() : undefined}>LinkedIn</a></li>}</ul></div></section>}
       </div>
       <SiteFoot signInHref="/login" contact={false} />
