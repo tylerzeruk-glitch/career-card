@@ -1,4 +1,4 @@
-import { shareImage, SHARE_SIZE } from '@/lib/og/share';
+import { shareImage, SHARE_SIZE, type ShareVariant } from '@/lib/og/share';
 import { sampleState } from '@/lib/sample';
 
 export const alt = 'CareerCards: the resume, reissued as a card set';
@@ -8,5 +8,5 @@ export const dynamic = 'force-dynamic';
 
 /** The example's share image, drawn the same way a player's is: the reference for the renderer. */
 export default async function Image() {
-  return shareImage(sampleState(), process.env.NEXT_PUBLIC_SITE_URL || 'https://careercards.app');
+  return shareImage(sampleState(), process.env.NEXT_PUBLIC_SITE_URL || 'https://careercards.app', undefined, (process.env.OG_VARIANT as ShareVariant) || undefined);
 }

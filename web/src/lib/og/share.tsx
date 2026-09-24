@@ -114,7 +114,9 @@ function FreeFront({ S, rot }: { S: State; rot: number }) {
 }
 
 /** Up to three cards: the most recent roles, and the free-agent card in the last slot when the player is on the market. */
-export async function shareImage(S: State, site: string, slug?: string) {
+export type ShareVariant = 'band' | 'button' | 'eyebrow';
+
+export async function shareImage(S: State, site: string, slug?: string, variant: ShareVariant = 'band') {
   const rs = roles(S), st = status(S), free = st.free && looking(S);
   const p = S.profile, cs = careerStats(S);
   const roleCards = rs.slice(free ? -2 : -3);
@@ -123,26 +125,39 @@ export async function shareImage(S: State, site: string, slug?: string) {
   const lefts = n === 3 ? [0, 0.575, 1.15] : n === 2 ? [0.2, 0.95] : [0.575];
   const handW = Math.round(CW * 2.15), handH = CH + 40;
   const stat = cs ? [[cs.seasons, 'season'], [cs.teams, 'team'], [cs.positions, 'position']].map(([v, k]) => `${v} ${k}${v === 1 ? '' : 's'}`).join('  ·  ') : '';
-  const sub = [p.headline, p.location].filter(Boolean).join(' · ');
+  const sub = p.headline || '';
   const first = (p.name || '').trim().split(/\s+/)[0];
   const cta = first ? `View ${first}\u2019s cards and make your own.` : 'View the cards and make your own.';
   const firstIdx = roleCards[0] ? Math.max(0, rs.indexOf(roleCards[0])) : 0;
   return new ImageResponse(
     (
-      <div style={{ width: '100%', height: '100%', display: 'flex', background: '#f2eee5', color: '#1c1b18', padding: '0 64px', alignItems: 'center', justifyContent: 'space-between' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', width: 1200 - 128 - handW - 24, height: '100%', justifyContent: 'center' }}>
-          <div style={{ display: 'flex', alignItems: 'center', marginBottom: 26 }}>
-            <svg width="34" height="34" viewBox="0 0 64 64"><path d={FLAG} fill="#dc4432" /></svg>
-            <div style={{ display: 'flex', marginLeft: 8, fontFamily: LILITA, fontSize: 30, letterSpacing: '0.02em' }}>CareerCards</div>
-          </div>
+      <div style={{ width: '100%', height: '100%', display: 'flex', background: '#f2eee5', color: '#1c1b18', padding: '0 64px', alignItems: 'center', justifyContent: 'space-between', position: 'relative' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', width: 1200 - 128 - handW - 24, justifyContent: 'center', marginBottom: variant === 'button' ? 0 : 70 }}>
+          {variant === 'eyebrow'
+            ? <div style={{ display: 'flex', fontFamily: BARLOW, fontSize: 19, letterSpacing: '0.16em', textTransform: 'uppercase', color: '#dc4432', marginBottom: 18 }}>{first ? `View ${first}\u2019s cards · Make your own` : 'View the cards · Make your own'}</div>
+            : <div style={{ display: 'flex', alignItems: 'center', marginBottom: 26 }}>
+                <svg width="34" height="34" viewBox="0 0 64 64"><path d={FLAG} fill="#dc4432" /></svg>
+                <div style={{ display: 'flex', marginLeft: 8, fontFamily: LILITA, fontSize: 30, letterSpacing: '0.02em' }}>CareerCards</div>
+              </div>}
           {free ? <div style={{ display: 'flex', alignSelf: 'flex-start', alignItems: 'center', background: '#dc4432', color: '#fff', fontFamily: BARLOW, fontSize: 16, letterSpacing: '0.14em', textTransform: 'uppercase', padding: '8px 12px', borderRadius: 4, transform: 'rotate(-2deg)', marginBottom: 16 }}><svg width="16" height="16" viewBox="0 0 64 64"><path d={FLAG} fill="#fff" /></svg><span style={{ marginLeft: 8 }}>Free agent · open to offers</span></div> : null}
-          <div style={{ display: 'flex', fontFamily: BARLOW, fontSize: 60, lineHeight: 0.98, letterSpacing: '0.02em', textTransform: 'uppercase', marginBottom: 14 }}>{p.name || 'Career'}</div>
+          <div style={{ display: 'flex', fontFamily: BARLOW, fontSize: 62, lineHeight: 0.98, letterSpacing: '0.02em', textTransform: 'uppercase', marginBottom: 14 }}>{p.name || 'Career'}</div>
           {sub ? <div style={{ display: 'flex', fontFamily: CASLON, fontSize: 30, lineHeight: 1.35, color: '#55524a' }}>{sub}</div> : null}
-          {stat ? <div style={{ display: 'flex', marginTop: 16, fontFamily: BARLOW, fontSize: 19, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#8a867b' }}>{stat}</div> : null}
-          <div style={{ display: 'flex', marginTop: 30, fontFamily: CASLON, fontSize: 24, lineHeight: 1.35, color: '#1c1b18' }}>{cta}</div>
-          <div style={{ display: 'flex', marginTop: 12, fontFamily: BARLOW, fontSize: 18, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#dc4432' }}>{slug ? 'careercards.app/u/' + slug : 'careercards.app'}</div>
+          {stat ? <div style={{ display: 'flex', marginTop: 18, fontFamily: BARLOW, fontSize: 23, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#6b6559' }}>{stat}</div> : null}
+          {variant === 'button' ? <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+            <div style={{ display: 'flex', marginTop: 34, background: '#1c1b18', color: '#f2eee5', fontFamily: BARLOW, fontSize: 22, letterSpacing: '0.1em', textTransform: 'uppercase', padding: '13px 22px', borderRadius: 8, whiteSpace: 'nowrap' }}>{first ? `View ${first}\u2019s cards \u2192` : 'View the cards \u2192'}</div>
+            <div style={{ display: 'flex', marginTop: 14, fontFamily: CASLON, fontSize: 21, color: '#55524a', whiteSpace: 'nowrap' }}>Then make your own at <span style={{ color: '#dc4432', marginLeft: 6 }}>careercards.app</span></div>
+          </div> : null}
         </div>
-        <div style={{ position: 'relative', display: 'flex', width: handW, height: handH, marginRight: 8 }}>
+        {variant === 'band' ? <div style={{ position: 'absolute', left: 64, right: 64, bottom: 40, display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', borderTop: '2px solid #dcd6c8', paddingTop: 18 }}>
+          <div style={{ display: 'flex', fontFamily: CASLON, fontSize: 25, color: '#1c1b18' }}>{cta}</div>
+          <div style={{ display: 'flex', fontFamily: BARLOW, fontSize: 19, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#dc4432' }}>{slug ? 'careercards.app/u/' + slug : 'careercards.app'}</div>
+        </div> : null}
+        {variant === 'eyebrow' ? <div style={{ position: 'absolute', left: 64, bottom: 44, display: 'flex', alignItems: 'center' }}>
+          <svg width="26" height="26" viewBox="0 0 64 64"><path d={FLAG} fill="#dc4432" /></svg>
+          <div style={{ display: 'flex', marginLeft: 7, fontFamily: LILITA, fontSize: 24, letterSpacing: '0.02em' }}>CareerCards</div>
+          <div style={{ display: 'flex', marginLeft: 16, fontFamily: BARLOW, fontSize: 19, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#8a867b' }}>{slug ? 'careercards.app/u/' + slug : 'careercards.app'}</div>
+        </div> : null}
+        <div style={{ position: 'relative', display: 'flex', width: handW, height: handH, marginRight: 8, marginBottom: variant === 'button' ? 0 : 70 }}>
           {roleCards.map((r, i) => <div key={r.id} style={{ position: 'absolute', left: Math.round(lefts[i] * CW), bottom: 0, width: CW, height: CH, display: 'flex' }}><RoleFront S={S} r={r} idx={firstIdx + i} site={site} rot={rots[i]} /></div>)}
           {free ? <div style={{ position: 'absolute', left: Math.round(lefts[n - 1] * CW), bottom: 0, width: CW, height: CH, display: 'flex' }}><FreeFront S={S} rot={rots[n - 1]} /></div> : null}
         </div>
