@@ -153,15 +153,15 @@ function Still({ S }: { S: State }) {
   );
 }
 
-/** Where "Contact us" goes. Empty until hello@careercards.app forwards somewhere; the link is inert until then. */
-const CONTACT_EMAIL = '';
+/** Where "Contact me" goes: a Cloudflare Email Routing forward to the owner's inbox (no mailbox behind it). Empty makes the link inert. */
+const CONTACT_EMAIL = 'hello@careercards.app';
 
 /** The footer every page ends on. `signInHref` null hides the sign-in link (signed in). */
 export function SiteFoot({ signInHref = '/login' }: { signInHref?: string | null }) {
   return (
     <footer className="lfoot">
       <span><Flag size={14} /> CareerCards · © {new Date().getFullYear()}</span>
-      <span>See something wrong? {CONTACT_EMAIL ? <a href={'mailto:' + CONTACT_EMAIL}>Contact us</a> : <span className="soon" title="Coming soon">Contact us</span>}{signInHref && <> · <a href={signInHref}>Sign in</a></>}</span>
+      <span>See something wrong? {CONTACT_EMAIL ? <a href={'mailto:' + CONTACT_EMAIL}>Contact me</a> : <span className="soon" title="Coming soon">Contact me</span>}{signInHref && <> · <a href={signInHref}>Sign in</a></>}</span>
     </footer>
   );
 }

@@ -95,4 +95,4 @@ runs in local mode (this browser only) without any configuration. See
 - Past job hunts as their own free-agency zones.
 - Clean up how entry works in the Role, Event and Profile flyout (web app).
 - Greenhouse.io integration for the job-hunt timeline (web app).
-- A contact-us sheet behind the landing page's "See something wrong? Contact us" link (it is a mailto for now).
+- A contact sheet behind the landing page's "See something wrong? Contact me" link (a mailto to hello@careercards.app, forwarded by Cloudflare Email Routing, for now).
