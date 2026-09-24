@@ -298,7 +298,7 @@ function PortraitPicker() {
     try {
       const avatar = await pickTake(t.path);
       update((s) => ({ ...s, profile: { ...s.profile, avatar } }), keep);
-      setTakes([]); setMsg('Saved. It shows on every card, in each team\'s colours, and on your page.');
+      setTakes([]); setMsg('Saved. It shows on every card, in each team\'s colors, and on your page.');
     } catch (e) { setMsg((e as Error).message); }
     setPicking(null);
   };
@@ -332,7 +332,7 @@ function PortraitPicker() {
             </div>
           )}
           <span className="help">{msg || (user && p.photo ? 'The model redraws your photo as a riso print like George\'s: four takes, pick one. Each deal is a few cents, so there is a daily limit.' : 'A headshot works best: face the camera, plain background. Drop one on the square or choose a file; it is cropped to the center.')}</span>
-          {!user && <span className="help nudge"><b>Sign in</b> and your photo gets drawn in the house style, like George: a riso portrait in every team&apos;s colours. <a href="/login">Sign in</a></span>}
+          {!user && <span className="help nudge"><b>Sign in</b> and your photo gets drawn in the house style, like George: a riso portrait in every team&apos;s colors. <a href="/login">Sign in</a></span>}
         </div>
       </div>
       {takes.length > 0 && (
