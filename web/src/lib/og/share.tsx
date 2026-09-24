@@ -78,15 +78,21 @@ function shortName(name: string) {
   return w.length === 1 ? w[0] : w[0] + ' ' + w[w.length - 1][0].toUpperCase() + '.';
 }
 
+// the thin rounded rule just inside the square-cut edge
+function Frame({ color }: { color: string }) {
+  return <div style={{ position: 'absolute', left: q(2.6), top: q(2.6), right: q(2.6), bottom: q(2.6), border: `1.5px solid ${color}`, borderRadius: q(4.2) }} />;
+}
+
 function RoleFront({ S, r, idx, site, rot }: { S: State; r: State['roles'][number]; idx: number; site: string; rot: number }) {
   const [a, b] = pairFor(S, r.company), p = S.profile, [fn, ln] = splitName(p.name);
   const av = p.avatar ? avatarSrc(p.avatar, pairIndexFor(S, r.company)) : '';
   const src = av ? (av.startsWith('/') ? site + av : av) : '';
   const photo = !!p.avatar && isPhoto(p.avatar);
-  const inner = CW - 2 * Math.round(CW * 0.065); // the art box is square so a bust never loses its head
+  const inner = CW - 2 * Math.round(CW * 0.08); // the art box is square so a bust never loses its head
   void idx; void fn;
   return (
-    <div style={{ position: 'absolute', bottom: 0, width: CW, height: CH, transformOrigin: '50% 115%', transform: `rotate(${rot}deg)`, display: 'flex', flexDirection: 'column', background: '#fbf6ea', borderRadius: 12, border: '2px solid #fffaf0', boxShadow: '-5px 0 14px rgba(0,0,0,.16), 0 10px 26px rgba(0,0,0,.16)', padding: `${Math.round(CW * 0.15)}px ${Math.round(CW * 0.065)}px ${Math.round(CW * 0.06)}px`, color: '#1c1b18' }}>
+    <div style={{ position: 'absolute', bottom: 0, width: CW, height: CH, transformOrigin: '50% 115%', transform: `rotate(${rot}deg)`, display: 'flex', flexDirection: 'column', background: '#fbf6ea', borderRadius: 0, border: '2px solid #fffaf0', boxShadow: '-5px 0 14px rgba(0,0,0,.16), 0 10px 26px rgba(0,0,0,.16)', padding: `${Math.round(CW * 0.15)}px ${Math.round(CW * 0.08)}px ${Math.round(CW * 0.06)}px`, color: '#1c1b18' }}>
+      <Frame color={b} />
       <div style={{ position: 'relative', display: 'flex', width: inner, height: inner, marginBottom: q(11), borderRadius: q(5), borderTopLeftRadius: 0, background: a, border: `2px solid ${b}`, alignItems: 'center', justifyContent: 'center', overflow: 'visible' }}>
         <Pennant text={r.company} a={a} b={b} />
         <div style={{ position: 'absolute', left: 0, top: 0, right: 0, bottom: 0, borderRadius: q(5), borderTopLeftRadius: 0, overflow: 'hidden', display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}>
@@ -103,8 +109,9 @@ function RoleFront({ S, r, idx, site, rot }: { S: State; r: State['roles'][numbe
 function FreeFront({ S, rot }: { S: State; rot: number }) {
   const p = S.profile, [fn, ln] = splitName(p.name), open = (p.targets || []).slice(0, 3).join(' · ');
   return (
-    <div style={{ position: 'absolute', bottom: 0, width: CW, height: CH, transformOrigin: '50% 115%', transform: `rotate(${rot}deg)`, display: 'flex', flexDirection: 'column', background: '#1f2a44', borderRadius: 12, border: '2px solid #3a466a', boxShadow: '-5px 0 14px rgba(0,0,0,.16), 0 10px 26px rgba(0,0,0,.16)', padding: `${Math.round(CW * 0.15)}px ${Math.round(CW * 0.065)}px ${Math.round(CW * 0.06)}px`, color: '#fbf6ea' }}>
-      <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', width: CW - 2 * Math.round(CW * 0.065), height: CW - 2 * Math.round(CW * 0.065), marginBottom: q(11), borderRadius: q(5), borderTopLeftRadius: 0, background: 'rgba(255,255,255,.07)', border: '2px solid rgba(255,255,255,.35)', alignItems: 'center', justifyContent: 'center', padding: '6%', textAlign: 'center' }}>
+    <div style={{ position: 'absolute', bottom: 0, width: CW, height: CH, transformOrigin: '50% 115%', transform: `rotate(${rot}deg)`, display: 'flex', flexDirection: 'column', background: '#1f2a44', borderRadius: 0, border: '2px solid #3a466a', boxShadow: '-5px 0 14px rgba(0,0,0,.16), 0 10px 26px rgba(0,0,0,.16)', padding: `${Math.round(CW * 0.15)}px ${Math.round(CW * 0.08)}px ${Math.round(CW * 0.06)}px`, color: '#fbf6ea' }}>
+      <Frame color="#dc4432" />
+      <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', width: CW - 2 * Math.round(CW * 0.08), height: CW - 2 * Math.round(CW * 0.08), marginBottom: q(11), borderRadius: q(5), borderTopLeftRadius: 0, background: 'rgba(255,255,255,.07)', border: '2px solid rgba(255,255,255,.35)', alignItems: 'center', justifyContent: 'center', padding: '6%', textAlign: 'center' }}>
         <Pennant text="Free agent" a="#fbf6ea" b="#dc4432" wide />
         <div style={{ display: 'flex', fontFamily: BARLOW, fontSize: q(4.6), letterSpacing: '0.2em', textTransform: 'uppercase', opacity: 0.7, marginBottom: q(3) }}>Open to</div>
         <div style={{ display: 'flex', fontFamily: LILITA, fontSize: q(7.5), lineHeight: 1.15, textTransform: 'uppercase', textAlign: 'center' }}>{open || 'Offers'}</div>

@@ -125,7 +125,7 @@ a.btn{text-decoration:none;display:inline-block}
 .stack .card.top{position:relative}
 .stack .under1{transform:translate(8px,-6px) rotate(2deg);z-index:-1}
 .stack .under2{transform:translate(16px,-12px) rotate(4deg);z-index:-2}
-.ghost{width:48px;height:calc(var(--cw) * 1.4);margin-left:var(--gap)!important;border:1.5px dashed var(--muted);border-radius:10px;display:grid;place-items:center;font:700 11px var(--cond);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);cursor:pointer;background:transparent;writing-mode:vertical-rl;padding:0}
+.ghost{width:48px;height:calc(var(--cw) * 1.4);margin-left:var(--gap)!important;border:1.5px dashed var(--muted);border-radius:0;display:grid;place-items:center;font:700 11px var(--cond);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);cursor:pointer;background:transparent;writing-mode:vertical-rl;padding:0}
 .ghost:hover{color:var(--ink);border-color:var(--ink)}
 @media (hover:none){.shelf > *:hover{transform:none}}
 
