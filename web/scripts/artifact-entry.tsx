@@ -14,7 +14,7 @@ function Preview() {
   const [page, setPage] = useState<Page>('landing');
   const [pub] = useState(sampleState);
   const body = page === 'app' ? <CareerCardApp user={null} cloud={null} />
-    : page === 'public' ? <PublicCard S={pub} />
+    : page === 'public' ? <PublicCard S={pub} slug="george" resumeHref="https://careercards.app/share-card/resume" />
     : <Landing onTry={() => { (window as unknown as { __EXAMPLE__?: boolean }).__EXAMPLE__ = true; setPage('app'); }} signInHref="https://careercards.app/login" />;
   return (
     <>

@@ -206,6 +206,17 @@ function EventForm({ eventId, prefill }: { eventId: string | null; prefill: Part
 // ---------- profile + page settings ----------
 /** Where the browser lands after LinkedIn: the callback sends it home with this, and the picker carries on. */
 export const LINKEDIN_RETURN = '/?portrait=linkedin';
+
+/** A LinkedIn address as typed ("linkedin.com/in/you", "www.linkedin.com/in/you/", or just "you") becomes a full URL; anything else is kept as typed. */
+export function linkedinUrl(raw: string): string {
+  const v = raw.trim();
+  if (!v) return '';
+  if (/^https?:\/\//i.test(v)) return v;
+  if (/^(www\.)?linkedin\.com\//i.test(v)) return 'https://' + v.replace(/^www\./i, 'www.').replace(/^linkedin\.com/i, 'www.linkedin.com');
+  if (/^in\/[\w-]+\/?$/i.test(v)) return 'https://www.linkedin.com/' + v.replace(/\/$/, '');
+  if (/^[\w-]+$/.test(v)) return 'https://www.linkedin.com/in/' + v;
+  return v;
+}
 export const PORTRAIT_NOTE = 'careercard.portrait';
 
 const LinkedInMark = <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><rect width="24" height="24" rx="3" fill="#0A66C2" /><path fill="#fff" d="M6.9 9.5h2.6V18H6.9zM8.2 5.3a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zM11.2 9.5h2.5v1.2c.4-.7 1.3-1.4 2.7-1.4 2.8 0 3.3 1.8 3.3 4.2V18h-2.6v-3.9c0-.9 0-2.1-1.3-2.1s-1.5 1-1.5 2.1V18h-2.6V9.5z" /></svg>;
@@ -361,7 +372,7 @@ function ProfileForm() {
   const submit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
-    update((s) => ({ ...s, profile: { ...s.profile, name: field(fd, 'name'), headline: field(fd, 'headline'), location: field(fd, 'location'), summary: field(fd, 'summary'), targets, skills: pskills, email: field(fd, 'email'), linkedin: field(fd, 'linkedin'), education: edu.map((r) => ({ school: r.school.trim(), degree: r.degree.trim(), years: r.inProgress ? (r.start.trim() ? r.start.trim() + '–present' : 'In progress') : [r.start.trim(), r.end.trim()].filter(Boolean).join('–') })).filter((r) => r.school), certs: certs.map((c) => ({ name: c.name.trim(), issuer: c.issuer.trim(), year: c.inProgress ? 'In progress' : c.year.trim() })).filter((c) => c.name) } }));
+    update((s) => ({ ...s, profile: { ...s.profile, name: field(fd, 'name'), headline: field(fd, 'headline'), location: field(fd, 'location'), summary: field(fd, 'summary'), targets, skills: pskills, email: field(fd, 'email'), linkedin: linkedinUrl(field(fd, 'linkedin')), education: edu.map((r) => ({ school: r.school.trim(), degree: r.degree.trim(), years: r.inProgress ? (r.start.trim() ? r.start.trim() + '–present' : 'In progress') : [r.start.trim(), r.end.trim()].filter(Boolean).join('–') })).filter((r) => r.school), certs: certs.map((c) => ({ name: c.name.trim(), issuer: c.issuer.trim(), year: c.inProgress ? 'In progress' : c.year.trim() })).filter((c) => c.name) } }));
     setDirty(false); setMsg('Saved.'); flash('Saved.');
   };
 
@@ -422,7 +433,7 @@ function ProfileForm() {
         <div className="group"><div className="gh">Contact</div>
         <div className="row2">
           <div className="field"><label htmlFor="p-email">Email</label><input id="p-email" name="email" type="email" defaultValue={p.email} /></div>
-          <div className="field"><label htmlFor="p-linkedin">LinkedIn URL</label><input id="p-linkedin" name="linkedin" type="url" placeholder="https://www.linkedin.com/in/you" defaultValue={p.linkedin === '#' ? '' : p.linkedin} /></div>
+          <div className="field"><label htmlFor="p-linkedin">LinkedIn URL</label><input id="p-linkedin" name="linkedin" type="text" inputMode="url" autoCapitalize="off" autoCorrect="off" spellCheck={false} placeholder="linkedin.com/in/you" defaultValue={p.linkedin === '#' ? '' : p.linkedin} /></div>
         </div>
         </div>
         <div className={'form-foot' + (dirty ? ' floating' : '')}><button className="btn primary" type="submit">Save profile</button><span className="spacer" /><span className={'status' + (dirty ? ' unsaved' : '')}>{dirty ? 'Unsaved changes' : msg}</span></div>

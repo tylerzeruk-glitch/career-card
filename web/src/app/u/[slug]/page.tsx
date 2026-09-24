@@ -20,5 +20,5 @@ export default async function Page({ params }: PageProps<'/u/[slug]'>) {
   const { slug } = await params;
   const S = await load(slug);
   if (!S) notFound();
-  return <PublicCard S={S} />;
+  return <PublicCard S={S} slug={slug} />;
 }

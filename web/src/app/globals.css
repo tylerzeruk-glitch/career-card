@@ -629,3 +629,7 @@ kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--hair);border-r
   .fold{margin-left:0;width:auto}
   .pub .flipme{margin:-4px 0 8px}
 }
+/* the resume download on the public page: an outlined button with a line of context under it */
+.btn.outline{border:1.5px solid var(--ink);background:transparent;color:var(--ink);display:inline-flex;align-items:center;gap:8px;padding:8px 14px;font-weight:600}
+.btn.outline:hover{background:var(--ink);color:var(--bg)}
+.row .body .dl + .hint{display:block;margin-top:8px;font-size:12.5px;color:var(--muted)}

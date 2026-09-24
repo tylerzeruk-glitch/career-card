@@ -156,12 +156,12 @@ function Still({ S }: { S: State }) {
 /** Where "Contact me" goes: a Cloudflare Email Routing forward to the owner's inbox (no mailbox behind it). Empty makes the link inert. */
 const CONTACT_EMAIL = 'contact@careercards.app';
 
-/** The footer every page ends on. `signInHref` null hides the sign-in link (signed in). */
-export function SiteFoot({ signInHref = '/login' }: { signInHref?: string | null }) {
+/** The footer every page ends on. `signInHref` null hides the sign-in link (signed in); `contact` false drops the site's contact link (on someone's shared page it would read as a way to reach them). */
+export function SiteFoot({ signInHref = '/login', contact = true }: { signInHref?: string | null; contact?: boolean }) {
   return (
     <footer className="lfoot">
       <span><Flag size={14} /> CareerCards · © {new Date().getFullYear()}</span>
-      <span>See something wrong? {CONTACT_EMAIL ? <a href={'mailto:' + CONTACT_EMAIL}>Contact me</a> : <span className="soon" title="Coming soon">Contact me</span>}{signInHref && <> · <a href={signInHref}>Sign in</a></>}</span>
+      <span>{contact ? <>See something wrong? {CONTACT_EMAIL ? <a href={'mailto:' + CONTACT_EMAIL}>Contact me</a> : <span className="soon" title="Coming soon">Contact me</span>}{signInHref && <> · </>}</> : null}{signInHref && <a href={signInHref}>Sign in</a>}</span>
     </footer>
   );
 }

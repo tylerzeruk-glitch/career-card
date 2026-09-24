@@ -9,8 +9,11 @@ import { FocusView } from './Focus';
 import { ThemeToggle } from './ThemeToggle';
 import { Flag, SiteFoot } from './Landing';
 
+const DownloadIcon = () => <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 3v12" /><path d="m7 10 5 5 5-5" /><path d="M5 21h14" /></svg>;
+
 /** The shareable page: cards you can flip, then the resume rows. Read-only, no job hunt. */
-export function PublicCard({ S }: { S: State }) {
+/** `resumeHref` overrides where the download goes (the single-file preview points it at the site). */
+export function PublicCard({ S, slug, resumeHref }: { S: State; slug: string; resumeHref?: string }) {
   const p = S.profile, rs = roles(S), cs = careerStats(S), st = status(S), skills = skillTally(S);
   const shelf = useRef<HTMLDivElement>(null);
   const host = useRef<HTMLDivElement>(null);
@@ -54,9 +57,10 @@ export function PublicCard({ S }: { S: State }) {
         {(p.summary || skills.length > 0) && <section className="row"><h2>Scouting report</h2><div className="body">{p.summary && <p>{p.summary}</p>}{skills.length > 0 && <div className="tiles">{skills.map(([k]) => <span key={k}>{k}</span>)}</div>}</div></section>}
         {p.education.length > 0 && <section className="row"><h2>Farm system</h2><div className="body"><ul className="list">{p.education.map((e, i) => <li key={i}><span>{e.school}{e.degree ? ' · ' + e.degree : ''}</span><span className="m">{e.years}</span></li>)}</ul></div></section>}
         {p.certs.length > 0 && <section className="row"><h2>Award inserts</h2><div className="body"><ul className="list">{p.certs.map((c, i) => <li key={i}><span>{c.name}{c.issuer ? ' · ' + c.issuer : ''}</span><span className="m">{c.year}</span></li>)}</ul></div></section>}
+        <section className="row"><h2>Stat sheet</h2><div className="body"><a className="btn outline dl" href={resumeHref || '/u/' + slug + '/resume'} download><DownloadIcon />Download as a resume (PDF)</a><span className="hint">The same rows as this page, on one sheet.</span></div></section>
         {(p.email || p.linkedin) && <section className="row"><h2>Contact</h2><div className="body"><ul className="list inline">{p.email && <li><a href={'mailto:' + p.email}>{p.email}</a></li>}{p.linkedin && <li><a href={p.linkedin} target={p.linkedin === '#' ? undefined : '_blank'} rel="noopener" title={p.linkedin === '#' ? 'Example only' : undefined} onClick={p.linkedin === '#' ? (e) => e.preventDefault() : undefined}>LinkedIn</a></li>}</ul></div></section>}
       </div>
-      <SiteFoot signInHref="/login" />
+      <SiteFoot signInHref="/login" contact={false} />
       {focusId && <FocusView S={S} id={focusId} share onClose={() => setFocusId(null)} />}
     </div>
   );
