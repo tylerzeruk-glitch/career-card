@@ -587,6 +587,9 @@ kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--hair);border-r
   .stage{flex:none;display:block;overflow:visible}
   .view{display:block;min-height:0}
   .scroller{overflow:visible;padding-bottom:0}
+  /* when the free-agent pill wraps under the name it sits centred between the name and the headline */
+  .namerow{row-gap:6px}
+  .namerow .pill{margin:4px 0 10px}
   .tl{height:min(68vh,560px);flex:none}
   /* the deck is a swipe carousel: one card at a time, snapping, the next one peeking in; dots under it say where you are */
   :root{--cw:72vw}
