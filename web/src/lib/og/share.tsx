@@ -77,19 +77,19 @@ function RoleFront({ S, r, idx, site, rot }: { S: State; r: State['roles'][numbe
   const av = p.avatar ? avatarSrc(p.avatar, pairIndexFor(S, r.company)) : '';
   const src = av ? (av.startsWith('/') ? site + av : av) : '';
   const photo = !!p.avatar && isPhoto(p.avatar);
+  const inner = CW - 2 * Math.round(CW * 0.065); // the art box is square so a bust never loses its head
+  void idx; void fn;
   return (
-    <div style={{ position: 'absolute', bottom: 0, width: CW, height: CH, transformOrigin: '50% 115%', transform: `rotate(${rot}deg)`, display: 'flex', flexDirection: 'column', background: '#fbf6ea', borderRadius: 12, border: '2px solid #fffaf0', boxShadow: '-5px 0 14px rgba(0,0,0,.16), 0 10px 26px rgba(0,0,0,.16)', padding: `${Math.round(CW * 0.18)}px ${Math.round(CW * 0.065)}px ${Math.round(CW * 0.06)}px`, color: '#1c1b18' }}>
-      <div style={{ position: 'absolute', top: q(3.2), right: q(5), width: q(11), height: q(11), borderRadius: 999, border: '2px solid #dc4432', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: CASLON, fontSize: q(5.2), color: '#dc4432' }}>{'#' + (idx + 1)}</div>
-      <div style={{ position: 'relative', display: 'flex', width: '100%', height: Math.round(CH * 0.52), marginBottom: q(12), borderRadius: q(5), borderTopLeftRadius: 0, background: a, border: `2px solid ${b}`, alignItems: 'center', justifyContent: 'center', overflow: 'visible' }}>
+    <div style={{ position: 'absolute', bottom: 0, width: CW, height: CH, transformOrigin: '50% 115%', transform: `rotate(${rot}deg)`, display: 'flex', flexDirection: 'column', background: '#fbf6ea', borderRadius: 12, border: '2px solid #fffaf0', boxShadow: '-5px 0 14px rgba(0,0,0,.16), 0 10px 26px rgba(0,0,0,.16)', padding: `${Math.round(CW * 0.15)}px ${Math.round(CW * 0.065)}px ${Math.round(CW * 0.06)}px`, color: '#1c1b18' }}>
+      <div style={{ position: 'relative', display: 'flex', width: inner, height: inner, marginBottom: q(11), borderRadius: q(5), borderTopLeftRadius: 0, background: a, border: `2px solid ${b}`, alignItems: 'center', justifyContent: 'center', overflow: 'visible' }}>
         <Pennant text={r.company} a={a} b={b} />
         <div style={{ position: 'absolute', left: 0, top: 0, right: 0, bottom: 0, borderRadius: q(5), borderTopLeftRadius: 0, overflow: 'hidden', display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}>
-          {src ? <img src={src} width={CW - 2 * Math.round(CW * 0.065) - 4} height={photo ? Math.round(CH * 0.52) - 4 : undefined} style={{ objectFit: photo ? 'cover' : 'contain', objectPosition: 'bottom' }} alt="" />
+          {src ? <img src={src} width={inner - 4} height={inner - 4} style={{ objectFit: photo ? 'cover' : 'contain', objectPosition: 'bottom' }} alt="" />
             : <div style={{ display: 'flex', fontFamily: BARLOW, fontSize: q(34), letterSpacing: '-0.02em', color: b, marginBottom: q(4) }}>{initials(p.name) || '?'}</div>}
         </div>
         <Badge code={r.code || codeFor(r.title)} />
       </div>
-      <Who name={p.name} fn={fn} ln={ln} />
-      <div style={{ display: 'flex', marginTop: q(1.4), fontFamily: BARLOW, fontSize: q(5), letterSpacing: '0.1em', textTransform: 'uppercase', color: b, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', width: '100%' }}>{r.title}</div>
+      <Who name={p.name} fn="" ln={ln} />
     </div>
   );
 }
@@ -97,18 +97,15 @@ function RoleFront({ S, r, idx, site, rot }: { S: State; r: State['roles'][numbe
 function FreeFront({ S, rot }: { S: State; rot: number }) {
   const p = S.profile, [fn, ln] = splitName(p.name), open = (p.targets || []).slice(0, 3).join(' · ');
   return (
-    <div style={{ position: 'absolute', bottom: 0, width: CW, height: CH, transformOrigin: '50% 115%', transform: `rotate(${rot}deg)`, display: 'flex', flexDirection: 'column', background: '#1f2a44', borderRadius: 12, border: '2px solid #3a466a', boxShadow: '-5px 0 14px rgba(0,0,0,.16), 0 10px 26px rgba(0,0,0,.16)', padding: `${Math.round(CW * 0.18)}px ${Math.round(CW * 0.065)}px ${Math.round(CW * 0.06)}px`, color: '#fbf6ea' }}>
-      <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', width: '100%', height: Math.round(CH * 0.52), marginBottom: q(12), borderRadius: q(5), borderTopLeftRadius: 0, background: 'rgba(255,255,255,.07)', border: '2px solid rgba(255,255,255,.35)', alignItems: 'center', justifyContent: 'center', padding: '6%', textAlign: 'center' }}>
+    <div style={{ position: 'absolute', bottom: 0, width: CW, height: CH, transformOrigin: '50% 115%', transform: `rotate(${rot}deg)`, display: 'flex', flexDirection: 'column', background: '#1f2a44', borderRadius: 12, border: '2px solid #3a466a', boxShadow: '-5px 0 14px rgba(0,0,0,.16), 0 10px 26px rgba(0,0,0,.16)', padding: `${Math.round(CW * 0.15)}px ${Math.round(CW * 0.065)}px ${Math.round(CW * 0.06)}px`, color: '#fbf6ea' }}>
+      <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', width: CW - 2 * Math.round(CW * 0.065), height: CW - 2 * Math.round(CW * 0.065), marginBottom: q(11), borderRadius: q(5), borderTopLeftRadius: 0, background: 'rgba(255,255,255,.07)', border: '2px solid rgba(255,255,255,.35)', alignItems: 'center', justifyContent: 'center', padding: '6%', textAlign: 'center' }}>
         <Pennant text="Free agent" a="#fbf6ea" b="#dc4432" wide />
         <div style={{ display: 'flex', fontFamily: BARLOW, fontSize: q(4.6), letterSpacing: '0.2em', textTransform: 'uppercase', opacity: 0.7, marginBottom: q(3) }}>Open to</div>
         <div style={{ display: 'flex', fontFamily: LILITA, fontSize: q(7.5), lineHeight: 1.15, textTransform: 'uppercase', textAlign: 'center' }}>{open || 'Offers'}</div>
         <Badge code="FA" right />
       </div>
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', width: '100%' }}>
-        {fn ? <div style={{ display: 'flex', fontFamily: BARLOW, fontSize: q(5), letterSpacing: '0.14em', textTransform: 'uppercase', color: '#c9c2b2' }}>{fn}</div> : null}
-        <div style={{ display: 'flex', fontFamily: LILITA, fontSize: q(10), letterSpacing: '0.02em', textTransform: 'uppercase', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', width: '100%' }}>{ln || 'Your name'}</div>
-      </div>
-      <div style={{ display: 'flex', marginTop: q(1.4), fontFamily: BARLOW, fontSize: q(5), letterSpacing: '0.1em', textTransform: 'uppercase', color: '#dc4432' }}>Free agent</div>
+      <div style={{ display: 'flex', fontFamily: LILITA, fontSize: q(10), letterSpacing: '0.02em', textTransform: 'uppercase', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', width: '100%' }}>{ln || p.name || 'Your name'}</div>
+      {void fn}
     </div>
   );
 }
@@ -139,7 +136,6 @@ export async function shareImage(S: State, site: string, slug?: string, variant:
                 <svg width="34" height="34" viewBox="0 0 64 64"><path d={FLAG} fill="#dc4432" /></svg>
                 <div style={{ display: 'flex', marginLeft: 8, fontFamily: LILITA, fontSize: 30, letterSpacing: '0.02em' }}>CareerCards</div>
               </div>}
-          {free ? <div style={{ display: 'flex', alignSelf: 'flex-start', alignItems: 'center', background: '#dc4432', color: '#fff', fontFamily: BARLOW, fontSize: 16, letterSpacing: '0.14em', textTransform: 'uppercase', padding: '8px 12px', borderRadius: 4, transform: 'rotate(-2deg)', marginBottom: 16 }}><svg width="16" height="16" viewBox="0 0 64 64"><path d={FLAG} fill="#fff" /></svg><span style={{ marginLeft: 8 }}>Free agent · open to offers</span></div> : null}
           <div style={{ display: 'flex', fontFamily: BARLOW, fontSize: 62, lineHeight: 0.98, letterSpacing: '0.02em', textTransform: 'uppercase', marginBottom: 14 }}>{p.name || 'Career'}</div>
           {sub ? <div style={{ display: 'flex', fontFamily: CASLON, fontSize: 30, lineHeight: 1.35, color: '#55524a' }}>{sub}</div> : null}
           {stat ? <div style={{ display: 'flex', marginTop: 18, fontFamily: BARLOW, fontSize: 23, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#6b6559' }}>{stat}</div> : null}
