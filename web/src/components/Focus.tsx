@@ -98,15 +98,18 @@ export function FocusView({ S, id, onClose, share, onEdit, onTimeline }: { S: St
         <div className="bar">
           <button className="fbtn" title="Turn the card over" aria-label="Turn the card over" onClick={() => setOn(!on)}><FlipIcon /></button>
           {onEdit && <button className="fbtn" title={cur !== 'free' ? 'Edit this role' : 'Edit profile'} aria-label={cur !== 'free' ? 'Edit this role' : 'Edit profile'} onClick={() => onEdit(cur)}><PencilIcon /></button>}
+          <button className="fbtn" title="Close" aria-label="Close" onClick={onClose}><CloseIcon /></button>
         </div>
       </div>
       <button className="nav" title="Next" disabled={idx === list.length - 1} onClick={() => setIdx(idx + 1)}>›</button>
-      <button className="btn icon close nav" title="Close" onClick={onClose}>×</button>
     </div>
   );
 }
 
 /** Two arrows chasing each other: turn the card over. */
+function CloseIcon() {
+  return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>;
+}
 function FlipIcon() {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">

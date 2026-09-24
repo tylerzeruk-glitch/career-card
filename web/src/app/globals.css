@@ -241,7 +241,6 @@ body.drawer-open .focus{padding-right:min(420px,100vw)}
 .focus .fbtn svg{width:18px;height:18px;display:block}
 .focus .bar .btn{background:rgba(255,255,255,.14);color:#fff}
 .focus .bar .btn:hover{background:rgba(255,255,255,.28)}
-.focus .close{position:absolute;top:14px;right:14px}
 .focus .hint{text-align:center;color:rgba(255,255,255,.78);font-size:12px;margin-bottom:-2px}
 
 /* drawer */
