@@ -586,12 +586,13 @@ kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--hair);border-r
   .tl{height:min(68vh,560px);flex:none}
   /* the deck is a swipe carousel: one card at a time, snapping, the next one peeking in; dots under it say where you are */
   :root{--cw:72vw}
-  .shelf.swipe{overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;gap:14px;padding:22px calc((100vw - var(--cw)) / 2) 16px;margin-inline:calc(-1 * var(--gut));justify-content:flex-start;scrollbar-width:none}
+  /* a horizontal scroller clips vertically too, so the padding leaves room for the whole card shadow (it reaches about 36px below the card) */
+  .shelf.swipe{overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;gap:14px;padding:24px calc((100vw - var(--cw)) / 2) 44px;margin-inline:calc(-1 * var(--gut));justify-content:flex-start;scrollbar-width:none}
   .shelf.swipe::-webkit-scrollbar{display:none}
   .shelf.swipe > *{margin-left:0!important;scroll-snap-align:center}
   .shelf.swipe > *:hover,.shelf.swipe > *:focus-within{transform:none}
   .shelf.swipe > .ghost{width:var(--cw);writing-mode:horizontal-tb;font-size:13px}
-  .shelf-dots{display:flex;justify-content:center;gap:8px;padding:0 0 16px}
+  .shelf-dots{display:flex;justify-content:center;gap:8px;padding:0 0 18px;margin-top:-18px}
   .shelf-dots button{width:8px;height:8px;border-radius:50%;border:0;padding:0;background:var(--hair);cursor:pointer;transition:transform .15s,background .15s}
   .shelf-dots button.on{background:var(--red);transform:scale(1.3)}
   .shelf-foot{margin:0 0 16px}
