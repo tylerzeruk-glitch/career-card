@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { supabaseServer } from '@/lib/supabase/server';
 import { prepareTake } from '@/lib/riso';
-import { HOUSE_PROMPT, IMAGE_MODEL, IMAGE_QUALITY, TAKES_PER_DAY } from '@/lib/riso-prompt';
+import { HOUSE_PROMPT, IMAGE_MODEL, IMAGE_QUALITY, TAKES_PER_DAY, unlimited } from '@/lib/riso-prompt';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
   const old = (existing || []).filter((o) => Date.parse(o.created_at || '') < cutoff);
   if (old.length) await sb.storage.from(BUCKET).remove(old.map((o) => folder + '/' + o.name));
   const madeToday = (existing || []).length - old.length;
-  if (madeToday >= TAKES_PER_DAY) return NextResponse.json({ error: 'cap', message: 'That is the limit for today. Deal again tomorrow.' }, { status: 429 });
+  if (madeToday >= TAKES_PER_DAY && !unlimited(user.id)) return NextResponse.json({ error: 'cap', message: 'That is the limit for today. Deal again tomorrow.' }, { status: 429 });
 
   const call = async (fidelity: boolean) => {
     const fd = new FormData();
@@ -65,5 +65,5 @@ export async function POST(req: NextRequest) {
   const path = folder + '/' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 6) + '.png';
   const { error } = await sb.storage.from(BUCKET).upload(path, take, { contentType: 'image/png', cacheControl: '3600' });
   if (error) return NextResponse.json({ error: 'store', message: 'Could not save that take.' }, { status: 500 });
-  return NextResponse.json({ path, url: sb.storage.from(BUCKET).getPublicUrl(path).data.publicUrl, left: TAKES_PER_DAY - madeToday - 1 });
+  return NextResponse.json({ path, url: sb.storage.from(BUCKET).getPublicUrl(path).data.publicUrl, left: unlimited(user.id) ? 99 : TAKES_PER_DAY - madeToday - 1 });
 }

@@ -119,7 +119,7 @@ and saves the avatar as that address with a `{pair}`
 slot, which `avatarSrc` fills per card. Twelve takes per player in a
 rolling 24 hours (`TAKES_PER_DAY`): the takes folder is the count, so
 picking one does not clear it; takes older than a day are removed on the
-next deal. Both routes need a signed-in user; the button only renders for
+next deal; accounts listed in `PORTRAIT_UNLIMITED` (user ids, comma-separated) have no limit. Both routes need a signed-in user; the button only renders for
 one, and the key never leaves the server. Needs `OPENAI_API_KEY`
 on the server (Vercel, sensitive), like the Anthropic key; without it the
 button says drawing is not switched on.
