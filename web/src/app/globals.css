@@ -616,7 +616,8 @@ kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--hair);border-r
   .shelf.swipe::-webkit-scrollbar{display:none}
   .shelf.swipe > *{margin-left:0!important;scroll-snap-align:center}
   .shelf.swipe > *:hover,.shelf.swipe > *:focus-within{transform:none}
-  .shelf.swipe > .ghost{width:var(--cw);writing-mode:horizontal-tb;font-size:13px}
+  /* the add-a-role slot stays the thin upright tab it is on the desktop shelf, tucked after the last card; it is not a snap stop of its own, it comes into view at the end of the swipe */
+  .shelf.swipe > .ghost{scroll-snap-align:end;scroll-margin-right:var(--gut)}
   .shelf-dots{display:flex;justify-content:center;gap:8px;padding:0 0 18px;margin-top:-18px}
   .shelf-dots button{width:8px;height:8px;border-radius:50%;border:0;padding:0;background:var(--hair);cursor:pointer;transition:transform .15s,background .15s}
   .shelf-dots button.on{background:var(--red);transform:scale(1.3)}
