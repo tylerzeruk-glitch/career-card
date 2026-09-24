@@ -125,7 +125,9 @@ a.btn{text-decoration:none;display:inline-block}
 .stack .card.top{position:relative}
 .stack .under1{transform:translate(8px,-6px) rotate(2deg);z-index:-1}
 .stack .under2{transform:translate(16px,-12px) rotate(4deg);z-index:-2}
-.ghost{width:48px;height:calc(var(--cw) * 1.4);margin-left:var(--gap)!important;border:1.5px dashed var(--muted);border-radius:0;display:grid;place-items:center;font:700 11px var(--cond);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);cursor:pointer;background:transparent;writing-mode:vertical-rl;padding:0}
+/* a 1px dash and an upright inner label: WebKit drops the long sides of a fractional dashed border, and misdraws a button set to vertical writing mode */
+.ghost{width:48px;height:calc(var(--cw) * 1.4);margin-left:var(--gap)!important;border:1px dashed var(--muted);border-radius:0;display:grid;place-items:center;font:700 11px var(--cond);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);cursor:pointer;background:transparent;-webkit-appearance:none;appearance:none;padding:0}
+.ghost .up{writing-mode:vertical-rl}
 .ghost:hover{color:var(--ink);border-color:var(--ink)}
 @media (hover:none){.shelf > *:hover{transform:none}}
 
@@ -618,6 +620,8 @@ kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--hair);border-r
   .shelf.swipe > *:hover,.shelf.swipe > *:focus-within{transform:none}
   /* the add-a-role slot stays the thin upright tab it is on the desktop shelf, tucked after the last card; it is not a snap stop of its own, it comes into view at the end of the swipe */
   .shelf.swipe > .ghost{scroll-snap-align:end;scroll-margin-right:var(--gut)}
+  /* iOS zooms the page when a field smaller than 16px takes focus, and stays zoomed; the drawer's fields are 16px on phones */
+  .drawer input,.drawer select,.drawer textarea{font-size:16px}
   .shelf-dots{display:flex;justify-content:center;gap:8px;padding:0 0 18px;margin-top:-18px}
   .shelf-dots button{width:8px;height:8px;border-radius:50%;border:0;padding:0;background:var(--hair);cursor:pointer;transition:transform .15s,background .15s}
   .shelf-dots button.on{background:var(--red);transform:scale(1.3)}
