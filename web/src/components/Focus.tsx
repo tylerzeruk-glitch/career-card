@@ -32,6 +32,23 @@ export function FocusView({ S, id, onClose, share, onEdit, onTimeline }: { S: St
   const first = useRef(true);
   const holder = useRef<HTMLDivElement>(null);
   const cur = list[idx];
+  // a touch screen: the hint says tap and swipe, the side arrows move under the card, and a horizontal swipe moves along the deck
+  const [touch, setTouch] = useState(false);
+  useEffect(() => { setTouch(matchMedia('(hover: none) and (pointer: coarse)').matches); }, []);
+  const swipe = useRef<{ x: number; y: number } | null>(null);
+  const swipedAt = useRef(0);
+  const prev = () => setIdx((i) => Math.max(0, i - 1));
+  const next = () => setIdx((i) => Math.min(list.length - 1, i + 1));
+  const onTouchStart = (e: React.TouchEvent) => { const t = e.touches[0]; swipe.current = { x: t.clientX, y: t.clientY }; };
+  const onTouchEnd = (e: React.TouchEvent) => {
+    const s = swipe.current; swipe.current = null; if (!s) return;
+    const t = e.changedTouches[0], dx = t.clientX - s.x, dy = t.clientY - s.y;
+    if (Math.abs(dx) < 48 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+    swipedAt.current = Date.now();
+    if (dx < 0) next(); else prev();
+  };
+  // the tap that ends a swipe must not turn the card over
+  const flip = () => { if (Date.now() - swipedAt.current < 500) return; setOn((o) => !o); };
 
   // First open: fly from the deck card's spot to the centre, land, then turn over.
   // Moving along the deck: a quick pop, then turn over. Reduced motion: straight to the back.
@@ -85,28 +102,33 @@ export function FocusView({ S, id, onClose, share, onEdit, onTimeline }: { S: St
   const role = rs.find((r) => r.id === cur);
   return (
     <div className="focus" id="focus" onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
-      <button className="nav" title="Previous" disabled={idx === 0} onClick={() => setIdx(idx - 1)}>‹</button>
-      <div className="column">
-        <div className="hint">Click the card to turn it over · ← → to move · Esc to close</div>
+      <button className="nav" title="Previous" disabled={idx === 0} onClick={prev}>‹</button>
+      <div className="column" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
+        <div className="hint">{touch ? 'Tap the card to turn it over · Swipe for the next card' : 'Click the card to turn it over · ← → to move · Esc to close'}</div>
         <div id="focus-card" className={pop ? 'pop' : ''} key={cur} ref={holder}>
           {cur === 'free' ? (
-            <FreeCard S={S} on={on} share={share} onClick={() => setOn(!on)} onTimeline={onTimeline} />
+            <FreeCard S={S} on={on} share={share} onClick={flip} onTimeline={onTimeline} />
           ) : role ? (
-            <RoleCard S={S} r={role} idx={rs.indexOf(role)} total={rs.length} on={on} onClick={() => setOn(!on)} />
+            <RoleCard S={S} r={role} idx={rs.indexOf(role)} total={rs.length} on={on} onClick={flip} />
           ) : null}
         </div>
         <div className="bar">
-          <button className="fbtn" title="Turn the card over" aria-label="Turn the card over" onClick={() => setOn(!on)}><FlipIcon /></button>
+          <button className="fbtn step" title="Previous card" aria-label="Previous card" disabled={idx === 0} onClick={prev}><ChevronIcon /></button>
+          <button className="fbtn" title="Turn the card over" aria-label="Turn the card over" onClick={flip}><FlipIcon /></button>
           {onEdit && <button className="fbtn" title={cur !== 'free' ? 'Edit this role' : 'Edit profile'} aria-label={cur !== 'free' ? 'Edit this role' : 'Edit profile'} onClick={() => onEdit(cur)}><PencilIcon /></button>}
           <button className="fbtn" title="Close" aria-label="Close" onClick={onClose}><CloseIcon /></button>
+          <button className="fbtn step" title="Next card" aria-label="Next card" disabled={idx === list.length - 1} onClick={next}><ChevronIcon flip /></button>
         </div>
       </div>
-      <button className="nav" title="Next" disabled={idx === list.length - 1} onClick={() => setIdx(idx + 1)}>›</button>
+      <button className="nav" title="Next" disabled={idx === list.length - 1} onClick={next}>›</button>
     </div>
   );
 }
 
 /** Two arrows chasing each other: turn the card over. */
+function ChevronIcon({ flip }: { flip?: boolean }) {
+  return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={flip ? { transform: 'scaleX(-1)' } : undefined}><path d="M15 5l-7 7 7 7" /></svg>;
+}
 function CloseIcon() {
   return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>;
 }
