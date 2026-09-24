@@ -331,7 +331,7 @@ function PortraitPicker() {
               {isSet(p.avatar || '') && <button type="button" className="btn sm" onClick={usePhoto}>Use the photo instead</button>}
             </div>
           )}
-          <span className="help">{msg || (user && p.photo ? 'The model redraws your photo as a riso print like George\'s: four takes, pick one. Each deal is a few cents, so there is a daily limit.' : 'A headshot works best: face the camera, plain background. Drop one on the square or choose a file; it is cropped to the centre.')}</span>
+          <span className="help">{msg || (user && p.photo ? 'The model redraws your photo as a riso print like George\'s: four takes, pick one. Each deal is a few cents, so there is a daily limit.' : 'A headshot works best: face the camera, plain background. Drop one on the square or choose a file; it is cropped to the center.')}</span>
           {!user && <span className="help nudge"><b>Sign in</b> and your photo gets drawn in the house style, like George: a riso portrait in every team&apos;s colours. <a href="/login">Sign in</a></span>}
         </div>
       </div>
