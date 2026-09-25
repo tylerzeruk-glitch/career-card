@@ -642,7 +642,7 @@ kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--hair);border-r
 .nf-main{display:grid;grid-template-columns:minmax(0,320px) minmax(0,1fr);gap:56px;align-items:center;padding:56px 0 24px;max-width:960px;margin:0 auto;width:100%}
 .nf-card{perspective:1400px;display:flex;justify-content:center}
 .nf-card .card{width:min(300px,100%);transform:rotate(-4deg);cursor:default;transition:transform .3s ease}
-.nf-card .num{width:auto;padding:0 2.4cqw;border-radius:999px}
+.nf-card .card .num{width:auto;padding:0 2.4cqw;border-radius:999px}
 .nf-card .card:hover{transform:rotate(0)}
 .nf-card .card:hover .inner{transform:rotateY(180deg)}
 .nf-card .card:hover .front{visibility:hidden}

@@ -11,7 +11,7 @@ import { Flag, SiteFoot } from '@/components/Landing';
 const KRAMER = existsSync(join(process.cwd(), 'public', 'avatars', 'kramer.png'));
 
 export default function NotFound() {
-  const vars = { '--a': '#f1d266', '--b': '#33312b' } as CSSProperties;
+  const vars = { '--a': '#f5e08a', '--b': '#3b3b2f' } as CSSProperties; // PAIRS[5], the pair the portrait was recolored for
   return (
     <div className="landing nf">
       <header className="lbar">
