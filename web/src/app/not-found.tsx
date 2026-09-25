@@ -42,7 +42,8 @@ export default function NotFound() {
                   </tbody>
                 </table>
                 <div className="bulwrap"><ul className="bul">
-                  <li>Swore he had the card.<br />Swore he put it back.</li>
+                  <li>Swore he had the card.</li>
+                  <li>Swore he put it back.</li>
                   <li>Checked the address twice. Not here.</li>
                   <li>Left the door open on the way out.</li>
                 </ul></div>
