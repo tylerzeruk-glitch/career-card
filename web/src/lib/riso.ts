@@ -18,12 +18,12 @@ const KEY_BAND = 10;    // border band the background colour is read from
 const TAKE_SIDE = 1024; // a stored take keeps the model's full size
 const SET_SIDE = 600;   // one card portrait, crisp on a retina card in the focus view
 
-async function decode(png: Buffer): Promise<Raw> {
+export async function decode(png: Buffer): Promise<Raw> {
   const { data, info } = await sharp(png).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
   return { data: new Uint8Array(data.buffer, data.byteOffset, data.byteLength), w: info.width, h: info.height };
 }
 /** Never upscaled; a few inks and a flat shirt take a palette PNG well, at a fraction of the size. */
-function encode(r: Raw, side: number): Promise<Buffer> {
+export function encode(r: Raw, side: number): Promise<Buffer> {
   const out = Math.min(side, r.w);
   return sharp(Buffer.from(r.data.buffer, r.data.byteOffset, r.data.byteLength), { raw: { width: r.w, height: r.h, channels: 4 } })
     .resize(out, out, { kernel: 'lanczos3', fit: 'fill' }).png({ compressionLevel: 9, palette: true, quality: 90, dither: 0.2 }).toBuffer();
@@ -50,7 +50,7 @@ const isFabric = (r: number, g: number, b: number) => {
 };
 
 /** Cream background to alpha: the background colour is the border's median; only background that touches the border goes, so cream inside the drawing stays. Soft edge. */
-function keyOut(r: Raw): Raw {
+export function keyOut(r: Raw): Raw {
   const { data, w, h } = r;
   let opaque = true;
   for (let i = 3; i < data.length; i += 4) if (data[i] < 250) { opaque = false; break; }
@@ -112,7 +112,7 @@ function keyOut(r: Raw): Raw {
 }
 
 /** The keyed bust on a square canvas, bottom-anchored and centred, with everything under the arc filled with the shirt so it has a flat bottom. */
-function squareAndFill(r: Raw): { canvas: Raw; shirt: RGB } {
+export function squareAndFill(r: Raw): { canvas: Raw; shirt: RGB } {
   const { data, w, h } = r, side = Math.max(w, h), ox = (side - w) >> 1, oy = side - h;
   const c = new Uint8Array(side * side * 4);
   for (let y = 0; y < h; y++) c.set(data.subarray(y * w * 4, (y + 1) * w * 4), ((y + oy) * side + ox) * 4);
@@ -164,7 +164,7 @@ function squareAndFill(r: Raw): { canvas: Raw; shirt: RGB } {
 }
 
 /** Slate shirt pixels take the team's frame colour, keeping the print's light and dark variation. */
-function recolor(r: Raw, shirt: RGB, frame: string): Raw {
+export function recolor(r: Raw, shirt: RGB, frame: string): Raw {
   const out = new Uint8Array(r.data), t = hex(frame), sm = Math.max((shirt[0] + shirt[1] + shirt[2]) / 3, 1);
   for (let i = 0; i < out.length; i += 4) {
     if (out[i + 3] === 0 || !isFabric(out[i], out[i + 1], out[i + 2])) continue;
