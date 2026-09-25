@@ -41,11 +41,11 @@ export default function NotFound() {
                     <tr className="cur"><td>404</td><td>Wherever you were headed</td><td className="n">0.0</td></tr>
                   </tbody>
                 </table>
-                <ul className="bul">
-                  <li>Swore he had the card. Swore he put it back.</li>
-                  <li>Checked the address twice. It is not here.</li>
+                <div className="bulwrap"><ul className="bul">
+                  <li>Swore he had the card.<br />Swore he put it back.</li>
+                  <li>Checked the address twice. Not here.</li>
                   <li>Left the door open on the way out.</li>
-                </ul>
+                </ul></div>
                 <div className="skills"><span>Entrances</span><span>Hot tubs</span><span>Bro</span></div>
                 <div className="foot"><span>Unaccounted for</span><span>#404 of ∞</span></div>
               </div>
