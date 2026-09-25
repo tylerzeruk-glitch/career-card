@@ -47,7 +47,7 @@ export default function NotFound() {
                   <li>Checked the address twice. Not here.</li>
                   <li>Left the door open on the way out.</li>
                 </ul></div>
-                <div className="skills"><span>Entrances</span><span>Hot tubs</span><span>Bro</span></div>
+                <div className="skills"><span>Entrances</span><span>Hot tubs</span><span>Coffee table books</span><span>Bagels</span><span>Rickshaws</span><span>The Kavorka</span><span>Levels</span><span>Van Nostrand</span></div>
                 <div className="foot"><span>Unaccounted for</span><span>#404 of ∞</span></div>
               </div>
             </div>
