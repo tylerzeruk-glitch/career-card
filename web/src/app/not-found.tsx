@@ -23,7 +23,6 @@ export default function NotFound() {
           <div className="card" style={vars} aria-label="Cosmo Kramer, number 404, not in this set">
             <div className="inner">
               <div className="face front">
-                <span className="num wide">#404</span>
                 <div className="art">
                   <div className="team" style={{ fontSize: '7.8cqw' }}>Kramerica</div>
                   {KRAMER ? <span className="pic"><img src="/avatars/kramer.png" alt="" /></span> : <span className="mono">CK</span>}
@@ -47,7 +46,7 @@ export default function NotFound() {
                   <li>Checked the address twice. Not here.</li>
                   <li>Left the door open on the way out.</li>
                 </ul></div>
-                <div className="skills"><span>Entrances</span><span>Hot tubs</span><span>Coffee table books</span><span>Bagels</span><span>Rickshaws</span><span>The Kavorka</span><span>Levels</span><span>Van Nostrand</span></div>
+                <div className="skills"><span>Entrances</span><span>Hot tubs</span><span>Coffee table books</span><span>Butter shaving</span></div>
                 <div className="foot"><span>Unaccounted for</span><span>#404 of ∞</span></div>
               </div>
             </div>

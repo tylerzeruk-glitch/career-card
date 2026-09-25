@@ -642,13 +642,12 @@ kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--hair);border-r
 .nf-main{display:grid;grid-template-columns:minmax(0,320px) minmax(0,1fr);gap:56px;align-items:center;padding:56px 0 24px;max-width:960px;margin:0 auto;width:100%}
 .nf-card{perspective:1400px;display:flex;justify-content:center}
 .nf-card .card{width:min(300px,100%);transform:rotate(-4deg);cursor:default;transition:transform .3s ease}
-.nf-card .card .num{width:auto;padding:0 2.4cqw;border-radius:999px}
 .nf-card .card .bulwrap .bul{overflow:visible;padding-left:9%}
 .nf-card .card:hover{transform:rotate(0)}
 .nf-card .card:hover .inner{transform:rotateY(180deg)}
 .nf-card .card:hover .front{visibility:hidden}
 .nf-card .card:hover .back{visibility:visible}
-.nf-copy .eyebrow{margin-bottom:10px}
+.nf-copy .eyebrow{margin-bottom:10px;font-size:19px}
 .nf-copy h1{font:700 clamp(30px,4.6vw,52px)/1.02 var(--cond);letter-spacing:.01em;text-transform:uppercase;margin:0 0 16px;text-wrap:balance}
 .nf-copy p{font:400 16.5px/1.6 var(--serif);color:var(--ink-2);max-width:46ch;margin:0 0 22px}
 .nf-copy .cta{display:flex;gap:10px;flex-wrap:wrap}
