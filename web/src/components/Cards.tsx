@@ -2,16 +2,27 @@
 import { useCallback, useEffect, useRef, useState, type CSSProperties } from 'react';
 import type { Profile, Role, State } from '@/lib/types';
 import { dur, fmt, fmtMonth, monthIndex, monthsBetween, nowYM, yearOf, yrs } from '@/lib/dates';
-import { codeFor, huntStats, initials, pairFor, pairIndexFor, runs, status, teamSize, type Run, themeClass } from '@/lib/derived';
+import { codeFor, huntStats, initials, pairFor, pairIndexFor, runs, status, teamSize, type Run, themeClass, themeOf } from '@/lib/derived';
+import { fitName, fitTitle } from '@/lib/fit';
 import { avatarSrc, isPhoto } from '@/lib/avatar';
 
 type Vars = CSSProperties & { '--a'?: string; '--b'?: string };
 const vars = (a: string, b: string): Vars => ({ '--a': a, '--b': b });
 
 /** The player's name, first name(s) and last name in their own spans so a card style can stack or size them. */
-function Who({ name }: { name: string }) {
+function Who({ name, plate }: { name: string; plate?: boolean }) {
+  if (plate) { // the printed plate has a fixed width: the name is scaled and, past a floor, shortened to fit it
+    const f = fitName(name);
+    return <div className="who" style={{ '--ns': f.scale.toFixed(3) } as React.CSSProperties}>{f.fn ? <><span className="fn">{f.fn}</span> <span className="ln">{f.ln}</span></> : <span className="ln">{f.ln}</span>}</div>;
+  }
   const n = (name || 'Your name').trim(), i = n.lastIndexOf(' ');
   return <div className="who">{i > 0 ? <><span className="fn">{n.slice(0, i)}</span> <span className="ln">{n.slice(i + 1)}</span></> : <span className="ln">{n}</span>}</div>;
+}
+
+/** The position line: on the Chrome 90s stock it sits in the frame's box, scaled and abbreviated to fit. */
+function Role({ title, plate, children }: { title: string; plate?: boolean; children?: React.ReactNode }) {
+  if (plate) { const f = fitTitle(title); return <div className="role" style={{ '--rs': f.size.toFixed(2) } as React.CSSProperties}><span className="ttl">{f.text}</span>{children}</div>; }
+  return <div className="role"><span className="ttl">{title}</span>{children}</div>;
 }
 
 /** The highlights list: scrolls inside the card, with a nudge at the bottom while there is more below. */
@@ -29,15 +40,15 @@ export function RoleCard({ S, r, idx, total, on, className, onClick }: { S: Stat
   const p: Profile = S.profile;
   const run = runs(S).find((x) => x.roles.some((z) => z.id === r.id));
   const seasons = run ? run.roles : [r];
-  const bullets = r.bullets || [], skills = (r.skills || []).slice(0, 8);
+  const bullets = r.bullets || [], skills = (r.skills || []).slice(0, 8), plate = themeOf(S) === 'chrome';
   return (
     <div className={'card' + themeClass(S) + (on ? ' on' : '') + (className ? ' ' + className : '')} style={vars(a, b)} data-id={r.id} tabIndex={0} role="button" aria-label={r.company + ', ' + r.title} onClick={onClick}>
       <div className="inner">
         <div className="face front">
           <span className={"num" + (idx + 1 >= 10 ? " wide" : "")}>#{idx + 1}</span>
           <div className="art"><div className="team" style={{ fontSize: Math.min(7.8, teamSize(r.company)) + 'cqw' }}>{r.company}</div>{p.avatar ? <span className="pic"><img className={isPhoto(p.avatar) ? 'photo' : undefined} src={avatarSrc(p.avatar, pairIndexFor(S, r.company))} alt="" /></span> : <span className="mono">{initials(p.name) || '?'}</span>}<span className="badge">{r.code || codeFor(r.title)}</span></div>
-          <Who name={p.name} />
-          <div className="role"><span className="ttl">{r.title}</span><span className="yrs"> · {yearOf(r.start)} – {yearOf(r.end)}</span></div>
+          <Who name={p.name} plate={plate} />
+          <Role title={r.title} plate={plate}><span className="yrs"> · {yearOf(r.start)} – {yearOf(r.end)}</span></Role>
         </div>
         <div className="face back">
           <div className="hdr"><div className="t">{r.company}</div><div className="s">{r.title}{r.location ? ' · ' + r.location : ''}</div></div>
@@ -71,7 +82,7 @@ export function FreeCard({ S, on, share, className, onClick, onTimeline }: { S: 
       <div className="inner">
         <div className="face front">
           <div className="art"><div className="team" style={{ fontSize: Math.min(7.8, teamSize('Free agent')) + 'cqw' }}>Free agent</div><div className="k">Open to</div><div className="open">{open}</div><span className="badge" title="Free agent">FA</span></div>
-          <Who name={p.name} />
+          <Who name={p.name} plate={themeOf(S) === 'chrome'} />
           <div className="role">Free agent</div>
         </div>
         <div className="face back">
@@ -102,7 +113,7 @@ export function SummaryCard({ S, run, from, to }: { S: State; run: Run; from: nu
         <div className="face front">
           <span className="num">#{from}–{to}</span>
           <div className="art"><div className="team" style={{ fontSize: Math.min(7.8, teamSize(run.company)) + 'cqw' }}>{run.company}</div><span className="mono">{run.roles.length}<small>{run.roles.length === 1 ? 'role' : 'roles'}</small></span><span className="badge">{last.code || codeFor(last.title)}</span></div>
-          <Who name={S.profile.name} />
+          <Who name={S.profile.name} plate={themeOf(S) === 'chrome'} />
           <div className="role">{yearOf(first.start)} – {yearOf(last.end)} · {dur(monthIndex(last.end || nowYM()) - monthIndex(first.start) + 1)}</div>
         </div>
         <div className="face back" />

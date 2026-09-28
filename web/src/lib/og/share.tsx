@@ -2,6 +2,7 @@ import { ImageResponse } from 'next/og';
 import type { State } from '../types';
 import { careerStats, codeFor, initials, looking, pairFor, pairIndexFor, roles, status, themeOf } from '../derived';
 import { avatarSrc } from '../avatar';
+import { fitName, fitTitle } from '../fit';
 
 /**
  * The share image for a player's page: name, headline and a hand of their three most recent cards,
@@ -128,7 +129,11 @@ function FreeFront({ S, rot }: { S: State; rot: number }) {
 }
 
 /** The Chrome 90s frame: shares of the card where the printed frame's panel and plate sit, in px. */
-const FR = { panelL: Math.round(CW * 0.094), panelT: Math.round(CH * 0.111), panelW: Math.round(CW * 0.815), panelH: Math.round(CH * 0.73), plateL: Math.round(CW * 0.06), plateT: Math.round(CH * 0.856), plateW: Math.round(CW * 0.6), plateH: Math.round(CH * 0.064) };
+const FR = { panelL: Math.round(CW * 0.086), panelT: Math.round(CH * 0.091), panelW: Math.round(CW * 0.828), panelH: Math.round(CH * 0.679),
+  plateL: Math.round(CW * 0.06), plateT: Math.round(CH * 0.786), plateW: Math.round(CW * 0.62), plateH: Math.round(CH * 0.064),
+  roleL: Math.round(CW * 0.055), roleT: Math.round(CH * 0.863), roleW: Math.round(CW * 0.64), roleH: Math.round(CH * 0.081) };
+/** The plates' top edge crosses the panel's bottom-right corner: the panel's content is clipped to it. */
+const PANEL_CLIP = `polygon(0 0, 100% 0, 100% ${Math.round(FR.panelH * 0.922)}px, ${Math.round(FR.panelW * 0.165)}px 100%, 0 100%)`;
 const NAVY = '#173a8a', RED = '#e5322d';
 
 /** The company as the maker's mark over the frame's top-left corner: red letters, a white keyline and a dark offset, built from layered copies. */
@@ -146,22 +151,26 @@ function ChromeMark({ text, color }: { text: string; color: string }) {
 
 /** The name on the frame's red plate, which leans up to the right: first name small in gold, surname large in white. */
 function ChromePlate({ name }: { name: string }) {
-  const w = (name || '').trim().replace(/,.*$/, '').split(/\s+/).filter(Boolean);
-  const fn = w.length > 1 ? w[0] : '', ln = w.length > 1 ? w.slice(1).join(' ') : w[0] || 'Your name';
+  const { fn, ln, scale } = fitName(name.replace(/,.*$/, ''));
   return (
-    <div style={{ position: 'absolute', left: FR.plateL, top: FR.plateT, width: FR.plateW, height: FR.plateH, display: 'flex', alignItems: 'center', paddingLeft: q(1), transform: 'rotate(-5.2deg)', transformOrigin: '0 50%', whiteSpace: 'nowrap', overflow: 'hidden' }}>
-      {fn ? <div style={{ display: 'flex', fontFamily: LILITA, fontSize: q(4.6), letterSpacing: '0.02em', textTransform: 'uppercase', color: '#ffe2a8', textShadow: '1px 1px 0 #1c1b18', marginRight: q(1.8) }}>{fn}</div> : null}
-      <div style={{ display: 'flex', fontFamily: LILITA, fontSize: q(6.8), letterSpacing: '0.02em', textTransform: 'uppercase', color: '#fff', textShadow: '1.5px 1.5px 0 #1c1b18' }}>{ln}</div>
+    <div style={{ position: 'absolute', left: FR.plateL, top: FR.plateT, width: FR.plateW, height: FR.plateH, display: 'flex', alignItems: 'center', paddingLeft: q(1), transform: 'rotate(-6deg)', transformOrigin: '0 50%', whiteSpace: 'nowrap', overflow: 'hidden' }}>
+      {fn ? <div style={{ display: 'flex', fontFamily: LILITA, fontSize: q(4.6 * scale), letterSpacing: '0.02em', textTransform: 'uppercase', color: '#ffe2a8', textShadow: '1px 1px 0 #1c1b18', marginRight: q(1.8) }}>{fn}</div> : null}
+      <div style={{ display: 'flex', fontFamily: LILITA, fontSize: q(6.8 * scale), letterSpacing: '0.02em', textTransform: 'uppercase', color: '#fff', textShadow: '1.5px 1.5px 0 #1c1b18' }}>{ln}</div>
     </div>
   );
 }
 
-/** The Chrome 90s card stock: the printed frame, rotated into the hand like the others; its baseball is drawn again on top so it stands over the photo. */
+/** The position on the yellow plate under the name, abbreviated when it would not fit. */
+function ChromeRole({ title, color }: { title: string; color: string }) {
+  const { text, size } = fitTitle(title);
+  return <div style={{ position: 'absolute', left: FR.roleL, top: FR.roleT, width: FR.roleW, height: FR.roleH, display: 'flex', alignItems: 'center', paddingLeft: q(2), transform: 'rotate(-5.8deg)', transformOrigin: '0 50%', fontFamily: BARLOW, fontSize: q(size), letterSpacing: '0.1em', textTransform: 'uppercase', color, whiteSpace: 'nowrap', overflow: 'hidden' }}>{text}</div>;
+}
+
+/** The Chrome 90s card stock: the printed frame, rotated into the hand like the others; */
 function ChromeStock({ site, rot, children }: { site: string; rot: number; children: React.ReactNode }) {
   return (
     <div style={{ position: 'absolute', bottom: 0, width: CW, height: CH, transformOrigin: `${CW / 2}px ${Math.round(CH * 1.15)}px`, transform: `rotate(${rot}deg)`, display: 'flex', backgroundImage: `url(${site}/frames/chrome.jpg)`, backgroundSize: `${CW}px ${CH}px`, backgroundRepeat: 'no-repeat', boxShadow: '-5px 0 14px rgba(0,0,0,.25), 0 10px 26px rgba(0,0,0,.25)' }}>
       {children}
-      <div style={{ position: 'absolute', left: 0, top: 0, width: CW, height: CH, backgroundImage: `url(${site}/frames/chrome.jpg)`, backgroundSize: `${CW}px ${CH}px`, backgroundRepeat: 'no-repeat', clipPath: `ellipse(${Math.round(CW * 0.109)}px ${Math.round(CH * 0.079)}px at ${Math.round(CW * 0.859)}px ${Math.round(CH * 0.874)}px)` }} />
     </div>
   );
 }
@@ -174,13 +183,13 @@ function ChromeRoleFront({ S, r, site, rot }: { S: State; r: State['roles'][numb
   const ph = FR.panelH;
   return (
     <ChromeStock site={site} rot={rot}>
-      <div style={{ position: 'absolute', left: FR.panelL, top: FR.panelT, width: FR.panelW, height: ph, display: 'flex', alignItems: 'flex-end', justifyContent: 'center', overflow: 'hidden', background: '#f1ede1' }}>
+      <div style={{ position: 'absolute', left: FR.panelL, top: FR.panelT, width: FR.panelW, height: ph, display: 'flex', alignItems: 'flex-end', justifyContent: 'center', overflow: 'hidden', clipPath: PANEL_CLIP }}>
         {src ? <div style={{ width: ph, height: ph, backgroundImage: `url(${src})`, backgroundSize: `${ph}px ${ph}px`, backgroundRepeat: 'no-repeat' }} />
           : <div style={{ display: 'flex', fontFamily: BARLOW, fontSize: q(34), letterSpacing: '-0.02em', color: NAVY, marginBottom: q(30) }}>{initials(p.name) || '?'}</div>}
       </div>
       <ChromeMark text={r.company} color={RED} />
-      <div style={{ position: 'absolute', left: FR.panelL, top: FR.panelT + ph - q(6.4), display: 'flex', padding: `${q(0.9)}px ${q(2.6)}px ${q(0.7)}px`, background: NAVY, color: '#fff', borderTop: '1px solid #fff', borderLeft: '1px solid #fff', borderRight: '1px solid #fff', fontFamily: BARLOW, fontSize: q(3.8), letterSpacing: '0.1em', textTransform: 'uppercase', maxWidth: Math.round(CW * 0.62), whiteSpace: 'nowrap', overflow: 'hidden' }}>{r.title}</div>
       <ChromePlate name={p.name} />
+      <ChromeRole title={r.title} color={NAVY} />
     </ChromeStock>
   );
 }
@@ -190,13 +199,13 @@ function ChromeFreeFront({ S, site, rot }: { S: State; site: string; rot: number
   const p = S.profile, open = (p.targets || []).slice(0, 3).join(' · ');
   return (
     <ChromeStock site={site} rot={rot}>
-      <div style={{ position: 'absolute', left: FR.panelL, top: FR.panelT, width: FR.panelW, height: FR.panelH, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '8%', textAlign: 'center', background: '#1f2a44', color: '#fff' }}>
+      <div style={{ position: 'absolute', left: FR.panelL, top: FR.panelT, width: FR.panelW, height: FR.panelH, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '8% 8% 16%', textAlign: 'center', background: '#1f2a44', color: '#fff', clipPath: PANEL_CLIP }}>
         <div style={{ display: 'flex', fontFamily: BARLOW, fontSize: q(4.6), letterSpacing: '0.2em', textTransform: 'uppercase', color: '#c9d7f2', marginBottom: q(3) }}>Open to</div>
         <div style={{ display: 'flex', fontFamily: LILITA, fontSize: q(7.5), lineHeight: 1.15, textTransform: 'uppercase', textAlign: 'center' }}>{open || 'Offers'}</div>
       </div>
       <ChromeMark text="Free agent" color="#f2c230" />
-      <div style={{ position: 'absolute', left: FR.panelL, top: FR.panelT + FR.panelH - q(6.4), display: 'flex', padding: `${q(0.9)}px ${q(2.6)}px ${q(0.7)}px`, background: RED, color: '#fff', borderTop: '1px solid #fff', borderLeft: '1px solid #fff', borderRight: '1px solid #fff', fontFamily: BARLOW, fontSize: q(3.8), letterSpacing: '0.1em', textTransform: 'uppercase' }}>Free agent</div>
       <ChromePlate name={p.name} />
+      <ChromeRole title="Free agent" color={RED} />
     </ChromeStock>
   );
 }
