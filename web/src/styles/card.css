@@ -177,7 +177,7 @@
 .card.t-chrome tr.cur td{color:var(--red)}
 .card.t-chrome .skills span{background:var(--navy)}
 /* the back's footer rides the red plate, which runs nearly the whole width */
-.card.t-chrome .foot{position:absolute;left:5%;top:87%;width:86%;height:7%;margin:0;padding:0 3cqw;border:0;color:#fff;font:700 4.4cqw/1 "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.08em;text-transform:uppercase;font-style:normal;
+.card.t-chrome .foot{position:absolute;left:5%;top:87%;width:86%;height:7%;margin:0;padding:0 3cqw;border:0;color:#fff;font:400 5.4cqw/1 "Lilita One","Arial Black",Impact,sans-serif;letter-spacing:.04em;text-transform:uppercase;font-style:normal;text-shadow:.4cqw .4cqw 0 #1c1b18; /* as the surname on the front's plate */
   transform:rotate(-6.6deg);transform-origin:0 50%;display:flex;align-items:center;justify-content:space-between;white-space:nowrap;overflow:hidden}
 /* the free-agent card: the panel goes navy (painted behind the panel's content, stopping at the plates), the logo gold, the position red */
 .card.t-chrome.free .front{background:var(--frame) center/100% 100% no-repeat;border-color:transparent}
@@ -199,6 +199,6 @@
 .card.t-chrome.free .bul{flex:0 0 auto;margin-top:1%;font-size:5.2cqw}
 .card.t-chrome.free .bul b{color:var(--navy);font-weight:700;letter-spacing:.06em;text-transform:uppercase}
 .card.t-chrome.free .go{position:absolute;left:5%;top:87%;width:86%;height:7%;margin:0;padding:0 3cqw;border:0;border-radius:0;background:transparent;color:#fff;
-  font:400 6cqw/1 "Lilita One","Arial Black",Impact,sans-serif;letter-spacing:.04em;text-transform:uppercase;color:var(--gold);-webkit-text-stroke:.42cqw #fff;paint-order:stroke fill;filter:drop-shadow(.3cqw .35cqw 0 #1c1b18);
+  font:400 6cqw/1 "Lilita One","Arial Black",Impact,sans-serif;letter-spacing:.04em;text-transform:uppercase;color:#fff;text-shadow:.4cqw .4cqw 0 #1c1b18; /* as the surname on the front's plate */
   transform:rotate(-6.6deg);transform-origin:0 50%;display:flex;align-items:center;justify-content:center;white-space:nowrap}
 .card.t-chrome.free .go::after{content:"→";margin-left:1.6cqw}
