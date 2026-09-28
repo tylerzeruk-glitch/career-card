@@ -664,3 +664,47 @@ kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--hair);border-r
   .nf-copy .cta{justify-content:center}
   .nf-hint{display:none}
 }
+
+/* ===== Chrome 90s, the whole page: the card style reaches the page around the cards. Tokens first (dark stock, foil and chrome in place of red and ink, Oswald and Anton in the type roles), then the furniture that carries the look: perforations become chrome hairlines, the name and headings take foil, chips and the primary button take chrome. The signed-out front door keeps the site's own look. ===== */
+html:has([data-style="chrome"]){
+  color-scheme:dark;
+  --bg:#101014; --paper:#191922; --hover:#26262f; --ink:#eeeef4; --ink-2:#c6c6d0; --muted:#8e8e9c; --hair:#34343f; --line:#eeeef4;
+  --focus:#7ad7ff; --red:#ffd36b; --navy:#c48bff; --gold:#ffd36b;
+  --c-app:#7ad7ff; --c-int:#ffd36b; --c-off:#8dff9a; --c-den:#ff8a8a; --c-wd:#8e8e9c; --c-ms:#eeeef4;
+  --ok-bg:#12301a; --ok-ink:#8dff9a; --warn-bg:#3a2e08; --warn-ink:#ffd36b; --info-bg:#172a45; --info-ink:#7ad7ff;
+  --cond:"Oswald","Barlow Condensed","Arial Narrow",sans-serif;
+  --riso:"Anton","Arial Black",Impact,sans-serif;
+  --foil:linear-gradient(115deg,#ff8a8a 0%,#ffd36b 18%,#8dff9a 36%,#7ad7ff 54%,#c48bff 72%,#ff8ad4 90%,#ff8a8a 100%);
+  --chrome:linear-gradient(180deg,#f7f7fb 0%,#c9c9d3 35%,#7c7c8c 50%,#e9e9f0 65%,#a9a9b6 100%);
+  --perf:linear-gradient(90deg,transparent,#a9a9b6 12%,#f7f7fb 50%,#a9a9b6 88%,transparent) 0 50%/100% 1px no-repeat;
+}
+html:has([data-style="chrome"]) body{background:var(--bg) radial-gradient(ellipse at 50% -20%,rgba(122,215,255,.08),transparent 60%)}
+[data-style="chrome"] .brand h1{font-style:italic;letter-spacing:.03em;background:var(--foil);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 2px 0 rgba(0,0,0,.6))}
+[data-style="chrome"] .brand .sub{color:var(--ink-2)}
+[data-style="chrome"] .line b{background:var(--chrome);color:#111;box-shadow:0 1px 3px rgba(0,0,0,.5)}
+[data-style="chrome"] .pill{background:linear-gradient(180deg,#ffe58a,#c9962a 60%,#ffd36b);color:#2b1a00;transform:rotate(-2deg) skewX(-6deg);border-radius:2px}
+[data-style="chrome"] .btn.primary{background:var(--chrome);color:#111;text-shadow:0 1px 0 rgba(255,255,255,.5);font-weight:600}
+[data-style="chrome"] .btn.primary:hover{opacity:1;filter:brightness(1.08)}
+[data-style="chrome"] .btn.outline{border-color:#a9a9b6}
+[data-style="chrome"] .btn.outline:hover{background:var(--chrome);color:#111}
+[data-style="chrome"] .toggle{border-color:#a9a9b6}
+[data-style="chrome"] .toggle button.on{background:var(--chrome);color:#111}
+[data-style="chrome"] .row h2,[data-style="chrome"] .gh{font-style:italic;letter-spacing:.16em;background:linear-gradient(180deg,#ffe58a,#c9962a 60%,#ffd36b);-webkit-background-clip:text;background-clip:text;color:transparent}
+[data-style="chrome"] .fold::before,[data-style="chrome"] .row::after,[data-style="chrome"] .gh::after,[data-style="chrome"] .lfoot::before{height:1px;background:var(--perf)}
+[data-style="chrome"] .tiles span{background:var(--chrome);color:#111;font-weight:700}
+[data-style="chrome"] .ghost{border-color:#5a5a6a;color:#a9a9b6}
+[data-style="chrome"] .ghost:hover{border-color:#e9e9f0;color:#e9e9f0}
+[data-style="chrome"] .shelf-dots button.on{background:var(--gold)}
+[data-style="chrome"] .fabox{background:rgba(196,139,255,.10)}
+[data-style="chrome"] .stylebox{background:rgba(255,255,255,.06)}
+[data-style="chrome"] .drawer{box-shadow:-8px 0 30px rgba(0,0,0,.5)}
+[data-style="chrome"] .switch input:checked + .track{background:var(--gold)}
+[data-style="chrome"] .pagebox{background:rgba(255,255,255,.06)}
+[data-style="chrome"] .row.private{background:rgba(255,255,255,.04)}
+[data-style="chrome"] .wordmark{background:var(--foil);-webkit-background-clip:text;background-clip:text;color:transparent}
+[data-style="chrome"] .wordmark .flag{color:#ffd36b}
+[data-style="chrome"] .menu summary.more{border-color:#a9a9b6}
+[data-style="chrome"] .flipme{color:var(--muted)}
+[data-style="chrome"] .fbtn{background:var(--chrome);color:#111}
+[data-style="chrome"] .note-inline{background:rgba(122,215,255,.14);color:#7ad7ff}
+[data-style="chrome"] .overlay.note{background:rgba(141,255,154,.14);color:#8dff9a;border:1px solid rgba(141,255,154,.3)}

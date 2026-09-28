@@ -1,7 +1,7 @@
 'use client';
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import type { State } from '@/lib/types';
-import { careerStats, roles, skillTally, status } from '@/lib/derived';
+import { careerStats, roles, skillTally, status, themeOf } from '@/lib/derived';
 import { layoutDeck } from '@/lib/deck';
 import { FreeCard, RoleCard } from './Cards';
 import { ShelfDots } from './ShelfDots';
@@ -57,7 +57,7 @@ export function PublicCard({ S, slug, resumeHref }: { S: State; slug: string; re
   const stat = ([n, k]: [number, string]) => <span key={k}><b>{n}</b>{k}{n === 1 ? '' : 's'}</span>;
 
   return (
-    <div className="pub" ref={host}>
+    <div className="pub" ref={host} data-style={themeOf(S)}>
       <header className="lbar">
         <a className="wordmark" href="/"><Flag /><span>CareerCards</span></a>
         <nav>

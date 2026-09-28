@@ -1,7 +1,7 @@
 'use client';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { AuthUser, CloudCard } from '@/lib/types';
-import { careerStats, looking, status } from '@/lib/derived';
+import { careerStats, looking, status, themeOf } from '@/lib/derived';
 import { CardProvider, useCard } from './store';
 import { UICtx, useUI, type DrawerTab, type ImportTab, type TimelineApi, type UI } from './ui';
 import { Deck } from './Deck';
@@ -57,7 +57,7 @@ function Shell() {
 
   return (
     <UICtx.Provider value={ui}>
-      <div className="app">
+      <div className="app" data-style={themeOf(S)}>
         <Header />
         {migration && (
           <div className="banner">
