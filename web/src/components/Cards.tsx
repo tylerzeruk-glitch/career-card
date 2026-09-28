@@ -93,7 +93,7 @@ export function FreeCard({ S, on, share, className, onClick, onTimeline }: { S: 
             <>
               <div className="figs"><div><b>{h.apps}</b><small>Applied</small></div><div><b>{h.interviews}</b><small>Interviews</small></div><div><b>{h.offers}</b><small>Offers</small></div></div>
               <div className="figs"><div><b>{h.open}</b><small>Open</small></div><div><b>{h.denials}</b><small>Denied</small></div><div><b>{h.sinceLast == null ? '–' : h.sinceLast + 'd'}</b><small>Since last</small></div></div>
-              <div className="bul" style={{ flex: 0 }}><b>Open to:</b> {open}</div>
+              <div className="bul" style={{ flex: "0 1 auto" }}><b>Open to:</b> {open}</div>
               <div className="go" onClick={(e) => { e.stopPropagation(); onTimeline?.(); }}>Open the timeline</div>
             </>
           )}

@@ -189,4 +189,10 @@
 .card.t-chrome.free .who .fn{color:#ffe2a8}
 .card.t-chrome.free .figs div{background:var(--navy);color:#fff}
 .card.t-chrome.free .figs small{color:#c9d7f2}
-.card.t-chrome.free .go{border-color:var(--navy);color:var(--navy)}
+/* the free-agent back: the mark in gold as on its front, the "open to" line kept in view, the timeline link on the red plate */
+.card.t-chrome.free .hdr .t{color:var(--gold)}
+.card.t-chrome.free .bul{flex:0 0 auto;margin-top:1%;font-size:5.2cqw}
+.card.t-chrome.free .bul b{color:var(--navy);font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.card.t-chrome.free .go{position:absolute;left:5%;top:87%;width:86%;height:7%;margin:0;padding:0 3cqw;border:0;border-radius:0;background:transparent;color:#fff;
+  font:700 4.6cqw/1 "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.12em;text-transform:uppercase;transform:rotate(-6.6deg);transform-origin:0 50%;display:flex;align-items:center;justify-content:center;white-space:nowrap}
+.card.t-chrome.free .go::after{content:"→";margin-left:1.6cqw}
