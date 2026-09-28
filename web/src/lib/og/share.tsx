@@ -2,7 +2,7 @@ import { ImageResponse } from 'next/og';
 import type { State } from '../types';
 import { careerStats, codeFor, initials, looking, pairFor, pairIndexFor, roles, status, themeOf } from '../derived';
 import { avatarSrc } from '../avatar';
-import { fitName, fitTitle } from '../fit';
+import { fitCompany, fitName, fitTitle } from '../fit';
 
 /**
  * The share image for a player's page: name, headline and a hand of their three most recent cards,
@@ -138,10 +138,10 @@ const NAVY = '#173a8a', RED = '#e5322d';
 
 /** The company as the maker's mark over the frame's top-left corner: red letters, a white keyline and a dark offset, built from layered copies. */
 function ChromeMark({ text, color }: { text: string; color: string }) {
-  const size = q(7.4), w = Math.round(CW * 0.64), k = 1.5;
+  const size = q(fitCompany(text)), w = Math.round(CW * 0.7), k = 1.5;
   const base = { position: 'absolute' as const, left: 0, top: 0, width: w, display: 'flex', fontFamily: LILITA, fontSize: size, letterSpacing: '0.01em', whiteSpace: 'nowrap' as const, overflow: 'hidden' as const };
   return (
-    <div style={{ position: 'absolute', left: Math.round(CW * 0.063), top: Math.round(CH * 0.024), width: w, height: size + 6, display: 'flex', transform: 'rotate(-2deg)', transformOrigin: '0 100%' }}>
+    <div style={{ position: 'absolute', left: Math.round(CW * 0.063), top: Math.round(CH * 0.024), width: w, height: size + 6, display: 'flex', transform: 'rotate(-4deg)', transformOrigin: '0 100%' }}>
       <div style={{ ...base, left: 3, top: 3.5, color: '#1c1b18' }}>{text}</div>
       {[[-k, 0], [k, 0], [0, -k], [0, k], [-k, -k], [k, k], [-k, k], [k, -k]].map(([x, y], i) => <div key={i} style={{ ...base, left: x, top: y, color: '#fff' }}>{text}</div>)}
       <div style={{ ...base, color }}>{text}</div>
@@ -163,7 +163,7 @@ function ChromePlate({ name }: { name: string }) {
 /** The position on the yellow plate under the name, abbreviated when it would not fit. */
 function ChromeRole({ title, color }: { title: string; color: string }) {
   const { text, size } = fitTitle(title);
-  return <div style={{ position: 'absolute', left: FR.roleL, top: FR.roleT, width: FR.roleW, height: FR.roleH, display: 'flex', alignItems: 'center', paddingLeft: q(2), transform: 'rotate(-5.8deg)', transformOrigin: '0 50%', fontFamily: BARLOW, fontSize: q(size), letterSpacing: '0.1em', textTransform: 'uppercase', color, whiteSpace: 'nowrap', overflow: 'hidden' }}>{text}</div>;
+  return <div style={{ position: 'absolute', left: FR.roleL, top: FR.roleT, width: FR.roleW, height: FR.roleH, display: 'flex', alignItems: 'center', paddingLeft: q(2), transform: 'rotate(-5.8deg)', transformOrigin: '0 50%', fontFamily: LILITA, fontSize: q(size), letterSpacing: '0.03em', textTransform: 'uppercase', color, textShadow: '1px 1px 0 #1c1b18', whiteSpace: 'nowrap', overflow: 'hidden' }}>{text}</div>;
 }
 
 /** The Chrome 90s card stock: the printed frame, rotated into the hand like the others; */

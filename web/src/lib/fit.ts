@@ -27,7 +27,7 @@ const em = (text: string, adv: number) => text.length * adv;
  * A position for the role box: base size, scaled down to the floor; past the floor, trimmed of a parenthetical or a
  * trailing clause, then abbreviated a word at a time (the longest-established abbreviations first).
  */
-export function fitTitle(title: string, width = 60, base = 5.2, min = 3.7, adv = 0.58): { text: string; size: number } {
+export function fitTitle(title: string, width = 60, base = 5.4, min = 3.7, adv = 0.62): { text: string; size: number } {
   let text = (title || '').trim();
   const size = (t: string) => Math.min(base, width / Math.max(1, em(t, adv)));
   if (size(text) >= min) return { text, size: size(text) };
@@ -61,4 +61,9 @@ export function fitName(name: string, width = 60, minScale = 0.68, advFn = 0.6, 
   for (const [fn, ln] of tries) { const s = scale(fn, ln); if (s >= minScale) return { fn, ln, scale: s }; }
   const [fn, ln] = tries[tries.length - 1];
   return { fn, ln, scale: minScale };
+}
+
+/** The company as the maker's mark over the frame's corner: as large as the corner allows, scaled down for a long name; the stylesheet shortens what still will not fit. */
+export function fitCompany(name: string, width = 64, base = 9.5, min = 6, adv = 0.52): number {
+  return Math.max(min, Math.min(base, width / Math.max(1, em((name || '').trim(), adv))));
 }

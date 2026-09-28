@@ -126,15 +126,13 @@
 /* the band's negative margin is a share of the content width, the padding a share of the card, so the 8% is scaled by 1/0.84 to land on the rule (a hair past it: the rule paints on top) */
 .card .hdr{margin:2.55cqw calc(-9.6% + 2.6cqw) 3%;border-radius:4.2cqw 4.2cqw 0 0}
 
-/* ===== Chrome 90s: a printed holographic frame (public/frames/chrome.webp: teal halftone, blue stripes in two corners, a rainbow foil edge, a cream photo panel in a gold and navy frame, a red nameplate and a baseball at the bottom right). Everything that changes per card is laid over it: the company as the logo over the top-left corner, the number, the photo in the panel, the position, the name on the plate. A rainbow sheen and a soft band of light follow the pointer across the border, cut out over the panel so the photo stays matte. ===== */
-.card.t-chrome{--foil:linear-gradient(115deg,#ff8a8a 0%,#ffd36b 18%,#8dff9a 36%,#7ad7ff 54%,#c48bff 72%,#ff8ad4 90%,#ff8a8a 100%);--gold:#f2c230;--navy:#173a8a;--red:#e5322d;--frame:url("/frames/chrome.webp");
-  /* the panel's place on the frame, as shares of the card: the light is cut out over it */
-  --hole:polygon(evenodd,0 0,100% 0,100% 100%,0 100%,0 0,8.6% 9.1%,8.6% 77%,91.4% 77%,91.4% 9.1%,8.6% 9.1%)}
+/* ===== Chrome 90s: a printed holographic frame (public/frames/chrome.webp: teal halftone, blue stripes in two corners, a rainbow foil edge, a cream photo panel in a gold and navy frame, a red nameplate and a baseball at the bottom right). Everything that changes per card is laid over it: the company as the logo over the top-left corner, the number, the photo in the panel, the position, the name on the plate. A rainbow sheen and a soft band of light follow the pointer across the whole face. ===== */
+.card.t-chrome{--foil:linear-gradient(115deg,#ff8a8a 0%,#ffd36b 18%,#8dff9a 36%,#7ad7ff 54%,#c48bff 72%,#ff8ad4 90%,#ff8a8a 100%);--gold:#f2c230;--navy:#173a8a;--red:#e5322d;--frame:url("/frames/chrome.webp")}
 .card.t-chrome .face{border-radius:0;border:0;box-shadow:-5px 0 14px rgba(0,0,0,.22),0 10px 26px rgba(0,0,0,.22);background:var(--frame) center/100% 100% no-repeat}
 .card.t-chrome .front{padding:0;isolation:isolate}
-/* the rainbow sheen and a soft band of light, drifting with the pointer */
-.card.t-chrome .front::before,.card.t-chrome .back::before{border:0;inset:0;border-radius:0;background:var(--foil);background-size:260% 260%;background-position:var(--mx,30%) var(--my,30%);opacity:.34;mix-blend-mode:screen;transition:background-position .15s ease-out;z-index:0;clip-path:var(--hole)}
-.card.t-chrome .face::after{clip-path:var(--hole);background:linear-gradient(115deg,transparent calc(var(--mx,50%) - 24%),rgba(255,255,255,.28) var(--mx,50%),transparent calc(var(--mx,50%) + 24%))}
+/* the rainbow sheen and a soft band of light, drifting with the pointer over the whole face, photo included, like light on a sleeve */
+.card.t-chrome .front::before,.card.t-chrome .back::before{border:0;inset:0;border-radius:0;background:var(--foil);background-size:260% 260%;background-position:var(--mx,30%) var(--my,30%);opacity:.3;mix-blend-mode:screen;transition:background-position .15s ease-out;z-index:0}
+.card.t-chrome .face::after{background:linear-gradient(115deg,transparent calc(var(--mx,50%) - 24%),rgba(255,255,255,.28) var(--mx,50%),transparent calc(var(--mx,50%) + 24%))}
 .card.t-chrome .back::after{background:linear-gradient(115deg,transparent calc(76% - var(--mx,50%)),rgba(255,255,255,.22) calc(100% - var(--mx,50%)),transparent calc(124% - var(--mx,50%)))}
 /* the photo panel: the frame's own cream panel; the art box fills it and lets the logo hang outside */
 .card.t-chrome .art{position:absolute;left:8.6%;right:8.6%;top:9.1%;bottom:23%;margin:0;flex:none;border-radius:0;border:0;background:transparent;box-shadow:none;overflow:visible}
@@ -143,10 +141,10 @@
 .card.t-chrome .art .pic{border-radius:0;inset:0;overflow:hidden;clip-path:polygon(0 0,100% 0,100% 92.2%,16.5% 100%,0 100%)}
 .card.t-chrome .mono{color:#2b3e7a}
 /* the company as the logo over the top-left corner, where the maker's mark goes: red bubbly letters with a white keyline */
-.card.t-chrome .team{position:absolute;left:-2.8%;top:-9.6%;bottom:auto;height:auto;line-height:1;max-width:74%;background:transparent;clip-path:none;border-radius:0;z-index:4;
+.card.t-chrome .team{position:absolute;left:-2.4%;top:-9.4%;bottom:auto;height:auto;line-height:1;max-width:78%;transform-origin:0 100%;background:transparent;clip-path:none;border-radius:0;z-index:4;
   padding:.14em .5em .24em .14em;margin:-.14em -.5em -.24em -.14em; /* room inside the clipping box for the keyline, the italic overhang and the shadow */
   font:400 7.2cqw/1 "Lilita One","Arial Black",Impact,sans-serif;font-style:italic;letter-spacing:.01em;text-transform:none;color:var(--red);
-  -webkit-text-stroke:.55cqw #fff;paint-order:stroke fill;text-shadow:.5cqw .6cqw 0 #1c1b18;transform:rotate(-2deg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  -webkit-text-stroke:.55cqw #fff;paint-order:stroke fill;text-shadow:.5cqw .6cqw 0 #1c1b18;transform:rotate(-4deg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 /* the number: a navy pill at the top right, over the stripes */
 .card.t-chrome .num{top:3.4%;right:4.5%;width:auto;height:auto;padding:.9cqw 2.6cqw;border:1.5px solid #fff;border-radius:999px;background:var(--navy);color:#fff;font:700 4.2cqw "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.06em;z-index:4}
 /* the frame's baseball stands where the badge was */
@@ -158,7 +156,7 @@
 .card.t-chrome .who .fn{font:400 calc(4.6cqw * var(--ns,1))/1 "Lilita One","Arial Black",Impact,sans-serif;letter-spacing:.02em;color:#ffe2a8;margin:0;text-shadow:.3cqw .3cqw 0 #1c1b18}
 .card.t-chrome .who .ln{flex:1;min-width:0;font:400 calc(6.8cqw * var(--ns,1))/1 "Lilita One","Arial Black",Impact,sans-serif;letter-spacing:.02em;color:#fff;text-shadow:.4cqw .4cqw 0 #1c1b18;-webkit-text-stroke:0;background:none;filter:none;overflow:hidden;text-overflow:ellipsis}
 .card.t-chrome .role{position:absolute;left:5.5%;top:86.3%;right:auto;bottom:auto;width:64%;height:8.1%;margin:0;padding:0 2cqw;z-index:4;max-width:none;background:transparent;border:0;color:var(--navy);
-  font:700 calc(1cqw * var(--rs,5.2))/1 "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.1em;text-transform:uppercase;-webkit-text-stroke:0;text-shadow:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  font:400 calc(1cqw * var(--rs,5.4))/1 "Lilita One","Arial Black",Impact,sans-serif;letter-spacing:.03em;text-transform:uppercase;-webkit-text-stroke:0;text-shadow:.3cqw .3cqw 0 #1c1b18;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
   transform:rotate(-5.8deg);transform-origin:0 50%;display:flex;align-items:center}
 /* the back: the same frame; the sheet is the panel, the plate stays bare */
 .card.t-chrome .back{border-radius:0;border:0;color:#1c1b18;padding:14% 10.5% 33%;background:var(--frame) center/100% 100% no-repeat}

@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef, useState, type CSSProperties } from 're
 import type { Profile, Role, State } from '@/lib/types';
 import { dur, fmt, fmtMonth, monthIndex, monthsBetween, nowYM, yearOf, yrs } from '@/lib/dates';
 import { codeFor, huntStats, initials, pairFor, pairIndexFor, runs, status, teamSize, type Run, themeClass, themeOf } from '@/lib/derived';
-import { fitName, fitTitle } from '@/lib/fit';
+import { fitCompany, fitName, fitTitle } from '@/lib/fit';
 import { avatarSrc, isPhoto } from '@/lib/avatar';
 
 type Vars = CSSProperties & { '--a'?: string; '--b'?: string };
@@ -46,7 +46,7 @@ export function RoleCard({ S, r, idx, total, on, className, onClick }: { S: Stat
       <div className="inner">
         <div className="face front">
           <span className={"num" + (idx + 1 >= 10 ? " wide" : "")}>#{idx + 1}</span>
-          <div className="art"><div className="team" style={{ fontSize: Math.min(7.8, teamSize(r.company)) + 'cqw' }}>{r.company}</div>{p.avatar ? <span className="pic"><img className={isPhoto(p.avatar) ? 'photo' : undefined} src={avatarSrc(p.avatar, pairIndexFor(S, r.company))} alt="" /></span> : <span className="mono">{initials(p.name) || '?'}</span>}<span className="badge">{r.code || codeFor(r.title)}</span></div>
+          <div className="art"><div className="team" style={{ fontSize: (plate ? fitCompany(r.company) : Math.min(7.8, teamSize(r.company))) + 'cqw' }}>{r.company}</div>{p.avatar ? <span className="pic"><img className={isPhoto(p.avatar) ? 'photo' : undefined} src={avatarSrc(p.avatar, pairIndexFor(S, r.company))} alt="" /></span> : <span className="mono">{initials(p.name) || '?'}</span>}<span className="badge">{r.code || codeFor(r.title)}</span></div>
           <Who name={p.name} plate={plate} />
           <Role title={r.title} plate={plate}><span className="yrs"> · {yearOf(r.start)} – {yearOf(r.end)}</span></Role>
         </div>
@@ -81,7 +81,7 @@ export function FreeCard({ S, on, share, className, onClick, onTimeline }: { S: 
     <div className={'card free' + themeClass(S) + (on ? ' on' : '') + (className ? ' ' + className : '')} style={vars('#dc4432', '#1f2a44')} data-id="free" tabIndex={0} role="button" aria-label="Free agent" onClick={onClick}>
       <div className="inner">
         <div className="face front">
-          <div className="art"><div className="team" style={{ fontSize: Math.min(7.8, teamSize('Free agent')) + 'cqw' }}>Free agent</div><div className="k">Open to</div><div className="open">{open}</div><span className="badge" title="Free agent">FA</span></div>
+          <div className="art"><div className="team" style={{ fontSize: (themeOf(S) === 'chrome' ? fitCompany('Free agent') : Math.min(7.8, teamSize('Free agent'))) + 'cqw' }}>Free agent</div><div className="k">Open to</div><div className="open">{open}</div><span className="badge" title="Free agent">FA</span></div>
           <Who name={p.name} plate={themeOf(S) === 'chrome'} />
           <div className="role">Free agent</div>
         </div>
@@ -112,7 +112,7 @@ export function SummaryCard({ S, run, from, to }: { S: State; run: Run; from: nu
       <div className="inner">
         <div className="face front">
           <span className="num">#{from}–{to}</span>
-          <div className="art"><div className="team" style={{ fontSize: Math.min(7.8, teamSize(run.company)) + 'cqw' }}>{run.company}</div><span className="mono">{run.roles.length}<small>{run.roles.length === 1 ? 'role' : 'roles'}</small></span><span className="badge">{last.code || codeFor(last.title)}</span></div>
+          <div className="art"><div className="team" style={{ fontSize: (themeOf(S) === 'chrome' ? fitCompany(run.company) : Math.min(7.8, teamSize(run.company))) + 'cqw' }}>{run.company}</div><span className="mono">{run.roles.length}<small>{run.roles.length === 1 ? 'role' : 'roles'}</small></span><span className="badge">{last.code || codeFor(last.title)}</span></div>
           <Who name={S.profile.name} plate={themeOf(S) === 'chrome'} />
           <div className="role">{yearOf(first.start)} – {yearOf(last.end)} · {dur(monthIndex(last.end || nowYM()) - monthIndex(first.start) + 1)}</div>
         </div>
