@@ -3,6 +3,29 @@ import { parseDate, parseMonth } from './dates';
 import { uid } from './derived';
 
 // ---------- CSV ----------
+
+/**
+ * A name as an import found it, in ordinary capitals. Resumes and exports often shout the name (TYLER ZERUK)
+ * or whisper it (tyler zeruk); either becomes Tyler Zeruk, with hyphens and apostrophes respected (Smith-Jones,
+ * O'Brien) and particles kept small after the first word (van, de, della). A name typed in mixed case is left
+ * exactly as it is, since that is the only spelling the person can vouch for (McDonald, DeShawn).
+ */
+export function tidyName(raw: string): string {
+  const whole = (raw || '').trim().replace(/\s+/g, ' ');
+  if (!whole) return whole;
+  // credentials after a comma (", LMFT", ", PMP") are initialisms and keep their capitals
+  const comma = whole.indexOf(','), s = comma > 0 ? whole.slice(0, comma).trim() : whole, tail = comma > 0 ? whole.slice(comma) : '';
+  const hasLower = /\p{Ll}/u.test(s), hasUpper = /\p{Lu}/u.test(s);
+  if (hasLower && hasUpper) return whole;
+  const small = new Set(['van', 'von', 'de', 'der', 'den', 'del', 'della', 'di', 'da', 'la', 'le', 'du', 'dos', 'das', 'bin', 'ibn', 'y', 'e']);
+  const cap = (w: string) => w.charAt(0).toLocaleUpperCase() + w.slice(1).toLocaleLowerCase();
+  return s.split(' ').map((word, i) => {
+    const lower = word.toLocaleLowerCase();
+    if (i > 0 && small.has(lower)) return lower;
+    return lower.split(/([-'\u2019])/).map((part) => (part === '-' || part === "'" || part === '\u2019' ? part : cap(part))).join('');
+  }).join(' ') + tail;
+}
+
 export function parseCSV(text: string, delim = ','): string[][] {
   const rows: string[][] = [];
   let row: string[] = [], cell = '', q = false;
@@ -99,7 +122,7 @@ export async function readLinkedIn(files: File[]): Promise<CareerImport> {
     .filter((c) => c.name);
   const skills = (texts['skills.csv'] ? csvObjects(texts['skills.csv']) : []).map((o) => pick(o, 'Name')).filter(Boolean);
   const prof = texts['profile.csv'] ? csvObjects(texts['profile.csv'])[0] || {} : {};
-  const profile = { name: [pick(prof, 'First Name'), pick(prof, 'Last Name')].filter(Boolean).join(' '), headline: pick(prof, 'Headline'), summary: pick(prof, 'Summary'), location: pick(prof, 'Geo Location') };
+  const profile = { name: tidyName([pick(prof, 'First Name'), pick(prof, 'Last Name')].filter(Boolean).join(' ')), headline: pick(prof, 'Headline'), summary: pick(prof, 'Summary'), location: pick(prof, 'Geo Location') };
   return { kind: 'career', roles, education, certs, skills, profile, source: 'LinkedIn export' };
 }
 
@@ -142,7 +165,7 @@ export function heuristicResume(text: string): CareerImport {
   const email = (text.match(/[\w.+-]+@[\w-]+\.[\w.]+/) || [''])[0];
   const linkedin = (text.match(/linkedin\.com\/in\/[\w-]+/i) || [''])[0];
   const name = lines.find((l) => l && l.length < 40 && /^[A-Z][a-z]+(\s[A-Z][a-z'.-]+)+$/.test(l)) || '';
-  return { kind: 'career', roles, education: [], certs: [], skills: [], profile: { name, email, linkedin: linkedin ? 'https://www.' + linkedin.replace(/^www\./, '') : '' }, source: 'Simple parser; check every row' };
+  return { kind: 'career', roles, education: [], certs: [], skills: [], profile: { name: tidyName(name), email, linkedin: linkedin ? 'https://www.' + linkedin.replace(/^www\./, '') : '' }, source: 'Simple parser; check every row' };
 }
 
 // ---------- tracker spreadsheet ----------

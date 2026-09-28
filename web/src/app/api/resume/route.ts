@@ -3,6 +3,7 @@ import { zodOutputFormat } from '@anthropic-ai/sdk/helpers/zod';
 import mammoth from 'mammoth';
 import { NextResponse, type NextRequest } from 'next/server';
 import { RESUME_SYSTEM, ResumeSchema, type ResumeExtract } from '@/lib/resume-schema';
+import { tidyName } from '@/lib/imports';
 import { supabaseServer } from '@/lib/supabase/server';
 import type { CareerImport } from '@/lib/imports';
 
@@ -20,7 +21,7 @@ function toImport(x: ResumeExtract): CareerImport {
     education: x.education.map((e) => ({ school: clean(e.school), degree: clean(e.degree), years: [e.start, e.end].map(clean).filter(Boolean).join('–') })).filter((e) => e.school),
     certs: x.certs.map((c) => ({ name: clean(c.name), issuer: clean(c.issuer), year: clean(c.year) })).filter((c) => c.name),
     skills: x.skills.map(clean).filter(Boolean),
-    profile: { name: clean(x.profile.name), headline: clean(x.profile.headline), location: clean(x.profile.location), email: clean(x.profile.email), linkedin: clean(x.profile.linkedin), summary: clean(x.profile.summary) },
+    profile: { name: tidyName(clean(x.profile.name)), headline: clean(x.profile.headline), location: clean(x.profile.location), email: clean(x.profile.email), linkedin: clean(x.profile.linkedin), summary: clean(x.profile.summary) },
     source: 'Extracted by Claude; check each row',
   };
 }
