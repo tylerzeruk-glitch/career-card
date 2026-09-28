@@ -142,13 +142,15 @@
 .card.t-chrome .art .pic{border-radius:0;inset:0;overflow:hidden}
 .card.t-chrome .mono{color:#2b3e7a}
 /* the company as the logo over the top-left corner, where the maker's mark goes: red bubbly letters with a white keyline */
-.card.t-chrome .team{position:absolute;left:-3.7%;top:-11.4%;bottom:auto;height:auto;line-height:1;padding:0;max-width:64%;background:transparent;clip-path:none;border-radius:0;z-index:4;
+.card.t-chrome .team{position:absolute;left:-3.7%;top:-11.4%;bottom:auto;height:auto;line-height:1;max-width:74%;background:transparent;clip-path:none;border-radius:0;z-index:4;
+  padding:.14em .5em .24em .14em;margin:-.14em -.5em -.24em -.14em; /* room inside the clipping box for the keyline, the italic overhang and the shadow */
   font:400 7.2cqw/1 "Lilita One","Arial Black",Impact,sans-serif;font-style:italic;letter-spacing:.01em;text-transform:none;color:var(--red);
   -webkit-text-stroke:.55cqw #fff;paint-order:stroke fill;text-shadow:.5cqw .6cqw 0 #1c1b18;transform:rotate(-2deg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 /* the number: a navy pill at the top right, over the stripes */
 .card.t-chrome .num{top:3.4%;right:4.5%;width:auto;height:auto;padding:.9cqw 2.6cqw;border:1.5px solid #fff;border-radius:999px;background:var(--navy);color:#fff;font:700 4.2cqw "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.06em;z-index:4}
-/* the position: a navy tag on the panel's bottom-left corner; the frame's baseball stands where the badge was */
-.card.t-chrome .badge{display:none}
+/* the position: a navy tag on the panel's bottom-left corner. The badge becomes the frame's baseball again, drawn over the photo: a copy of the frame the size of the face, clipped to the ball */
+.card.t-chrome .badge{left:-11.53%;right:-11.17%;top:-15.2%;bottom:-21.78%;width:auto;height:auto;transform:none;border:0;border-radius:0;filter:none;font-size:0;color:transparent;pointer-events:none;z-index:6;
+  background:var(--frame) center/100% 100% no-repeat;clip-path:ellipse(10.9% 7.9% at 85.9% 87.4%)}
 .card.t-chrome .role{position:absolute;left:9.4%;right:auto;top:auto;bottom:15.9%;margin:0;z-index:4;max-width:62%;padding:.9cqw 2.6cqw .7cqw;background:var(--navy);color:#fff;
   font:700 3.8cqw "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.1em;border:1px solid #fff;border-bottom:0;-webkit-text-stroke:0;text-shadow:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 /* the name on the frame's red plate, which leans up to the right */

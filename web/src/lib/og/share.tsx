@@ -156,11 +156,12 @@ function ChromePlate({ name }: { name: string }) {
   );
 }
 
-/** The Chrome 90s card stock: the printed frame, rotated into the hand like the others. */
+/** The Chrome 90s card stock: the printed frame, rotated into the hand like the others; its baseball is drawn again on top so it stands over the photo. */
 function ChromeStock({ site, rot, children }: { site: string; rot: number; children: React.ReactNode }) {
   return (
     <div style={{ position: 'absolute', bottom: 0, width: CW, height: CH, transformOrigin: `${CW / 2}px ${Math.round(CH * 1.15)}px`, transform: `rotate(${rot}deg)`, display: 'flex', backgroundImage: `url(${site}/frames/chrome.jpg)`, backgroundSize: `${CW}px ${CH}px`, backgroundRepeat: 'no-repeat', boxShadow: '-5px 0 14px rgba(0,0,0,.25), 0 10px 26px rgba(0,0,0,.25)' }}>
       {children}
+      <div style={{ position: 'absolute', left: 0, top: 0, width: CW, height: CH, backgroundImage: `url(${site}/frames/chrome.jpg)`, backgroundSize: `${CW}px ${CH}px`, backgroundRepeat: 'no-repeat', clipPath: `ellipse(${Math.round(CW * 0.109)}px ${Math.round(CH * 0.079)}px at ${Math.round(CW * 0.859)}px ${Math.round(CH * 0.874)}px)` }} />
     </div>
   );
 }
