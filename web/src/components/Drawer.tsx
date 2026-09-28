@@ -8,7 +8,7 @@ type EduRow = { school: string; degree: string; start: string; end: string; inPr
 type CertRow = { name: string; issuer: string; year: string; inProgress: boolean };
 const IN_PROGRESS = /in progress|present/i;
 import { fmtShort, parseMonth, todayISO } from '@/lib/dates';
-import { PAIRS, TYPES, codeFor, hashIdx, huntStats, initials, looking, norm, pairFor, pairIndexFor, roles, slugify, sortedEvents, statusOf, uid } from '@/lib/derived';
+import { PAIRS, TYPES, codeFor, hashIdx, huntStats, initials, looking, norm, pairFor, pairIndexFor, roles, slugify, sortedEvents, statusOf, uid, themeOf } from '@/lib/derived';
 import { avatarSrc, isPhoto, isSet } from '@/lib/avatar';
 import { LOCAL_SIDE, PORTRAIT_SIDE, dropPortrait, drawTake, isDataUrl, photoBlob, pickTake, squarePhoto, storePortrait, toDataUrl, type Take } from '@/lib/portrait';
 import { linkedinOn } from '@/lib/auth-providers';
@@ -384,6 +384,12 @@ function ProfileForm() {
         {onMarket
           ? <div className="field"><label htmlFor="p-targets">Open to (target roles)</label><TagInput id="p-targets" value={targets} onChange={setTargetsNow} placeholder="Type a role and press Enter" /></div>
           : <span className="help">Retired, settled, or just here for the pack: with this off there is no free-agent card, pill or day count anywhere, your public page included. The job-hunt log stays under the Log tab if you ever need it.</span>}
+        </div>
+        <div className="group fabox stylebox"><div className="gh">Card style</div>
+        <div className="toggle small" role="radiogroup" aria-label="Card style">
+          {([['vintage', 'Vintage'], ['chrome', 'Chrome 90s']] as const).map(([k, l]) => <button key={k} type="button" role="radio" aria-checked={themeOf(S) === k} className={themeOf(S) === k ? 'on' : ''} onClick={() => { update((s) => ({ ...s, settings: { ...s.settings, theme: k } }), { keepSample: true }); flash(k === 'chrome' ? 'Chrome 90s: black stock and foil.' : 'Vintage: cream stock and a pennant.'); }}>{l}</button>)}
+        </div>
+        <span className="help">{themeOf(S) === 'chrome' ? 'Black metallic stock, a foil slash and a chrome nameplate. Hover a card to see the foil catch the light.' : 'Cream stock, a pennant and a starburst, like a card from the fifties.'} It changes every card, your page and the picture behind a shared link.</span>
         </div>
         <div className="group"><div className="gh">Player</div>
         <div className="field"><label htmlFor="p-name-in">Name</label><input id="p-name-in" name="name" placeholder="George Costanza" defaultValue={p.name} /></div>

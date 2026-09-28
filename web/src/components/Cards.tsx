@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useRef, useState, type CSSProperties } from 'react';
 import type { Profile, Role, State } from '@/lib/types';
 import { dur, fmt, fmtMonth, monthIndex, monthsBetween, nowYM, yearOf, yrs } from '@/lib/dates';
-import { codeFor, huntStats, initials, pairFor, pairIndexFor, runs, status, teamSize, type Run } from '@/lib/derived';
+import { codeFor, huntStats, initials, pairFor, pairIndexFor, runs, status, teamSize, type Run, themeClass } from '@/lib/derived';
 import { avatarSrc, isPhoto } from '@/lib/avatar';
 
 type Vars = CSSProperties & { '--a'?: string; '--b'?: string };
@@ -31,7 +31,7 @@ export function RoleCard({ S, r, idx, total, on, className, onClick }: { S: Stat
   const seasons = run ? run.roles : [r];
   const bullets = r.bullets || [], skills = (r.skills || []).slice(0, 8);
   return (
-    <div className={'card' + (on ? ' on' : '') + (className ? ' ' + className : '')} style={vars(a, b)} data-id={r.id} tabIndex={0} role="button" aria-label={r.company + ', ' + r.title} onClick={onClick}>
+    <div className={'card' + themeClass(S) + (on ? ' on' : '') + (className ? ' ' + className : '')} style={vars(a, b)} data-id={r.id} tabIndex={0} role="button" aria-label={r.company + ', ' + r.title} onClick={onClick}>
       <div className="inner">
         <div className="face front">
           <span className={"num" + (idx + 1 >= 10 ? " wide" : "")}>#{idx + 1}</span>
@@ -67,7 +67,7 @@ export function FreeCard({ S, on, share, className, onClick, onTimeline }: { S: 
   const open = (p.targets || []).length ? p.targets.join(' · ') : p.headline || 'New role';
   const since = st.free ? st.since : null;
   return (
-    <div className={'card free' + (on ? ' on' : '') + (className ? ' ' + className : '')} style={vars('#dc4432', '#1f2a44')} data-id="free" tabIndex={0} role="button" aria-label="Free agent" onClick={onClick}>
+    <div className={'card free' + themeClass(S) + (on ? ' on' : '') + (className ? ' ' + className : '')} style={vars('#dc4432', '#1f2a44')} data-id="free" tabIndex={0} role="button" aria-label="Free agent" onClick={onClick}>
       <div className="inner">
         <div className="face front">
           <div className="art"><div className="team" style={{ fontSize: Math.min(7.8, teamSize('Free agent')) + 'cqw' }}>Free agent</div><div className="k">Open to</div><div className="open">{open}</div><span className="badge" title="Free agent">FA</span></div>
@@ -97,7 +97,7 @@ export function SummaryCard({ S, run, from, to }: { S: State; run: Run; from: nu
   const [a, b] = pairFor(S, run.company);
   const first = run.roles[0], last = run.roles[run.roles.length - 1];
   return (
-    <div className="card summary top" style={vars(a, b)} tabIndex={0} role="button" aria-label={run.company + ' stack'}>
+    <div className={'card summary top' + themeClass(S)} style={vars(a, b)} tabIndex={0} role="button" aria-label={run.company + ' stack'}>
       <div className="inner">
         <div className="face front">
           <span className="num">#{from}–{to}</span>
@@ -113,5 +113,5 @@ export function SummaryCard({ S, run, from, to }: { S: State; run: Run; from: nu
 
 export function UnderCard({ S, company, which }: { S: State; company: string; which: 1 | 2 }) {
   const [a, b] = pairFor(S, company);
-  return <div className={'card under' + which} style={vars(a, b)}><div className="inner"><div className="face front" /></div></div>;
+  return <div className={'card under' + which + themeClass(S)} style={vars(a, b)}><div className="inner"><div className="face front" /></div></div>;
 }

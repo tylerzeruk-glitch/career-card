@@ -70,6 +70,10 @@ export function hydrate(o: Partial<State> | null | undefined): State {
   };
 }
 
+/** The theme in force, and the class that puts it on a card. */
+export const themeOf = (S: State): 'vintage' | 'chrome' => (S.settings.theme === 'chrome' ? 'chrome' : 'vintage');
+export const themeClass = (S: State) => (themeOf(S) === 'chrome' ? ' t-chrome' : '');
+
 export const roles = (S: State) => S.roles.slice().sort((a, b) => (a.start < b.start ? -1 : a.start > b.start ? 1 : 0));
 export const sortedEvents = (S: State) => S.events.slice().sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0));
 

@@ -393,6 +393,9 @@ dialog::backdrop{background:rgba(0,0,0,.35)}
 /* free agency: its own box at the top of the profile, tinted like the owner-only row under the deck, with a switch */
 .fabox{background:rgba(31,42,68,.07);border-radius:12px;padding:16px 18px 18px;gap:10px}
 .fabox .gh{color:var(--navy);margin-bottom:4px}
+.stylebox{background:rgba(28,27,24,.06)}
+.stylebox .gh{color:var(--ink)}
+.stylebox .toggle{margin:2px 0 6px}
 .fabox .field input{border-bottom-color:var(--hair)}
 .switch{position:relative;display:inline-flex;align-items:center;gap:10px;cursor:pointer;font-size:13.5px;color:var(--ink);user-select:none}
 .switch input{position:absolute;opacity:0;width:0;height:0}

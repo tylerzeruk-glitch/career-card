@@ -55,7 +55,9 @@ export type Profile = {
   photo?: string;
 };
 
-export type Settings = { group: 'role' | 'team'; view: 'cards' | 'timeline' };
+/** The card set's look. 'vintage' is the 1950s–70s stock the site started with; missing means vintage. */
+export type CardTheme = 'vintage' | 'chrome';
+export type Settings = { group: 'role' | 'team'; view: 'cards' | 'timeline'; theme?: CardTheme };
 
 /** The whole card. It is saved as one document, locally or in the account. */
 export type State = {
