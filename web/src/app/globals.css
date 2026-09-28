@@ -688,7 +688,7 @@ html:has([data-style="chrome"]) body{background:#fff linear-gradient(180deg,rgba
 [data-style="chrome"] .btn.outline{border-color:var(--navy);color:var(--navy)}
 [data-style="chrome"] .btn.outline:hover{background:var(--navy);color:#fff}
 [data-style="chrome"] .toggle{border:1.5px solid var(--navy);background:#fff;color:var(--navy);box-shadow:2px 2px 0 var(--gold)} /* the Add button's shadow */
-[data-style="chrome"] .actions .secondary .btn{font:700 12.5px var(--cond);letter-spacing:.12em;text-transform:uppercase;color:var(--navy)}
+[data-style="chrome"] .actions .secondary .btn{font:700 13px var(--cond);letter-spacing:.12em;text-transform:uppercase;color:var(--navy);text-shadow:1.5px 1.5px 0 var(--gold)} /* the Add button's gold offset, as a text shadow */
 [data-style="chrome"] .actions .secondary .btn:hover{color:var(--red);background:transparent}
 [data-style="chrome"] .toggle button{color:var(--navy)}
 [data-style="chrome"] .toggle button.on{background:var(--navy);color:#fff}
@@ -737,6 +737,7 @@ html:has([data-style="chrome"]) body{background:#fff linear-gradient(180deg,rgba
 [data-style="chrome"] .btn.icon.theme,[data-style="chrome"] .btn.icon.style,[data-style="chrome"] .menu summary.more{border:1.5px solid var(--navy);background:#fff;color:var(--navy);box-shadow:2px 2.5px 0 #1c1b2a;transition:transform .12s,box-shadow .12s}
 [data-style="chrome"] .btn.icon.theme:hover,[data-style="chrome"] .btn.icon.style:hover,[data-style="chrome"] .menu summary.more:hover{background:#fff;color:var(--navy);transform:translate(-1px,-1px);box-shadow:3px 3.5px 0 #1c1b2a}
 [data-style="chrome"] .menu[open] summary.more{background:var(--navy);color:#fff}
+[data-style="chrome"] .menu[open] summary.more,[data-style="chrome"] .stylepick[open] summary.style,[data-style="chrome"] .menu[open] summary.more:hover,[data-style="chrome"] .stylepick[open] summary.style:hover{transform:none;box-shadow:2px 2px 0 var(--gold)} /* open: the Add button's gold shadow */
 /* the style button's chip for this stock is the frame's baseball */
 .btn.icon.style.chrome .chip{width:18px;height:18px;border:0;border-radius:50%;background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><circle cx='20' cy='20' r='18.5' fill='%23fffdf6' stroke='%23173a8a' stroke-width='3'/><path d='M12 5.5q-7 14.5 0 29M28 5.5q7 14.5 0 29' fill='none' stroke='%23e5322d' stroke-width='2.2' stroke-linecap='round'/><path d='M9.5 11l3.5 1.2M8.4 16l3.6.6M8.4 24l3.6-.6M9.5 29l3.5-1.2M30.5 11l-3.5 1.2M31.6 16l-3.6.6M31.6 24l-3.6-.6M30.5 29l-3.5-1.2' stroke='%23e5322d' stroke-width='1.6' stroke-linecap='round'/></svg>") center/100% 100% no-repeat}
 .btn.icon.style.chrome .chip i{display:none}
