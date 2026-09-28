@@ -689,7 +689,8 @@ html:has([data-style="chrome"]) body{background:#fff linear-gradient(180deg,rgba
 [data-style="chrome"] .toggle{border-color:var(--navy)}
 [data-style="chrome"] .toggle button.on{background:var(--navy);color:#fff}
 [data-style="chrome"] .row h2,[data-style="chrome"] .gh{font-style:italic;letter-spacing:.16em;color:var(--navy)}
-[data-style="chrome"] .fold::before,[data-style="chrome"] .row::after,[data-style="chrome"] .gh::after,[data-style="chrome"] .lfoot::before,[data-style="chrome"] .tl::before,[data-style="chrome"] .tl::after{height:6px;background:var(--perf)}
+[data-style="chrome"] .fold::before,[data-style="chrome"] .row::after,[data-style="chrome"] .gh::after,[data-style="chrome"] .tl::before,[data-style="chrome"] .tl::after{height:6px;background:var(--perf)}
+[data-style="chrome"] .lfoot::before{display:none} /* the last section's wave already sits above the footer */
 [data-style="chrome"] .row::after{bottom:-3px}
 [data-style="chrome"] .tiles span{background:var(--navy);color:#fff;font-weight:700;border-radius:2px}
 [data-style="chrome"] .ghost{border-color:var(--navy);color:var(--navy);background:rgba(255,255,255,.6)}
