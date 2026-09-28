@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from 'react';
 import type { State } from '@/lib/types';
 import { sampleState } from '@/lib/sample';
 import { FreeCard, RoleCard } from './Cards';
-import { ThemeToggle } from './ThemeToggle';
 import { TimelineLegend, TimelineView } from './Timeline';
 import { dayNum, todayISO } from '@/lib/dates';
 import { status } from '@/lib/derived';
@@ -64,7 +63,6 @@ export function Landing({ tryHref = '/app?example', signInHref = '/login', onTry
       <header className="lbar">
         <a className="wordmark" href="/"><Flag /><span>CareerCards</span></a>
         <nav>
-          <ThemeToggle />
           <a className="btn primary" href={signInHref}>Sign in</a>
         </nav>
       </header>

@@ -7,7 +7,6 @@ import { attachTilt } from '@/lib/tilt';
 import { FreeCard, RoleCard } from './Cards';
 import { ShelfDots } from './ShelfDots';
 import { FocusView } from './Focus';
-import { ThemeToggle } from './ThemeToggle';
 import { Flag, SiteFoot } from './Landing';
 
 /** The download button fetches the PDF itself, so it can say what is happening while the server sets the sheet (a second or two), then hands the file to the browser. */
@@ -63,7 +62,6 @@ export function PublicCard({ S, slug, resumeHref }: { S: State; slug: string; re
       <header className="lbar">
         <a className="wordmark" href="/"><Flag /><span>CareerCards</span></a>
         <nav>
-          <ThemeToggle />
           <a className="btn primary" href="/">Make your own pack</a>
         </nav>
       </header>

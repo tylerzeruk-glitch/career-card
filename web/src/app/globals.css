@@ -82,6 +82,7 @@ a.btn{text-decoration:none;display:inline-block}
 .pill .flag{color:#fff;margin:-2px 0 -2px -2px;flex:none}
 .pill.active{background:var(--navy);transform:none}
 .actions{display:flex;gap:2px;flex-wrap:wrap;align-items:center}
+.topbar .actions .stylepick{margin:0 6px} /* air between the style button and the menu */
 .btn.with-icon{display:inline-flex;align-items:center;gap:6px}
 .btn.with-icon svg{width:18px;height:18px;flex:none}
 .toggle{display:inline-flex;border:1.5px solid var(--ink);border-radius:999px;overflow:hidden;font:700 11.5px/1 var(--cond);letter-spacing:.1em;text-transform:uppercase}
@@ -686,7 +687,9 @@ html:has([data-style="chrome"]) body{background:#fff linear-gradient(180deg,rgba
 [data-style="chrome"] .btn.primary:hover{opacity:1;filter:brightness(1.12)}
 [data-style="chrome"] .btn.outline{border-color:var(--navy);color:var(--navy)}
 [data-style="chrome"] .btn.outline:hover{background:var(--navy);color:#fff}
-[data-style="chrome"] .toggle{border:1.5px solid var(--navy);background:#fff;color:var(--navy);box-shadow:2px 2.5px 0 #1c1b2a}
+[data-style="chrome"] .toggle{border:1.5px solid var(--navy);background:#fff;color:var(--navy);box-shadow:2px 2px 0 var(--gold)} /* the Add button's shadow */
+[data-style="chrome"] .actions .secondary .btn{font:700 12.5px var(--cond);letter-spacing:.12em;text-transform:uppercase;color:var(--navy)}
+[data-style="chrome"] .actions .secondary .btn:hover{color:var(--red);background:transparent}
 [data-style="chrome"] .toggle button{color:var(--navy)}
 [data-style="chrome"] .toggle button.on{background:var(--navy);color:#fff}
 [data-style="chrome"] .row h2,[data-style="chrome"] .gh{font-style:italic;letter-spacing:.16em;color:var(--navy)}

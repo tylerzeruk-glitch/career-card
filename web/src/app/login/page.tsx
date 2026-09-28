@@ -2,7 +2,6 @@
 import { useState } from 'react';
 import { supabaseBrowser } from '@/lib/supabase/client';
 import { Flag } from '@/components/Landing';
-import { ThemeToggle } from '@/components/ThemeToggle';
 import { enabledProviders, type Provider } from '@/lib/auth-providers';
 
 /**
@@ -41,7 +40,6 @@ export default function Login() {
       <div className="box">
         <div className="boxhead">
           <a className="wordmark" href="/"><Flag /><span>CareerCards</span></a>
-          <ThemeToggle />
         </div>
         <h1>Sign in</h1>
         {sb ? (
