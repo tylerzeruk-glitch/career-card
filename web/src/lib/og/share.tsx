@@ -129,11 +129,11 @@ function FreeFront({ S, rot }: { S: State; rot: number }) {
 }
 
 /** The Chrome 90s frame: shares of the card where the printed frame's panel and plate sit, in px. */
-const FR = { panelL: Math.round(CW * 0.086), panelT: Math.round(CH * 0.091), panelW: Math.round(CW * 0.828), panelH: Math.round(CH * 0.679),
+const FR = { panelL: Math.round(CW * 0.082), panelT: Math.round(CH * 0.0875), panelW: Math.round(CW * 0.836), panelH: Math.round(CH * 0.684),
   plateL: Math.round(CW * 0.06), plateT: Math.round(CH * 0.786), plateW: Math.round(CW * 0.62), plateH: Math.round(CH * 0.064),
-  roleL: Math.round(CW * 0.076), roleT: Math.round(CH * 0.861), roleW: Math.round(CW * 0.62), roleH: Math.round(CH * 0.081) };
+  roleL: Math.round(CW * 0.076), roleT: Math.round(CH * 0.866), roleW: Math.round(CW * 0.62), roleH: Math.round(CH * 0.081) };
 /** The plates' top edge crosses the panel's bottom-right corner: the panel's content is clipped to it. */
-const PANEL_CLIP = `polygon(0 0, 100% 0, 100% ${Math.round(FR.panelH * 0.922)}px, ${Math.round(FR.panelW * 0.165)}px 100%, 0 100%)`;
+const PANEL_CLIP = `polygon(0 0, 100% 0, 100% ${Math.round(FR.panelH * 0.923)}px, ${Math.round(FR.panelW * 0.178)}px 100%, 0 100%)`;
 const NAVY = '#173a8a', RED = '#e5322d';
 
 /** The company as the maker's mark over the frame's top-left corner: red letters, a white keyline and a dark offset, built from layered copies. */

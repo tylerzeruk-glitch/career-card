@@ -136,10 +136,10 @@
 .card.t-chrome .face::after{background:linear-gradient(115deg,transparent calc(var(--mx,50%) - 24%),rgba(255,255,255,.28) var(--mx,50%),transparent calc(var(--mx,50%) + 24%))}
 .card.t-chrome .back::after{background:linear-gradient(115deg,transparent calc(76% - var(--mx,50%)),rgba(255,255,255,.22) calc(100% - var(--mx,50%)),transparent calc(124% - var(--mx,50%)))}
 /* the photo panel: the frame's own cream panel; the art box fills it and lets the logo hang outside */
-.card.t-chrome .art{position:absolute;left:8.6%;right:8.6%;top:9.1%;bottom:23%;margin:0;flex:none;border-radius:0;border:0;background:transparent;box-shadow:none;overflow:visible}
+.card.t-chrome .art{position:absolute;left:8.2%;right:8.2%;top:8.75%;bottom:22.8%;margin:0;flex:none;border-radius:0;border:0;background:transparent;box-shadow:none;overflow:visible}
 .card.t-chrome .art::before,.card.t-chrome .art::after{display:none}
 /* the photo stops at the plates' top edge, which crosses the panel's bottom-right corner */
-.card.t-chrome .art .pic{border-radius:0;inset:0;overflow:hidden;clip-path:polygon(0 0,100% 0,100% 92.2%,16.5% 100%,0 100%)}
+.card.t-chrome .art .pic{border-radius:0;inset:0;overflow:hidden;clip-path:polygon(0 0,100% 0,100% 92.3%,17.8% 100%,0 100%)}
 .card.t-chrome .mono{color:#2b3e7a}
 /* the company as the logo over the top-left corner, where the maker's mark goes: red bubbly letters with a white keyline */
 .card.t-chrome .team{position:absolute;left:-2.4%;top:-10.4%;bottom:auto;height:auto;line-height:1;max-width:80%;transform-origin:0 100%;background:transparent;clip-path:none;border-radius:0;z-index:4;
@@ -157,7 +157,7 @@
 .card.t-chrome .who > *{transform:none;display:block}
 .card.t-chrome .who .fn{font:400 calc(4.6cqw * var(--ns,1))/1 "Lilita One","Arial Black",Impact,sans-serif;letter-spacing:.02em;color:#ffe2a8;margin:0;text-shadow:.3cqw .3cqw 0 #1c1b18}
 .card.t-chrome .who .ln{flex:1;min-width:0;font:400 calc(6.8cqw * var(--ns,1))/1 "Lilita One","Arial Black",Impact,sans-serif;letter-spacing:.02em;color:#fff;text-shadow:.4cqw .4cqw 0 #1c1b18;-webkit-text-stroke:0;background:none;filter:none;overflow:hidden;text-overflow:ellipsis}
-.card.t-chrome .role{position:absolute;left:7.6%;top:86.1%;right:auto;bottom:auto;width:62%;height:8.1%;margin:0;padding:0 2cqw;z-index:4;max-width:none;background:transparent;border:0;color:var(--navy);
+.card.t-chrome .role{position:absolute;left:7.6%;top:86.6%;right:auto;bottom:auto;width:62%;height:8.1%;margin:0;padding:0 2cqw;z-index:4;max-width:none;background:transparent;border:0;color:var(--navy);
   font:400 calc(1cqw * var(--rs,4.4))/1 "Lilita One","Arial Black",Impact,sans-serif;letter-spacing:.03em;text-transform:uppercase;-webkit-text-stroke:0;text-shadow:.3cqw .3cqw 0 #1c1b18;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
   transform:rotate(-5.8deg);transform-origin:0 50%;display:flex;align-items:center}
 /* the back: the same frame; the sheet is the panel, the plate stays bare */
@@ -173,7 +173,7 @@
 /* the free-agent card: the panel goes navy (painted behind the panel's content, stopping at the plates), the logo gold, the position red */
 .card.t-chrome.free .front{background:var(--frame) center/100% 100% no-repeat;border-color:transparent}
 .card.t-chrome.free .art{background:transparent;border:0;display:flex;padding:6% 6% 14%}
-.card.t-chrome.free .art::before{content:"";display:block;position:absolute;inset:0;z-index:-1;background:#1f2a44;clip-path:polygon(0 0,100% 0,100% 92.2%,16.5% 100%,0 100%)}
+.card.t-chrome.free .art::before{content:"";display:block;position:absolute;inset:0;z-index:-1;background:#1f2a44;clip-path:polygon(0 0,100% 0,100% 92.3%,17.8% 100%,0 100%)}
 .card.t-chrome.free .team{background:transparent;color:var(--gold)}
 .card.t-chrome.free .role{color:var(--red)}
 .card.t-chrome.free .k{color:#c9d7f2}.card.t-chrome.free .open{color:#fff}
