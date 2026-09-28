@@ -3,6 +3,7 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react
 import type { State } from '@/lib/types';
 import { careerStats, roles, skillTally, status, themeOf } from '@/lib/derived';
 import { layoutDeck } from '@/lib/deck';
+import { attachTilt } from '@/lib/tilt';
 import { FreeCard, RoleCard } from './Cards';
 import { ShelfDots } from './ShelfDots';
 import { FocusView } from './Focus';
@@ -52,6 +53,7 @@ export function PublicCard({ S, slug, resumeHref }: { S: State; slug: string; re
   const [touched, setTouched] = useState(false);
   const layout = useCallback(() => { if (shelf.current) layoutDeck(shelf.current, host.current, { ghost: false }); }, []);
   useLayoutEffect(layout);
+  useEffect(() => { const el = host.current; if (!el) return; return attachTilt(el); }, []);
   useEffect(() => { const el = shelf.current; if (!el || !('ResizeObserver' in window)) return; const ro = new ResizeObserver(layout); ro.observe(el); return () => ro.disconnect(); }, [layout]);
   const flip = (id: string) => { setTouched(true); setFocusId(id); };
   const stat = ([n, k]: [number, string]) => <span key={k}><b>{n}</b>{k}{n === 1 ? '' : 's'}</span>;

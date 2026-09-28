@@ -2,6 +2,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { AuthUser, CloudCard } from '@/lib/types';
 import { careerStats, looking, status, themeOf } from '@/lib/derived';
+import { attachTilt } from '@/lib/tilt';
 import { CardProvider, useCard } from './store';
 import { UICtx, useUI, type DrawerTab, type ImportTab, type TimelineApi, type UI } from './ui';
 import { Deck } from './Deck';
@@ -23,6 +24,8 @@ export function CareerCardApp({ user, cloud }: { user: AuthUser | null; cloud: C
 }
 
 function Shell() {
+  const tiltRoot = useRef<HTMLDivElement>(null);
+  useEffect(() => { const el = tiltRoot.current; if (!el) return; return attachTilt(el); }, []);
   const { S, update, flashMsg, migration, migrate, user, sampleMode } = useCard();
   const [trying, setTrying] = useState(false);
   useEffect(() => { try { setTrying(!user && sessionStorage.getItem('careercard.trying') !== 'seen'); } catch { setTrying(!user); } }, [user]);
@@ -58,7 +61,7 @@ function Shell() {
 
   return (
     <UICtx.Provider value={ui}>
-      <div className="app" data-style={themeOf(S)}>
+      <div className="app" data-style={themeOf(S)} ref={tiltRoot}>
         <Header />
         {migration && (
           <div className="banner">
