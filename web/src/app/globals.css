@@ -135,7 +135,8 @@ a.btn{text-decoration:none;display:inline-block}
 /* perforated tear-off lines between the rows */
 :root{--perf:radial-gradient(circle,var(--hair) 1.3px,transparent 1.6px) 4px 50%/9px 4px repeat-x}
 .fold{max-width:100%;margin-top:6px;position:relative;padding-top:1px;margin-left:var(--fold-ml,0);width:var(--fold-w,auto)}
-.shelf-foot{display:flex;margin:-24px 0 18px calc(var(--deck-ml,6px) + 14px)}
+.shelf-foot{display:flex;justify-content:space-between;align-items:flex-end;gap:18px 40px;flex-wrap:wrap;margin:-24px 0 18px calc(var(--deck-ml,6px) + 14px)}
+.gt-wrap.style{margin-right:calc(var(--deck-ml,6px) + 14px)}
 /* By role / By team: radio dots, the pick filled red like the free-agent pill's dot */
 .gt-wrap{display:flex;flex-direction:column;gap:2px}
 .gt-label{font:600 12.5px/1 var(--cond);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2)}
@@ -393,9 +394,6 @@ dialog::backdrop{background:rgba(0,0,0,.35)}
 /* free agency: its own box at the top of the profile, tinted like the owner-only row under the deck, with a switch */
 .fabox{background:rgba(31,42,68,.07);border-radius:12px;padding:16px 18px 18px;gap:10px}
 .fabox .gh{color:var(--navy);margin-bottom:4px}
-.stylebox{background:rgba(28,27,24,.06)}
-.stylebox .gh{color:var(--ink)}
-.stylebox .toggle{margin:2px 0 6px}
 .fabox .field input{border-bottom-color:var(--hair)}
 .switch{position:relative;display:inline-flex;align-items:center;gap:10px;cursor:pointer;font-size:13.5px;color:var(--ink);user-select:none}
 .switch input{position:absolute;opacity:0;width:0;height:0}
@@ -696,7 +694,6 @@ html:has([data-style="chrome"]) body{background:var(--bg) radial-gradient(ellips
 [data-style="chrome"] .ghost:hover{border-color:#e9e9f0;color:#e9e9f0}
 [data-style="chrome"] .shelf-dots button.on{background:var(--gold)}
 [data-style="chrome"] .fabox{background:rgba(196,139,255,.10)}
-[data-style="chrome"] .stylebox{background:rgba(255,255,255,.06)}
 [data-style="chrome"] .drawer{box-shadow:-8px 0 30px rgba(0,0,0,.5)}
 [data-style="chrome"] .switch input:checked + .track{background:var(--gold)}
 [data-style="chrome"] .pagebox{background:rgba(255,255,255,.06)}

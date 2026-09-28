@@ -4,7 +4,8 @@ import { useCard } from './store';
 import { useUI } from './ui';
 import { FreeCard, RoleCard, SummaryCard, UnderCard } from './Cards';
 import { ShelfDots } from './ShelfDots';
-import { norm, pairFor, roles, runs, status } from '@/lib/derived';
+import { norm, pairFor, roles, runs, status, themeOf } from '@/lib/derived';
+import type { CardTheme } from '@/lib/types';
 
 import { layoutDeck } from '@/lib/deck';
 
@@ -101,8 +102,23 @@ export function Deck() {
       {/* the grouping switch: radio dots under the deck, lined up with the first card */}
       <div className="shelf-foot">
         <GroupToggle group={S.settings.group} onPick={pick} />
+        <StyleToggle theme={themeOf(S)} onPick={(t) => update((s) => ({ ...s, settings: { ...s.settings, theme: t } }), { keepSample: true })} />
       </div>
     </>
+  );
+}
+
+/** Vintage / Chrome 90s as radio dots, beside the deal order: the card style is a deck setting, not a profile one. */
+function StyleToggle({ theme, onPick }: { theme: CardTheme; onPick: (t: CardTheme) => void }) {
+  return (
+    <div className="gt-wrap style">
+      <div className="gt-label" id="style-label">Card style</div>
+      <div className="gt" id="style-toggle" role="radiogroup" aria-labelledby="style-label">
+        {([['vintage', 'Vintage'], ['chrome', 'Chrome 90s']] as const).map(([k, l]) => (
+          <button key={k} role="radio" aria-checked={theme === k} className={theme === k ? 'on' : ''} onClick={() => onPick(k)}><i aria-hidden="true" />{l}</button>
+        ))}
+      </div>
+    </div>
   );
 }
 
