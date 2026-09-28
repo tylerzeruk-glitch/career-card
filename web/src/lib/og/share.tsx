@@ -141,7 +141,7 @@ function ChromeMark({ text, color }: { text: string; color: string }) {
   const size = q(fitCompany(text)), w = Math.round(CW * 0.76), k = 1.8, ring = [[-k, 0], [k, 0], [0, -k], [0, k], [-k, -k], [k, k], [-k, k], [k, -k]];
   const base = { position: 'absolute' as const, left: 0, top: 0, width: w, display: 'flex', fontFamily: LILITA, fontSize: size, letterSpacing: '0.01em', whiteSpace: 'nowrap' as const, overflow: 'hidden' as const };
   return (
-    <div style={{ position: 'absolute', left: Math.round(CW * 0.063), top: Math.round(CH * 0.012), width: w, height: size + 8, display: 'flex', transform: 'rotate(-4deg)', transformOrigin: '0 100%' }}>
+    <div style={{ position: 'absolute', left: Math.round(CW * 0.063), top: Math.round(CH * 0.027), width: w, height: size + 8, display: 'flex', transform: 'rotate(-4deg)', transformOrigin: '0 100%' }}>
       {[[0, 0], ...ring].map(([x, y], i) => <div key={'s' + i} style={{ ...base, left: 3.5 + x, top: 4 + y, color: '#1c1b18' }}>{text}</div>)}
       {ring.map(([x, y], i) => <div key={i} style={{ ...base, left: x, top: y, color: '#fff' }}>{text}</div>)}
       <div style={{ ...base, color }}>{text}</div>

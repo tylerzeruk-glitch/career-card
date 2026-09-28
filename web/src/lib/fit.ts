@@ -1,8 +1,8 @@
 /**
  * Fitting a line of text into a fixed box on a card without a browser to measure it: the width is estimated
- * from the character count and the face's average advance, the size scales down to a floor, and past the floor
- * the words themselves give way, the way a printed card would abbreviate a long position. Sizes are in cqw
- * (shares of the card's width), which the stylesheet turns into CSS variables.
+ * from the character count and the face's average advance. The type stays one size on every card, so what
+ * gives way is the wording, the way a printed card abbreviates a long position or initials a first name.
+ * Sizes are in cqw (shares of the card's width).
  */
 
 /** The abbreviations a card would use for a long position, tried in order until the line fits. */
@@ -24,30 +24,31 @@ const TITLE_ABBR: [RegExp, string][] = [
 const em = (text: string, adv: number) => text.length * adv;
 
 /**
- * A position for the role box: base size, scaled down to the floor; past the floor, trimmed of a parenthetical or a
+ * A position for the role box at the box's one size: when it will not fit, trimmed of a parenthetical or a
  * trailing clause, then abbreviated a word at a time (the longest-established abbreviations first).
  */
-export function fitTitle(title: string, width = 58, base = 5.4, min = 3.7, adv = 0.62): { text: string; size: number } {
+export const ROLE_SIZE = 4.4;
+export function fitTitle(title: string, width = 58, base = ROLE_SIZE, min = ROLE_SIZE, adv = 0.62): { text: string; size: number } {
   let text = (title || '').trim();
   const size = (t: string) => Math.min(base, width / Math.max(1, em(t, adv)));
-  if (size(text) >= min) return { text, size: size(text) };
+  if (size(text) >= min) return { text, size: base };
   // a parenthetical or a trailing clause goes first: "(North America)", "- Contract"
   const trimmed = text.replace(/\s*\(.*?\)\s*/g, ' ').replace(/\s+[-–—/,|].*$/, '').trim();
-  if (trimmed && trimmed !== text) { text = trimmed; if (size(text) >= min) return { text, size: size(text) }; }
+  if (trimmed && trimmed !== text) { text = trimmed; if (size(text) >= min) return { text, size: base }; }
   for (const [re, to] of TITLE_ABBR) {
     const next = text.replace(re, to);
     if (next === text) continue;
     text = next;
-    if (size(text) >= min) return { text, size: size(text) };
+    if (size(text) >= min) return { text, size: base };
   }
-  return { text, size: min };
+  return { text, size: base };
 }
 
 /**
- * A name for the plate: first name small, surname large, both scaled together down to the floor; past the floor,
- * middle names go, then the first name becomes an initial.
+ * A name for the plate at the plate's one size, first name small and surname large: when it will not fit, middle
+ * names go, then the first name becomes an initial. The scale is kept at 1 for the stylesheet.
  */
-export function fitName(name: string, width = 60, minScale = 0.68, advFn = 0.6, advLn = 0.62, fnSize = 4.6, lnSize = 6.8, gap = 1.8): { fn: string; ln: string; scale: number } {
+export function fitName(name: string, width = 60, minScale = 1, advFn = 0.6, advLn = 0.62, fnSize = 4.6, lnSize = 6.8, gap = 1.8): { fn: string; ln: string; scale: number } {
   const words = (name || 'Your name').trim().split(/\s+/).filter(Boolean);
   const scale = (fn: string, ln: string) => Math.min(1, (width - (fn ? gap : 0)) / Math.max(1, em(fn, advFn) * fnSize + em(ln, advLn) * lnSize));
   const tries: [string, string][] = [];
@@ -58,9 +59,9 @@ export function fitName(name: string, width = 60, minScale = 0.68, advFn = 0.6, 
     if (words.length > 2) tries.push([first, last]); // first and last only
     tries.push([first[0] + '.', last]); // an initial
   }
-  for (const [fn, ln] of tries) { const s = scale(fn, ln); if (s >= minScale) return { fn, ln, scale: s }; }
+  for (const [fn, ln] of tries) if (scale(fn, ln) >= minScale) return { fn, ln, scale: 1 };
   const [fn, ln] = tries[tries.length - 1];
-  return { fn, ln, scale: minScale };
+  return { fn, ln, scale: 1 };
 }
 
 /** The company as the maker's mark over the frame's corner: as large as the corner allows, scaled down for a long name; the stylesheet shortens what still will not fit. */
