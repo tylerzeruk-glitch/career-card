@@ -693,7 +693,12 @@ html:has([data-style="chrome"]) body{background:#fff linear-gradient(180deg,rgba
 [data-style="chrome"] .lfoot::before{display:none} /* the last section's wave already sits above the footer */
 [data-style="chrome"] .row::after{bottom:-3px}
 [data-style="chrome"] .tiles span{background:var(--navy);color:#fff;font-weight:700;border-radius:2px}
-[data-style="chrome"] .ghost{border-color:var(--navy);color:var(--navy);background:rgba(255,255,255,.6)}
+/* the add-a-role tab as a tall yellow plate: slanted, keylined, a hard shadow, red halftone creeping up from the foot, the label in the mark's face */
+[data-style="chrome"] .ghost{width:52px;border:1.5px solid #1c1b2a;color:var(--navy);transform:skewY(-4deg);box-shadow:3px 3px 0 #1c1b2a;transition:transform .15s,box-shadow .15s;
+  background:linear-gradient(0deg,rgba(242,194,48,0) 0%,var(--gold) 45%),radial-gradient(circle,rgba(229,50,45,.6) 30%,transparent 34%) 0 0/6px 6px,var(--gold)}
+[data-style="chrome"] .ghost .up{font:400 15px var(--riso);letter-spacing:.06em;color:var(--navy);-webkit-text-stroke:1.6px #fff;paint-order:stroke fill;filter:drop-shadow(1.2px 1.4px 0 #1c1b2a)}
+[data-style="chrome"] .ghost:hover{color:var(--navy);border-color:#1c1b2a;transform:skewY(-4deg) translate(-1px,-1px);box-shadow:4px 4px 0 #1c1b2a}
+[data-style="chrome"] .ghost.restack{border:0;background:transparent;box-shadow:none;transform:none}
 [data-style="chrome"] .shelf-dots button.on{background:var(--red)}
 [data-style="chrome"] .fabox{background:rgba(23,58,138,.07)}
 [data-style="chrome"] .drawer{box-shadow:-8px 0 30px rgba(0,0,0,.14)}
@@ -726,5 +731,10 @@ html:has([data-style="chrome"]) body{background:#fff linear-gradient(180deg,rgba
 .stylepick .thumb .card{width:84px;cursor:default}
 .stylepick .thumb .card .face{box-shadow:0 4px 10px rgba(0,0,0,.18)}
 .stylepick .lbl{font:700 11px var(--cond);letter-spacing:.1em;text-transform:uppercase}
-[data-style="chrome"] .btn.icon.style{border-color:var(--navy)}
+/* the header's round buttons (theme, card style, more) as small keylined discs with a hard shadow, like the number on the cards; the style chip shows the printed frame itself */
+[data-style="chrome"] .btn.icon.theme,[data-style="chrome"] .btn.icon.style,[data-style="chrome"] .menu summary.more{border:1.5px solid var(--navy);background:#fff;color:var(--navy);box-shadow:2px 2.5px 0 #1c1b2a;transition:transform .12s,box-shadow .12s}
+[data-style="chrome"] .btn.icon.theme:hover,[data-style="chrome"] .btn.icon.style:hover,[data-style="chrome"] .menu summary.more:hover{background:#fff;color:var(--navy);transform:translate(-1px,-1px);box-shadow:3px 3.5px 0 #1c1b2a}
+[data-style="chrome"] .menu[open] summary.more{background:var(--navy);color:#fff}
+[data-style="chrome"] .btn.icon.style.chrome .chip{background:url("/frames/chrome.webp") center/cover;border-color:#1c1b2a}
+[data-style="chrome"] .btn.icon.style.chrome .chip i{display:none}
 [data-style="chrome"] .stylepick .swatch.on{outline-color:var(--red)}
