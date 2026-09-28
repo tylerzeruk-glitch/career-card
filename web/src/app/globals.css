@@ -672,7 +672,7 @@ html:has([data-style="chrome"]){
   --riso:"Lilita One","Arial Black",Impact,sans-serif;
   --foil:linear-gradient(115deg,#ff8a8a 0%,#ffd36b 18%,#8dff9a 36%,#7ad7ff 54%,#c48bff 72%,#ff8ad4 90%,#ff8a8a 100%);
   --chrome:linear-gradient(180deg,#f7f7fb 0%,#c9c9d3 35%,#7c7c8c 50%,#e9e9f0 65%,#a9a9b6 100%);
-  --perf:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='8' viewBox='0 0 24 8'><path d='M0 4q6-6 12 0t12 0' fill='none' stroke='%2319b2a8' stroke-width='2' stroke-linecap='round'/></svg>") 0 50%/24px 8px repeat-x; /* a teal wave in place of the perforations */
+  --perf:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='28' height='6' viewBox='0 0 28 6'><path d='M0 3q7-3 14 0t14 0' fill='none' stroke='%2319b2a8' stroke-opacity='.75' stroke-width='1.5' stroke-linecap='round'/></svg>") 0 50%/28px 6px repeat-x; /* a low teal wave in place of the perforations */
 }
 /* the page: white with the card edge's rainbow washed across it at a few percent, like light through a sleeve. With a pointer it is fixed to the window and laid diagonally; on touch screens (no fixed attachment) it runs top to bottom and tiles without a seam, since its first and last stops match */
 html:has([data-style="chrome"]) body{background:#fff linear-gradient(180deg,rgba(255,138,138,.10) 0%,rgba(255,211,107,.10) 18%,rgba(141,255,154,.10) 36%,rgba(122,215,255,.12) 54%,rgba(196,139,255,.10) 72%,rgba(255,138,212,.10) 90%,rgba(255,138,138,.10) 100%) 0 0/100% 1400px repeat}
@@ -689,8 +689,8 @@ html:has([data-style="chrome"]) body{background:#fff linear-gradient(180deg,rgba
 [data-style="chrome"] .toggle{border-color:var(--navy)}
 [data-style="chrome"] .toggle button.on{background:var(--navy);color:#fff}
 [data-style="chrome"] .row h2,[data-style="chrome"] .gh{font-style:italic;letter-spacing:.16em;color:var(--navy)}
-[data-style="chrome"] .fold::before,[data-style="chrome"] .row::after,[data-style="chrome"] .gh::after,[data-style="chrome"] .lfoot::before,[data-style="chrome"] .tl::before,[data-style="chrome"] .tl::after{height:8px;background:var(--perf)}
-[data-style="chrome"] .row::after{bottom:-4px}
+[data-style="chrome"] .fold::before,[data-style="chrome"] .row::after,[data-style="chrome"] .gh::after,[data-style="chrome"] .lfoot::before,[data-style="chrome"] .tl::before,[data-style="chrome"] .tl::after{height:6px;background:var(--perf)}
+[data-style="chrome"] .row::after{bottom:-3px}
 [data-style="chrome"] .tiles span{background:var(--navy);color:#fff;font-weight:700;border-radius:2px}
 [data-style="chrome"] .ghost{border-color:var(--navy);color:var(--navy);background:rgba(255,255,255,.6)}
 [data-style="chrome"] .shelf-dots button.on{background:var(--red)}
