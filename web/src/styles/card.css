@@ -126,64 +126,52 @@
 /* the band's negative margin is a share of the content width, the padding a share of the card, so the 8% is scaled by 1/0.84 to land on the rule (a hair past it: the rule paints on top) */
 .card .hdr{margin:2.55cqw calc(-9.6% + 2.6cqw) 3%;border-radius:4.2cqw 4.2cqw 0 0}
 
-/* ===== Chrome 90s: a holographic border (teal halftone, blue stripes in two corners, a rainbow sheen that follows the pointer), a cream photo panel in a gold and navy frame, the company as a red logo over the top-left corner, a red nameplate with black and gold offset shadows, and the position on a baseball at the bottom right. ===== */
-.card.t-chrome{--foil:linear-gradient(115deg,#ff8a8a 0%,#ffd36b 18%,#8dff9a 36%,#7ad7ff 54%,#c48bff 72%,#ff8ad4 90%,#ff8a8a 100%);--gold:#f2c230;--navy:#173a8a;--red:#e5322d}
-.card.t-chrome .face{border-radius:0;border:1.5px solid #cfe6ea;box-shadow:-5px 0 14px rgba(0,0,0,.22),0 10px 26px rgba(0,0,0,.22);
-  background:
-    radial-gradient(circle,rgba(0,60,80,.18) 26%,transparent 30%) 0 0/1.5cqw 1.5cqw,
-    linear-gradient(170deg,#19b2a8 0%,#2aa0d8 34%,#79d6dc 54%,#f5c2e2 70%,#ffd97a 82%,#a3e6dc 100%)}
-/* the rainbow sheen over the border, drifting with the pointer */
-.card.t-chrome .front::before,.card.t-chrome .back::before{border:0;inset:0;border-radius:0;background:var(--foil);background-size:220% 220%;background-position:var(--mx,30%) var(--my,30%);opacity:.28;mix-blend-mode:screen;transition:background-position .15s ease-out;z-index:0}
-/* blue stripes in the top-right and bottom-right corners, painted behind the panel but over the border */
-.card.t-chrome .front{isolation:isolate}
-.card.t-chrome .art::before{content:"";position:absolute;z-index:-1;right:-8.2%;top:-16.5%;bottom:-28.5%;width:58%;pointer-events:none;
-  background:
-    repeating-linear-gradient(135deg,#173a8a 0 1.3cqw,transparent 1.3cqw 3.4cqw) right top/100% 42% no-repeat,
-    repeating-linear-gradient(135deg,#173a8a 0 1.3cqw,#ff4fa3 1.3cqw 1.9cqw,transparent 1.9cqw 4cqw) right bottom/100% 46% no-repeat;
-  clip-path:polygon(40% 0,100% 0,100% 24%,100% 70%,52% 100%,100% 100%,100% 70%,100% 24%)}
-.card.t-chrome .front{padding:0}
-/* the photo panel: cream, in a gold frame with a navy hairline outside it */
-.card.t-chrome .art{position:absolute;left:7%;right:7%;top:12.5%;bottom:22%;margin:0;flex:none;border-radius:1cqw;border:0;background:#f4efe3;box-shadow:0 0 0 1.6cqw var(--gold),0 0 0 2.2cqw #2b3e7a,inset 0 0 0 1px rgba(0,0,0,.08)}
-.card.t-chrome .art::after{background:none}
-.card.t-chrome .art .pic{border-radius:inherit;inset:0}
+/* ===== Chrome 90s: a printed holographic frame (public/frames/chrome.webp: teal halftone, blue stripes in two corners, a rainbow foil edge, a cream photo panel in a gold and navy frame, a red nameplate and a baseball at the bottom right). Everything that changes per card is laid over it: the company as the logo over the top-left corner, the number, the photo in the panel, the position, the name on the plate. A rainbow sheen and a soft band of light follow the pointer across the border, cut out over the panel so the photo stays matte. ===== */
+.card.t-chrome{--foil:linear-gradient(115deg,#ff8a8a 0%,#ffd36b 18%,#8dff9a 36%,#7ad7ff 54%,#c48bff 72%,#ff8ad4 90%,#ff8a8a 100%);--gold:#f2c230;--navy:#173a8a;--red:#e5322d;--frame:url("/frames/chrome.webp");
+  /* the panel's place on the frame, as shares of the card: the light is cut out over it */
+  --hole:polygon(evenodd,0 0,100% 0,100% 100%,0 100%,0 0,9.3% 11%,9.3% 84.2%,91% 84.2%,91% 11%,9.3% 11%)}
+.card.t-chrome .face{border-radius:0;border:0;box-shadow:-5px 0 14px rgba(0,0,0,.22),0 10px 26px rgba(0,0,0,.22);background:var(--frame) center/100% 100% no-repeat}
+.card.t-chrome .front{padding:0;isolation:isolate}
+/* the rainbow sheen and a soft band of light, drifting with the pointer */
+.card.t-chrome .front::before,.card.t-chrome .back::before{border:0;inset:0;border-radius:0;background:var(--foil);background-size:260% 260%;background-position:var(--mx,30%) var(--my,30%);opacity:.34;mix-blend-mode:screen;transition:background-position .15s ease-out;z-index:0;clip-path:var(--hole)}
+.card.t-chrome .face::after{clip-path:var(--hole);background:linear-gradient(115deg,transparent calc(var(--mx,50%) - 24%),rgba(255,255,255,.28) var(--mx,50%),transparent calc(var(--mx,50%) + 24%))}
+.card.t-chrome .back::after{background:linear-gradient(115deg,transparent calc(76% - var(--mx,50%)),rgba(255,255,255,.22) calc(100% - var(--mx,50%)),transparent calc(124% - var(--mx,50%)))}
+/* the photo panel: the frame's own cream panel; the art box fills it and lets the logo hang outside */
+.card.t-chrome .art{position:absolute;left:9.4%;right:9.1%;top:11.1%;bottom:15.9%;margin:0;flex:none;border-radius:0;border:0;background:#f1ede1;box-shadow:none;overflow:visible}
+.card.t-chrome .art::before,.card.t-chrome .art::after{display:none}
+.card.t-chrome .art .pic{border-radius:0;inset:0;overflow:hidden}
 .card.t-chrome .mono{color:#2b3e7a}
-/* the company as the logo over the top-left corner: red bubbly letters with a white keyline */
-.card.t-chrome .team{position:absolute;left:5%;top:2.4%;bottom:auto;height:auto;line-height:1;padding:0;max-width:62%;background:transparent;clip-path:none;border-radius:0;z-index:4;
-  font:400 7.4cqw/1 "Lilita One","Arial Black",Impact,sans-serif;font-style:italic;letter-spacing:.01em;text-transform:none;color:var(--red);
+/* the company as the logo over the top-left corner, where the maker's mark goes: red bubbly letters with a white keyline */
+.card.t-chrome .team{position:absolute;left:-3.7%;top:-11.4%;bottom:auto;height:auto;line-height:1;padding:0;max-width:64%;background:transparent;clip-path:none;border-radius:0;z-index:4;
+  font:400 7.2cqw/1 "Lilita One","Arial Black",Impact,sans-serif;font-style:italic;letter-spacing:.01em;text-transform:none;color:var(--red);
   -webkit-text-stroke:.55cqw #fff;paint-order:stroke fill;text-shadow:.5cqw .6cqw 0 #1c1b18;transform:rotate(-2deg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-/* the number: a small navy pill at the top right, on the stripes */
-.card.t-chrome .num{top:4.2%;right:6%;width:auto;height:auto;padding:.9cqw 2.6cqw;border:1.5px solid #fff;border-radius:999px;background:var(--navy);color:#fff;font:700 4.2cqw "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.06em;z-index:4}
-/* the position, on a baseball at the bottom right, over the panel's corner and over the nameplate */
-.card.t-chrome .badge{clip-path:none;filter:drop-shadow(0 3px 5px rgba(0,0,0,.35));transform:none;left:auto;right:-4%;bottom:-13%;width:27cqw;height:27cqw;border-radius:50%;border:0;background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><radialGradient id='g' cx='38%' cy='32%' r='70%'><stop offset='0' stop-color='%23ffffff'/><stop offset='.7' stop-color='%23f1ede2'/><stop offset='1' stop-color='%23d9d2c0'/></radialGradient></defs><circle cx='50' cy='50' r='48' fill='url(%23g)' stroke='%232b3e7a' stroke-width='4'/><path d='M35.2,11.7 L33.0,13.8 L30.9,16.1 L29.0,18.7 L27.2,21.6 L25.6,24.6 L24.2,27.9 L23.0,31.3 L22.0,34.9 L21.3,38.5 L20.7,42.3 L20.4,46.1 L20.2,50.0 L20.4,53.9 L20.7,57.7 L21.3,61.5 L22.0,65.1 L23.0,68.7 L24.2,72.1 L25.6,75.4 L27.2,78.4 L29.0,81.3 L30.9,83.9 L33.0,86.2 L35.2,88.3' fill='none' stroke='%23e5322d' stroke-width='2.2' stroke-linecap='round'/><line x1='31.0' y1='18.4' x2='35.0' y2='9.2' stroke='%23e5322d' stroke-width='2' stroke-linecap='round'/><line x1='27.6' y1='23.5' x2='30.4' y2='13.9' stroke='%23e5322d' stroke-width='2' stroke-linecap='round'/><line x1='24.6' y1='29.5' x2='26.7' y2='19.7' stroke='%23e5322d' stroke-width='2' stroke-linecap='round'/><line x1='22.3' y1='36.2' x2='23.7' y2='26.3' stroke='%23e5322d' stroke-width='2' stroke-linecap='round'/><line x1='20.9' y1='43.5' x2='21.7' y2='33.6' stroke='%23e5322d' stroke-width='2' stroke-linecap='round'/><line x1='20.2' y1='51.1' x2='20.5' y2='41.1' stroke='%23e5322d' stroke-width='2' stroke-linecap='round'/><line x1='20.5' y1='58.9' x2='20.2' y2='48.9' stroke='%23e5322d' stroke-width='2' stroke-linecap='round'/><line x1='21.7' y1='66.4' x2='20.9' y2='56.5' stroke='%23e5322d' stroke-width='2' stroke-linecap='round'/><line x1='23.7' y1='73.7' x2='22.3' y2='63.8' stroke='%23e5322d' stroke-width='2' stroke-linecap='round'/><line x1='26.7' y1='80.3' x2='24.6' y2='70.5' stroke='%23e5322d' stroke-width='2' stroke-linecap='round'/><line x1='30.4' y1='86.1' x2='27.6' y2='76.5' stroke='%23e5322d' stroke-width='2' stroke-linecap='round'/><line x1='35.0' y1='90.8' x2='31.0' y2='81.6' stroke='%23e5322d' stroke-width='2' stroke-linecap='round'/><path d='M64.8,11.7 L67.0,13.8 L69.1,16.1 L71.0,18.7 L72.8,21.6 L74.4,24.6 L75.8,27.9 L77.0,31.3 L78.0,34.9 L78.7,38.5 L79.3,42.3 L79.6,46.1 L79.8,50.0 L79.6,53.9 L79.3,57.7 L78.7,61.5 L78.0,65.1 L77.0,68.7 L75.8,72.1 L74.4,75.4 L72.8,78.4 L71.0,81.3 L69.1,83.9 L67.0,86.2 L64.8,88.3' fill='none' stroke='%23e5322d' stroke-width='2.2' stroke-linecap='round'/><line x1='69.0' y1='18.4' x2='65.0' y2='9.2' stroke='%23e5322d' stroke-width='2' stroke-linecap='round'/><line x1='72.4' y1='23.5' x2='69.6' y2='13.9' stroke='%23e5322d' stroke-width='2' stroke-linecap='round'/><line x1='75.4' y1='29.5' x2='73.3' y2='19.7' stroke='%23e5322d' stroke-width='2' stroke-linecap='round'/><line x1='77.7' y1='36.2' x2='76.3' y2='26.3' stroke='%23e5322d' stroke-width='2' stroke-linecap='round'/><line x1='79.1' y1='43.5' x2='78.3' y2='33.6' stroke='%23e5322d' stroke-width='2' stroke-linecap='round'/><line x1='79.8' y1='51.1' x2='79.5' y2='41.1' stroke='%23e5322d' stroke-width='2' stroke-linecap='round'/><line x1='79.5' y1='58.9' x2='79.8' y2='48.9' stroke='%23e5322d' stroke-width='2' stroke-linecap='round'/><line x1='78.3' y1='66.4' x2='79.1' y2='56.5' stroke='%23e5322d' stroke-width='2' stroke-linecap='round'/><line x1='76.3' y1='73.7' x2='77.7' y2='63.8' stroke='%23e5322d' stroke-width='2' stroke-linecap='round'/><line x1='73.3' y1='80.3' x2='75.4' y2='70.5' stroke='%23e5322d' stroke-width='2' stroke-linecap='round'/><line x1='69.6' y1='86.1' x2='72.4' y2='76.5' stroke='%23e5322d' stroke-width='2' stroke-linecap='round'/><line x1='65.0' y1='90.8' x2='69.0' y2='81.6' stroke='%23e5322d' stroke-width='2' stroke-linecap='round'/></svg>") center/100% 100% no-repeat;color:#173a8a;font:700 6.6cqw "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.06em;z-index:6;overflow:visible}
-/* the nameplate: a red-to-orange slab, black then gold shadows behind it, slanted */
-.card.t-chrome .who{position:absolute;left:4.5%;right:24%;bottom:8.5%;z-index:4;display:block;margin:0;padding:2.2cqw 4cqw 2cqw;line-height:1;max-width:none;
-  background:linear-gradient(90deg,#e8352c 0%,#f0452e 55%,#ff8a3a 100%);color:#fff;
-  transform:skewX(-8deg) rotate(-1.5deg);transform-origin:left bottom;border:1px solid #1c1b18;box-shadow:1cqw 1cqw 0 #1c1b18,2.2cqw 2.2cqw 0 #f2c230}
-.card.t-chrome .who > *{transform:skewX(8deg);display:block}
-.card.t-chrome .who .fn{display:block;font:700 4cqw "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.16em;color:#ffe2a8;margin-bottom:.4cqw}
-.card.t-chrome .who .ln{display:block;font:400 8.6cqw/1 "Lilita One","Arial Black",Impact,sans-serif;letter-spacing:.02em;color:#fff;text-shadow:.4cqw .4cqw 0 #1c1b18;-webkit-text-stroke:0;background:none;filter:none;max-width:100%;overflow:hidden;text-overflow:ellipsis}
-.card.t-chrome .role{position:absolute;left:5.5%;right:26%;bottom:2.6%;margin:0;z-index:4;color:#173a8a;font:700 4.2cqw "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.12em;-webkit-text-stroke:.6cqw #fff;paint-order:stroke fill;text-shadow:none}
-/* the back: the same border round a cream sheet */
-.card.t-chrome .back{border-radius:0;border:1.5px solid #cfe6ea;color:#1c1b18;padding:0 10% 7.5%;
-  background:
-    linear-gradient(#f4efe3,#f4efe3) 50% 50%/86% 90% no-repeat,
-    radial-gradient(circle,rgba(0,60,80,.18) 26%,transparent 30%) 0 0/1.3cqw 1.3cqw,
-    linear-gradient(170deg,#19b2a8 0%,#2aa0d8 34%,#79d6dc 54%,#f5c2e2 70%,#ffd97a 82%,#a3e6dc 100%)}
-.card.t-chrome .hdr{background:var(--navy);color:#fff;margin:7.5% -1% 3%;border-radius:.8cqw;box-shadow:0 0 0 1.2cqw var(--gold)}
+/* the number: a navy pill at the top right, over the stripes */
+.card.t-chrome .num{top:3.4%;right:4.5%;width:auto;height:auto;padding:.9cqw 2.6cqw;border:1.5px solid #fff;border-radius:999px;background:var(--navy);color:#fff;font:700 4.2cqw "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.06em;z-index:4}
+/* the position: a navy tag on the panel's bottom-left corner; the frame's baseball stands where the badge was */
+.card.t-chrome .badge{display:none}
+.card.t-chrome .role{position:absolute;left:9.4%;right:auto;top:auto;bottom:15.9%;margin:0;z-index:4;max-width:62%;padding:.9cqw 2.6cqw .7cqw;background:var(--navy);color:#fff;
+  font:700 3.8cqw "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.1em;border:1px solid #fff;border-bottom:0;-webkit-text-stroke:0;text-shadow:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* the name on the frame's red plate, which leans up to the right */
+.card.t-chrome .who{position:absolute;left:6%;top:85.6%;right:auto;bottom:auto;width:60%;height:6.4%;margin:0;padding:0 1cqw;z-index:4;max-width:none;background:transparent;border:0;box-shadow:none;color:#fff;line-height:1;
+  transform:rotate(-5.2deg);transform-origin:0 50%;display:flex;flex-direction:row;align-items:center;gap:1.8cqw;white-space:nowrap}
+.card.t-chrome .who > *{transform:none;display:block}
+.card.t-chrome .who .fn{font:400 4.6cqw/1 "Lilita One","Arial Black",Impact,sans-serif;letter-spacing:.02em;color:#ffe2a8;margin:0;text-shadow:.3cqw .3cqw 0 #1c1b18}
+.card.t-chrome .who .ln{flex:1;min-width:0;font:400 6.8cqw/1 "Lilita One","Arial Black",Impact,sans-serif;letter-spacing:.02em;color:#fff;text-shadow:.4cqw .4cqw 0 #1c1b18;-webkit-text-stroke:0;background:none;filter:none;overflow:hidden;text-overflow:ellipsis}
+/* the back: the same frame; the sheet is the panel, the plate stays bare */
+.card.t-chrome .back{border-radius:0;border:0;color:#1c1b18;padding:16.5% 11% 26%;background:var(--frame) center/100% 100% no-repeat}
+.card.t-chrome .hdr{background:var(--navy);color:#fff;margin:0 0 3%;border-radius:.8cqw;box-shadow:0 0 0 1.2cqw var(--gold)}
 .card.t-chrome .hdr .t{font-family:"Lilita One","Arial Black",Impact,sans-serif;font-style:italic}
 .card.t-chrome .hdr .s{color:#ffe2a8}
 .card.t-chrome tr.cur td{color:var(--red)}
 .card.t-chrome .skills span{background:var(--navy)}
-.card.t-chrome .foot{border-top-color:#cfc4a9}
-/* the free-agent card: the same border, a navy panel, gold logo */
+.card.t-chrome .foot{border-top-color:#cfc4a9;margin-right:24%}
+/* the free-agent card: the panel goes navy, the logo gold, the tag red */
+.card.t-chrome.free .front{background:var(--frame) center/100% 100% no-repeat;border-color:transparent}
 .card.t-chrome.free .art{background:#1f2a44;border:0;display:flex;padding:6%}
 .card.t-chrome.free .team{background:transparent;color:var(--gold);text-shadow:.5cqw .6cqw 0 #1c1b18}
-.card.t-chrome.free .badge{left:auto;right:-4%;bottom:-13%;top:auto;transform:none}
-.card.t-chrome.free .role{color:#173a8a}
+.card.t-chrome.free .role{background:var(--red);color:#fff}
 .card.t-chrome.free .k{color:#c9d7f2}.card.t-chrome.free .open{color:#fff}
-.card.t-chrome.free .badge{color:var(--red)}
-.card.t-chrome.free .figs div{background:rgba(255,255,255,.08);color:#fff}
-.card.t-chrome.free .go{border-color:var(--gold);color:var(--gold)}
-/* a gentler glare on this stock; the sheen carries the light */
-.card.t-chrome .face::after{background:radial-gradient(circle at var(--mx,50%) var(--my,50%),rgba(255,255,255,.10),transparent 46%)}
-.card.t-chrome .back::after{background:radial-gradient(circle at calc(100% - var(--mx,50%)) var(--my,50%),rgba(255,255,255,.08),transparent 46%)}
+.card.t-chrome.free .who .fn{color:#ffe2a8}
+.card.t-chrome.free .figs div{background:var(--navy);color:#fff}
+.card.t-chrome.free .figs small{color:#c9d7f2}
+.card.t-chrome.free .go{border-color:var(--navy);color:var(--navy)}

@@ -38,11 +38,7 @@ function fontList(lilita: ArrayBuffer, barlow: ArrayBuffer, caslon: ArrayBuffer,
 const FLAG = 'M9.97 11.67 L12.69 22.18 L14.24 35.35 L19.68 32.04 L25.34 30.42 L29.54 30.27 L36.89 31.08 L41.38 30.20 L49.98 26.74 L60.50 21.08 L51.31 20.56 L41.38 18.80 L35.05 16.52 L26.15 12.18 L20.27 10.49 L14.83 10.27 Z M5.93 5.41 L3.94 6.59 L3.43 8.87 L5.05 10.78 L13.58 57.34 L14.31 58.37 L15.49 58.51 L16.45 57.92 L16.74 56.38 L8.28 10.64 L9.16 7.33 L7.91 5.71 Z';
 const STAR = '50.0,0.0 60.6,10.4 75.0,6.7 79.0,21.0 93.3,25.0 89.6,39.4 100.0,50.0 89.6,60.6 93.3,75.0 79.0,79.0 75.0,93.3 60.6,89.6 50.0,100.0 39.4,89.6 25.0,93.3 21.0,79.0 6.7,75.0 10.4,60.6 0.0,50.0 10.4,39.4 6.7,25.0 21.0,21.0 25.0,6.7 39.4,10.4';
 
-const BARLOW = 'Barlow Condensed', LILITA = 'Lilita One', CASLON = 'Libre Caslon Text', ANTON = 'Anton', OSWALD = 'Oswald';
-// the Chrome 90s theme's materials
-const FOIL = 'linear-gradient(115deg, #ff8a8a 0%, #ffd36b 18%, #8dff9a 36%, #7ad7ff 54%, #c48bff 72%, #ff8ad4 90%)';
-const CHROME = 'linear-gradient(180deg, #f7f7fb 0%, #c9c9d3 35%, #7c7c8c 50%, #e9e9f0 65%, #a9a9b6 100%)';
-const GOLD = 'linear-gradient(180deg, #ffe58a 0%, #c9962a 60%, #ffd36b 100%)';
+const BARLOW = 'Barlow Condensed', LILITA = 'Lilita One', CASLON = 'Libre Caslon Text';
 
 /** The team pennant: a swallowtail strip hanging off the art box's top-left corner. */
 function Pennant({ text, a, b, wide }: { text: string; a: string; b: string; wide?: boolean }) {
@@ -131,49 +127,76 @@ function FreeFront({ S, rot }: { S: State; rot: number }) {
   );
 }
 
-/** The Chrome 90s role card: black stock, a foil slash, a chrome nameplate, the surname in foil. */
-function ChromeRoleFront({ S, r, site, rot }: { S: State; r: State['roles'][number]; site: string; rot: number }) {
-  const [a, b] = pairFor(S, r.company), p = S.profile;
-  const av = p.avatar ? avatarSrc(p.avatar, pairIndexFor(S, r.company)) : '';
-  const src = av ? (av.startsWith('/') ? site + av : av) : '';
-  const inner = CQ, plateW = Math.min(q(88), Math.round(r.company.length * q(7.6) * 0.62) + q(13));
-  void b;
+/** The Chrome 90s frame: shares of the card where the printed frame's panel and plate sit, in px. */
+const FR = { panelL: Math.round(CW * 0.094), panelT: Math.round(CH * 0.111), panelW: Math.round(CW * 0.815), panelH: Math.round(CH * 0.73), plateL: Math.round(CW * 0.06), plateT: Math.round(CH * 0.856), plateW: Math.round(CW * 0.6), plateH: Math.round(CH * 0.064) };
+const NAVY = '#173a8a', RED = '#e5322d';
+
+/** The company as the maker's mark over the frame's top-left corner: red letters, a white keyline and a dark offset, built from layered copies. */
+function ChromeMark({ text, color }: { text: string; color: string }) {
+  const size = q(7.4), w = Math.round(CW * 0.64), k = 1.5;
+  const base = { position: 'absolute' as const, left: 0, top: 0, width: w, display: 'flex', fontFamily: LILITA, fontSize: size, letterSpacing: '0.01em', whiteSpace: 'nowrap' as const, overflow: 'hidden' as const };
   return (
-    <div style={{ position: 'absolute', bottom: 0, width: CW, height: CH, transformOrigin: `${CW / 2}px ${Math.round(CH * 1.15)}px`, transform: `rotate(${rot}deg)`, display: 'flex', flexDirection: 'column', background: 'linear-gradient(160deg, #15151b 0%, #2c2c36 45%, #0c0c10 100%)', borderRadius: 0, border: '2px solid #d9d9e2', boxShadow: '-5px 0 14px rgba(0,0,0,.35), 0 10px 26px rgba(0,0,0,.35)', padding: `${Math.round(CW * 0.19)}px ${PAD}px ${Math.round(CW * 0.06)}px`, color: '#e9e9f0' }}>
-      <div style={{ position: 'absolute', left: -6, top: 0, bottom: 0, width: Math.round(CW * 0.075), background: FOIL, transform: 'skewX(-3deg)', opacity: 0.9 }} />
-      <div style={{ position: 'relative', display: 'flex', width: inner, height: inner, marginBottom: q(12), background: a, border: '2px solid #e6e6ee', boxShadow: '0 0 0 3px #1a1a20, 0 0 0 4px #8a8a98', alignItems: 'center', justifyContent: 'center' }}>
-        <div style={{ position: 'absolute', left: -2, bottom: '100%', marginBottom: q(1), width: plateW, height: q(11), background: CHROME, boxShadow: '0 0 0 1.5px #1a1a20', display: 'flex', alignItems: 'center', paddingLeft: q(5), paddingRight: q(6), fontFamily: OSWALD, fontSize: q(7.6), letterSpacing: '0.06em', textTransform: 'uppercase', color: '#0a0a0c', clipPath: `polygon(0 0, 100% 0, ${plateW - q(3.5)}px 100%, 0 100%)`, whiteSpace: 'nowrap', overflow: 'hidden' }}>{r.company}</div>
-        <div style={{ position: 'absolute', left: 0, top: 0, right: 0, bottom: 0, overflow: 'hidden', display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}>
-          {src ? <div style={{ width: inner - 4, height: inner - 4, backgroundImage: `url(${src})`, backgroundSize: `${inner - 4}px ${inner - 4}px`, backgroundRepeat: 'no-repeat' }} />
-            : <div style={{ display: 'flex', fontFamily: BARLOW, fontSize: q(34), letterSpacing: '-0.02em', color: '#e6e6ee', marginBottom: q(4) }}>{initials(p.name) || '?'}</div>}
-        </div>
-        <div style={{ position: 'absolute', width: q(25), height: q(25), left: -q(5), bottom: -q(7), display: 'flex', alignItems: 'center', justifyContent: 'center', transform: 'rotate(-12deg)' }}>
-          <svg width={q(25)} height={q(25)} viewBox="0 0 100 100" style={{ position: 'absolute', left: 0, top: 0 }}><defs><linearGradient id="chrome" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#f7f7fb" /><stop offset="0.35" stopColor="#c9c9d3" /><stop offset="0.5" stopColor="#7c7c8c" /><stop offset="0.65" stopColor="#e9e9f0" /><stop offset="1" stopColor="#a9a9b6" /></linearGradient></defs><polygon points={STAR} fill="url(#chrome)" /></svg>
-          <div style={{ position: 'relative', display: 'flex', fontFamily: BARLOW, fontSize: q(6.2), letterSpacing: '0.04em', color: '#111' }}>{r.code || codeFor(r.title)}</div>
-        </div>
-      </div>
-      <div style={{ display: 'flex', fontFamily: ANTON, fontSize: q(11), letterSpacing: '0.03em', textTransform: 'uppercase', backgroundImage: FOIL, backgroundClip: 'text', color: 'transparent', whiteSpace: 'nowrap', overflow: 'hidden', width: '100%' }}>{shortName(p.name)}</div>
+    <div style={{ position: 'absolute', left: Math.round(CW * 0.063), top: Math.round(CH * 0.024), width: w, height: size + 6, display: 'flex', transform: 'rotate(-2deg)', transformOrigin: '0 100%' }}>
+      <div style={{ ...base, left: 3, top: 3.5, color: '#1c1b18' }}>{text}</div>
+      {[[-k, 0], [k, 0], [0, -k], [0, k], [-k, -k], [k, k], [-k, k], [k, -k]].map(([x, y], i) => <div key={i} style={{ ...base, left: x, top: y, color: '#fff' }}>{text}</div>)}
+      <div style={{ ...base, color }}>{text}</div>
     </div>
   );
 }
 
-/** The Chrome 90s free-agent card: deep purple stock, gold plate and name. */
-function ChromeFreeFront({ S, rot }: { S: State; rot: number }) {
+/** The name on the frame's red plate, which leans up to the right: first name small in gold, surname large in white. */
+function ChromePlate({ name }: { name: string }) {
+  const w = (name || '').trim().replace(/,.*$/, '').split(/\s+/).filter(Boolean);
+  const fn = w.length > 1 ? w[0] : '', ln = w.length > 1 ? w.slice(1).join(' ') : w[0] || 'Your name';
+  return (
+    <div style={{ position: 'absolute', left: FR.plateL, top: FR.plateT, width: FR.plateW, height: FR.plateH, display: 'flex', alignItems: 'center', paddingLeft: q(1), transform: 'rotate(-5.2deg)', transformOrigin: '0 50%', whiteSpace: 'nowrap', overflow: 'hidden' }}>
+      {fn ? <div style={{ display: 'flex', fontFamily: LILITA, fontSize: q(4.6), letterSpacing: '0.02em', textTransform: 'uppercase', color: '#ffe2a8', textShadow: '1px 1px 0 #1c1b18', marginRight: q(1.8) }}>{fn}</div> : null}
+      <div style={{ display: 'flex', fontFamily: LILITA, fontSize: q(6.8), letterSpacing: '0.02em', textTransform: 'uppercase', color: '#fff', textShadow: '1.5px 1.5px 0 #1c1b18' }}>{ln}</div>
+    </div>
+  );
+}
+
+/** The Chrome 90s card stock: the printed frame, rotated into the hand like the others. */
+function ChromeStock({ site, rot, children }: { site: string; rot: number; children: React.ReactNode }) {
+  return (
+    <div style={{ position: 'absolute', bottom: 0, width: CW, height: CH, transformOrigin: `${CW / 2}px ${Math.round(CH * 1.15)}px`, transform: `rotate(${rot}deg)`, display: 'flex', backgroundImage: `url(${site}/frames/chrome.jpg)`, backgroundSize: `${CW}px ${CH}px`, backgroundRepeat: 'no-repeat', boxShadow: '-5px 0 14px rgba(0,0,0,.25), 0 10px 26px rgba(0,0,0,.25)' }}>
+      {children}
+    </div>
+  );
+}
+
+/** The Chrome 90s role card: the photo in the frame's panel, the company as the maker's mark, the position on a navy tag, the name on the plate. */
+function ChromeRoleFront({ S, r, site, rot }: { S: State; r: State['roles'][number]; site: string; rot: number }) {
+  const p = S.profile;
+  const av = p.avatar ? avatarSrc(p.avatar, pairIndexFor(S, r.company)) : '';
+  const src = av ? (av.startsWith('/') ? site + av : av) : '';
+  const ph = FR.panelH;
+  return (
+    <ChromeStock site={site} rot={rot}>
+      <div style={{ position: 'absolute', left: FR.panelL, top: FR.panelT, width: FR.panelW, height: ph, display: 'flex', alignItems: 'flex-end', justifyContent: 'center', overflow: 'hidden', background: '#f1ede1' }}>
+        {src ? <div style={{ width: ph, height: ph, backgroundImage: `url(${src})`, backgroundSize: `${ph}px ${ph}px`, backgroundRepeat: 'no-repeat' }} />
+          : <div style={{ display: 'flex', fontFamily: BARLOW, fontSize: q(34), letterSpacing: '-0.02em', color: NAVY, marginBottom: q(30) }}>{initials(p.name) || '?'}</div>}
+      </div>
+      <ChromeMark text={r.company} color={RED} />
+      <div style={{ position: 'absolute', left: FR.panelL, top: FR.panelT + ph - q(6.4), display: 'flex', padding: `${q(0.9)}px ${q(2.6)}px ${q(0.7)}px`, background: NAVY, color: '#fff', borderTop: '1px solid #fff', borderLeft: '1px solid #fff', borderRight: '1px solid #fff', fontFamily: BARLOW, fontSize: q(3.8), letterSpacing: '0.1em', textTransform: 'uppercase', maxWidth: Math.round(CW * 0.62), whiteSpace: 'nowrap', overflow: 'hidden' }}>{r.title}</div>
+      <ChromePlate name={p.name} />
+    </ChromeStock>
+  );
+}
+
+/** The Chrome 90s free-agent card: the panel goes navy, the mark gold, what the player is open to in the middle. */
+function ChromeFreeFront({ S, site, rot }: { S: State; site: string; rot: number }) {
   const p = S.profile, open = (p.targets || []).slice(0, 3).join(' · ');
   return (
-    <div style={{ position: 'absolute', bottom: 0, width: CW, height: CH, transformOrigin: `${CW / 2}px ${Math.round(CH * 1.15)}px`, transform: `rotate(${rot}deg)`, display: 'flex', flexDirection: 'column', background: 'linear-gradient(160deg, #1c0f2e 0%, #3a1f5c 50%, #120a1f 100%)', borderRadius: 0, border: '2px solid #d9d9e2', boxShadow: '-5px 0 14px rgba(0,0,0,.35), 0 10px 26px rgba(0,0,0,.35)', padding: `${Math.round(CW * 0.19)}px ${PAD}px ${Math.round(CW * 0.06)}px`, color: '#fbf6ea' }}>
-      <div style={{ position: 'absolute', left: -6, top: 0, bottom: 0, width: Math.round(CW * 0.075), background: FOIL, transform: 'skewX(-3deg)', opacity: 0.9 }} />
-      <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', width: CQ, height: CQ, marginBottom: q(12), background: 'rgba(255,255,255,.06)', border: '2px solid #c48bff', boxShadow: '0 0 0 3px #1c0f2e, 0 0 0 4px #c48bff', alignItems: 'center', justifyContent: 'center', padding: '6%', textAlign: 'center' }}>
-        <div style={{ position: 'absolute', left: -2, bottom: '100%', marginBottom: q(1), width: q(62), height: q(11), background: GOLD, boxShadow: '0 0 0 1.5px #1c0f2e', display: 'flex', alignItems: 'center', paddingLeft: q(5), fontFamily: OSWALD, fontSize: q(7.6), letterSpacing: '0.08em', textTransform: 'uppercase', color: '#2b1a00', clipPath: `polygon(0 0, 100% 0, ${q(62) - q(3.5)}px 100%, 0 100%)`, whiteSpace: 'nowrap' }}>Free agent</div>
-        <div style={{ display: 'flex', fontFamily: BARLOW, fontSize: q(4.6), letterSpacing: '0.2em', textTransform: 'uppercase', color: '#c48bff', marginBottom: q(3) }}>Open to</div>
+    <ChromeStock site={site} rot={rot}>
+      <div style={{ position: 'absolute', left: FR.panelL, top: FR.panelT, width: FR.panelW, height: FR.panelH, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '8%', textAlign: 'center', background: '#1f2a44', color: '#fff' }}>
+        <div style={{ display: 'flex', fontFamily: BARLOW, fontSize: q(4.6), letterSpacing: '0.2em', textTransform: 'uppercase', color: '#c9d7f2', marginBottom: q(3) }}>Open to</div>
         <div style={{ display: 'flex', fontFamily: LILITA, fontSize: q(7.5), lineHeight: 1.15, textTransform: 'uppercase', textAlign: 'center' }}>{open || 'Offers'}</div>
-        <div style={{ position: 'absolute', width: q(25), height: q(25), right: -q(5), top: -q(7), display: 'flex', alignItems: 'center', justifyContent: 'center', transform: 'rotate(12deg)' }}>
-          <svg width={q(25)} height={q(25)} viewBox="0 0 100 100" style={{ position: 'absolute', left: 0, top: 0 }}><defs><linearGradient id="chromefa" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#f7f7fb" /><stop offset="0.5" stopColor="#7c7c8c" /><stop offset="1" stopColor="#a9a9b6" /></linearGradient></defs><polygon points={STAR} fill="url(#chromefa)" /></svg>
-          <div style={{ position: 'relative', display: 'flex', fontFamily: BARLOW, fontSize: q(6.2), letterSpacing: '0.04em', color: '#111' }}>FA</div>
-        </div>
       </div>
-      <div style={{ display: 'flex', fontFamily: ANTON, fontSize: q(11), letterSpacing: '0.03em', textTransform: 'uppercase', backgroundImage: GOLD, backgroundClip: 'text', color: 'transparent', whiteSpace: 'nowrap', overflow: 'hidden', width: '100%' }}>{shortName(p.name)}</div>
-    </div>
+      <ChromeMark text="Free agent" color="#f2c230" />
+      <div style={{ position: 'absolute', left: FR.panelL, top: FR.panelT + FR.panelH - q(6.4), display: 'flex', padding: `${q(0.9)}px ${q(2.6)}px ${q(0.7)}px`, background: RED, color: '#fff', borderTop: '1px solid #fff', borderLeft: '1px solid #fff', borderRight: '1px solid #fff', fontFamily: BARLOW, fontSize: q(3.8), letterSpacing: '0.1em', textTransform: 'uppercase' }}>Free agent</div>
+      <ChromePlate name={p.name} />
+    </ChromeStock>
   );
 }
 
@@ -222,7 +245,7 @@ export async function shareImage(S: State, site: string, slug?: string, variant:
         </div> : null}
         <div style={{ position: 'relative', display: 'flex', width: handW, height: handH, marginRight: 8, marginBottom: variant === 'button' ? 0 : 70 }}>
           {roleCards.map((r, i) => <div key={r.id} style={{ position: 'absolute', left: Math.round(lefts[i] * CW), bottom: 0, width: CW, height: CH, display: 'flex' }}>{chrome ? <ChromeRoleFront S={S} r={r} site={site} rot={rots[i]} /> : <RoleFront S={S} r={r} idx={firstIdx + i} site={site} rot={rots[i]} />}</div>)}
-          {free ? <div style={{ position: 'absolute', left: Math.round(lefts[n - 1] * CW), bottom: 0, width: CW, height: CH, display: 'flex' }}>{chrome ? <ChromeFreeFront S={S} rot={rots[n - 1]} /> : <FreeFront S={S} rot={rots[n - 1]} />}</div> : null}
+          {free ? <div style={{ position: 'absolute', left: Math.round(lefts[n - 1] * CW), bottom: 0, width: CW, height: CH, display: 'flex' }}>{chrome ? <ChromeFreeFront S={S} site={site} rot={rots[n - 1]} /> : <FreeFront S={S} rot={rots[n - 1]} />}</div> : null}
         </div>
       </div>
     ),
