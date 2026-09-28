@@ -672,11 +672,11 @@ html:has([data-style="chrome"]){
   --riso:"Lilita One","Arial Black",Impact,sans-serif;
   --foil:linear-gradient(115deg,#ff8a8a 0%,#ffd36b 18%,#8dff9a 36%,#7ad7ff 54%,#c48bff 72%,#ff8ad4 90%,#ff8a8a 100%);
   --chrome:linear-gradient(180deg,#f7f7fb 0%,#c9c9d3 35%,#7c7c8c 50%,#e9e9f0 65%,#a9a9b6 100%);
-  --perf:repeating-linear-gradient(135deg,#173a8a 0 3px,transparent 3px 8px) 0 50%/100% 3px no-repeat;
+  --perf:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='8' viewBox='0 0 24 8'><path d='M0 4q6-6 12 0t12 0' fill='none' stroke='%2319b2a8' stroke-width='2' stroke-linecap='round'/></svg>") 0 50%/24px 8px repeat-x; /* a teal wave in place of the perforations */
 }
-/* the page: a white sheet with a washed-out memphis print, fixed so the shapes stay put while the page scrolls */
-html:has([data-style="chrome"]) body{background:#fff url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='560' height='560' viewBox='0 0 560 560'><g fill='none' fill-rule='evenodd' opacity='.32'><polygon points='40,60 190,20 120,170' fill='%23f7b3cf'/><circle cx='430' cy='110' r='58' fill='%23f9e27a'/><circle cx='430' cy='110' r='58' fill='none' stroke='%23c9a6e0' stroke-width='6' stroke-dasharray='6 10'/><polygon points='300,380 470,330 420,500' fill='%2394dfe2'/><circle cx='120' cy='400' r='44' fill='%23c9a6e0'/><g stroke='%23f7b3cf' stroke-width='7' stroke-linecap='round'><line x1='250' y1='60' x2='320' y2='30'/><line x1='40' y1='300' x2='110' y2='270'/><line x1='500' y1='420' x2='540' y2='500'/></g><g stroke='%2394dfe2' stroke-width='7' stroke-linecap='round'><line x1='210' y1='250' x2='270' y2='300'/><line x1='470' y1='240' x2='540' y2='210'/></g><g fill='%23f9e27a'><circle cx='30' cy='500' r='7'/><circle cx='330' cy='200' r='7'/><circle cx='560' cy='30' r='7'/></g><g fill='%23c9a6e0'><circle cx='260' cy='500' r='6'/><circle cx='380' cy='20' r='6'/></g><g fill='%23f7b3cf'><circle cx='150' cy='250' r='4'/><circle cx='166' cy='250' r='4'/><circle cx='182' cy='250' r='4'/><circle cx='150' cy='266' r='4'/><circle cx='166' cy='266' r='4'/><circle cx='182' cy='266' r='4'/><circle cx='150' cy='282' r='4'/><circle cx='166' cy='282' r='4'/><circle cx='182' cy='282' r='4'/></g><path d='M340 300c14-14 28 14 42 0s28 14 42 0' stroke='%23f9e27a' stroke-width='6' stroke-linecap='round'/><path d='M60 180c14-14 28 14 42 0s28 14 42 0' stroke='%2394dfe2' stroke-width='6' stroke-linecap='round'/></g></svg>") 0 0/560px 560px}
-@media (hover:hover){html:has([data-style="chrome"]) body{background-attachment:fixed}}
+/* the page: white with the card edge's rainbow washed across it at a few percent, like light through a sleeve. With a pointer it is fixed to the window and laid diagonally; on touch screens (no fixed attachment) it runs top to bottom and tiles without a seam, since its first and last stops match */
+html:has([data-style="chrome"]) body{background:#fff linear-gradient(180deg,rgba(255,138,138,.10) 0%,rgba(255,211,107,.10) 18%,rgba(141,255,154,.10) 36%,rgba(122,215,255,.12) 54%,rgba(196,139,255,.10) 72%,rgba(255,138,212,.10) 90%,rgba(255,138,138,.10) 100%) 0 0/100% 1400px repeat}
+@media (hover:hover){html:has([data-style="chrome"]) body{background:#fff linear-gradient(115deg,rgba(255,138,138,.10) 0%,rgba(255,211,107,.10) 18%,rgba(141,255,154,.10) 36%,rgba(122,215,255,.12) 54%,rgba(196,139,255,.10) 72%,rgba(255,138,212,.10) 90%,rgba(255,138,138,.10) 100%) fixed}}
 [data-style="chrome"] .app,[data-style="chrome"].pub{background:transparent}
 [data-style="chrome"] .brand h1{font-style:italic;letter-spacing:.02em;color:var(--red);-webkit-text-stroke:2px #fff;paint-order:stroke fill;text-shadow:3px 3px 0 #1c1b2a}
 [data-style="chrome"] .brand .sub{color:var(--ink-2)}
@@ -689,8 +689,8 @@ html:has([data-style="chrome"]) body{background:#fff url("data:image/svg+xml;utf
 [data-style="chrome"] .toggle{border-color:var(--navy)}
 [data-style="chrome"] .toggle button.on{background:var(--navy);color:#fff}
 [data-style="chrome"] .row h2,[data-style="chrome"] .gh{font-style:italic;letter-spacing:.16em;color:var(--navy)}
-[data-style="chrome"] .fold::before,[data-style="chrome"] .row::after,[data-style="chrome"] .gh::after{height:3px;background:var(--perf)}
-[data-style="chrome"] .lfoot::before{height:3px;background:var(--perf)}
+[data-style="chrome"] .fold::before,[data-style="chrome"] .row::after,[data-style="chrome"] .gh::after,[data-style="chrome"] .lfoot::before,[data-style="chrome"] .tl::before,[data-style="chrome"] .tl::after{height:8px;background:var(--perf)}
+[data-style="chrome"] .row::after{bottom:-4px}
 [data-style="chrome"] .tiles span{background:var(--navy);color:#fff;font-weight:700;border-radius:2px}
 [data-style="chrome"] .ghost{border-color:var(--navy);color:var(--navy);background:rgba(255,255,255,.6)}
 [data-style="chrome"] .shelf-dots button.on{background:var(--red)}
