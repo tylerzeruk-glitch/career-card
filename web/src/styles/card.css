@@ -127,7 +127,7 @@
 .card .hdr{margin:2.55cqw calc(-9.6% + 2.6cqw) 3%;border-radius:4.2cqw 4.2cqw 0 0}
 
 /* ===== Chrome 90s: a printed holographic frame (public/frames/chrome.webp: teal halftone, blue stripes in two corners, a rainbow foil edge, a cream photo panel in a gold and navy frame, a red nameplate and a baseball at the bottom right). Everything that changes per card is laid over it: the company as the logo over the top-left corner, the number, the photo in the panel, the position, the name on the plate. A rainbow sheen and a soft band of light follow the pointer across the whole face. ===== */
-.card.t-chrome{--foil:linear-gradient(115deg,#ff8a8a 0%,#ffd36b 18%,#8dff9a 36%,#7ad7ff 54%,#c48bff 72%,#ff8ad4 90%,#ff8a8a 100%);--gold:#f2c230;--navy:#173a8a;--red:#e5322d;--frame:url("/frames/chrome.webp")}
+.card.t-chrome{--foil:linear-gradient(115deg,#ff8a8a 0%,#ffd36b 18%,#8dff9a 36%,#7ad7ff 54%,#c48bff 72%,#ff8ad4 90%,#ff8a8a 100%);--gold:#f2c230;--navy:#173a8a;--red:#e5322d;--frame:url("/frames/chrome.webp");--frame-back:url("/frames/chrome-back.webp")}
 .card.t-chrome .face{border-radius:0;border:0;box-shadow:-5px 0 14px rgba(0,0,0,.22),0 10px 26px rgba(0,0,0,.22);background:var(--frame) center/100% 100% no-repeat}
 .card.t-chrome .front{padding:0;isolation:isolate}
 /* the rainbow sheen and a soft band of light, drifting with the pointer over the whole face, photo included, like light on a sleeve */
@@ -163,16 +163,16 @@
   font:400 calc(1cqw * var(--rs,4.4))/1 "Lilita One","Arial Black",Impact,sans-serif;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
   -webkit-text-stroke:.42cqw #fff;paint-order:stroke fill;text-shadow:none;filter:drop-shadow(.3cqw .35cqw 0 #1c1b18); /* keylined and shadowed like the company mark, so it reads on the yellow */
   transform:rotate(-5.8deg);transform-origin:0 50%;display:flex;align-items:center}
-/* the back: the same frame; the sheet is the panel, the plate stays bare */
-.card.t-chrome .back{border-radius:0;border:0;color:#1c1b18;padding:14% 10.5% 33%;background:var(--frame) center/100% 100% no-repeat}
+/* the back: its own printed frame (public/frames/chrome-back.webp), a thinner border round a taller sheet and one red plate along the bottom */
+.card.t-chrome .back{border-radius:0;border:0;color:#1c1b18;padding:12.5% 8.5% 28.8%;background:var(--frame-back) center/100% 100% no-repeat}
 .card.t-chrome .hdr{background:var(--navy);color:#fff;margin:0 0 3%;border-radius:.8cqw;box-shadow:0 0 0 1.2cqw var(--gold)}
 .card.t-chrome .hdr .t{font-family:"Lilita One","Arial Black",Impact,sans-serif;font-style:italic}
 .card.t-chrome .hdr .s{color:#ffe2a8}
 .card.t-chrome tr.cur td{color:var(--red)}
 .card.t-chrome .skills span{background:var(--navy)}
-/* the back's footer rides the red plate */
-.card.t-chrome .foot{position:absolute;left:6%;top:78.6%;width:62%;height:6.4%;margin:0;padding:0 2cqw;border:0;color:#fff;font:700 4cqw/1 "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.08em;text-transform:uppercase;font-style:normal;
-  transform:rotate(-6deg);transform-origin:0 50%;display:flex;align-items:center;justify-content:space-between;white-space:nowrap;overflow:hidden}
+/* the back's footer rides the red plate, which runs nearly the whole width */
+.card.t-chrome .foot{position:absolute;left:4.5%;top:86.7%;width:87%;height:7%;margin:0;padding:0 3cqw;border:0;color:#fff;font:700 4.2cqw/1 "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.08em;text-transform:uppercase;font-style:normal;
+  transform:rotate(-5.9deg);transform-origin:0 50%;display:flex;align-items:center;justify-content:space-between;white-space:nowrap;overflow:hidden}
 /* the free-agent card: the panel goes navy (painted behind the panel's content, stopping at the plates), the logo gold, the position red */
 .card.t-chrome.free .front{background:var(--frame) center/100% 100% no-repeat;border-color:transparent}
 .card.t-chrome.free .art{background:transparent;border:0;display:flex;padding:6% 6% 14%}
