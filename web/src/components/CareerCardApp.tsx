@@ -11,6 +11,7 @@ import { Timeline } from './Timeline';
 import { Drawer, PORTRAIT_NOTE, type DrawerState } from './Drawer';
 import { BackupDialog, HelpDialog, ImportDialog } from './dialogs';
 import { ThemeToggle } from './ThemeToggle';
+import { StylePicker } from './StylePicker';
 import { Flag, SiteFoot } from './Landing';
 
 export function CareerCardApp({ user, cloud }: { user: AuthUser | null; cloud: CloudCard | null }) {
@@ -129,6 +130,7 @@ function Header() {
           {!user && <a className="btn" href="/login">Sign in</a>}
         </span>
         <ThemeToggle />
+        <StylePicker />
         <details className="menu" ref={menuRef} open={menu} onToggle={(e) => setMenu((e.target as HTMLDetailsElement).open)}>
           <summary className="btn icon more" aria-label="More"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><circle cx="3.5" cy="9" r="2" fill="currentColor"/><circle cx="9" cy="9" r="2" fill="currentColor"/><circle cx="14.5" cy="9" r="2" fill="currentColor"/></svg></summary>
           <div className="pop" onClick={() => setMenu(false)}>

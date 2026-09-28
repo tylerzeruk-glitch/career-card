@@ -135,8 +135,7 @@ a.btn{text-decoration:none;display:inline-block}
 /* perforated tear-off lines between the rows */
 :root{--perf:radial-gradient(circle,var(--hair) 1.3px,transparent 1.6px) 4px 50%/9px 4px repeat-x}
 .fold{max-width:100%;margin-top:6px;position:relative;padding-top:1px;margin-left:var(--fold-ml,0);width:var(--fold-w,auto)}
-.shelf-foot{display:flex;justify-content:space-between;align-items:flex-end;gap:18px 40px;flex-wrap:wrap;margin:-24px 0 18px calc(var(--deck-ml,6px) + 14px)}
-.gt-wrap.style{margin-right:calc(var(--deck-ml,6px) + 14px)}
+.shelf-foot{display:flex;margin:-24px 0 18px calc(var(--deck-ml,6px) + 14px)}
 /* By role / By team: radio dots, the pick filled red like the free-agent pill's dot */
 .gt-wrap{display:flex;flex-direction:column;gap:2px}
 .gt-label{font:600 12.5px/1 var(--cond);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2)}
@@ -706,3 +705,24 @@ html:has([data-style="chrome"]) body{background:var(--bg) radial-gradient(ellips
 [data-style="chrome"] .note-inline{background:rgba(122,215,255,.14);color:#7ad7ff}
 [data-style="chrome"] .overlay.note{background:rgba(141,255,154,.14);color:#8dff9a;border:1px solid rgba(141,255,154,.3)}
 [data-style="chrome"] .overlay.flash{background:rgba(141,255,154,.14);color:#8dff9a;border:1px solid rgba(141,255,154,.3)}
+
+/* ===== the card style picker in the header: a ringed button with a chip of the current stock; the popover holds a miniature of the player's own card in each look ===== */
+.btn.icon.style{border:1px solid var(--hair);border-radius:50%;color:var(--ink-2);background:transparent}
+.btn.icon.style .chip{display:block;width:13px;height:17px;border-radius:2px;background:#fbf6ea;border:1px solid #b8b0a0;position:relative;overflow:hidden}
+.btn.icon.style .chip i{position:absolute;left:0;top:0;bottom:0;width:0}
+.btn.icon.style.chrome .chip{background:#15151b;border-color:#d9d9e2}
+.btn.icon.style.chrome .chip i{width:3px;background:linear-gradient(180deg,#ff8a8a,#ffd36b,#8dff9a,#7ad7ff,#c48bff)}
+.stylepick[open] summary.style{background:var(--hover)}
+.stylepick .pop{padding:14px 14px 12px;min-width:0;width:max-content;max-width:min(340px,calc(100vw - 32px))}
+.stylepick .pop-h{font:700 11.5px var(--cond);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0 0 10px 2px}
+.stylepick .pop-f{font-size:12px;color:var(--muted);margin:10px 2px 0;max-width:290px;line-height:1.45}
+.stylepick .swatches{display:flex;gap:10px}
+.stylepick .swatch{border:0;background:transparent;padding:6px;border-radius:10px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:8px;font:inherit;color:var(--ink-2)}
+.stylepick .swatch:hover{background:var(--hover);color:var(--ink)}
+.stylepick .swatch.on{outline:2px solid var(--red);background:var(--hover);color:var(--ink)}
+.stylepick .thumb{display:block;width:84px;pointer-events:none}
+.stylepick .thumb .card{width:84px;cursor:default}
+.stylepick .thumb .card .face{box-shadow:0 4px 10px rgba(0,0,0,.18)}
+.stylepick .lbl{font:700 11px var(--cond);letter-spacing:.1em;text-transform:uppercase}
+[data-style="chrome"] .btn.icon.style{border-color:#a9a9b6}
+[data-style="chrome"] .stylepick .swatch.on{outline-color:var(--gold)}
