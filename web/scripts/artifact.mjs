@@ -14,11 +14,13 @@ const res = await build({
   },
 });
 const js = res.outputFiles[0].text.replace(/<\/script/gi, '<\\/script');
-const css = readFileSync('src/app/globals.css', 'utf8') + '\n' + readFileSync('src/styles/card.css', 'utf8');
+// the printed frames the card styles use, inlined: the page is served off the site, so site paths would miss
+const css = (readFileSync('src/app/globals.css', 'utf8') + '\n' + readFileSync('src/styles/card.css', 'utf8'))
+  .replace(/url\("\/frames\/([\w.-]+)"\)/g, (_, f) => `url("data:image/${f.endsWith('.webp') ? 'webp' : 'jpeg'};base64,${readFileSync('public/frames/' + f).toString('base64')}")`);
 const icon = 'data:image/svg+xml;utf8,' + encodeURIComponent(readFileSync('src/app/icon.svg', 'utf8'));
 // the built-in portraits, one per team colour pair, as data URIs (see src/lib/avatar.ts)
 const avatars = Object.fromEntries(readdirSync('public/avatars').filter((f) => f.endsWith('.png')).map((f) => [f.replace(/\.png$/, ''), 'data:image/png;base64,' + readFileSync('public/avatars/' + f).toString('base64')]));
-const fonts = 'https://fonts.googleapis.com/css2?family=Righteous&family=Lilita+One&family=Barlow+Condensed:wght@500;600;700&family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap';
+const fonts = 'https://fonts.googleapis.com/css2?family=Righteous&family=Lilita+One&family=Barlow+Condensed:wght@500;600;700&family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&family=Anton&family=Oswald:wght@500;700&display=swap';
 const html = `<!doctype html>
 <html lang="en" data-cc-theme="light">
 <head>
