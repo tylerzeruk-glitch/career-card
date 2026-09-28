@@ -142,7 +142,7 @@
 .card.t-chrome .art .pic{border-radius:0;inset:0;overflow:hidden;clip-path:polygon(0 0,100% 0,100% 92.3%,17.8% 100%,0 100%)}
 .card.t-chrome .mono{color:#2b3e7a}
 /* the company as the logo over the top-left corner, where the maker's mark goes: red bubbly letters with a white keyline */
-.card.t-chrome .team{position:absolute;left:-2.4%;top:-10.4%;bottom:auto;height:auto;line-height:1;max-width:80%;transform-origin:0 100%;background:transparent;clip-path:none;border-radius:0;z-index:4;
+.card.t-chrome .team{position:absolute;left:-2.4%;top:-6.9%;bottom:auto;height:auto;line-height:1;max-width:80%;transform-origin:0 100%;background:transparent;clip-path:none;border-radius:0;z-index:4;
   padding:.14em .5em .24em .14em;margin:-.14em -.5em -.24em -.14em; /* room inside the clipping box for the keyline, the italic overhang and the shadow */
   font:400 11cqw/1 "Lilita One","Arial Black",Impact,sans-serif;font-style:italic;letter-spacing:.01em;text-transform:none;color:var(--red);
   -webkit-text-stroke:.7cqw #fff;paint-order:stroke fill;text-shadow:none;filter:drop-shadow(.55cqw .65cqw 0 #1c1b18); /* one hard shadow of the whole keylined shape, not of the letters alone */
