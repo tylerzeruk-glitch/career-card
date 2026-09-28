@@ -112,14 +112,14 @@ function RoleFront({ S, r, idx, site, rot }: { S: State; r: State['roles'][numbe
 }
 
 function FreeFront({ S, rot }: { S: State; rot: number }) {
-  const p = S.profile, [fn, ln] = splitName(p.name), open = (p.targets || []).slice(0, 3).join(' · ');
+  const p = S.profile, [fn, ln] = splitName(p.name), open = (p.targets || []).slice(0, 3);
   return (
     <div style={{ position: 'absolute', bottom: 0, width: CW, height: CH, transformOrigin: `${CW / 2}px ${Math.round(CH * 1.15)}px`, transform: `rotate(${rot}deg)`, display: 'flex', flexDirection: 'column', background: '#1f2a44', borderRadius: 0, border: '2px solid #3a466a', boxShadow: '-5px 0 14px rgba(0,0,0,.16), 0 10px 26px rgba(0,0,0,.16)', padding: CARD_PAD, color: '#fbf6ea' }}>
       <Frame color="#dc4432" />
       <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', width: CQ, height: CQ, marginBottom: q(12), borderRadius: q(5), borderTopLeftRadius: 0, background: 'rgba(255,255,255,.07)', border: '2px solid rgba(255,255,255,.35)', alignItems: 'center', justifyContent: 'center', padding: '6%', textAlign: 'center' }}>
         <Pennant text="Free agent" a="#fbf6ea" b="#dc4432" wide />
         <div style={{ display: 'flex', fontFamily: BARLOW, fontSize: q(4.6), letterSpacing: '0.2em', textTransform: 'uppercase', opacity: 0.7, marginBottom: q(3) }}>Open to</div>
-        <div style={{ display: 'flex', fontFamily: LILITA, fontSize: q(7.5), lineHeight: 1.15, textTransform: 'uppercase', textAlign: 'center' }}>{open || 'Offers'}</div>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', fontFamily: LILITA, fontSize: q(7.5), lineHeight: 1.15, textTransform: 'uppercase', textAlign: 'center' }}>{(open.length ? open : ['Offers']).map((t, i) => <div key={i} style={{ display: 'flex' }}>{t}</div>)}</div>
         <Badge code="FA" right />
       </div>
       <div style={{ display: 'flex', fontFamily: LILITA, fontSize: q(10), letterSpacing: '0.02em', textTransform: 'uppercase', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', width: '100%' }}>{shortName(p.name)}</div>
@@ -203,16 +203,16 @@ function ChromeRoleFront({ S, r, site, rot }: { S: State; r: State['roles'][numb
   );
 }
 
-/** The Chrome 90s free-agent card: the panel goes navy, the mark gold, what the player is open to in the middle. */
+/** The Chrome 90s free-agent card: the panel goes navy, what the player is open to in the middle, a line each. */
 function ChromeFreeFront({ S, site, rot }: { S: State; site: string; rot: number }) {
-  const p = S.profile, open = (p.targets || []).slice(0, 3).join(' · ');
+  const p = S.profile, open = (p.targets || []).slice(0, 3);
   return (
     <ChromeStock site={site} rot={rot}>
       <div style={{ position: 'absolute', left: FR.panelL, top: FR.panelT, width: FR.panelW, height: FR.panelH, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '8% 8% 16%', textAlign: 'center', background: '#1f2a44', color: '#fff', clipPath: PANEL_CLIP }}>
         <div style={{ display: 'flex', fontFamily: BARLOW, fontSize: q(4.6), letterSpacing: '0.2em', textTransform: 'uppercase', color: '#c9d7f2', marginBottom: q(3) }}>Open to</div>
-        <div style={{ display: 'flex', fontFamily: LILITA, fontSize: q(7.5), lineHeight: 1.15, textTransform: 'uppercase', textAlign: 'center' }}>{open || 'Offers'}</div>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', fontFamily: LILITA, fontSize: q(7.5), lineHeight: 1.15, textTransform: 'uppercase', textAlign: 'center' }}>{(open.length ? open : ['Offers']).map((t, i) => <div key={i} style={{ display: 'flex' }}>{t}</div>)}</div>
       </div>
-      <ChromeMark text="Free agent" color="#f2c230" />
+      <ChromeMark text="Free agent" color={RED} />
       <ChromePlate name={p.name} />
       <ChromeRole title="Free agent" color={RED} />
     </ChromeStock>

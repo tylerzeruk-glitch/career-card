@@ -75,7 +75,8 @@ export function RoleCard({ S, r, idx, total, on, className, onClick }: { S: Stat
 /** The free-agent card. `share` hides everything about the hunt. */
 export function FreeCard({ S, on, share, className, onClick, onTimeline }: { S: State; on?: boolean; share?: boolean; className?: string; onClick?: () => void; onTimeline?: () => void }) {
   const p = S.profile, st = status(S), h = huntStats(S);
-  const open = (p.targets || []).length ? p.targets.join(' · ') : p.headline || 'New role';
+  const targets = (p.targets || []).length ? p.targets : [p.headline || 'New role'];
+  const open = targets.map((t, i) => <span key={i}>{t}</span>); // one to a line
   const since = st.free ? st.since : null;
   return (
     <div className={'card free' + themeClass(S) + (on ? ' on' : '') + (className ? ' ' + className : '')} style={vars('#dc4432', '#1f2a44')} data-id="free" tabIndex={0} role="button" aria-label="Free agent" onClick={onClick}>
@@ -93,7 +94,7 @@ export function FreeCard({ S, on, share, className, onClick, onTimeline }: { S: 
             <>
               <div className="figs"><div><b>{h.apps}</b><small>Applied</small></div><div><b>{h.interviews}</b><small>Interviews</small></div><div><b>{h.offers}</b><small>Offers</small></div></div>
               <div className="figs"><div><b>{h.open}</b><small>Open</small></div><div><b>{h.denials}</b><small>Denied</small></div><div><b>{h.sinceLast == null ? '–' : h.sinceLast + 'd'}</b><small>Since last</small></div></div>
-              <div className="bul" style={{ flex: "0 1 auto" }}><b>Open to:</b> {open}</div>
+              <div className="bul open" style={{ flex: "0 1 auto" }}><b>Open to</b>{open}</div>
               <div className="go" onClick={(e) => { e.stopPropagation(); onTimeline?.(); }}>Open the timeline</div>
             </>
           )}

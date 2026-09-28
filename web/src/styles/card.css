@@ -58,6 +58,8 @@
 .card.free .art::after{display:none}
 .card.free .art .k{font:700 4.6cqw "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.2em;text-transform:uppercase;opacity:.7;margin-bottom:3%}
 .card.free .art .open{font:400 7.5cqw/1.15 "Lilita One","Arial Black",Impact,sans-serif;text-transform:uppercase}
+.card.free .art .open span,.card.free .bul.open span{display:block}
+.card.free .bul.open b{display:block;margin-bottom:1%}
 .card.free .art .day{margin-top:5%;font:700 4.6cqw "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#dc4432}
 .card.free .who{color:#fbf6ea}
 .card.free .role{color:#c9c2b2}
@@ -184,9 +186,9 @@
 .card.t-chrome.free .front{background:var(--frame) center/100% 100% no-repeat;border-color:transparent}
 .card.t-chrome.free .art{background:transparent;border:0;display:flex;padding:6% 6% 14%}
 .card.t-chrome.free .art::before{content:"";display:block;position:absolute;inset:0;z-index:-1;background:#1f2a44;clip-path:polygon(0 0,100% 0,100% 92.3%,17.8% 100%,0 100%)}
-.card.t-chrome.free .team{background:transparent;color:var(--gold)}
+.card.t-chrome.free .team{background:transparent;color:var(--red)} /* red like the company marks: the gold read poorly on the halftone */
 .card.t-chrome.free .role{color:var(--red)}
-.card.t-chrome.free .k{color:#c9d7f2}.card.t-chrome.free .open{color:#fff}
+.card.t-chrome.free .k{color:#c9d7f2}.card.t-chrome.free .art .open{color:#fff}
 .card.t-chrome.free .who .fn{color:#ffe2a8}
 /* the stat tiles as small yellow plates: slanted, a hard black shadow, red halftone creeping in from the right, the figure in the mark's red with its keyline and shadow */
 .card.t-chrome.free .figs{gap:5%;margin:1% 0 5%}
@@ -196,7 +198,7 @@
 .card.t-chrome.free .figs b{font:400 10cqw/1 "Lilita One","Arial Black",Impact,sans-serif;color:var(--red);-webkit-text-stroke:.5cqw #fff;paint-order:stroke fill;filter:drop-shadow(.4cqw .45cqw 0 #1c1b18);margin-bottom:1.2cqw}
 .card.t-chrome.free .figs small{display:block;color:var(--navy);font-weight:700;letter-spacing:.08em}
 /* the free-agent back: the mark in gold as on its front, the "open to" line kept in view, the timeline link on the red plate */
-.card.t-chrome.free .hdr .t{color:var(--gold)}
+.card.t-chrome.free .hdr .t{color:var(--red)}
 .card.t-chrome.free .bul{flex:0 0 auto;margin-top:1%;font-size:5.2cqw}
 .card.t-chrome.free .bul b{color:var(--navy);font-weight:700;letter-spacing:.06em;text-transform:uppercase}
 .card.t-chrome.free .go{position:absolute;left:5%;top:87%;width:86%;height:7%;margin:0;padding:0 3cqw;border:0;border-radius:0;background:transparent;color:#fff;
