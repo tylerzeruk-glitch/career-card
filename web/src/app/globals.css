@@ -708,3 +708,4 @@ html:has([data-style="chrome"]) body{background:var(--bg) radial-gradient(ellips
 [data-style="chrome"] .fbtn{background:var(--chrome);color:#111}
 [data-style="chrome"] .note-inline{background:rgba(122,215,255,.14);color:#7ad7ff}
 [data-style="chrome"] .overlay.note{background:rgba(141,255,154,.14);color:#8dff9a;border:1px solid rgba(141,255,154,.3)}
+[data-style="chrome"] .overlay.flash{background:rgba(141,255,154,.14);color:#8dff9a;border:1px solid rgba(141,255,154,.3)}
