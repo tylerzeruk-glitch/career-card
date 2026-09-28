@@ -131,7 +131,8 @@
 .card.t-chrome .face{border-radius:0;border:0;box-shadow:-5px 0 14px rgba(0,0,0,.22),0 10px 26px rgba(0,0,0,.22);background:var(--frame) center/100% 100% no-repeat}
 .card.t-chrome .front{padding:0;isolation:isolate}
 /* the rainbow sheen and a soft band of light, drifting with the pointer over the whole face, photo included, like light on a sleeve */
-.card.t-chrome .front::before,.card.t-chrome .back::before{border:0;inset:0;border-radius:0;background:var(--foil);background-size:260% 260%;background-position:var(--mx,30%) var(--my,30%);opacity:.3;mix-blend-mode:screen;transition:background-position .15s ease-out;z-index:0}
+.card.t-chrome .front::before,.card.t-chrome .back::before{border:0;inset:0;border-radius:0;background:var(--foil);background-size:260% 260%;background-position:var(--mx,30%) var(--my,30%);opacity:.18;mix-blend-mode:screen;transition:background-position .15s ease-out,opacity .35s;z-index:0}
+.card.t-chrome.tilt .front::before,.card.t-chrome.tilt .back::before{opacity:.32} /* brighter under the pointer, quieter at rest so the photo and the panel keep their colour */
 .card.t-chrome .face::after{background:linear-gradient(115deg,transparent calc(var(--mx,50%) - 24%),rgba(255,255,255,.28) var(--mx,50%),transparent calc(var(--mx,50%) + 24%))}
 .card.t-chrome .back::after{background:linear-gradient(115deg,transparent calc(76% - var(--mx,50%)),rgba(255,255,255,.22) calc(100% - var(--mx,50%)),transparent calc(124% - var(--mx,50%)))}
 /* the photo panel: the frame's own cream panel; the art box fills it and lets the logo hang outside */
@@ -141,10 +142,11 @@
 .card.t-chrome .art .pic{border-radius:0;inset:0;overflow:hidden;clip-path:polygon(0 0,100% 0,100% 92.2%,16.5% 100%,0 100%)}
 .card.t-chrome .mono{color:#2b3e7a}
 /* the company as the logo over the top-left corner, where the maker's mark goes: red bubbly letters with a white keyline */
-.card.t-chrome .team{position:absolute;left:-2.4%;top:-9.4%;bottom:auto;height:auto;line-height:1;max-width:78%;transform-origin:0 100%;background:transparent;clip-path:none;border-radius:0;z-index:4;
+.card.t-chrome .team{position:absolute;left:-2.4%;top:-12.6%;bottom:auto;height:auto;line-height:1;max-width:80%;transform-origin:0 100%;background:transparent;clip-path:none;border-radius:0;z-index:4;
   padding:.14em .5em .24em .14em;margin:-.14em -.5em -.24em -.14em; /* room inside the clipping box for the keyline, the italic overhang and the shadow */
-  font:400 7.2cqw/1 "Lilita One","Arial Black",Impact,sans-serif;font-style:italic;letter-spacing:.01em;text-transform:none;color:var(--red);
-  -webkit-text-stroke:.55cqw #fff;paint-order:stroke fill;text-shadow:.5cqw .6cqw 0 #1c1b18;transform:rotate(-4deg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  font:400 11cqw/1 "Lilita One","Arial Black",Impact,sans-serif;font-style:italic;letter-spacing:.01em;text-transform:none;color:var(--red);
+  -webkit-text-stroke:.7cqw #fff;paint-order:stroke fill;text-shadow:none;filter:drop-shadow(.55cqw .65cqw 0 #1c1b18); /* one hard shadow of the whole keylined shape, not of the letters alone */
+  transform:rotate(-4deg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 /* the number: a navy pill at the top right, over the stripes */
 .card.t-chrome .num{top:3.4%;right:4.5%;width:auto;height:auto;padding:.9cqw 2.6cqw;border:1.5px solid #fff;border-radius:999px;background:var(--navy);color:#fff;font:700 4.2cqw "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.06em;z-index:4}
 /* the frame's baseball stands where the badge was */
@@ -172,7 +174,7 @@
 .card.t-chrome.free .front{background:var(--frame) center/100% 100% no-repeat;border-color:transparent}
 .card.t-chrome.free .art{background:transparent;border:0;display:flex;padding:6% 6% 14%}
 .card.t-chrome.free .art::before{content:"";display:block;position:absolute;inset:0;z-index:-1;background:#1f2a44;clip-path:polygon(0 0,100% 0,100% 92.2%,16.5% 100%,0 100%)}
-.card.t-chrome.free .team{background:transparent;color:var(--gold);text-shadow:.5cqw .6cqw 0 #1c1b18}
+.card.t-chrome.free .team{background:transparent;color:var(--gold)}
 .card.t-chrome.free .role{color:var(--red)}
 .card.t-chrome.free .k{color:#c9d7f2}.card.t-chrome.free .open{color:#fff}
 .card.t-chrome.free .who .fn{color:#ffe2a8}

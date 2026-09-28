@@ -64,6 +64,6 @@ export function fitName(name: string, width = 60, minScale = 0.68, advFn = 0.6, 
 }
 
 /** The company as the maker's mark over the frame's corner: as large as the corner allows, scaled down for a long name; the stylesheet shortens what still will not fit. */
-export function fitCompany(name: string, width = 64, base = 9.5, min = 6, adv = 0.52): number {
+export function fitCompany(name: string, width = 70, base = 11.5, min = 6.5, adv = 0.52): number {
   return Math.max(min, Math.min(base, width / Math.max(1, em((name || '').trim(), adv))));
 }
