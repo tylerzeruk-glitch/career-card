@@ -4,6 +4,7 @@
 .card.on{--flip:180deg}
 /* while the pointer is on the card it leans toward it (see src/lib/tilt.ts); the lean follows the pointer quickly and eases off slowly */
 .card.tilt .inner{transition:transform .1s ease-out}
+.gyro .card .inner{transition-duration:.2s} /* the phone's tilt updates every frame; a long ease would trail it */
 .card.tilt{z-index:2}
 /* a soft light on the face where the pointer is; the back's light is mirrored since the face is */
 .card .face::after{content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;background:radial-gradient(circle at var(--mx,50%) var(--my,50%),rgba(255,255,255,.13),transparent 46%);opacity:var(--glare,0);transition:opacity .35s;z-index:3}
@@ -132,7 +133,7 @@
 .card.t-chrome .front{padding:0;isolation:isolate}
 /* the rainbow sheen and a soft band of light, drifting with the pointer over the whole face, photo included, like light on a sleeve */
 .card.t-chrome .front::before,.card.t-chrome .back::before{border:0;inset:0;border-radius:0;background:var(--foil);background-size:260% 260%;background-position:var(--mx,30%) var(--my,30%);opacity:.18;mix-blend-mode:screen;transition:background-position .15s ease-out,opacity .35s;z-index:0}
-.card.t-chrome.tilt .front::before,.card.t-chrome.tilt .back::before{opacity:.32} /* brighter under the pointer, quieter at rest so the photo and the panel keep their colour */
+.card.t-chrome.tilt .front::before,.card.t-chrome.tilt .back::before,.gyro .card.t-chrome .front::before,.gyro .card.t-chrome .back::before{opacity:.32} /* brighter under the pointer, quieter at rest so the photo and the panel keep their colour */
 .card.t-chrome .face::after{background:linear-gradient(115deg,transparent calc(var(--mx,50%) - 24%),rgba(255,255,255,.28) var(--mx,50%),transparent calc(var(--mx,50%) + 24%))}
 .card.t-chrome .back::after{background:linear-gradient(115deg,transparent calc(76% - var(--mx,50%)),rgba(255,255,255,.22) calc(100% - var(--mx,50%)),transparent calc(124% - var(--mx,50%)))}
 /* the photo panel: the frame's own cream panel; the art box fills it and lets the logo hang outside */
