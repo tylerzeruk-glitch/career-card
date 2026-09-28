@@ -162,8 +162,17 @@ function ChromePlate({ name }: { name: string }) {
 
 /** The position on the yellow plate under the name, abbreviated when it would not fit. */
 function ChromeRole({ title, color }: { title: string; color: string }) {
-  const { text, size } = fitTitle(title);
-  return <div style={{ position: 'absolute', left: FR.roleL, top: FR.roleT, width: FR.roleW, height: FR.roleH, display: 'flex', alignItems: 'center', paddingLeft: q(2), transform: 'rotate(-5.8deg)', transformOrigin: '0 50%', fontFamily: LILITA, fontSize: q(size), letterSpacing: '0.03em', textTransform: 'uppercase', color, textShadow: '1px 1px 0 #1c1b18', whiteSpace: 'nowrap', overflow: 'hidden' }}>{text}</div>;
+  const { text, size } = fitTitle(title), k = 1, ring = [[-k, 0], [k, 0], [0, -k], [0, k], [-k, -k], [k, k], [-k, k], [k, -k]];
+  const base = { position: 'absolute' as const, left: 0, top: 0, width: FR.roleW - q(2), display: 'flex', fontFamily: LILITA, fontSize: q(size), letterSpacing: '0.04em', textTransform: 'uppercase' as const, whiteSpace: 'nowrap' as const, overflow: 'hidden' as const };
+  return (
+    <div style={{ position: 'absolute', left: FR.roleL, top: FR.roleT, width: FR.roleW, height: FR.roleH, display: 'flex', transform: 'rotate(-5.8deg)', transformOrigin: '0 50%' }}>
+      <div style={{ position: 'relative', display: 'flex', left: q(2), top: Math.round((FR.roleH - q(size)) / 2), width: FR.roleW - q(2), height: q(size) }}>
+        {[[0, 0], ...ring].map(([x, y], i) => <div key={'s' + i} style={{ ...base, left: 1.5 + x, top: 2 + y, color: '#1c1b18' }}>{text}</div>)}
+        {ring.map(([x, y], i) => <div key={i} style={{ ...base, left: x, top: y, color: '#fff' }}>{text}</div>)}
+        <div style={{ ...base, color }}>{text}</div>
+      </div>
+    </div>
+  );
 }
 
 /** The Chrome 90s card stock: the printed frame, rotated into the hand like the others; */

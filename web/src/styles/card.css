@@ -147,8 +147,10 @@
   font:400 11cqw/1 "Lilita One","Arial Black",Impact,sans-serif;font-style:italic;letter-spacing:.01em;text-transform:none;color:var(--red);
   -webkit-text-stroke:.7cqw #fff;paint-order:stroke fill;text-shadow:none;filter:drop-shadow(.55cqw .65cqw 0 #1c1b18); /* one hard shadow of the whole keylined shape, not of the letters alone */
   transform:rotate(-4deg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-/* the number: a navy pill at the top right, over the stripes */
-.card.t-chrome .num{top:3.4%;right:4.5%;width:auto;height:auto;padding:.9cqw 2.6cqw;border:1.5px solid #fff;border-radius:999px;background:var(--navy);color:#fff;font:700 4.2cqw "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.06em;z-index:4}
+/* the number: a navy circle at the top right, over the stripes, keylined and shadowed like the company mark, wide enough for two digits */
+.card.t-chrome .num{top:2.6%;right:4.2%;width:11.5cqw;height:11.5cqw;padding:0;display:flex;align-items:center;justify-content:center;border:.6cqw solid #fff;border-radius:50%;background:var(--navy);color:#fff;
+  font:700 5cqw/1 "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.04em;z-index:4;box-shadow:none;filter:drop-shadow(.55cqw .65cqw 0 #1c1b18)}
+.card.t-chrome .num.wide{font-size:4.6cqw;letter-spacing:.02em}
 /* the frame's baseball stands where the badge was */
 .card.t-chrome .badge{display:none}
 /* the name on the frame's red plate and the position on the yellow one below it; both lean up to the right. --ns and --rs come from the fit (src/lib/fit.ts): a scale for the name, a size in cqw for the position */
@@ -158,7 +160,8 @@
 .card.t-chrome .who .fn{font:400 calc(4.6cqw * var(--ns,1))/1 "Lilita One","Arial Black",Impact,sans-serif;letter-spacing:.02em;color:#ffe2a8;margin:0;text-shadow:.3cqw .3cqw 0 #1c1b18}
 .card.t-chrome .who .ln{flex:1;min-width:0;font:400 calc(6.8cqw * var(--ns,1))/1 "Lilita One","Arial Black",Impact,sans-serif;letter-spacing:.02em;color:#fff;text-shadow:.4cqw .4cqw 0 #1c1b18;-webkit-text-stroke:0;background:none;filter:none;overflow:hidden;text-overflow:ellipsis}
 .card.t-chrome .role{position:absolute;left:7.6%;top:86.6%;right:auto;bottom:auto;width:62%;height:8.1%;margin:0;padding:0 2cqw;z-index:4;max-width:none;background:transparent;border:0;color:var(--navy);
-  font:400 calc(1cqw * var(--rs,4.4))/1 "Lilita One","Arial Black",Impact,sans-serif;letter-spacing:.03em;text-transform:uppercase;-webkit-text-stroke:0;text-shadow:.3cqw .3cqw 0 #1c1b18;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  font:400 calc(1cqw * var(--rs,4.4))/1 "Lilita One","Arial Black",Impact,sans-serif;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  -webkit-text-stroke:.42cqw #fff;paint-order:stroke fill;text-shadow:none;filter:drop-shadow(.3cqw .35cqw 0 #1c1b18); /* keylined and shadowed like the company mark, so it reads on the yellow */
   transform:rotate(-5.8deg);transform-origin:0 50%;display:flex;align-items:center}
 /* the back: the same frame; the sheet is the panel, the plate stays bare */
 .card.t-chrome .back{border-radius:0;border:0;color:#1c1b18;padding:14% 10.5% 33%;background:var(--frame) center/100% 100% no-repeat}
