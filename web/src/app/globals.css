@@ -664,54 +664,55 @@ kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--hair);border-r
 
 /* ===== Chrome 90s, the whole page: the card style reaches the page around the cards. Tokens first (dark stock, foil and chrome in place of red and ink, Oswald and Anton in the type roles), then the furniture that carries the look: perforations become chrome hairlines, the name and headings take foil, chips and the primary button take chrome. The signed-out front door keeps the site's own look. ===== */
 html:has([data-style="chrome"]){
-  color-scheme:dark;
-  --bg:#101014; --paper:#191922; --hover:#26262f; --ink:#eeeef4; --ink-2:#c6c6d0; --muted:#8e8e9c; --hair:#34343f; --line:#eeeef4;
-  --focus:#7ad7ff; --red:#ffd36b; --navy:#c48bff; --gold:#ffd36b;
-  --c-app:#7ad7ff; --c-int:#ffd36b; --c-off:#8dff9a; --c-den:#ff8a8a; --c-wd:#8e8e9c; --c-ms:#eeeef4;
-  --ok-bg:#12301a; --ok-ink:#8dff9a; --warn-bg:#3a2e08; --warn-ink:#ffd36b; --info-bg:#172a45; --info-ink:#7ad7ff;
+  color-scheme:light;
+  --bg:#ffffff; --paper:#ffffff; --hover:#f1f3f8; --ink:#1c1b2a; --ink-2:#4a4a5c; --muted:#8a8a9c; --hair:#dfe3ec; --line:#1c1b2a;
+  --focus:#2a78d6; --red:#e5322d; --navy:#173a8a; --gold:#f2c230; --teal:#19b2a8; --pink:#ff4fa3;
+  --c-app:#2a78d6; --c-int:#e0a800; --c-off:#19b2a8; --c-den:#e5322d; --c-wd:#9a9aa8; --c-ms:#1c1b2a;
   --cond:"Oswald","Barlow Condensed","Arial Narrow",sans-serif;
-  --riso:"Anton","Arial Black",Impact,sans-serif;
+  --riso:"Lilita One","Arial Black",Impact,sans-serif;
   --foil:linear-gradient(115deg,#ff8a8a 0%,#ffd36b 18%,#8dff9a 36%,#7ad7ff 54%,#c48bff 72%,#ff8ad4 90%,#ff8a8a 100%);
   --chrome:linear-gradient(180deg,#f7f7fb 0%,#c9c9d3 35%,#7c7c8c 50%,#e9e9f0 65%,#a9a9b6 100%);
-  --perf:linear-gradient(90deg,transparent,#a9a9b6 12%,#f7f7fb 50%,#a9a9b6 88%,transparent) 0 50%/100% 1px no-repeat;
+  --perf:repeating-linear-gradient(135deg,#173a8a 0 3px,transparent 3px 8px) 0 50%/100% 3px no-repeat;
 }
-html:has([data-style="chrome"]) body{background:var(--bg) radial-gradient(ellipse at 50% -20%,rgba(122,215,255,.08),transparent 60%)}
-[data-style="chrome"] .brand h1{font-style:italic;letter-spacing:.03em;background:var(--foil);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 2px 0 rgba(0,0,0,.6))}
+/* the page: a white sheet with a washed-out memphis print, fixed so the shapes stay put while the page scrolls */
+html:has([data-style="chrome"]) body{background:#fff url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='560' height='560' viewBox='0 0 560 560'><g fill='none' fill-rule='evenodd' opacity='.32'><polygon points='40,60 190,20 120,170' fill='%23f7b3cf'/><circle cx='430' cy='110' r='58' fill='%23f9e27a'/><circle cx='430' cy='110' r='58' fill='none' stroke='%23c9a6e0' stroke-width='6' stroke-dasharray='6 10'/><polygon points='300,380 470,330 420,500' fill='%2394dfe2'/><circle cx='120' cy='400' r='44' fill='%23c9a6e0'/><g stroke='%23f7b3cf' stroke-width='7' stroke-linecap='round'><line x1='250' y1='60' x2='320' y2='30'/><line x1='40' y1='300' x2='110' y2='270'/><line x1='500' y1='420' x2='540' y2='500'/></g><g stroke='%2394dfe2' stroke-width='7' stroke-linecap='round'><line x1='210' y1='250' x2='270' y2='300'/><line x1='470' y1='240' x2='540' y2='210'/></g><g fill='%23f9e27a'><circle cx='30' cy='500' r='7'/><circle cx='330' cy='200' r='7'/><circle cx='560' cy='30' r='7'/></g><g fill='%23c9a6e0'><circle cx='260' cy='500' r='6'/><circle cx='380' cy='20' r='6'/></g><g fill='%23f7b3cf'><circle cx='150' cy='250' r='4'/><circle cx='166' cy='250' r='4'/><circle cx='182' cy='250' r='4'/><circle cx='150' cy='266' r='4'/><circle cx='166' cy='266' r='4'/><circle cx='182' cy='266' r='4'/><circle cx='150' cy='282' r='4'/><circle cx='166' cy='282' r='4'/><circle cx='182' cy='282' r='4'/></g><path d='M340 300c14-14 28 14 42 0s28 14 42 0' stroke='%23f9e27a' stroke-width='6' stroke-linecap='round'/><path d='M60 180c14-14 28 14 42 0s28 14 42 0' stroke='%2394dfe2' stroke-width='6' stroke-linecap='round'/></g></svg>") 0 0/560px 560px}
+@media (hover:hover){html:has([data-style="chrome"]) body{background-attachment:fixed}}
+[data-style="chrome"] .app,[data-style="chrome"].pub{background:transparent}
+[data-style="chrome"] .brand h1{font-style:italic;letter-spacing:.02em;color:var(--red);-webkit-text-stroke:2px #fff;paint-order:stroke fill;text-shadow:3px 3px 0 #1c1b2a}
 [data-style="chrome"] .brand .sub{color:var(--ink-2)}
-[data-style="chrome"] .line b{background:var(--chrome);color:#111;box-shadow:0 1px 3px rgba(0,0,0,.5)}
-[data-style="chrome"] .pill{background:linear-gradient(180deg,#ffe58a,#c9962a 60%,#ffd36b);color:#2b1a00;transform:rotate(-2deg) skewX(-6deg);border-radius:2px}
-[data-style="chrome"] .btn.primary{background:var(--chrome);color:#111;text-shadow:0 1px 0 rgba(255,255,255,.5);font-weight:600}
-[data-style="chrome"] .btn.primary:hover{opacity:1;filter:brightness(1.08)}
-[data-style="chrome"] .btn.outline{border-color:#a9a9b6}
-[data-style="chrome"] .btn.outline:hover{background:var(--chrome);color:#111}
-[data-style="chrome"] .toggle{border-color:#a9a9b6}
-[data-style="chrome"] .toggle button.on{background:var(--chrome);color:#111}
-[data-style="chrome"] .row h2,[data-style="chrome"] .gh{font-style:italic;letter-spacing:.16em;background:linear-gradient(180deg,#ffe58a,#c9962a 60%,#ffd36b);-webkit-background-clip:text;background-clip:text;color:transparent}
-[data-style="chrome"] .fold::before,[data-style="chrome"] .row::after,[data-style="chrome"] .gh::after,[data-style="chrome"] .lfoot::before{height:1px;background:var(--perf)}
-[data-style="chrome"] .tiles span{background:var(--chrome);color:#111;font-weight:700}
-[data-style="chrome"] .ghost{border-color:#5a5a6a;color:#a9a9b6}
-[data-style="chrome"] .ghost:hover{border-color:#e9e9f0;color:#e9e9f0}
-[data-style="chrome"] .shelf-dots button.on{background:var(--gold)}
-[data-style="chrome"] .fabox{background:rgba(196,139,255,.10)}
-[data-style="chrome"] .drawer{box-shadow:-8px 0 30px rgba(0,0,0,.5)}
-[data-style="chrome"] .switch input:checked + .track{background:var(--gold)}
-[data-style="chrome"] .pagebox{background:rgba(255,255,255,.06)}
-[data-style="chrome"] .row.private{background:rgba(255,255,255,.04)}
-[data-style="chrome"] .wordmark{background:var(--foil);-webkit-background-clip:text;background-clip:text;color:transparent}
-[data-style="chrome"] .wordmark .flag{color:#ffd36b}
-[data-style="chrome"] .menu summary.more{border-color:#a9a9b6}
+[data-style="chrome"] .line b{background:var(--navy);color:#fff}
+[data-style="chrome"] .pill{background:linear-gradient(90deg,#e8352c,#ff8a3a);color:#fff;transform:rotate(-2deg) skewX(-8deg);border-radius:2px;box-shadow:3px 3px 0 #1c1b2a,5px 5px 0 var(--gold)}
+[data-style="chrome"] .btn.primary{background:var(--navy);color:#fff;box-shadow:2px 2px 0 var(--gold)}
+[data-style="chrome"] .btn.primary:hover{opacity:1;filter:brightness(1.12)}
+[data-style="chrome"] .btn.outline{border-color:var(--navy);color:var(--navy)}
+[data-style="chrome"] .btn.outline:hover{background:var(--navy);color:#fff}
+[data-style="chrome"] .toggle{border-color:var(--navy)}
+[data-style="chrome"] .toggle button.on{background:var(--navy);color:#fff}
+[data-style="chrome"] .row h2,[data-style="chrome"] .gh{font-style:italic;letter-spacing:.16em;color:var(--navy)}
+[data-style="chrome"] .fold::before,[data-style="chrome"] .row::after,[data-style="chrome"] .gh::after{height:3px;background:var(--perf)}
+[data-style="chrome"] .lfoot::before{height:3px;background:var(--perf)}
+[data-style="chrome"] .tiles span{background:var(--navy);color:#fff;font-weight:700;border-radius:2px}
+[data-style="chrome"] .ghost{border-color:var(--navy);color:var(--navy);background:rgba(255,255,255,.6)}
+[data-style="chrome"] .shelf-dots button.on{background:var(--red)}
+[data-style="chrome"] .fabox{background:rgba(23,58,138,.07)}
+[data-style="chrome"] .drawer{box-shadow:-8px 0 30px rgba(0,0,0,.14)}
+[data-style="chrome"] .switch input:checked + .track{background:var(--navy)}
+[data-style="chrome"] .pagebox{background:rgba(23,58,138,.07)}
+[data-style="chrome"] .row.private{background:rgba(255,79,163,.06)}
+[data-style="chrome"] .wordmark{color:var(--navy)}
+[data-style="chrome"] .wordmark .flag{color:var(--red)}
+[data-style="chrome"] .menu summary.more{border-color:var(--navy)}
 [data-style="chrome"] .flipme{color:var(--muted)}
-[data-style="chrome"] .fbtn{background:var(--chrome);color:#111}
-[data-style="chrome"] .note-inline{background:rgba(122,215,255,.14);color:#7ad7ff}
-[data-style="chrome"] .overlay.note{background:rgba(141,255,154,.14);color:#8dff9a;border:1px solid rgba(141,255,154,.3)}
-[data-style="chrome"] .overlay.flash{background:rgba(141,255,154,.14);color:#8dff9a;border:1px solid rgba(141,255,154,.3)}
+[data-style="chrome"] .fbtn{background:#fff;color:var(--navy)}
+[data-style="chrome"] .note-inline{background:rgba(23,58,138,.08);color:var(--navy)}
+[data-style="chrome"] .overlay.flash{background:#e6f7f2;color:#0b5b4a;border:1px solid #9fded0}
 
 /* ===== the card style picker in the header: a ringed button with a chip of the current stock; the popover holds a miniature of the player's own card in each look ===== */
 .btn.icon.style{border:1px solid var(--hair);border-radius:50%;color:var(--ink-2);background:transparent}
 .btn.icon.style .chip{display:block;width:13px;height:17px;border-radius:2px;background:#fbf6ea;border:1px solid #b8b0a0;position:relative;overflow:hidden}
 .btn.icon.style .chip i{position:absolute;left:0;top:0;bottom:0;width:0}
-.btn.icon.style.chrome .chip{background:#15151b;border-color:#d9d9e2}
-.btn.icon.style.chrome .chip i{width:3px;background:linear-gradient(180deg,#ff8a8a,#ffd36b,#8dff9a,#7ad7ff,#c48bff)}
+.btn.icon.style.chrome .chip{background:linear-gradient(170deg,#19b2a8,#2aa0d8 40%,#f5c2e2 75%,#ffd97a);border-color:#173a8a}
+.btn.icon.style.chrome .chip i{inset:3px;width:auto;background:#f4efe3;border:1px solid #f2c230}
 .stylepick[open] summary.style{background:var(--hover)}
 .stylepick .pop{padding:14px 14px 12px;min-width:0;width:max-content;max-width:min(340px,calc(100vw - 32px))}
 .stylepick .pop-h{font:700 11.5px var(--cond);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0 0 10px 2px}
@@ -724,5 +725,5 @@ html:has([data-style="chrome"]) body{background:var(--bg) radial-gradient(ellips
 .stylepick .thumb .card{width:84px;cursor:default}
 .stylepick .thumb .card .face{box-shadow:0 4px 10px rgba(0,0,0,.18)}
 .stylepick .lbl{font:700 11px var(--cond);letter-spacing:.1em;text-transform:uppercase}
-[data-style="chrome"] .btn.icon.style{border-color:#a9a9b6}
-[data-style="chrome"] .stylepick .swatch.on{outline-color:var(--gold)}
+[data-style="chrome"] .btn.icon.style{border-color:var(--navy)}
+[data-style="chrome"] .stylepick .swatch.on{outline-color:var(--red)}

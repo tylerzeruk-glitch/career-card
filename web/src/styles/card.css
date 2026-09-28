@@ -126,40 +126,66 @@
 /* the band's negative margin is a share of the content width, the padding a share of the card, so the 8% is scaled by 1/0.84 to land on the rule (a hair past it: the rule paints on top) */
 .card .hdr{margin:2.55cqw calc(-9.6% + 2.6cqw) 3%;border-radius:4.2cqw 4.2cqw 0 0}
 
-/* ===== Chrome 90s: black metallic stock, a foil slash down the left edge, a skewed chrome nameplate, the surname in foil. The foil catches the light on hover. ===== */
-.card.t-chrome{--foil:linear-gradient(115deg,#ff8a8a 0%,#ffd36b 18%,#8dff9a 36%,#7ad7ff 54%,#c48bff 72%,#ff8ad4 90%,#ff8a8a 100%);--chrome:linear-gradient(180deg,#f7f7fb 0%,#c9c9d3 35%,#7c7c8c 50%,#e9e9f0 65%,#a9a9b6 100%)}
-.card.t-chrome .face{border-radius:0;border:2px solid #d9d9e2;background:linear-gradient(160deg,#15151b 0%,#2c2c36 45%,#0c0c10 100%);box-shadow:-5px 0 14px rgba(0,0,0,.35),0 10px 26px rgba(0,0,0,.35)}
-.card.t-chrome .front::before,.card.t-chrome .back::before{border:0;inset:0;border-radius:0;background:var(--foil);background-size:100% 300%;background-position:0 0;opacity:.9;clip-path:polygon(0 0,7.5% 0,3% 100%,0 100%)}
-.card.t-chrome .front{padding:16% 8% 7%}
-.card.t-chrome .art{border:2px solid #e6e6ee;border-radius:0;box-shadow:0 0 0 3px #1a1a20,0 0 0 4px #8a8a98}
-.card.t-chrome .art::after{background:linear-gradient(160deg,rgba(255,255,255,.25),transparent 45%)}
-.card.t-chrome .art .pic{border-radius:0}
-.card.t-chrome .team{left:-2px;bottom:calc(100% + 1cqw);height:11cqw;line-height:11cqw;padding:0 6cqw 0 5cqw;max-width:88%;background:var(--chrome);color:#111;text-shadow:0 1px 0 rgba(255,255,255,.6);font-family:"Oswald","Barlow Condensed",sans-serif;font-weight:700;font-style:italic;letter-spacing:.08em;clip-path:polygon(0 0,100% 0,calc(100% - 3.5cqw) 100%,0 100%);border-top-left-radius:0}
-.card.t-chrome .num{border:0;background:var(--chrome);color:#111;font:700 4.6cqw "Oswald",sans-serif;font-style:italic;width:auto;padding:0 3cqw;border-radius:999px;top:3.4cqw;right:3.6cqw}
-.card.t-chrome .badge{background:var(--chrome);color:#111;font-weight:700;filter:drop-shadow(0 2px 3px rgba(0,0,0,.5))}
-.card.t-chrome .mono{color:#e6e6ee}
-.card.t-chrome .who .fn{color:#c2c2cc;font-family:"Oswald",sans-serif;letter-spacing:.2em}
-.card.t-chrome .who .ln{font-family:"Anton","Arial Black",sans-serif;font-style:italic;font-size:12cqw;letter-spacing:.03em;background:var(--foil);background-size:200% 100%;background-position:0 0;-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 2px 0 rgba(0,0,0,.6))}
-.card.t-chrome .role{color:#e6e6ee;font-family:"Oswald",sans-serif;font-weight:500;letter-spacing:.14em}
-.card.t-chrome .back{background:linear-gradient(160deg,#1a1a20,#2e2e39 50%,#101014);border-color:#d9d9e2;color:#e9e9f0}
-.card.t-chrome .hdr{background:var(--chrome);color:#111;border-radius:0}
-.card.t-chrome .hdr .t{font-family:"Anton",sans-serif;font-style:italic;letter-spacing:.04em}
-.card.t-chrome .hdr .s{color:#333;font-family:"Oswald",sans-serif}
-.card.t-chrome th{color:#a9a9b6}.card.t-chrome td{color:#e9e9f0;border-bottom-color:#3a3a46}.card.t-chrome tr.cur td{color:#ffd36b}
-.card.t-chrome .bul{color:#e9e9f0}.card.t-chrome .bul li::marker{color:#7ad7ff}
-.card.t-chrome .bulwrap .more{background:linear-gradient(transparent,#101014)}
-.card.t-chrome .skills span{background:var(--chrome);color:#111;font-family:"Oswald",sans-serif;font-weight:700}
-.card.t-chrome .foot{color:#a9a9b6;border-top-color:#3a3a46}
-.card.t-chrome.free .face{background:linear-gradient(160deg,#1c0f2e,#3a1f5c 50%,#120a1f)}
-.card.t-chrome.free .team{background:linear-gradient(180deg,#ffe58a,#c9962a 50%,#ffd36b);color:#2b1a00;text-shadow:none}
-.card.t-chrome.free .art{border-color:#c48bff;box-shadow:0 0 0 3px #1c0f2e,0 0 0 4px #c48bff}
-.card.t-chrome.free .who .ln{background:linear-gradient(180deg,#ffe58a,#c9962a 60%,#ffd36b);-webkit-background-clip:text;background-clip:text}
-.card.t-chrome.free .role{color:#ffd36b}
-.card.t-chrome.free .k{color:#c48bff}.card.t-chrome.free .open{color:#fff}
+/* ===== Chrome 90s: a holographic border (teal halftone, blue stripes in two corners, a rainbow sheen that follows the pointer), a cream photo panel in a gold and navy frame, the company as a red logo over the top-left corner, a red nameplate with black and gold offset shadows, and the position on a baseball at the bottom right. ===== */
+.card.t-chrome{--foil:linear-gradient(115deg,#ff8a8a 0%,#ffd36b 18%,#8dff9a 36%,#7ad7ff 54%,#c48bff 72%,#ff8ad4 90%,#ff8a8a 100%);--gold:#f2c230;--navy:#173a8a;--red:#e5322d}
+.card.t-chrome .face{border-radius:1.6cqw;border:1.5px solid #cfe6ea;box-shadow:-5px 0 14px rgba(0,0,0,.22),0 10px 26px rgba(0,0,0,.22);
+  background:
+    radial-gradient(circle,rgba(0,60,80,.18) 26%,transparent 30%) 0 0/1.5cqw 1.5cqw,
+    linear-gradient(170deg,#19b2a8 0%,#2aa0d8 34%,#79d6dc 54%,#f5c2e2 70%,#ffd97a 82%,#a3e6dc 100%)}
+/* the rainbow sheen over the border, drifting with the pointer */
+.card.t-chrome .front::before,.card.t-chrome .back::before{border:0;inset:0;border-radius:0;background:var(--foil);background-size:220% 220%;background-position:var(--mx,30%) var(--my,30%);opacity:.28;mix-blend-mode:screen;transition:background-position .15s ease-out;z-index:0}
+/* blue stripes in the top-right and bottom-right corners, painted behind the panel but over the border */
+.card.t-chrome .art{isolation:isolate}
+.card.t-chrome .art::before{content:"";position:absolute;z-index:-1;right:-8.2%;top:-16.5%;bottom:-28.5%;width:58%;pointer-events:none;
+  background:
+    repeating-linear-gradient(135deg,#173a8a 0 1.3cqw,transparent 1.3cqw 3.4cqw) right top/100% 42% no-repeat,
+    repeating-linear-gradient(135deg,#173a8a 0 1.3cqw,#ff4fa3 1.3cqw 1.9cqw,transparent 1.9cqw 4cqw) right bottom/100% 46% no-repeat;
+  clip-path:polygon(40% 0,100% 0,100% 24%,100% 70%,52% 100%,100% 100%,100% 70%,100% 24%)}
+.card.t-chrome .front{padding:0;background:transparent}
+/* the photo panel: cream, in a gold frame with a navy hairline outside it */
+.card.t-chrome .art{position:absolute;left:7%;right:7%;top:12.5%;bottom:22%;margin:0;flex:none;border-radius:1cqw;border:0;background:#f4efe3;box-shadow:0 0 0 1.6cqw var(--gold),0 0 0 2.2cqw #2b3e7a,inset 0 0 0 1px rgba(0,0,0,.08)}
+.card.t-chrome .art::after{background:none}
+.card.t-chrome .art .pic{border-radius:inherit;inset:0}
+.card.t-chrome .mono{color:#2b3e7a}
+/* the company as the logo over the top-left corner: red bubbly letters with a white keyline */
+.card.t-chrome .team{position:absolute;left:5%;top:2.4%;bottom:auto;height:auto;line-height:1;padding:0;max-width:62%;background:transparent;clip-path:none;border-radius:0;z-index:4;
+  font:400 7.4cqw/1 "Lilita One","Arial Black",Impact,sans-serif;font-style:italic;letter-spacing:.01em;text-transform:none;color:var(--red);
+  -webkit-text-stroke:.55cqw #fff;paint-order:stroke fill;text-shadow:.5cqw .6cqw 0 #1c1b18;transform:rotate(-2deg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* the number: a small navy pill at the top right, on the stripes */
+.card.t-chrome .num{top:4.2%;right:6%;width:auto;height:auto;padding:.9cqw 2.6cqw;border:1.5px solid #fff;border-radius:999px;background:var(--navy);color:#fff;font:700 4.2cqw "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.06em;z-index:4}
+/* the position, on a baseball at the bottom right, over the panel's corner */
+.card.t-chrome .badge{clip-path:none;filter:none;transform:none;left:auto;right:-4%;bottom:-13%;width:26cqw;height:26cqw;border-radius:50%;background:radial-gradient(circle at 40% 35%,#fff,#efe9da 70%,#d9d1bd);border:.9cqw solid #2b3e7a;box-shadow:0 3px 8px rgba(0,0,0,.35);color:#173a8a;font:700 6.4cqw "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.06em;z-index:5;overflow:hidden}
+.card.t-chrome .badge::before,.card.t-chrome .badge::after{content:"";position:absolute;top:-30%;bottom:-30%;width:60%;border:.7cqw dashed #e5322d;border-radius:50%;pointer-events:none}
+.card.t-chrome .badge::before{left:-42%}.card.t-chrome .badge::after{right:-42%}
+/* the nameplate: a red-to-orange slab, black then gold shadows behind it, slanted */
+.card.t-chrome .who{position:absolute;left:4.5%;right:24%;bottom:8.5%;z-index:4;display:block;margin:0;padding:2.2cqw 4cqw 2cqw;line-height:1;max-width:none;
+  background:linear-gradient(90deg,#e8352c 0%,#f0452e 55%,#ff8a3a 100%);color:#fff;
+  transform:skewX(-8deg) rotate(-1.5deg);transform-origin:left bottom;border:1px solid #1c1b18;box-shadow:1cqw 1cqw 0 #1c1b18,2.2cqw 2.2cqw 0 #f2c230}
+.card.t-chrome .who > *{transform:skewX(8deg);display:block}
+.card.t-chrome .who .fn{display:block;font:700 4cqw "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.16em;color:#ffe2a8;margin-bottom:.4cqw}
+.card.t-chrome .who .ln{display:block;font:400 8.6cqw/1 "Lilita One","Arial Black",Impact,sans-serif;letter-spacing:.02em;color:#fff;text-shadow:.4cqw .4cqw 0 #1c1b18;-webkit-text-stroke:0;background:none;filter:none;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+.card.t-chrome .role{position:absolute;left:5.5%;right:26%;bottom:2.6%;margin:0;z-index:4;color:#173a8a;font:700 4.2cqw "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.12em;-webkit-text-stroke:.6cqw #fff;paint-order:stroke fill;text-shadow:none}
+/* the back: the same border round a cream sheet */
+.card.t-chrome .back{border-radius:1.6cqw;border:1.5px solid #cfe6ea;color:#1c1b18;padding:0 10% 7.5%;
+  background:
+    linear-gradient(#f4efe3,#f4efe3) 50% 50%/86% 90% no-repeat,
+    radial-gradient(circle,rgba(0,60,80,.18) 26%,transparent 30%) 0 0/1.3cqw 1.3cqw,
+    linear-gradient(170deg,#19b2a8 0%,#2aa0d8 34%,#79d6dc 54%,#f5c2e2 70%,#ffd97a 82%,#a3e6dc 100%)}
+.card.t-chrome .hdr{background:var(--navy);color:#fff;margin:7.5% -1% 3%;border-radius:.8cqw;box-shadow:0 0 0 1.2cqw var(--gold)}
+.card.t-chrome .hdr .t{font-family:"Lilita One","Arial Black",Impact,sans-serif;font-style:italic}
+.card.t-chrome .hdr .s{color:#ffe2a8}
+.card.t-chrome tr.cur td{color:var(--red)}
+.card.t-chrome .skills span{background:var(--navy)}
+.card.t-chrome .foot{border-top-color:#cfc4a9}
+/* the free-agent card: the same border, a navy panel, gold logo */
+.card.t-chrome.free .art{background:#1f2a44;border:0;display:flex;padding:6%}
+.card.t-chrome.free .team{background:transparent;color:var(--gold);text-shadow:.5cqw .6cqw 0 #1c1b18}
+.card.t-chrome.free .badge{left:auto;right:-4%;bottom:-13%;top:auto;transform:none}
+.card.t-chrome.free .role{color:#173a8a}
+.card.t-chrome.free .k{color:#c9d7f2}.card.t-chrome.free .open{color:#fff}
+.card.t-chrome.free .badge{color:var(--red)}
 .card.t-chrome.free .figs div{background:rgba(255,255,255,.08);color:#fff}
-.card.t-chrome.free .go{border-color:#ffd36b;color:#ffd36b}
-/* the foil catches the light where the pointer is: the slash and the name slide their gradients with it, and the glare is stronger on the metallic stock */
-.card.t-chrome .front::before,.card.t-chrome .back::before{background-position:0 var(--my,0%);transition:background-position .15s ease-out}
-.card.t-chrome .who .ln{background-position:var(--mx,0%) 0;transition:background-position .15s ease-out}
-.card.t-chrome .face::after{background:radial-gradient(circle at var(--mx,50%) var(--my,50%),rgba(255,255,255,.14),rgba(255,255,255,.04) 30%,transparent 52%)}
-.card.t-chrome .back::after{background:radial-gradient(circle at calc(100% - var(--mx,50%)) var(--my,50%),rgba(255,255,255,.11),rgba(255,255,255,.03) 30%,transparent 52%)}
+.card.t-chrome.free .go{border-color:var(--gold);color:var(--gold)}
+/* a gentler glare on this stock; the sheen carries the light */
+.card.t-chrome .face::after{background:radial-gradient(circle at var(--mx,50%) var(--my,50%),rgba(255,255,255,.10),transparent 46%)}
+.card.t-chrome .back::after{background:radial-gradient(circle at calc(100% - var(--mx,50%)) var(--my,50%),rgba(255,255,255,.08),transparent 46%)}
