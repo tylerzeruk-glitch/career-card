@@ -27,7 +27,7 @@ const em = (text: string, adv: number) => text.length * adv;
  * A position for the role box: base size, scaled down to the floor; past the floor, trimmed of a parenthetical or a
  * trailing clause, then abbreviated a word at a time (the longest-established abbreviations first).
  */
-export function fitTitle(title: string, width = 60, base = 5.4, min = 3.7, adv = 0.62): { text: string; size: number } {
+export function fitTitle(title: string, width = 58, base = 5.4, min = 3.7, adv = 0.62): { text: string; size: number } {
   let text = (title || '').trim();
   const size = (t: string) => Math.min(base, width / Math.max(1, em(t, adv)));
   if (size(text) >= min) return { text, size: size(text) };

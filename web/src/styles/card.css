@@ -155,7 +155,7 @@
 .card.t-chrome .who > *{transform:none;display:block}
 .card.t-chrome .who .fn{font:400 calc(4.6cqw * var(--ns,1))/1 "Lilita One","Arial Black",Impact,sans-serif;letter-spacing:.02em;color:#ffe2a8;margin:0;text-shadow:.3cqw .3cqw 0 #1c1b18}
 .card.t-chrome .who .ln{flex:1;min-width:0;font:400 calc(6.8cqw * var(--ns,1))/1 "Lilita One","Arial Black",Impact,sans-serif;letter-spacing:.02em;color:#fff;text-shadow:.4cqw .4cqw 0 #1c1b18;-webkit-text-stroke:0;background:none;filter:none;overflow:hidden;text-overflow:ellipsis}
-.card.t-chrome .role{position:absolute;left:5.5%;top:86.3%;right:auto;bottom:auto;width:64%;height:8.1%;margin:0;padding:0 2cqw;z-index:4;max-width:none;background:transparent;border:0;color:var(--navy);
+.card.t-chrome .role{position:absolute;left:7.6%;top:86.1%;right:auto;bottom:auto;width:62%;height:8.1%;margin:0;padding:0 2cqw;z-index:4;max-width:none;background:transparent;border:0;color:var(--navy);
   font:400 calc(1cqw * var(--rs,5.4))/1 "Lilita One","Arial Black",Impact,sans-serif;letter-spacing:.03em;text-transform:uppercase;-webkit-text-stroke:0;text-shadow:.3cqw .3cqw 0 #1c1b18;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
   transform:rotate(-5.8deg);transform-origin:0 50%;display:flex;align-items:center}
 /* the back: the same frame; the sheet is the panel, the plate stays bare */
