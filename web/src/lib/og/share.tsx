@@ -237,32 +237,39 @@ export async function shareImage(S: State, site: string, slug?: string, variant:
   const first = (p.name || '').trim().split(/\s+/)[0];
   const cta = first ? `View ${first}\u2019s cards and make your own.` : 'View the cards and make your own.';
   const firstIdx = roleCards[0] ? Math.max(0, rs.indexOf(roleCards[0])) : 0;
+  // the page around the cards follows the stock, as the site does: vintage's cream and ink, or Chrome 90s's white paper with the foil washed across it, navy and gold
+  const T = chrome
+    ? { bg: 'linear-gradient(115deg, #fff2f2 0%, #fff8e6 18%, #f0fff2 36%, #eaf7ff 54%, #f5eeff 72%, #fff0f8 90%, #fff2f2 100%)', ink: '#1c1b2a', ink2: '#4a4a5c', muted: '#8a8a9c', red: '#e5322d', accent: '#173a8a', accentInk: '#fff', accentShadow: '3px 3px 0 #f2c230', rule: '#19b2a8', cond: 'Oswald' }
+    : { bg: '#f2eee5', ink: '#1c1b18', ink2: '#55524a', muted: '#6b6559', red: '#dc4432', accent: '#1c1b18', accentInk: '#f2eee5', accentShadow: 'none', rule: '#dcd6c8', cond: BARLOW };
+  const nameStyle = chrome
+    ? { fontFamily: LILITA, fontSize: 64, lineHeight: 1, letterSpacing: '0.01em', color: T.red, textShadow: '4px 4px 0 #1c1b2a', transform: 'skewX(-8deg)', marginBottom: 16, marginLeft: 6 } // the site's name plate: red plate lettering leaning, throwing black
+    : { fontFamily: BARLOW, fontSize: 62, lineHeight: 0.98, letterSpacing: '0.02em', textTransform: 'uppercase' as const, marginBottom: 14 };
   return new ImageResponse(
     (
-      <div style={{ width: '100%', height: '100%', display: 'flex', background: '#f2eee5', color: '#1c1b18', padding: '0 64px', alignItems: 'center', justifyContent: 'space-between', position: 'relative' }}>
+      <div style={{ width: '100%', height: '100%', display: 'flex', background: T.bg, color: T.ink, padding: '0 64px', alignItems: 'center', justifyContent: 'space-between', position: 'relative' }}>
         <div style={{ display: 'flex', flexDirection: 'column', width: 1200 - 128 - handW - 24, justifyContent: 'center', marginBottom: variant === 'button' ? 0 : 70 }}>
           {variant === 'eyebrow'
-            ? <div style={{ display: 'flex', fontFamily: BARLOW, fontSize: 19, letterSpacing: '0.16em', textTransform: 'uppercase', color: '#dc4432', marginBottom: 18 }}>{first ? `View ${first}\u2019s cards · Make your own` : 'View the cards · Make your own'}</div>
+            ? <div style={{ display: 'flex', fontFamily: T.cond, fontSize: 19, letterSpacing: '0.16em', textTransform: 'uppercase', color: T.red, marginBottom: 18 }}>{first ? `View ${first}\u2019s cards · Make your own` : 'View the cards · Make your own'}</div>
             : <div style={{ display: 'flex', alignItems: 'center', marginBottom: 26 }}>
-                <svg width="34" height="34" viewBox="0 0 64 64"><path d={FLAG} fill="#dc4432" /></svg>
-                <div style={{ display: 'flex', marginLeft: 8, fontFamily: LILITA, fontSize: 30, letterSpacing: '0.02em' }}>CareerCards</div>
+                <svg width="34" height="34" viewBox="0 0 64 64"><path d={FLAG} fill={T.red} /></svg>
+                <div style={{ display: 'flex', marginLeft: 8, fontFamily: LILITA, fontSize: 30, letterSpacing: '0.02em', color: chrome ? T.accent : T.ink }}>CareerCards</div>
               </div>}
-          <div style={{ display: 'flex', fontFamily: BARLOW, fontSize: 62, lineHeight: 0.98, letterSpacing: '0.02em', textTransform: 'uppercase', marginBottom: 14 }}>{p.name || 'Career'}</div>
-          {sub ? <div style={{ display: 'flex', fontFamily: CASLON, fontSize: 30, lineHeight: 1.35, color: '#55524a' }}>{sub}</div> : null}
-          {stat ? <div style={{ display: 'flex', marginTop: 18, fontFamily: BARLOW, fontSize: 23, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#6b6559' }}>{stat}</div> : null}
+          <div style={{ display: 'flex', ...nameStyle }}>{p.name || 'Career'}</div>
+          {sub ? <div style={{ display: 'flex', fontFamily: CASLON, fontSize: 30, lineHeight: 1.35, color: T.ink2 }}>{sub}</div> : null}
+          {stat ? <div style={{ display: 'flex', marginTop: 18, fontFamily: T.cond, fontSize: 23, letterSpacing: '0.14em', textTransform: 'uppercase', color: chrome ? T.accent : T.muted }}>{stat}</div> : null}
           {variant === 'button' ? <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-            <div style={{ display: 'flex', marginTop: 34, background: '#1c1b18', color: '#f2eee5', fontFamily: BARLOW, fontSize: 22, letterSpacing: '0.1em', textTransform: 'uppercase', padding: '13px 22px', borderRadius: 8, whiteSpace: 'nowrap' }}>{first ? `View ${first}\u2019s cards \u2192` : 'View the cards \u2192'}</div>
-            <div style={{ display: 'flex', marginTop: 14, fontFamily: CASLON, fontSize: 21, color: '#55524a', whiteSpace: 'nowrap' }}>Then make your own at <span style={{ color: '#dc4432', marginLeft: 6 }}>careercards.app</span></div>
+            <div style={{ display: 'flex', marginTop: 34, background: T.accent, color: T.accentInk, boxShadow: T.accentShadow, fontFamily: T.cond, fontSize: 22, letterSpacing: '0.1em', textTransform: 'uppercase', padding: '13px 22px', borderRadius: chrome ? 6 : 8, whiteSpace: 'nowrap' }}>{first ? `View ${first}\u2019s cards \u2192` : 'View the cards \u2192'}</div>
+            <div style={{ display: 'flex', marginTop: 14, fontFamily: CASLON, fontSize: 21, color: T.ink2, whiteSpace: 'nowrap' }}>Then make your own at <span style={{ color: chrome ? T.accent : T.red, marginLeft: 6 }}>careercards.app</span></div>
           </div> : null}
         </div>
-        {variant === 'band' ? <div style={{ position: 'absolute', left: 64, right: 64, bottom: 40, display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', borderTop: '2px solid #dcd6c8', paddingTop: 18 }}>
-          <div style={{ display: 'flex', fontFamily: CASLON, fontSize: 25, color: '#1c1b18' }}>{cta}</div>
-          <div style={{ display: 'flex', fontFamily: BARLOW, fontSize: 19, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#dc4432' }}>{slug ? 'careercards.app/u/' + slug : 'careercards.app'}</div>
+        {variant === 'band' ? <div style={{ position: 'absolute', left: 64, right: 64, bottom: 40, display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', borderTop: `2px solid ${T.rule}`, paddingTop: 18 }}>
+          <div style={{ display: 'flex', fontFamily: CASLON, fontSize: 25, color: T.ink }}>{cta}</div>
+          <div style={{ display: 'flex', fontFamily: T.cond, fontSize: 19, letterSpacing: '0.12em', textTransform: 'uppercase', color: chrome ? T.accent : T.red, textShadow: chrome ? '1.5px 1.5px 0 #f2c230' : 'none' }}>{slug ? 'careercards.app/u/' + slug : 'careercards.app'}</div>
         </div> : null}
         {variant === 'eyebrow' ? <div style={{ position: 'absolute', left: 64, bottom: 44, display: 'flex', alignItems: 'center' }}>
-          <svg width="26" height="26" viewBox="0 0 64 64"><path d={FLAG} fill="#dc4432" /></svg>
-          <div style={{ display: 'flex', marginLeft: 7, fontFamily: LILITA, fontSize: 24, letterSpacing: '0.02em' }}>CareerCards</div>
-          <div style={{ display: 'flex', marginLeft: 16, fontFamily: BARLOW, fontSize: 19, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#8a867b' }}>{slug ? 'careercards.app/u/' + slug : 'careercards.app'}</div>
+          <svg width="26" height="26" viewBox="0 0 64 64"><path d={FLAG} fill={T.red} /></svg>
+          <div style={{ display: 'flex', marginLeft: 7, fontFamily: LILITA, fontSize: 24, letterSpacing: '0.02em', color: chrome ? T.accent : T.ink }}>CareerCards</div>
+          <div style={{ display: 'flex', marginLeft: 16, fontFamily: T.cond, fontSize: 19, letterSpacing: '0.12em', textTransform: 'uppercase', color: T.muted }}>{slug ? 'careercards.app/u/' + slug : 'careercards.app'}</div>
         </div> : null}
         <div style={{ position: 'relative', display: 'flex', width: handW, height: handH, marginRight: 8, marginBottom: variant === 'button' ? 0 : 70 }}>
           {roleCards.map((r, i) => <div key={r.id} style={{ position: 'absolute', left: Math.round(lefts[i] * CW), bottom: 0, width: CW, height: CH, display: 'flex' }}>{chrome ? <ChromeRoleFront S={S} r={r} site={site} rot={rots[i]} /> : <RoleFront S={S} r={r} idx={firstIdx + i} site={site} rot={rots[i]} />}</div>)}
