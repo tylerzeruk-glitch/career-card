@@ -179,7 +179,7 @@ function Pack({ S, era, onEra }: { S: State; era: CardTheme; onEra: (e: CardThem
           );
         })}
         <div className="pack-card soon">
-          <div className="wax" aria-hidden="true"><span className="s">Series 3</span><span className="q">?</span><span className="t">More stocks<br />coming soon</span></div>
+          <div className="wax" role="img" aria-label="A sealed pack: more coming soon" />
           <div className="pack-cap"><b>Next up</b><span>More stocks are on the press. Every one works on every card in your pack.</span></div>
         </div>
       </div>
