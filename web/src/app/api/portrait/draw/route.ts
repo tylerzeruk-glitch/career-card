@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { supabaseServer } from '@/lib/supabase/server';
 import { prepareTake } from '@/lib/riso';
-import { HOUSE_PROMPT, IMAGE_MODEL, IMAGE_QUALITY, TAKES_PER_DAY, unlimited } from '@/lib/riso-prompt';
+import { IMAGE_MODEL, IMAGE_QUALITY, TAKES_PER_DAY, promptFor, unlimited, type PortraitStyle } from '@/lib/riso-prompt';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
@@ -10,9 +10,11 @@ const BUCKET = 'portraits';
 const MAX_PHOTO = 6 * 1024 * 1024;
 
 /**
- * One take: the signed-in player's headshot goes to OpenAI's image model with the house prompt, the
- * result is keyed, squared and filled (src/lib/riso.ts) and stored under the player's takes folder.
- * The browser asks for four of these at once. Needs OPENAI_API_KEY on the server.
+ * One take: the signed-in player's headshot goes to OpenAI's image model with the prompt for the asked
+ * style (the riso house style, or the 90s look for the Chrome 90s stock), the result is keyed, squared
+ * and filled (src/lib/riso.ts) and stored under the player's takes folder, named for its style so the
+ * pick route knows what to make of it. The browser asks for four of these at once. Needs OPENAI_API_KEY
+ * on the server.
  */
 export async function POST(req: NextRequest) {
   const key = process.env.OPENAI_API_KEY;
@@ -26,6 +28,7 @@ export async function POST(req: NextRequest) {
   const photo = form?.get('photo');
   if (!(photo instanceof File) || !photo.size) return NextResponse.json({ error: 'no-photo', message: 'Add a photo first.' }, { status: 400 });
   if (photo.size > MAX_PHOTO) return NextResponse.json({ error: 'too-big', message: 'That photo is too large.' }, { status: 413 });
+  const style: PortraitStyle = form?.get('style') === '90s' ? '90s' : 'riso';
 
   // the limit: takes are kept for a day (picking one does not clear them), so the folder is the count
   const folder = user.id + '/takes';
@@ -40,7 +43,7 @@ export async function POST(req: NextRequest) {
     const fd = new FormData();
     fd.append('model', IMAGE_MODEL);
     fd.append('image', photo, 'photo.jpg');
-    fd.append('prompt', HOUSE_PROMPT);
+    fd.append('prompt', promptFor(style));
     fd.append('n', '1');
     fd.append('size', '1024x1024');
     fd.append('quality', IMAGE_QUALITY);
@@ -62,7 +65,7 @@ export async function POST(req: NextRequest) {
 
   let take: Buffer;
   try { take = await prepareTake(Buffer.from(b64, 'base64')); } catch (e) { console.error(e); return NextResponse.json({ error: 'finish', message: 'Could not finish that take.' }, { status: 502 }); }
-  const path = folder + '/' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 6) + '.png';
+  const path = folder + '/' + (style === '90s' ? '90s-' : '') + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 6) + '.png';
   const { error } = await sb.storage.from(BUCKET).upload(path, take, { contentType: 'image/png', cacheControl: '3600' });
   if (error) return NextResponse.json({ error: 'store', message: 'Could not save that take.' }, { status: 500 });
   return NextResponse.json({ path, url: sb.storage.from(BUCKET).getPublicUrl(path).data.publicUrl, left: unlimited(user.id) ? 99 : TAKES_PER_DAY - madeToday - 1 });

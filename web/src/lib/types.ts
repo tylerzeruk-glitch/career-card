@@ -53,6 +53,8 @@ export type Profile = {
   looking?: boolean;
   /** The headshot the portrait is made from, kept so it can be redrawn later. For now the avatar is the photo itself. */
   photo?: string;
+  /** The portrait for the Chrome 90s cards: a built-in key (the example's 'george') or a stored image. Missing means those cards show `avatar`. */
+  avatar90?: string;
 };
 
 /** The card set's look. 'vintage' is the 1950s–70s stock the site started with; missing means vintage. */

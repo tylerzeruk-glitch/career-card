@@ -2,9 +2,9 @@
 import { useCallback, useEffect, useRef, useState, type CSSProperties } from 'react';
 import type { Profile, Role, State } from '@/lib/types';
 import { dur, fmt, fmtMonth, monthIndex, monthsBetween, nowYM, yearOf, yrs } from '@/lib/dates';
-import { codeFor, frameIndexFor, huntStats, initials, pairFor, pairIndexFor, runs, status, teamSize, type Run, themeClass, themeOf } from '@/lib/derived';
+import { codeFor, frameIndexFor, huntStats, initials, pairFor, runs, status, teamSize, type Run, themeClass, themeOf } from '@/lib/derived';
 import { fitCompany, fitName, fitTitle } from '@/lib/fit';
-import { avatarSrc, isPhoto } from '@/lib/avatar';
+import { portraitFor } from '@/lib/avatar';
 
 type Vars = CSSProperties & { '--a'?: string; '--b'?: string };
 const vars = (a: string, b: string): Vars => ({ '--a': a, '--b': b });
@@ -43,12 +43,13 @@ export function RoleCard({ S, r, idx, total, on, className, onClick }: { S: Stat
   const run = runs(S).find((x) => x.roles.some((z) => z.id === r.id));
   const seasons = run ? run.roles : [r];
   const bullets = r.bullets || [], skills = (r.skills || []).slice(0, 8), plate = themeOf(S) === 'chrome';
+  const pic = portraitFor(S, p, r.company);
   return (
     <div className={'card' + stockClass(S, r.company) + (on ? ' on' : '') + (className ? ' ' + className : '')} style={vars(a, b)} data-id={r.id} tabIndex={0} role="button" aria-label={r.company + ', ' + r.title} onClick={onClick}>
       <div className="inner">
         <div className="face front">
           <span className={"num" + (idx + 1 >= 10 ? " wide" : "")}>#{idx + 1}</span>
-          <div className="art"><div className="team" style={{ fontSize: (plate ? fitCompany(r.company) : Math.min(7.8, teamSize(r.company))) + 'cqw' }}>{r.company}</div>{p.avatar ? <span className="pic"><img className={isPhoto(p.avatar) ? 'photo' : undefined} src={avatarSrc(p.avatar, pairIndexFor(S, r.company))} alt="" /></span> : <span className="mono">{initials(p.name) || '?'}</span>}<span className="badge">{r.code || codeFor(r.title)}</span></div>
+          <div className="art"><div className="team" style={{ fontSize: (plate ? fitCompany(r.company) : Math.min(7.8, teamSize(r.company))) + 'cqw' }}>{r.company}</div>{pic ? <span className="pic"><img className={pic.photo ? 'photo' : undefined} src={pic.src} alt="" /></span> : <span className="mono">{initials(p.name) || '?'}</span>}<span className="badge">{r.code || codeFor(r.title)}</span></div>
           <Who name={p.name} plate={plate} />
           <Role title={r.title} plate={plate}><span className="yrs"> · {yearOf(r.start)} – {yearOf(r.end)}</span></Role>
         </div>

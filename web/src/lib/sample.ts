@@ -24,6 +24,7 @@ export function sampleState(): State {
       ],
       skills: [],
       avatar: 'george',
+      avatar90: 'george',
     },
     roles: [
       { id: uid(), company: 'Acme Corp', title: 'Marine Biologist', code: 'MB', start: y - 16 + '-06', end: y - 13 + '-03', location: 'Boston, MA', reason: 'Promoted', bullets: ['Tagged and tracked 300 sea turtles across two field seasons.', 'Pulled a Titleist from the blowhole of a beached whale. The sea was angry that day.'], skills: ['Field research', 'Whale rescue', 'Diving', 'Reporting'] },

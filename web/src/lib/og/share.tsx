@@ -1,7 +1,7 @@
 import { ImageResponse } from 'next/og';
 import type { State } from '../types';
-import { FRAMES, careerStats, codeFor, frameIndexFor, initials, looking, pairFor, pairIndexFor, roles, status, themeOf } from '../derived';
-import { avatarSrc } from '../avatar';
+import { FRAMES, careerStats, codeFor, frameIndexFor, initials, looking, pairFor, roles, status, themeOf } from '../derived';
+import { portraitFor } from '../avatar';
 import { fitCompany, fitName, fitTitle } from '../fit';
 
 /**
@@ -91,7 +91,7 @@ function Frame({ color }: { color: string }) {
 
 function RoleFront({ S, r, idx, site, rot }: { S: State; r: State['roles'][number]; idx: number; site: string; rot: number }) {
   const [a, b] = pairFor(S, r.company), p = S.profile, [fn, ln] = splitName(p.name);
-  const av = p.avatar ? avatarSrc(p.avatar, pairIndexFor(S, r.company)) : '';
+  const av = portraitFor(S, p, r.company)?.src || '';
   const src = av ? (av.startsWith('/') ? site + av : av) : '';
   const inner = CQ; // the art box is square so a bust never loses its head
   void idx; void fn;
@@ -187,7 +187,7 @@ function ChromeStock({ site, rot, frame = 'chrome.jpg', children }: { site: stri
 /** The Chrome 90s role card: the photo in the frame's panel, the company as the maker's mark, the position on a navy tag, the name on the plate. */
 function ChromeRoleFront({ S, r, site, rot }: { S: State; r: State['roles'][number]; site: string; rot: number }) {
   const p = S.profile;
-  const av = p.avatar ? avatarSrc(p.avatar, pairIndexFor(S, r.company)) : '';
+  const av = portraitFor(S, p, r.company)?.src || '';
   const src = av ? (av.startsWith('/') ? site + av : av) : '';
   const ph = FR.panelH;
   return (

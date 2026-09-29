@@ -8,8 +8,8 @@ type EduRow = { school: string; degree: string; start: string; end: string; inPr
 type CertRow = { name: string; issuer: string; year: string; inProgress: boolean };
 const IN_PROGRESS = /in progress|present/i;
 import { fmtShort, parseMonth, todayISO } from '@/lib/dates';
-import { FRAMES, PAIRS, TYPES, codeFor, hashIdx, huntStats, initials, looking, norm, pairFor, pairIndexFor, roles, slugify, sortedEvents, statusOf, themeOf, uid } from '@/lib/derived';
-import { avatarSrc, isPhoto, isSet } from '@/lib/avatar';
+import { FRAMES, PAIRS, TYPES, codeFor, hashIdx, huntStats, initials, looking, norm, pairFor, roles, slugify, sortedEvents, statusOf, themeOf, uid } from '@/lib/derived';
+import { isBust90, isPhoto, isSet, portraitFor } from '@/lib/avatar';
 import { LOCAL_SIDE, PORTRAIT_SIDE, dropPortrait, drawTake, isDataUrl, photoBlob, pickTake, squarePhoto, storePortrait, toDataUrl, type Take } from '@/lib/portrait';
 import { linkedinOn } from '@/lib/auth-providers';
 import { supabaseBrowser } from '@/lib/supabase/client';
@@ -227,6 +227,8 @@ const LinkedInMark = <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden
  * Profile → Player → Portrait. A headshot from a file, a drop, or the player's LinkedIn profile photo;
  * cropped square in the browser and saved as soon as it is picked: into the account's storage, or as a
  * small data URL inside the local card (it moves to the account on sign-in). Shown on every card.
+ * Drawing follows the card stock in use: the riso house style for the vintage stock (a set in every
+ * team's colours, `avatar`), the 90s look for Chrome 90s (one portrait, `avatar90`); each stock keeps its own.
  */
 function PortraitPicker() {
   const { S, update, user, sampleMode, loadExample } = useCard();
@@ -235,6 +237,10 @@ function PortraitPicker() {
   const p = S.profile;
   const first = roles(S)[0];
   const [a, b] = first ? pairFor(S, first.company) : PAIRS[0];
+  const chrome = themeOf(S) === 'chrome';
+  const shown = portraitFor(S, p, first ? first.company : '');
+  const drawn = chrome ? isBust90(p.avatar90 || '') : isSet(p.avatar || ''); // this stock's cards show a drawing (the built-in George aside)
+  const standIn = chrome && !p.avatar90 && !!p.avatar && isSet(p.avatar); // the riso set is filling in on the 90s cards
   const [busy, setBusy] = useState<'photo' | 'linkedin' | null>(null);
   const [msg, setMsg] = useState('');
   const [over, setOver] = useState(false);
@@ -248,7 +254,7 @@ function PortraitPicker() {
     try {
       const photo = await squarePhoto(src, user ? PORTRAIT_SIDE : LOCAL_SIDE);
       const url = user ? await storePortrait(user.id, photo) : await toDataUrl(photo);
-      update((s) => ({ ...s, profile: { ...s.profile, avatar: url, photo: url } }), keep);
+      update((s) => { const { avatar90: _n, ...rest } = s.profile; return { ...s, profile: { ...rest, avatar: url, photo: url } }; }, keep); // a new photo shows on every stock until it is drawn
       setTakes([]);
       setMsg('Saved. It shows on every card' + (user ? ' and on your page.' : '.'));
     } catch (e) { setMsg((e as Error).message || 'Could not use that photo.'); }
@@ -256,7 +262,7 @@ function PortraitPicker() {
   };
   const remove = () => {
     const stored = user && p.avatar && isPhoto(p.avatar) && !isDataUrl(p.avatar);
-    update((s) => { const { avatar: _a, photo: _p, ...rest } = s.profile; return { ...s, profile: rest }; }, keep);
+    update((s) => { const { avatar: _a, photo: _p, avatar90: _n, ...rest } = s.profile; return { ...s, profile: rest }; }, keep);
     if (stored) dropPortrait(user.id).catch(() => { /* the file is orphaned at worst */ });
     setMsg('Removed. Cards show your initials.');
   };
@@ -288,7 +294,7 @@ function PortraitPicker() {
     try { src = await photoBlob(p.photo); } catch (e) { setMsg((e as Error).message); setDealing(false); setTakes([]); return; }
     let firstErr = '', left = -1;
     await Promise.all([0, 1, 2, 3].map(async (i) => {
-      try { const t = await drawTake(src); left = Math.min(left < 0 ? t.left : left, t.left); setTakes((ts) => ts.map((x, j) => (j === i ? t : x))); }
+      try { const t = await drawTake(src, chrome ? '90s' : 'riso'); left = Math.min(left < 0 ? t.left : left, t.left); setTakes((ts) => ts.map((x, j) => (j === i ? t : x))); }
       catch (e) { firstErr ||= (e as Error).message; setTakes((ts) => ts.map((x, j) => (j === i ? undefined as unknown as null : x))); }
     }));
     setTakes((ts) => ts.filter((t) => t !== undefined));
@@ -299,12 +305,12 @@ function PortraitPicker() {
     setPicking(t.path); setMsg('');
     try {
       const avatar = await pickTake(t.path);
-      update((s) => ({ ...s, profile: { ...s.profile, avatar } }), keep);
-      setTakes([]); setMsg('Saved. It shows on every card, in each team\'s colors, and on your page.');
+      update((s) => ({ ...s, profile: chrome ? { ...s.profile, avatar90: avatar } : { ...s.profile, avatar } }), keep);
+      setTakes([]); setMsg(chrome ? 'Saved. It shows on your Chrome 90s cards and on your page.' : 'Saved. It shows on every card, in each team\'s colors, and on your page.');
     } catch (e) { setMsg((e as Error).message); }
     setPicking(null);
   };
-  const usePhoto = () => { if (p.photo) update((s) => ({ ...s, profile: { ...s.profile, avatar: s.profile.photo } }), keep); setMsg('Back to the photo.'); };
+  const usePhoto = () => { if (p.photo) update((s) => ({ ...s, profile: chrome ? { ...s.profile, avatar90: s.profile.photo } : { ...s.profile, avatar: s.profile.photo } }), keep); setMsg('Back to the photo.'); };
 
   // back from LinkedIn: the app left a note to carry on
   useEffect(() => {
@@ -317,9 +323,9 @@ function PortraitPicker() {
     <div className="field"><label>Portrait</label>
       <div className="portrait">
         <div className={'pv' + (over ? ' over' : '')} style={{ '--a': a, '--b': b } as React.CSSProperties} onDragOver={(e) => { e.preventDefault(); setOver(true); }} onDragLeave={() => setOver(false)} onDrop={(e) => { e.preventDefault(); setOver(false); const f = e.dataTransfer.files[0]; if (f) take(f); }}>
-          {p.avatar ? <img className={isPhoto(p.avatar) ? 'photo' : 'bust'} src={avatarSrc(p.avatar, first ? pairIndexFor(S, first.company) : 0)} alt="" /> : <span className="mono">{initials(p.name) || '?'}</span>}
+          {shown ? <img className={shown.photo ? 'photo' : 'bust'} src={shown.src} alt="" /> : <span className="mono">{initials(p.name) || '?'}</span>}
           {busy && <span className="wait">{busy === 'linkedin' ? 'Asking LinkedIn…' : 'Saving…'}</span>}
-          {sampleMode && p.avatar !== 'george' && !busy && <button type="button" className="btn sm reset" onClick={() => { loadExample(); setTakes([]); setMsg('George is back.'); }}>Reset George</button>}
+          {sampleMode && (p.avatar !== 'george' || p.avatar90 !== 'george') && !busy && <button type="button" className="btn sm reset" onClick={() => { loadExample(); setTakes([]); setMsg('George is back.'); }}>Reset George</button>}
         </div>
         <div className="pt-side">
           <div className="pt-actions">
@@ -329,12 +335,14 @@ function PortraitPicker() {
           </div>
           {user && p.photo && !takes.length && (
             <div className="pt-actions">
-              <button type="button" className="btn sm draw" disabled={!!busy || dealing} onClick={deal}>{isSet(p.avatar || '') ? 'Draw me again' : 'Draw me in the house style'}</button>
-              {isSet(p.avatar || '') && <button type="button" className="btn sm" onClick={usePhoto}>Use the photo instead</button>}
+              <button type="button" className="btn sm draw" disabled={!!busy || dealing} onClick={deal}>{drawn ? 'Draw me again' : chrome ? 'Draw me 90s style' : 'Draw me in the house style'}</button>
+              {drawn && <button type="button" className="btn sm" onClick={usePhoto}>Use the photo instead</button>}
             </div>
           )}
-          <span className="help">{msg || (user && p.photo ? 'The model redraws your photo as a riso print like George\'s: four takes, pick one. Each deal is a few cents, so there is a daily limit.' : 'A headshot works best: face the camera, plain background. Drop one on the square or choose a file; it is cropped to the center.')}</span>
-          {!user && <span className="help nudge"><b>Sign in</b> and your photo gets drawn in the house style, like George: a riso portrait in every team&apos;s colors. <a href="/login">Sign in</a></span>}
+          <span className="help">{msg || (user && p.photo
+            ? (standIn ? 'Your riso portrait is standing in on these cards. ' : '') + (chrome ? 'The model redraws your photo as 90s trading-card art like George\'s: brush ink, halftone dots, shades. Four takes, pick one.' : 'The model redraws your photo as a riso print like George\'s: four takes, pick one.') + ' Each deal is a few cents, so there is a daily limit.'
+            : 'A headshot works best: face the camera, plain background. Drop one on the square or choose a file; it is cropped to the center.')}</span>
+          {!user && <span className="help nudge"><b>Sign in</b> and your photo gets drawn like George&apos;s: {chrome ? '90s trading-card art for this stock' : 'a riso portrait in every team\'s colors'}. <a href="/login">Sign in</a></span>}
         </div>
       </div>
       {takes.length > 0 && (

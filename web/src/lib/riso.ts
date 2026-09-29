@@ -180,6 +180,11 @@ export async function prepareTake(png: Buffer): Promise<Buffer> {
   return encode(canvas, TAKE_SIDE);
 }
 
+/** A stored 90s take to the one card portrait: the frame carries the team colours, so the shirt stays as drawn. */
+export async function single(takePng: Buffer): Promise<Buffer> {
+  return encode(await decode(takePng), SET_SIDE);
+}
+
 /** A stored take to the card set: one PNG per team colour pair, in PAIRS order. */
 export async function teamSet(takePng: Buffer): Promise<Buffer[]> {
   const r = await decode(takePng);

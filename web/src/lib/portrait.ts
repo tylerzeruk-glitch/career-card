@@ -1,5 +1,6 @@
 'use client';
 import { supabaseBrowser } from './supabase/client';
+import type { PortraitStyle } from './riso-prompt';
 
 /** The stored headshot: a centre square, this many pixels a side. */
 export const PORTRAIT_SIDE = 640;
@@ -44,22 +45,22 @@ export async function storePortrait(userId: string, photo: Blob): Promise<string
 /** Everything stored for the player: the photo and the drawn set. */
 export async function dropPortrait(userId: string) {
   const sb = supabaseBrowser(); if (!sb) return;
-  await sb.storage.from(BUCKET).remove([path(userId), ...Array.from({ length: 10 }, (_, i) => userId + '/riso-' + i + '.png')]);
+  await sb.storage.from(BUCKET).remove([path(userId), userId + '/90s.png', ...Array.from({ length: 10 }, (_, i) => userId + '/riso-' + i + '.png')]);
 }
 
 export type Take = { path: string; url: string };
 type Fail = { error?: string; message?: string };
 
-/** One take from the image model, via the server. Throws with a message the picker can show. */
-export async function drawTake(photo: Blob): Promise<Take & { left: number }> {
-  const fd = new FormData(); fd.append('photo', photo, 'photo.jpg');
+/** One take from the image model in the given style, via the server. Throws with a message the picker can show. */
+export async function drawTake(photo: Blob, style: PortraitStyle): Promise<Take & { left: number }> {
+  const fd = new FormData(); fd.append('photo', photo, 'photo.jpg'); fd.append('style', style);
   const r = await fetch('/api/portrait/draw', { method: 'POST', body: fd });
   const body = (await r.json().catch(() => ({}))) as (Take & { left: number }) | Fail;
   if (!r.ok) throw Object.assign(new Error((body as Fail).message || 'Could not draw that.'), { code: (body as Fail).error });
   return body as Take & { left: number };
 }
 
-/** The chosen take becomes the card set; returns the avatar address to save. */
+/** The chosen take becomes the card portrait (the set, or the one 90s PNG); returns the avatar address to save. */
 export async function pickTake(path: string): Promise<string> {
   const r = await fetch('/api/portrait/pick', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ path }) });
   const body = (await r.json().catch(() => ({}))) as { avatar?: string } & Fail;
