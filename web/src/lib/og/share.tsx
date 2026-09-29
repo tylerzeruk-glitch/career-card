@@ -152,11 +152,11 @@ const DBG = process.env.OG_DEBUG ? { background: 'rgba(0,255,0,.45)', outline: '
 
 /** The company as the maker's mark over the frame's top-left corner: cream letters, a black keyline and a red offset, built from layered copies. */
 function ChromeMark({ text, color }: { text: string; color: string }) {
-  const size = qc(fitCompany(text)), w = Math.round(CW * 0.76), k = 1.8, ring = [[-k, 0], [k, 0], [0, -k], [0, k], [-k, -k], [k, k], [-k, k], [k, -k]];
-  const base = { position: 'absolute' as const, left: 0, top: 0, width: w, display: 'flex', fontFamily: LILITA, fontSize: size, letterSpacing: '0.01em', whiteSpace: 'nowrap' as const, overflow: 'hidden' as const };
+  const size = qc(fitCompany(text)), w = Math.round(CW * 0.76), k = 1.3, ring = [[-k, 0], [k, 0], [0, -k], [0, k], [-k, -k], [k, k], [-k, k], [k, -k]];
+  const base = { position: 'absolute' as const, left: 0, top: 0, width: w, display: 'flex', fontFamily: LILITA, fontSize: size, lineHeight: 1, letterSpacing: '0.01em', whiteSpace: 'nowrap' as const, overflow: 'hidden' as const };
   return (
     <div style={{ position: 'absolute', left: Math.round(CW * 0.063), top: Math.round(CH * 0.05), width: w, height: size + 8, display: 'flex', transform: turnAbout(-4, w, size + 8, 0, size + 8) + ' skewX(-10deg)' }}>
-      {[[0, 0], ...ring].map(([x, y], i) => <div key={'s' + i} style={{ ...base, left: 3.5 + x, top: 4 + y, color: RED }}>{text}</div>)}
+      {[[0, 0], ...ring].map(([x, y], i) => <div key={'s' + i} style={{ ...base, left: 2.6 + x, top: 3 + y, color: RED }}>{text}</div>)}
       {ring.map(([x, y], i) => <div key={i} style={{ ...base, left: x, top: y, color: '#1c1b2a' }}>{text}</div>)}
       <div style={{ ...base, color }}>{text}</div>
     </div>
@@ -168,8 +168,8 @@ function ChromePlate({ name }: { name: string }) {
   const { fn, ln, scale } = fitName(name.replace(/,.*$/, ''));
   return (
     <div style={{ position: 'absolute', left: FR.plateL, top: FR.plateT, width: FR.plateW, height: FR.plateH, display: 'flex', alignItems: 'center', paddingLeft: qc(1), transform: turnAbout(-6, FR.plateW, FR.plateH, 0, FR.plateH / 2), whiteSpace: 'nowrap', overflow: 'hidden', ...DBG }}>
-      {fn ? <div style={{ display: 'flex', fontFamily: LILITA, fontSize: qc(4.6 * scale), letterSpacing: '0.02em', textTransform: 'uppercase', color: '#ffe2a8', textShadow: '1px 1px 0 #1c1b18', marginRight: qc(1.8) }}>{fn}</div> : null}
-      <div style={{ display: 'flex', fontFamily: LILITA, fontSize: qc(6.8 * scale), letterSpacing: '0.02em', textTransform: 'uppercase', color: '#fff', textShadow: '1.5px 1.5px 0 #1c1b18' }}>{ln}</div>
+      {fn ? <div style={{ display: 'flex', fontFamily: LILITA, fontSize: qc(4.6 * scale), lineHeight: 1, letterSpacing: '0.02em', textTransform: 'uppercase', color: '#ffe2a8', textShadow: '1px 1px 0 #1c1b18', marginRight: qc(1.8) }}>{fn}</div> : null}
+      <div style={{ display: 'flex', fontFamily: LILITA, fontSize: qc(6.8 * scale), lineHeight: 1, letterSpacing: '0.02em', textTransform: 'uppercase', color: '#fff', textShadow: '1.5px 1.5px 0 #1c1b18' }}>{ln}</div>
     </div>
   );
 }
@@ -177,10 +177,10 @@ function ChromePlate({ name }: { name: string }) {
 /** The position on the yellow plate under the name, abbreviated when it would not fit. */
 function ChromeRole({ title, color }: { title: string; color: string }) {
   const { text, size } = fitTitle(title), k = 1, ring = [[-k, 0], [k, 0], [0, -k], [0, k], [-k, -k], [k, k], [-k, k], [k, -k]];
-  const base = { position: 'absolute' as const, left: 0, top: 0, width: FR.roleW - qc(2), display: 'flex', fontFamily: LILITA, fontSize: qc(size), letterSpacing: '0.04em', textTransform: 'uppercase' as const, whiteSpace: 'nowrap' as const, overflow: 'hidden' as const };
+  const base = { position: 'absolute' as const, left: 0, top: 0, width: FR.roleW - qc(2), display: 'flex', fontFamily: LILITA, fontSize: qc(size), lineHeight: 1, letterSpacing: '0.04em', textTransform: 'uppercase' as const, whiteSpace: 'nowrap' as const, overflow: 'hidden' as const };
   return (
     <div style={{ position: 'absolute', left: FR.roleL, top: FR.roleT, width: FR.roleW, height: FR.roleH, display: 'flex', transform: turnAbout(-5.8, FR.roleW, FR.roleH, 0, FR.roleH / 2), ...DBG }}>
-      <div style={{ position: 'relative', display: 'flex', left: qc(2), top: Math.round((FR.roleH - qc(size)) / 2), width: FR.roleW - qc(2), height: qc(size) }}>
+      <div style={{ position: 'relative', display: 'flex', left: qc(2), top: Math.round((FR.roleH - qc(size)) / 2 - qc(1.2)), width: FR.roleW - qc(2), height: qc(size) }}>
         {[[0, 0], ...ring].map(([x, y], i) => <div key={'s' + i} style={{ ...base, left: 1.5 + x, top: 2 + y, color: '#1c1b18' }}>{text}</div>)}
         {ring.map(([x, y], i) => <div key={i} style={{ ...base, left: x, top: y, color: '#fff' }}>{text}</div>)}
         <div style={{ ...base, color }}>{text}</div>
