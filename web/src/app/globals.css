@@ -693,14 +693,14 @@ html:has([data-style="chrome"]) body{background:#fff linear-gradient(180deg,rgba
 [data-style="chrome"] .actions .secondary .btn{font:700 13px var(--cond);letter-spacing:.12em;text-transform:uppercase;color:var(--navy);text-shadow:1.5px 1.5px 0 var(--gold)} /* the Add button's gold offset, as a text shadow */
 [data-style="chrome"] .actions .secondary .btn:hover{color:var(--red);background:transparent}
 [data-style="chrome"] .toggle button{color:var(--navy)}
-/* the display-by radios as a second small toggle in the same dress, the label in navy */
-[data-style="chrome"] .gt-wrap{gap:6px}
+/* the display-by radios: the same label-and-dot control, in the theme's dress. The dots are keylined navy discs with the gold shadow; the chosen one fills navy and its word takes the gold text shadow of the header links */
+[data-style="chrome"] .gt-wrap{gap:4px}
 [data-style="chrome"] .gt-label{color:var(--navy);font-weight:700}
-[data-style="chrome"] .gt{gap:0;border:1.5px solid var(--navy);border-radius:999px;background:#fff;box-shadow:2px 2px 0 var(--gold);overflow:hidden;font-size:11.5px}
-[data-style="chrome"] .gt button{padding:7px 13px;color:var(--navy)}
-[data-style="chrome"] .gt button:hover{color:var(--red)}
-[data-style="chrome"] .gt button.on{background:var(--navy);color:#fff}
-[data-style="chrome"] .gt button i{display:none}
+[data-style="chrome"] .gt button{color:var(--navy);opacity:.72}
+[data-style="chrome"] .gt button:hover{color:var(--navy);opacity:1}
+[data-style="chrome"] .gt button.on{color:var(--navy);opacity:1;text-shadow:1.5px 1.5px 0 var(--gold)}
+[data-style="chrome"] .gt button i{width:14px;height:14px;border:1.5px solid var(--navy);background:#fff;box-shadow:1.5px 1.5px 0 var(--gold)}
+[data-style="chrome"] .gt button.on i{background:var(--navy);border-color:var(--navy);box-shadow:1.5px 1.5px 0 var(--gold)}
 [data-style="chrome"] .toggle button.on{background:var(--navy);color:#fff}
 [data-style="chrome"] .row h2,[data-style="chrome"] .gh{font-style:italic;letter-spacing:.16em;color:var(--navy)}
 [data-style="chrome"] .fold::before,[data-style="chrome"] .row::after,[data-style="chrome"] .gh::after,[data-style="chrome"] .tl::before,[data-style="chrome"] .tl::after{height:6px;background:var(--perf)}
