@@ -68,13 +68,14 @@ a.btn{text-decoration:none;display:inline-block}
 .menu .m-only{display:none}
 
 /* header */
-.topbar{display:flex;flex-direction:column;align-items:center;gap:16px;padding-block:22px 6px;flex:none}
-.brand{display:flex;justify-content:center;align-items:flex-start;gap:14px;flex-wrap:wrap;text-align:center}
-.namerow{display:flex;justify-content:center;align-items:center;gap:16px;flex-wrap:wrap}
+/* the header keeps its two sides, the name and stats left and the actions right; everything under it is centred */
+.topbar{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-block:22px 6px;flex:none}
+.brand{display:flex;align-items:flex-start;gap:14px;flex-wrap:wrap}
+.namerow{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
 .brand .pill{margin:0}
 .brand h1{font:400 30px/1 var(--riso);letter-spacing:.02em}
 .sub{font:400 12.5px/1.5 var(--serif);color:var(--ink-2);letter-spacing:.02em;margin-top:2px}
-.line{display:flex;justify-content:center;gap:14px;align-items:center;margin-top:6px;font:700 10.5px/1 var(--cond);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.line{display:flex;gap:14px;align-items:center;margin-top:6px;font:700 10.5px/1 var(--cond);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
 .line span{display:inline-flex;align-items:center;gap:6px}
 .line b{display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 6px;border-radius:999px;background:var(--ink);color:var(--bg);font:700 11.5px/1 var(--cond);letter-spacing:0}
 .pill{display:inline-flex;align-items:center;gap:8px;font:700 12px/1 var(--cond);letter-spacing:.14em;text-transform:uppercase;padding:7px 11px;border-radius:4px;background:var(--red);color:#fff;transform:rotate(-2deg);white-space:nowrap}
@@ -82,7 +83,7 @@ a.btn{text-decoration:none;display:inline-block}
 /* the free-agent pill carries the pennant in the lettering's white */
 .pill .flag{color:#fff;margin:-2px 0 -2px -2px;flex:none}
 .pill.active{background:var(--navy);transform:none}
-.actions{display:flex;justify-content:center;gap:2px;flex-wrap:wrap;align-items:center}
+.actions{display:flex;gap:2px;flex-wrap:wrap;align-items:center}
 .topbar .actions .stylepick{margin:0 6px} /* air between the style button and the menu */
 .btn.with-icon{display:inline-flex;align-items:center;gap:6px}
 .btn.with-icon svg{width:18px;height:18px;flex:none}
@@ -583,7 +584,7 @@ kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--hair);border-r
 /* phones: the name on its own line, then one row with the view switch on the left and the actions on the right;
    Import, Profile, Share and Sign in fold into the menu */
 @media (max-width:700px){
-  .topbar{align-items:stretch;gap:0;padding-block:14px 6px}
+  .topbar{flex-direction:column;align-items:stretch;gap:0;padding-block:14px 6px}
   .brand h1{font-size:26px}
   .topbar .actions{display:flex;align-items:center;gap:6px;flex-wrap:nowrap;width:100%;margin-top:14px}
   .topbar .actions .toggle{margin-right:auto}
