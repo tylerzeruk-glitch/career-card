@@ -158,8 +158,10 @@
   transform:rotate(-4deg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 /* the number: a navy circle at the top right, over the stripes, keylined and shadowed like the company mark, wide enough for two digits */
 .card.t-chrome .num{top:2.6%;right:4.2%;width:11.5cqw;height:11.5cqw;padding:0;display:flex;align-items:center;justify-content:center;border:.6cqw solid #fff;border-radius:50%;background:var(--navy);color:#fff;
-  font:700 5cqw/1 "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.04em;z-index:4;box-shadow:none;filter:drop-shadow(.55cqw .65cqw 0 var(--gold))} /* navy throws gold, as on the page */
-.card.t-chrome .num.wide{font-size:4.6cqw;letter-spacing:.02em}
+  font:400 5.2cqw/1 "Lilita One","Arial Black",Impact,sans-serif;letter-spacing:.02em;text-shadow:.3cqw .3cqw 0 #1c1b2a;z-index:4;box-shadow:none;filter:drop-shadow(.55cqw .65cqw 0 var(--gold))} /* the plates' lettering; navy throws gold, as on the page */
+.card.t-chrome .num.wide{font-size:4.4cqw;letter-spacing:0}
+/* a stack's range (#1–2) is too long for the circle: the circle stretches into a pill */
+.card.t-chrome.summary .num{width:auto;min-width:11.5cqw;padding:0 2.4cqw;border-radius:999px;white-space:nowrap;font-size:4.8cqw}
 /* the frame's baseball stands where the badge was */
 .card.t-chrome .badge{display:none}
 /* the name on the frame's red plate and the position on the yellow one below it; both lean up to the right. --ns and --rs come from the fit (src/lib/fit.ts): a scale for the name, a size in cqw for the position */

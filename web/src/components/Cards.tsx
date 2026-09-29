@@ -107,16 +107,17 @@ export function FreeCard({ S, on, share, className, onClick, onTimeline }: { S: 
   );
 }
 
-/** The top card of a team stack. */
+/** The top card of a team stack. On the Chrome 90s stock the panel carries the portrait, as on a role card; the number pill gives the count. */
 export function SummaryCard({ S, run, from, to }: { S: State; run: Run; from: number; to: number }) {
   const [a, b] = pairFor(S, run.company);
   const first = run.roles[0], last = run.roles[run.roles.length - 1];
+  const pic = themeOf(S) === 'chrome' ? portraitFor(S, S.profile, run.company) : null;
   return (
     <div className={'card summary top' + stockClass(S, run.company)} style={vars(a, b)} tabIndex={0} role="button" aria-label={run.company + ' stack'}>
       <div className="inner">
         <div className="face front">
           <span className="num">#{from}–{to}</span>
-          <div className="art"><div className="team" style={{ fontSize: (themeOf(S) === 'chrome' ? fitCompany(run.company) : Math.min(7.8, teamSize(run.company))) + 'cqw' }}>{run.company}</div><span className="mono">{run.roles.length}<small>{run.roles.length === 1 ? 'role' : 'roles'}</small></span><span className="badge">{last.code || codeFor(last.title)}</span></div>
+          <div className="art"><div className="team" style={{ fontSize: (themeOf(S) === 'chrome' ? fitCompany(run.company) : Math.min(7.8, teamSize(run.company))) + 'cqw' }}>{run.company}</div>{pic ? <span className="pic"><img className={pic.photo ? 'photo' : undefined} src={pic.src} alt="" /></span> : <span className="mono">{run.roles.length}<small>{run.roles.length === 1 ? 'role' : 'roles'}</small></span>}<span className="badge">{last.code || codeFor(last.title)}</span></div>
           <Who name={S.profile.name} plate={themeOf(S) === 'chrome'} />
           <div className="role">{yearOf(first.start)} – {yearOf(last.end)} · {dur(monthIndex(last.end || nowYM()) - monthIndex(first.start) + 1)}</div>
         </div>
