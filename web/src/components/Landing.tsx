@@ -147,9 +147,9 @@ export function Landing({ tryHref = '/app?example', signInHref = '/login', onTry
 }
 
 /**
- * One career, several stocks: a small pile of the example's cards per stock, the top one straight and the one
- * that picks, and a sealed pack for what is next. Picking deals the whole page in that stock (the hero hand,
- * the buttons, the paper).
+ * One career, several stocks: one of the example's cards per stock, all the same size and leaning the same way,
+ * and a sealed pack for what is next. Picking a card deals the whole page in that stock (the hero hand, the
+ * buttons, the paper).
  */
 function Pack({ S, era, onEra }: { S: State; era: CardTheme; onEra: (e: CardTheme) => void }) {
   return (
@@ -167,9 +167,7 @@ function Pack({ S, era, onEra }: { S: State; era: CardTheme; onEra: (e: CardThem
           return (
             <div key={e.key} className={'pack-card' + (era === e.key ? ' on' : '') + (e.key === 'chrome' ? ' era-chrome' : '')}>
               <div className="pile">
-                <RoleCard S={T} r={S.roles[0]} idx={0} total={S.roles.length} className="p1 under" />
-                <RoleCard S={T} r={S.roles[4]} idx={4} total={S.roles.length} className="p2 under" />
-                <RoleCard S={T} r={S.roles[2]} idx={2} total={S.roles.length} className="p3" onClick={pick} />
+                <RoleCard S={T} r={S.roles[2]} idx={2} total={S.roles.length} onClick={pick} />
               </div>
               <div className="pack-cap"><b>{e.name}</b><span>{e.note}</span><em>{era === e.key ? 'On the table' : 'Click to deal the page in it'}</em></div>
             </div>
