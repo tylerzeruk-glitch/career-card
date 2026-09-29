@@ -139,7 +139,7 @@ function RoleForm({ roleId }: { roleId: string | null }) {
         <div className="field"><label htmlFor="r-skills">Skills</label><TagInput id="r-skills" value={skills} onChange={setSkills} placeholder="Type a skill and press Enter" /></div>
         <div className="field"><label>Team colors</label>
           {themeOf(S) === 'chrome'
-            ? <div className="swatches">{FRAMES.map((f, i) => <button type="button" key={f.key} className={'sw frame f' + i + (i === curSwatch % FRAMES.length ? ' on' : '')} title={f.name} aria-label={f.name + ' frame'} onClick={() => setSwatch(i)} />)}</div>
+            ? <div className="swatches">{FRAMES.map((f, i) => <button type="button" key={f.key} className={'sw' + (i === curSwatch % FRAMES.length ? ' on' : '')} style={{ '--a': f.colors[0], '--b': f.colors[1] } as React.CSSProperties} title={f.name} aria-label={f.name + ' frame'} onClick={() => setSwatch(i)} />)}</div>
             : <div className="swatches">{PAIRS.map((p, i) => <button type="button" key={i} className={'sw' + (i === curSwatch ? ' on' : '')} style={{ '--a': p[0], '--b': p[1] } as React.CSSProperties} title={'Color pair ' + (i + 1)} onClick={() => setSwatch(i)} />)}</div>}
           <span className="help">Shared by every role at this company.</span>
         </div>
