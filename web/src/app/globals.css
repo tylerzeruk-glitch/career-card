@@ -723,6 +723,18 @@ html:has([data-style="chrome"]) body{background:#fff linear-gradient(180deg,rgba
 [data-style="chrome"] .flipme{color:var(--muted)}
 [data-style="chrome"] .fbtn{background:#fff;color:var(--navy)}
 [data-style="chrome"] .note-inline{background:rgba(23,58,138,.08);color:var(--navy)}
+/* the form's tags (open-to roles, skills): the hover tint is near white on this stock, so they take a navy wash and keyline to stand off the paper */
+[data-style="chrome"] .tag{background:rgba(23,58,138,.09);color:var(--navy);box-shadow:inset 0 0 0 1px rgba(23,58,138,.28)}
+[data-style="chrome"] .tag button{background:var(--navy);color:#fff}
+/* the portrait square and the take boxes as panels from the frame: square, cream, a navy keyline throwing gold */
+[data-style="chrome"] .portrait .pv,[data-style="chrome"] .takes .take{border-radius:0;background:#fdfdf1;border:2px solid var(--navy);box-shadow:3px 3px 0 var(--gold)}
+[data-style="chrome"] .portrait .pv .mono{color:var(--navy);font:400 40px/1 "Lilita One","Arial Black",Impact,sans-serif;letter-spacing:0}
+[data-style="chrome"] .takes .take .wait{color:var(--navy);font:400 12.5px "Lilita One","Arial Black",Impact,sans-serif;letter-spacing:.06em}
+[data-style="chrome"] .portrait .pv .wait{background:rgba(253,253,241,.7);color:var(--navy)}
+[data-style="chrome"] .portrait .pt-actions .btn.draw{background:var(--navy);color:#fff;box-shadow:2px 2px 0 var(--gold)}
+[data-style="chrome"] .portrait .pt-actions .btn.draw:hover{opacity:1;filter:brightness(1.12)}
+[data-style="chrome"] .takes .take .use,[data-style="chrome"] .portrait .pv .reset{border:1.5px solid var(--navy);color:var(--navy);background:#fff;border-radius:6px;box-shadow:2px 2px 0 var(--gold)}
+[data-style="chrome"] .takes .take .use:hover,[data-style="chrome"] .portrait .pv .reset:hover{background:var(--navy);color:#fff}
 [data-style="chrome"] .overlay.flash{background:#e6f7f2;color:#0b5b4a;border:1px solid #9fded0}
 
 /* ===== the card style picker in the header: a ringed button with a chip of the current stock; the popover holds a miniature of the player's own card in each look ===== */
