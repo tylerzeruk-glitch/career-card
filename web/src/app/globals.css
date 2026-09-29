@@ -718,6 +718,7 @@ html:has([data-style="chrome"]) body{background:#fff linear-gradient(180deg,rgba
 [data-style="chrome"] .pagebox{background:rgba(23,58,138,.07)}
 [data-style="chrome"] .row.private{background:rgba(255,79,163,.06)}
 [data-style="chrome"] .wordmark{color:var(--navy)}
+[data-style="chrome"].pub .mast::after{background:var(--perf);height:6px} /* the public page's separator takes the wave too */
 [data-style="chrome"] .wordmark .flag{color:var(--red)}
 [data-style="chrome"] .menu summary.more{border-color:var(--navy)}
 [data-style="chrome"] .flipme{color:var(--muted)}

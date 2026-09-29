@@ -36,8 +36,9 @@ export async function loadCloud(userId: string): Promise<CloudCard | null> {
 
 export async function saveCloud(userId: string, state: State, meta?: { slug?: string | null; visibility?: Visibility }) {
   const sb = supabaseBrowser(); if (!sb) return;
+  // the career and its look go out with the public page; the job hunt and the app's own settings stay in the private column
   const { events, settings, ...career } = state;
-  const row: Record<string, unknown> = { user_id: userId, data: career, hunt: { events, settings }, updated_at: new Date().toISOString() };
+  const row: Record<string, unknown> = { user_id: userId, data: { ...career, settings: { theme: settings.theme } }, hunt: { events, settings }, updated_at: new Date().toISOString() };
   if (meta && 'slug' in meta) row.slug = meta.slug || null;
   if (meta && meta.visibility) row.visibility = meta.visibility;
   const { error } = await sb.from('cards').upsert(row, { onConflict: 'user_id' });
