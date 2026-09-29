@@ -134,16 +134,16 @@ const FR = { panelL: Math.round(CW * 0.082), panelT: Math.round(CH * 0.0875), pa
   roleL: Math.round(CW * 0.076), roleT: Math.round(CH * 0.866), roleW: Math.round(CW * 0.62), roleH: Math.round(CH * 0.081) };
 /** The plates' top edge crosses the panel's bottom-right corner: the panel's content is clipped to it. */
 const PANEL_CLIP = `polygon(0 0, 100% 0, 100% ${Math.round(FR.panelH * 0.923)}px, ${Math.round(FR.panelW * 0.178)}px 100%, 0 100%)`;
-const NAVY = '#173a8a', RED = '#e5322d';
+const NAVY = '#173a8a', RED = '#e5322d', CREAM = '#fbf3d8';
 
-/** The company as the maker's mark over the frame's top-left corner: red letters, a white keyline and a dark offset, built from layered copies. */
+/** The company as the maker's mark over the frame's top-left corner: cream letters, a black keyline and a red offset, built from layered copies. */
 function ChromeMark({ text, color }: { text: string; color: string }) {
   const size = q(fitCompany(text)), w = Math.round(CW * 0.76), k = 1.8, ring = [[-k, 0], [k, 0], [0, -k], [0, k], [-k, -k], [k, k], [-k, k], [k, -k]];
   const base = { position: 'absolute' as const, left: 0, top: 0, width: w, display: 'flex', fontFamily: LILITA, fontSize: size, letterSpacing: '0.01em', whiteSpace: 'nowrap' as const, overflow: 'hidden' as const };
   return (
     <div style={{ position: 'absolute', left: Math.round(CW * 0.063), top: Math.round(CH * 0.05), width: w, height: size + 8, display: 'flex', transform: 'rotate(-4deg)', transformOrigin: '0 100%' }}>
-      {[[0, 0], ...ring].map(([x, y], i) => <div key={'s' + i} style={{ ...base, left: 3.5 + x, top: 4 + y, color: '#1c1b18' }}>{text}</div>)}
-      {ring.map(([x, y], i) => <div key={i} style={{ ...base, left: x, top: y, color: '#fff' }}>{text}</div>)}
+      {[[0, 0], ...ring].map(([x, y], i) => <div key={'s' + i} style={{ ...base, left: 3.5 + x, top: 4 + y, color: RED }}>{text}</div>)}
+      {ring.map(([x, y], i) => <div key={i} style={{ ...base, left: x, top: y, color: '#1c1b2a' }}>{text}</div>)}
       <div style={{ ...base, color }}>{text}</div>
     </div>
   );
@@ -196,7 +196,7 @@ function ChromeRoleFront({ S, r, site, rot }: { S: State; r: State['roles'][numb
         {src ? <div style={{ width: ph, height: ph, backgroundImage: `url(${src})`, backgroundSize: `${ph}px ${ph}px`, backgroundRepeat: 'no-repeat' }} />
           : <div style={{ display: 'flex', fontFamily: BARLOW, fontSize: q(34), letterSpacing: '-0.02em', color: NAVY, marginBottom: q(30) }}>{initials(p.name) || '?'}</div>}
       </div>
-      <ChromeMark text={r.company} color={RED} />
+      <ChromeMark text={r.company} color={CREAM} />
       <ChromePlate name={p.name} />
       <ChromeRole title={r.title} color={NAVY} />
     </ChromeStock>
@@ -212,7 +212,7 @@ function ChromeFreeFront({ S, site, rot }: { S: State; site: string; rot: number
         <div style={{ display: 'flex', fontFamily: BARLOW, fontSize: q(4.6), letterSpacing: '0.2em', textTransform: 'uppercase', color: RED, marginBottom: q(3) }}>Open to</div>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', fontFamily: LILITA, fontSize: q(7.5), lineHeight: 1.15, textTransform: 'uppercase', textAlign: 'center' }}>{(open.length ? open : ['Offers']).map((t, i) => <div key={i} style={{ display: 'flex' }}>{t}</div>)}</div>
       </div>
-      <ChromeMark text="Free agent" color={RED} />
+      <ChromeMark text="Free agent" color={CREAM} />
       <ChromePlate name={p.name} />
       <ChromeRole title="Free agent" color={RED} />
     </ChromeStock>

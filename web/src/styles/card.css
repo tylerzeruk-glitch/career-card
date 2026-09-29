@@ -144,11 +144,11 @@
 /* the photo stops at the plates' top edge, which crosses the panel's bottom-right corner */
 .card.t-chrome .art .pic{border-radius:0;inset:0;overflow:hidden;clip-path:polygon(0 0,100% 0,100% 92.3%,17.8% 100%,0 100%)}
 .card.t-chrome .mono{color:#2b3e7a}
-/* the company as the logo over the top-left corner, where the maker's mark goes: red bubbly letters with a white keyline */
+/* the company as the logo over the top-left corner, where the maker's mark goes: cream bubbly letters with a black keyline and a red offset, as the Topps mark was printed */
 .card.t-chrome .team{position:absolute;left:-2.4%;top:-6.9%;bottom:auto;height:auto;line-height:1;max-width:80%;transform-origin:0 100%;background:transparent;clip-path:none;border-radius:0;z-index:4;
   padding:.14em .5em .24em .14em;margin:-.14em -.5em -.24em -.14em; /* room inside the clipping box for the keyline, the italic overhang and the shadow */
-  font:400 11cqw/1 "Lilita One","Arial Black",Impact,sans-serif;font-style:italic;letter-spacing:.01em;text-transform:none;color:var(--red);
-  -webkit-text-stroke:.7cqw #fff;paint-order:stroke fill;text-shadow:none;filter:drop-shadow(.55cqw .65cqw 0 #1c1b18); /* one hard shadow of the whole keylined shape, not of the letters alone */
+  font:400 11cqw/1 "Lilita One","Arial Black",Impact,sans-serif;font-style:italic;letter-spacing:.01em;text-transform:none;color:#fbf3d8;
+  -webkit-text-stroke:.7cqw #1c1b2a;paint-order:stroke fill;text-shadow:none;filter:drop-shadow(.55cqw .65cqw 0 var(--red)); /* one hard shadow of the whole keylined shape, not of the letters alone */
   transform:rotate(-4deg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 /* the number: a navy circle at the top right, over the stripes, keylined and shadowed like the company mark, wide enough for two digits */
 .card.t-chrome .num{top:2.6%;right:4.2%;width:11.5cqw;height:11.5cqw;padding:0;display:flex;align-items:center;justify-content:center;border:.6cqw solid #fff;border-radius:50%;background:var(--navy);color:#fff;
@@ -170,8 +170,8 @@
 .card.t-chrome .back{border-radius:0;border:0;color:#1c1b18;padding:15% 10.5% 29%;background:var(--frame-back) center/100% 100% no-repeat}
 .card.t-chrome .hdr{position:static;background:transparent;color:#1c1b18;margin:0 0 2.5%;padding:0;border-radius:0;box-shadow:none;text-align:left}
 .card.t-chrome .hdr .t{position:absolute;left:6%;top:2.6%;z-index:4;max-width:84%;line-height:1;padding:.14em .5em .24em .14em;margin:-.14em -.5em -.24em -.14em;
-  font:400 13.9cqw/1 "Lilita One","Arial Black",Impact,sans-serif;font-style:italic;letter-spacing:.01em;text-transform:none;color:var(--red);
-  -webkit-text-stroke:.88cqw #fff;paint-order:stroke fill;filter:drop-shadow(.7cqw .8cqw 0 #1c1b18);transform:rotate(-4deg);transform-origin:0 100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  font:400 13.9cqw/1 "Lilita One","Arial Black",Impact,sans-serif;font-style:italic;letter-spacing:.01em;text-transform:none;color:#fbf3d8;
+  -webkit-text-stroke:.88cqw #1c1b2a;paint-order:stroke fill;filter:drop-shadow(.7cqw .8cqw 0 var(--red));transform:rotate(-4deg);transform-origin:0 100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .card.t-chrome .hdr .s{color:var(--navy);font:700 5cqw/1.2 "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.1em;text-transform:uppercase;padding-bottom:2.5%;border-bottom:1px solid #cfc4a9}
 /* the highlights in the theme's condensed face; the list's fade in the sheet's own cream */
 .card.t-chrome .bul{font:500 5cqw/1.3 "Barlow Condensed","Arial Narrow",sans-serif;color:#1c1b2a}
@@ -187,7 +187,7 @@
 .card.t-chrome.free .front{background:var(--frame) center/100% 100% no-repeat;border-color:transparent}
 .card.t-chrome.free .art{background:transparent;border:0;display:flex;padding:6% 6% 14%;color:var(--navy)}
 .card.t-chrome.free .art::before{display:none}
-.card.t-chrome.free .team{background:transparent;color:var(--red)} /* red like the company marks: the gold read poorly on the halftone */
+.card.t-chrome.free .team{background:transparent}
 .card.t-chrome.free .role{color:var(--red)}
 .card.t-chrome.free .k{color:var(--red);opacity:1}.card.t-chrome.free .art .open{color:var(--navy);text-shadow:.3cqw .3cqw 0 rgba(28,27,24,.18)}
 .card.t-chrome.free .who .fn{color:#ffe2a8}
@@ -199,7 +199,6 @@
 .card.t-chrome.free .figs b{font:400 10cqw/1 "Lilita One","Arial Black",Impact,sans-serif;color:var(--red);-webkit-text-stroke:.5cqw #fff;paint-order:stroke fill;filter:drop-shadow(.4cqw .45cqw 0 #1c1b18);margin-bottom:1.2cqw}
 .card.t-chrome.free .figs small{display:block;color:var(--navy);font-weight:700;letter-spacing:.08em}
 /* the free-agent back: the mark in gold as on its front, the "open to" line kept in view, the timeline link on the red plate */
-.card.t-chrome.free .hdr .t{color:var(--red)}
 .card.t-chrome.free .bul{flex:0 0 auto;margin-top:1%;font-size:5.2cqw}
 .card.t-chrome.free .bul b{color:var(--navy);font-weight:700;letter-spacing:.06em;text-transform:uppercase}
 .card.t-chrome.free .go{position:absolute;left:5%;top:87%;width:86%;height:7%;margin:0;padding:0 3cqw;border:0;border-radius:0;background:transparent;color:#fff;
