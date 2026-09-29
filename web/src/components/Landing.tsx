@@ -1,6 +1,7 @@
 'use client';
-import { useEffect, useRef, useState } from 'react';
-import type { State } from '@/lib/types';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import type { CardTheme, State } from '@/lib/types';
+import { attachTilt } from '@/lib/tilt';
 import { sampleState } from '@/lib/sample';
 import { FreeCard, RoleCard } from './Cards';
 import { TimelineLegend, TimelineView } from './Timeline';
@@ -26,9 +27,25 @@ export function heroState(): State {
 
 const STEPS = [
   { n: '01', h: 'Import', p: 'Drop in a resume PDF or a LinkedIn export. Claude reads it and deals the cards. You fix whatever it got wrong.' },
-  { n: '02', h: 'Detail', p: 'Pick team colors, write the highlights, say how each season ended. Add a photo and have it drawn in the house style, like George, in every team\'s colors.' },
+  { n: '02', h: 'Detail', p: 'Pick a stock and your team colors, write the highlights, say how each season ended. Add a photo and have it drawn to match, like George, in every team\'s colors.' },
   { n: '03', h: 'Share', p: 'Turn on your page at careercards.app/u/you. Only the career goes out. The job hunt stays with you.' },
 ];
+
+/** The two stocks, as the picker in the app names them. */
+const ERAS: { key: CardTheme; name: string; note: string }[] = [
+  { key: 'vintage', name: 'Vintage', note: 'Cream stock, a pennant and a starburst, like a card from the fifties.' },
+  { key: 'chrome', name: 'Chrome 90s', note: 'A holographic border, a cream photo panel and the name on a red plate, like a card from a nineties pack. Hover to see the foil catch the light.' },
+];
+const inEra = (S: State, era: CardTheme): State => ({ ...S, settings: { ...S.settings, theme: era } });
+
+/** Vintage / Chrome 90s: hovering an option shows it, a click keeps it. */
+function EraSwitch({ era, onEra, label }: { era: CardTheme; onEra: (e: CardTheme) => void; label: string }) {
+  return (
+    <div className="era" role="radiogroup" aria-label={label}>
+      {ERAS.map((e) => <button key={e.key} type="button" role="radio" aria-checked={era === e.key} className={(era === e.key ? 'on ' : '') + e.key} onMouseEnter={() => onEra(e.key)} onFocus={() => onEra(e.key)} onClick={() => onEra(e.key)}><i aria-hidden="true" />{e.name}</button>)}
+    </div>
+  );
+}
 
 const GLOSSARY: [string, string][] = [
   ['Season', 'one role at one team'],
@@ -43,7 +60,10 @@ const GLOSSARY: [string, string][] = [
  * link when the page runs without a server (the single-file preview).
  */
 export function Landing({ tryHref = '/app?example', signInHref = '/login', onTry }: { tryHref?: string; signInHref?: string; onTry?: () => void }) {
-  const [S] = useState(heroState);
+  const [base] = useState(heroState);
+  // the hand is dealt in whichever stock the switch under it points at
+  const [era, setEra] = useState<CardTheme>('vintage');
+  const S = useMemo(() => inEra(base, era), [base, era]);
   // one card at a time pops out of the hand, then flips; a second click flips it back and settles it
   const [out, setOut] = useState<string | null>(null);
   const [flipped, setFlipped] = useState<Record<string, boolean>>({});
@@ -78,12 +98,13 @@ export function Landing({ tryHref = '/app?example', signInHref = '/login', onTry
           </div>
           <div className="fine">Free. No account needed to try.<br />Sign in to keep your cards, share them, and get your portrait drawn.</div>
         </div>
-        <div className="handwrap">
+        <div className={'handwrap' + (era === 'chrome' ? ' era-chrome' : '')}>
           {out && <div className="hand-dim" onClick={() => flip(out)} aria-hidden="true" />}
           <div className="hand" aria-label="Example cards. Click one to pick it up and flip it.">
             {hand.map((r, i) => <RoleCard key={r.id} S={S} r={r} idx={S.roles.indexOf(r)} total={S.roles.length} on={!!flipped[r.id]} className={cls(r.id, i)} onClick={() => flip(r.id)} />)}
             <FreeCard S={S} share on={!!flipped.free} className={cls('free', 2)} onClick={() => flip('free')} />
           </div>
+          <EraSwitch era={era} onEra={setEra} label="Card stock for the example cards" />
           <div className={'flipme' + (out ? ' off' : '')} aria-hidden="true">
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12a9 9 0 0 1 15.5-6.3" /><path d="M18.5 2v4h-4" /><path d="M21 12a9 9 0 0 1-15.5 6.3" /><path d="M5.5 22v-4h4" /></svg>
             Tap a card to flip it over
@@ -94,6 +115,8 @@ export function Landing({ tryHref = '/app?example', signInHref = '/login', onTry
       <section className="steps">
         {STEPS.map((s) => <div key={s.n} className="step"><span className="n">{s.n}</span><h2>{s.h}</h2><p>{s.p}</p></div>)}
       </section>
+
+      <Eras S={base} />
 
       <section className="hunt">
         <div>
@@ -119,6 +142,33 @@ export function Landing({ tryHref = '/app?example', signInHref = '/login', onTry
 
       <SiteFoot signInHref={signInHref} />
     </div>
+  );
+}
+
+/** Pick your era: the same card in each stock, side by side, each with its character in a line. The cards flip on a click and lean toward the pointer. */
+function Eras({ S }: { S: State }) {
+  const host = useRef<HTMLDivElement>(null);
+  const [on, setOn] = useState<Record<string, boolean>>({});
+  useEffect(() => { const el = host.current; if (!el) return; return attachTilt(el); }, []);
+  const r = S.roles[2]; // Latex Salesman at Vandelay
+  return (
+    <section className="eras" ref={host}>
+      <div className="eras-head">
+        <div>
+          <div className="eyebrow">Pick your era</div>
+          <h2>Two stocks. One career.</h2>
+        </div>
+        <p>Every card in the pack comes in either. Switch any time from the header; your page and the picture behind a shared link follow.</p>
+      </div>
+      <div className="era-grid">
+        {ERAS.map((e) => (
+          <div key={e.key} className={'era-card' + (e.key === 'chrome' ? ' era-chrome' : '')}>
+            <RoleCard S={inEra(S, e.key)} r={r} idx={2} total={S.roles.length} on={!!on[e.key]} onClick={() => setOn((o) => ({ ...o, [e.key]: !o[e.key] }))} />
+            <div><h3>{e.name}</h3><p>{e.note}</p></div>
+          </div>
+        ))}
+      </div>
+    </section>
   );
 }
 

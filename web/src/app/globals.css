@@ -538,6 +538,32 @@ kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--hair);border-r
 .peek-head p{margin-top:2px}
 .peek h2{font:700 30px/1.05 var(--cond);letter-spacing:.03em;text-transform:uppercase}
 .peek-head p{font:400 14.5px/1.6 var(--serif);max-width:60ch}
+/* the stock switch under the hand: hovering an option deals the hand in it, a click keeps it */
+.era{display:inline-flex;gap:2px;padding:3px;border:1px solid var(--hair);border-radius:999px;background:var(--paper)}
+.era button{display:inline-flex;align-items:center;gap:7px;border:0;border-radius:999px;padding:6px 12px 6px 9px;background:transparent;color:var(--muted);font:700 11.5px/1 var(--cond);letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:background .15s,color .15s}
+.era button.on{background:var(--ink);color:var(--bg)}
+.era i{width:13px;height:13px;border-radius:50%;flex:none;box-sizing:border-box}
+.era .vintage i{background:#fbf6ea;border:3px solid #dc4432}
+.era .chrome i{background:linear-gradient(115deg,#ff8a8a 0%,#ffd36b 25%,#8dff9a 45%,#7ad7ff 65%,#c48bff 85%,#ff8ad4 100%);border:1.5px solid #1c1b2a}
+.era button.on i{outline:2px solid var(--bg);outline-offset:-3px}
+.landing.share .era{display:none}
+/* pick your era: the two stocks side by side, each a real card and a line on its character */
+.eras{display:flex;flex-direction:column;gap:22px;padding-top:24px;position:relative}
+.eras::before{content:"";position:absolute;left:0;right:0;top:0;height:5px;background:radial-gradient(circle,var(--ink-2) 1.6px,transparent 2px) 4px 50%/10px 5px repeat-x}
+.eras-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:40px;align-items:start}
+.eras h2{font:700 30px/1.05 var(--cond);letter-spacing:.03em;text-transform:uppercase}
+.eras-head p{margin-top:2px;font:400 14.5px/1.6 var(--serif);max-width:60ch}
+.era-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.era-card{display:grid;grid-template-columns:minmax(150px,42%) 1fr;gap:24px;align-items:center;padding:24px;border:1px solid var(--hair);border-radius:14px;background:var(--paper)}
+.era-card .card{width:100%}
+.era-card h3{font:700 22px/1.1 var(--cond);letter-spacing:.04em;text-transform:uppercase;margin:0 0 8px}
+.era-card p{font-size:14px;line-height:1.55}
+/* the chrome card's panel carries a wash of the foil, like light through a sleeve */
+.era-card.era-chrome{background:#fff linear-gradient(115deg,rgba(255,138,138,.12) 0%,rgba(255,211,107,.12) 18%,rgba(141,255,154,.12) 36%,rgba(122,215,255,.14) 54%,rgba(196,139,255,.12) 72%,rgba(255,138,212,.12) 90%,rgba(255,138,138,.12) 100%)}
+.era-card.era-chrome h3{font-family:var(--riso);font-weight:400;font-style:italic;color:var(--red);-webkit-text-stroke:1.5px #fff;paint-order:stroke fill;text-shadow:2px 2px 0 #1c1b2a}
+@media (max-width:820px){.eras-head{grid-template-columns:1fr;gap:10px}.era-grid{grid-template-columns:1fr}}
+@media (max-width:480px){.era-card{grid-template-columns:1fr;justify-items:center;text-align:center}.era-card .card{width:min(220px,100%)}}
+
 /* the share card: a 1200 x 630 still of the hero, screenshotted into public/og.png */
 .landing.share{--hw:224px;width:1200px;height:630px;max-width:none;margin:0;padding:0 64px;display:grid;grid-template-columns:minmax(0,1fr) max-content;gap:36px;align-items:center;background:var(--bg);overflow:hidden}
 .landing.share .wordmark{font-size:30px;margin-bottom:26px}
@@ -662,7 +688,7 @@ kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--hair);border-r
 }
 
 /* ===== Chrome 90s, the whole page: the card style reaches the page around the cards. Tokens first (dark stock, foil and chrome in place of red and ink, Oswald and Anton in the type roles), then the furniture that carries the look: perforations become chrome hairlines, the name and headings take foil, chips and the primary button take chrome. The signed-out front door keeps the site's own look. ===== */
-html:has([data-style="chrome"]){
+html:has([data-style="chrome"]),.era-chrome{ /* .era-chrome: the tokens alone, for Chrome cards shown on a vintage page (the landing) */
   color-scheme:light;
   --bg:#ffffff; --paper:#ffffff; --hover:#f1f3f8; --ink:#1c1b2a; --ink-2:#4a4a5c; --muted:#8a8a9c; --hair:#dfe3ec; --line:#1c1b2a;
   --focus:#2a78d6; --red:#e5322d; --navy:#173a8a; --gold:#f2c230; --teal:#19b2a8; --pink:#ff4fa3;
