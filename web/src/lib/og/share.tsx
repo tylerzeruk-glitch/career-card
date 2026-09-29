@@ -129,11 +129,13 @@ function FreeFront({ S, rot }: { S: State; rot: number }) {
 }
 
 /** The Chrome 90s frame: shares of the card where the printed frame's panel and plate sit, in px. */
-const FR = { panelL: Math.round(CW * 0.082), panelT: Math.round(CH * 0.0875), panelW: Math.round(CW * 0.836), panelH: Math.round(CH * 0.684),
+const FR = { panelL: Math.round(CW * 0.082), panelT: Math.round(CH * 0.0875), panelW: Math.round(CW * 0.836), panelH: Math.round(CH * 0.684), bustH: Math.round(CH * 0.7114),
   plateL: Math.round(CW * 0.06), plateT: Math.round(CH * 0.786), plateW: Math.round(CW * 0.62), plateH: Math.round(CH * 0.064),
   roleL: Math.round(CW * 0.076), roleT: Math.round(CH * 0.866), roleW: Math.round(CW * 0.62), roleH: Math.round(CH * 0.081) };
 /** The plates' top edge crosses the panel's bottom-right corner: the panel's content is clipped to it. */
 const PANEL_CLIP = `polygon(0 0, 100% 0, 100% ${Math.round(FR.panelH * 0.923)}px, ${Math.round(FR.panelW * 0.178)}px 100%, 0 100%)`;
+/* the bust's box reaches down to the printed plate and ball and is cut along them, as .card.t-chrome .art .pic in card.css (same measurements) */
+const BUST_CLIP = `polygon(${Math.round(FR.panelW * 0.0000)}px ${Math.round(FR.bustH * 0.0000)}px,${Math.round(FR.panelW * 1.0000)}px ${Math.round(FR.bustH * 0.0000)}px,${Math.round(FR.panelW * 1.0000)}px ${Math.round(FR.bustH * 0.9370)}px,${Math.round(FR.panelW * 0.9730)}px ${Math.round(FR.bustH * 0.9270)}px,${Math.round(FR.panelW * 0.9450)}px ${Math.round(FR.bustH * 0.9230)}px,${Math.round(FR.panelW * 0.9160)}px ${Math.round(FR.bustH * 0.9230)}px,${Math.round(FR.panelW * 0.8880)}px ${Math.round(FR.bustH * 0.9270)}px,${Math.round(FR.panelW * 0.8610)}px ${Math.round(FR.bustH * 0.9360)}px,${Math.round(FR.panelW * 0.8370)}px ${Math.round(FR.bustH * 0.9490)}px,${Math.round(FR.panelW * 0.8160)}px ${Math.round(FR.bustH * 0.9660)}px,${Math.round(FR.panelW * 0.8000)}px ${Math.round(FR.bustH * 0.9860)}px,${Math.round(FR.panelW * 0.7900)}px ${Math.round(FR.bustH * 0.9020)}px,${Math.round(FR.panelW * 0.0000)}px ${Math.round(FR.bustH * 0.9720)}px)`;
 const NAVY = '#173a8a', RED = '#e5322d', CREAM = '#fbf3d8';
 
 /** The company as the maker's mark over the frame's top-left corner: cream letters, a black keyline and a red offset, built from layered copies. */
@@ -189,11 +191,11 @@ function ChromeRoleFront({ S, r, site, rot }: { S: State; r: State['roles'][numb
   const p = S.profile;
   const av = portraitFor(S, p, r.company)?.src || '';
   const src = av ? (av.startsWith('/') ? site + av : av) : '';
-  const ph = FR.panelH;
+  const ph = FR.bustH;
   return (
     <ChromeStock site={site} rot={rot} frame={FRAMES[frameIndexFor(S, r.company)].file + '.jpg'}>
-      <div style={{ position: 'absolute', left: FR.panelL, top: FR.panelT, width: FR.panelW, height: ph, display: 'flex', alignItems: 'flex-end', justifyContent: 'center', overflow: 'hidden', clipPath: PANEL_CLIP }}>
-        {src ? <div style={{ width: ph, height: ph, backgroundImage: `url(${src})`, backgroundSize: `${ph}px ${ph}px`, backgroundRepeat: 'no-repeat' }} />
+      <div style={{ position: 'absolute', left: FR.panelL, top: FR.panelT, width: FR.panelW, height: ph, display: 'flex', alignItems: 'flex-end', justifyContent: 'center', overflow: 'hidden', clipPath: BUST_CLIP }}>
+        {src ? <div style={{ width: Math.round(ph * 0.97), height: Math.round(ph * 0.97), backgroundImage: `url(${src})`, backgroundSize: `${Math.round(ph * 0.97)}px ${Math.round(ph * 0.97)}px`, backgroundRepeat: 'no-repeat' }} />
           : <div style={{ display: 'flex', fontFamily: BARLOW, fontSize: q(34), letterSpacing: '-0.02em', color: NAVY, marginBottom: q(30) }}>{initials(p.name) || '?'}</div>}
       </div>
       <ChromeMark text={r.company} color={CREAM} />
