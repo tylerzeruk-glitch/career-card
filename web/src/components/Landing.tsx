@@ -30,11 +30,11 @@ export function heroState(): State {
 const GATED = !!process.env.NEXT_PUBLIC_STYLE_TESTERS;
 
 const STEPS = [
-  { n: '01', h: 'Import', p: 'Drop in a resume PDF or a LinkedIn export. Claude reads it and deals the cards. You fix whatever it got wrong.' },
-  { n: '02', h: 'Detail', p: GATED
+  { h: 'Import', p: 'Drop in a resume PDF or a LinkedIn export. Claude reads it and deals the cards. You fix whatever it got wrong.' },
+  { h: 'Detail', p: GATED
     ? 'Pick team colors, write the highlights, say how each season ended. Add a photo and have it drawn in the house style, like George, in every team\'s colors.'
     : 'Pick a stock and your team colors, write the highlights, say how each season ended. Add a photo and have it drawn to match, like George, in every team\'s colors.' },
-  { n: '03', h: 'Share', p: 'Turn on your page at careercards.app/u/you. Only the career goes out. The job hunt stays with you.' },
+  { h: 'Share', p: 'Turn on your page at careercards.app/u/you. Only the career goes out. The job hunt stays with you.' },
 ];
 
 /** The two stocks, as the picker in the app names them. */
@@ -119,7 +119,7 @@ export function Landing({ tryHref = '/app?example', signInHref = '/login', onTry
       </section>
 
       <section className="steps">
-        {STEPS.map((s) => <div key={s.n} className="step"><span className="n">{s.n}</span><h2>{s.h}</h2><p>{s.p}</p></div>)}
+        {STEPS.map((s) => <div key={s.h} className="step"><h2>{s.h}</h2><p>{s.p}</p></div>)}
       </section>
 
       {!GATED && <Pack S={base} era={era} onEra={setEra} />}
