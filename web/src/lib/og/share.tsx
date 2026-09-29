@@ -128,6 +128,8 @@ function FreeFront({ S, rot }: { S: State; rot: number }) {
   );
 }
 
+/** The Chrome 90s front has no padding, so its container unit (cqw) is a share of the whole card width, not of the vintage card's padded content. */
+const qc = (n: number) => Math.round((n * CW) / 100);
 /** The Chrome 90s frame: shares of the card where the printed frame's panel and plate sit, in px. */
 const FR = { panelL: Math.round(CW * 0.082), panelT: Math.round(CH * 0.0875), panelW: Math.round(CW * 0.836), panelH: Math.round(CH * 0.684), bustH: Math.round(CH * 0.7114),
   plateL: Math.round(CW * 0.06), plateT: Math.round(CH * 0.786), plateW: Math.round(CW * 0.62), plateH: Math.round(CH * 0.064),
@@ -140,10 +142,10 @@ const NAVY = '#173a8a', RED = '#e5322d', CREAM = '#fbf3d8';
 
 /** The company as the maker's mark over the frame's top-left corner: cream letters, a black keyline and a red offset, built from layered copies. */
 function ChromeMark({ text, color }: { text: string; color: string }) {
-  const size = q(fitCompany(text)), w = Math.round(CW * 0.76), k = 1.8, ring = [[-k, 0], [k, 0], [0, -k], [0, k], [-k, -k], [k, k], [-k, k], [k, -k]];
+  const size = qc(fitCompany(text)), w = Math.round(CW * 0.76), k = 1.8, ring = [[-k, 0], [k, 0], [0, -k], [0, k], [-k, -k], [k, k], [-k, k], [k, -k]];
   const base = { position: 'absolute' as const, left: 0, top: 0, width: w, display: 'flex', fontFamily: LILITA, fontSize: size, letterSpacing: '0.01em', whiteSpace: 'nowrap' as const, overflow: 'hidden' as const };
   return (
-    <div style={{ position: 'absolute', left: Math.round(CW * 0.063), top: Math.round(CH * 0.05), width: w, height: size + 8, display: 'flex', transform: 'rotate(-4deg)', transformOrigin: '0 100%' }}>
+    <div style={{ position: 'absolute', left: Math.round(CW * 0.063), top: Math.round(CH * 0.05), width: w, height: size + 8, display: 'flex', transform: 'rotate(-4deg) skewX(-10deg)', transformOrigin: '0 100%' }}>
       {[[0, 0], ...ring].map(([x, y], i) => <div key={'s' + i} style={{ ...base, left: 3.5 + x, top: 4 + y, color: RED }}>{text}</div>)}
       {ring.map(([x, y], i) => <div key={i} style={{ ...base, left: x, top: y, color: '#1c1b2a' }}>{text}</div>)}
       <div style={{ ...base, color }}>{text}</div>
@@ -155,9 +157,9 @@ function ChromeMark({ text, color }: { text: string; color: string }) {
 function ChromePlate({ name }: { name: string }) {
   const { fn, ln, scale } = fitName(name.replace(/,.*$/, ''));
   return (
-    <div style={{ position: 'absolute', left: FR.plateL, top: FR.plateT, width: FR.plateW, height: FR.plateH, display: 'flex', alignItems: 'center', paddingLeft: q(1), transform: 'rotate(-6deg)', transformOrigin: '0 50%', whiteSpace: 'nowrap', overflow: 'hidden' }}>
-      {fn ? <div style={{ display: 'flex', fontFamily: LILITA, fontSize: q(4.6 * scale), letterSpacing: '0.02em', textTransform: 'uppercase', color: '#ffe2a8', textShadow: '1px 1px 0 #1c1b18', marginRight: q(1.8) }}>{fn}</div> : null}
-      <div style={{ display: 'flex', fontFamily: LILITA, fontSize: q(6.8 * scale), letterSpacing: '0.02em', textTransform: 'uppercase', color: '#fff', textShadow: '1.5px 1.5px 0 #1c1b18' }}>{ln}</div>
+    <div style={{ position: 'absolute', left: FR.plateL, top: FR.plateT, width: FR.plateW, height: FR.plateH, display: 'flex', alignItems: 'center', paddingLeft: qc(1), transform: 'rotate(-6deg)', transformOrigin: '0 50%', whiteSpace: 'nowrap', overflow: 'hidden' }}>
+      {fn ? <div style={{ display: 'flex', fontFamily: LILITA, fontSize: qc(4.6 * scale), letterSpacing: '0.02em', textTransform: 'uppercase', color: '#ffe2a8', textShadow: '1px 1px 0 #1c1b18', marginRight: qc(1.8) }}>{fn}</div> : null}
+      <div style={{ display: 'flex', fontFamily: LILITA, fontSize: qc(6.8 * scale), letterSpacing: '0.02em', textTransform: 'uppercase', color: '#fff', textShadow: '1.5px 1.5px 0 #1c1b18' }}>{ln}</div>
     </div>
   );
 }
@@ -165,10 +167,10 @@ function ChromePlate({ name }: { name: string }) {
 /** The position on the yellow plate under the name, abbreviated when it would not fit. */
 function ChromeRole({ title, color }: { title: string; color: string }) {
   const { text, size } = fitTitle(title), k = 1, ring = [[-k, 0], [k, 0], [0, -k], [0, k], [-k, -k], [k, k], [-k, k], [k, -k]];
-  const base = { position: 'absolute' as const, left: 0, top: 0, width: FR.roleW - q(2), display: 'flex', fontFamily: LILITA, fontSize: q(size), letterSpacing: '0.04em', textTransform: 'uppercase' as const, whiteSpace: 'nowrap' as const, overflow: 'hidden' as const };
+  const base = { position: 'absolute' as const, left: 0, top: 0, width: FR.roleW - qc(2), display: 'flex', fontFamily: LILITA, fontSize: qc(size), letterSpacing: '0.04em', textTransform: 'uppercase' as const, whiteSpace: 'nowrap' as const, overflow: 'hidden' as const };
   return (
     <div style={{ position: 'absolute', left: FR.roleL, top: FR.roleT, width: FR.roleW, height: FR.roleH, display: 'flex', transform: 'rotate(-5.8deg)', transformOrigin: '0 50%' }}>
-      <div style={{ position: 'relative', display: 'flex', left: q(2), top: Math.round((FR.roleH - q(size)) / 2), width: FR.roleW - q(2), height: q(size) }}>
+      <div style={{ position: 'relative', display: 'flex', left: qc(2), top: Math.round((FR.roleH - qc(size)) / 2), width: FR.roleW - qc(2), height: qc(size) }}>
         {[[0, 0], ...ring].map(([x, y], i) => <div key={'s' + i} style={{ ...base, left: 1.5 + x, top: 2 + y, color: '#1c1b18' }}>{text}</div>)}
         {ring.map(([x, y], i) => <div key={i} style={{ ...base, left: x, top: y, color: '#fff' }}>{text}</div>)}
         <div style={{ ...base, color }}>{text}</div>
@@ -196,7 +198,7 @@ function ChromeRoleFront({ S, r, site, rot }: { S: State; r: State['roles'][numb
     <ChromeStock site={site} rot={rot} frame={FRAMES[frameIndexFor(S, r.company)].file + '.jpg'}>
       <div style={{ position: 'absolute', left: FR.panelL, top: FR.panelT, width: FR.panelW, height: ph, display: 'flex', alignItems: 'flex-end', justifyContent: 'center', overflow: 'hidden', clipPath: BUST_CLIP }}>
         {src ? <div style={{ width: Math.round(ph * 0.97), height: Math.round(ph * 0.97), backgroundImage: `url(${src})`, backgroundSize: `${Math.round(ph * 0.97)}px ${Math.round(ph * 0.97)}px`, backgroundRepeat: 'no-repeat' }} />
-          : <div style={{ display: 'flex', fontFamily: BARLOW, fontSize: q(34), letterSpacing: '-0.02em', color: NAVY, marginBottom: q(30) }}>{initials(p.name) || '?'}</div>}
+          : <div style={{ display: 'flex', fontFamily: BARLOW, fontSize: qc(34), letterSpacing: '-0.02em', color: NAVY, marginBottom: qc(30) }}>{initials(p.name) || '?'}</div>}
       </div>
       <ChromeMark text={r.company} color={CREAM} />
       <ChromePlate name={p.name} />
@@ -207,12 +209,23 @@ function ChromeRoleFront({ S, r, site, rot }: { S: State; r: State['roles'][numb
 
 /** The Chrome 90s free-agent card: its own purple frame, what the player is open to in the middle of the panel, a line each. */
 function ChromeFreeFront({ S, site, rot }: { S: State; site: string; rot: number }) {
-  const p = S.profile, open = (p.targets || []).slice(0, 3);
+  const p = S.profile, open = (p.targets || []).slice(0, 4);
+  const longest = Math.max(1, ...(open.length ? open : ['Offers']).flatMap((t) => t.split(/\s+/)).map((w) => w.length));
+  const innerW = FR.panelW - 2 * Math.round(FR.panelW * 0.06); // the panel's inner width, in px
+  const ADV = 0.92; // an upper-case Lilita letter's advance, as a share of the size, as this renderer sets it
+  const openSize = Math.min(7.5, Math.max(4.8, (innerW / CW) * 100 / (longest * ADV))); // cqw: that width over the longest word
+  // each target on its own line, or broken into lines that fit, each line centred: the renderer is not trusted to wrap or centre text on its own
+  const px = qc(openSize) * ADV, lines: string[] = [];
+  for (const t of (open.length ? open : ['Offers'])) {
+    let line = '';
+    for (const w of t.split(/\s+/)) { const next = line ? line + ' ' + w : w; if (line && next.length * px > innerW) { lines.push(line); line = w; } else line = next; }
+    if (line) lines.push(line);
+  }
   return (
     <ChromeStock site={site} rot={rot} frame="chrome-free.jpg">
-      <div style={{ position: 'absolute', left: FR.panelL, top: FR.panelT, width: FR.panelW, height: FR.panelH, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '8% 8% 16%', textAlign: 'center', color: NAVY, clipPath: PANEL_CLIP }}>
-        <div style={{ display: 'flex', fontFamily: BARLOW, fontSize: q(4.6), letterSpacing: '0.2em', textTransform: 'uppercase', color: RED, marginBottom: q(3) }}>Open to</div>
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', fontFamily: LILITA, fontSize: q(7.5), lineHeight: 1.15, textTransform: 'uppercase', textAlign: 'center' }}>{(open.length ? open : ['Offers']).map((t, i) => <div key={i} style={{ display: 'flex' }}>{t}</div>)}</div>
+      <div style={{ position: 'absolute', left: FR.panelL, top: FR.panelT, width: FR.panelW, height: FR.panelH, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '8% 6% 16%', textAlign: 'center', color: NAVY, clipPath: PANEL_CLIP }}>
+        <div style={{ display: 'flex', fontFamily: BARLOW, fontSize: qc(4.6), letterSpacing: '0.2em', textTransform: 'uppercase', color: RED, marginBottom: qc(3) }}>Open to</div>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: innerW, fontFamily: LILITA, fontSize: qc(openSize), lineHeight: 1.15, textTransform: 'uppercase' }}>{lines.map((t, i) => <div key={i} style={{ display: 'flex', justifyContent: 'center', width: innerW, whiteSpace: 'nowrap' }}>{t}</div>)}</div>
       </div>
       <ChromeMark text="Free agent" color={CREAM} />
       <ChromePlate name={p.name} />
