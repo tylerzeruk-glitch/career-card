@@ -680,7 +680,8 @@ html:has([data-style="chrome"]) body{background:#fff linear-gradient(180deg,rgba
 @media (hover:hover){html:has([data-style="chrome"]) body{background:#fff linear-gradient(115deg,rgba(255,138,138,.10) 0%,rgba(255,211,107,.10) 18%,rgba(141,255,154,.10) 36%,rgba(122,215,255,.12) 54%,rgba(196,139,255,.10) 72%,rgba(255,138,212,.10) 90%,rgba(255,138,138,.10) 100%) fixed}}
 [data-style="chrome"] .app,[data-style="chrome"].pub{background:transparent}
 [data-style="chrome"] .brand h1{font-style:italic;letter-spacing:.02em;color:var(--red);-webkit-text-stroke:2px #fff;paint-order:stroke fill;text-shadow:3px 3px 0 #1c1b2a}
-[data-style="chrome"] .brand .sub{color:var(--ink-2)}
+[data-style="chrome"] .brand .sub{color:var(--ink-2);margin-top:9px} /* clear of the name's shadow, with some air */
+[data-style="chrome"] .brand .line{margin-top:11px}
 [data-style="chrome"] .line b{background:var(--navy);color:#fff;border:1.5px solid #fff;box-shadow:2px 2.5px 0 #1c1b2a} /* keylined and shadowed like the number on the cards */
 [data-style="chrome"] .pill{background:linear-gradient(90deg,#e8352c,#ff8a3a);color:#fff;transform:rotate(-2deg) skewX(-8deg);border-radius:2px;box-shadow:3px 3px 0 #1c1b2a,5px 5px 0 var(--gold)}
 [data-style="chrome"] .btn.primary{background:var(--navy);color:#fff;box-shadow:2px 2px 0 var(--gold)}
