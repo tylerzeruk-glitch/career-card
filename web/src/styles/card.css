@@ -152,7 +152,7 @@
   transform:rotate(-4deg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 /* the number: a navy circle at the top right, over the stripes, keylined and shadowed like the company mark, wide enough for two digits */
 .card.t-chrome .num{top:2.6%;right:4.2%;width:11.5cqw;height:11.5cqw;padding:0;display:flex;align-items:center;justify-content:center;border:.6cqw solid #fff;border-radius:50%;background:var(--navy);color:#fff;
-  font:700 5cqw/1 "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.04em;z-index:4;box-shadow:none;filter:drop-shadow(.55cqw .65cqw 0 #1c1b18)}
+  font:700 5cqw/1 "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.04em;z-index:4;box-shadow:none;filter:drop-shadow(.55cqw .65cqw 0 var(--gold))} /* navy throws gold, as on the page */
 .card.t-chrome .num.wide{font-size:4.6cqw;letter-spacing:.02em}
 /* the frame's baseball stands where the badge was */
 .card.t-chrome .badge{display:none}

@@ -675,6 +675,7 @@ html:has([data-style="chrome"]){
   --chrome:linear-gradient(180deg,#f7f7fb 0%,#c9c9d3 35%,#7c7c8c 50%,#e9e9f0 65%,#a9a9b6 100%);
   --perf:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='28' height='6' viewBox='0 0 28 6'><path d='M0 3q7-3 14 0t14 0' fill='none' stroke='%2319b2a8' stroke-opacity='.75' stroke-width='1.5' stroke-linecap='round'/></svg>") 0 50%/28px 6px repeat-x; /* a low teal wave in place of the perforations */
 }
+/* Shadows on this stock follow the element's own colour: navy things (buttons, discs, stat circles, links) throw gold; red and yellow things (the name, the pill, the add-a-role tab) throw black; the cream company mark throws red. Always hard, offset down and right, never blurred. */
 /* the page: white with the card edge's rainbow washed across it at a few percent, like light through a sleeve. With a pointer it is fixed to the window and laid diagonally; on touch screens (no fixed attachment) it runs top to bottom and tiles without a seam, since its first and last stops match */
 html:has([data-style="chrome"]) body{background:#fff linear-gradient(180deg,rgba(255,138,138,.10) 0%,rgba(255,211,107,.10) 18%,rgba(141,255,154,.10) 36%,rgba(122,215,255,.12) 54%,rgba(196,139,255,.10) 72%,rgba(255,138,212,.10) 90%,rgba(255,138,138,.10) 100%) 0 0/100% 1400px repeat}
 @media (hover:hover){html:has([data-style="chrome"]) body{background:#fff linear-gradient(115deg,rgba(255,138,138,.10) 0%,rgba(255,211,107,.10) 18%,rgba(141,255,154,.10) 36%,rgba(122,215,255,.12) 54%,rgba(196,139,255,.10) 72%,rgba(255,138,212,.10) 90%,rgba(255,138,138,.10) 100%) fixed}}
@@ -682,8 +683,8 @@ html:has([data-style="chrome"]) body{background:#fff linear-gradient(180deg,rgba
 [data-style="chrome"] .brand h1{font-style:italic;letter-spacing:.02em;color:var(--red);-webkit-text-stroke:2px #fff;paint-order:stroke fill;text-shadow:3px 3px 0 #1c1b2a}
 [data-style="chrome"] .brand .sub{color:var(--ink-2);margin-top:9px} /* clear of the name's shadow, with some air */
 [data-style="chrome"] .brand .line{margin-top:11px}
-[data-style="chrome"] .line b{background:var(--navy);color:#fff;border:1.5px solid #fff;box-shadow:2px 2.5px 0 #1c1b2a} /* keylined and shadowed like the number on the cards */
-[data-style="chrome"] .pill{background:linear-gradient(90deg,#e8352c,#ff8a3a);color:#fff;transform:rotate(-2deg) skewX(-8deg);border-radius:2px;box-shadow:3px 3px 0 #1c1b2a,5px 5px 0 var(--gold)}
+[data-style="chrome"] .line b{background:var(--navy);color:#fff;border:1.5px solid #fff;box-shadow:2px 2px 0 var(--gold)}
+[data-style="chrome"] .pill{background:linear-gradient(90deg,#e8352c,#ff8a3a);color:#fff;transform:rotate(-2deg) skewX(-8deg);border-radius:2px;box-shadow:3px 3px 0 #1c1b2a}
 [data-style="chrome"] .btn.primary{background:var(--navy);color:#fff;box-shadow:2px 2px 0 var(--gold)}
 [data-style="chrome"] .btn.primary:hover{opacity:1;filter:brightness(1.12)}
 [data-style="chrome"] .btn.outline{border-color:var(--navy);color:var(--navy)}
@@ -692,6 +693,14 @@ html:has([data-style="chrome"]) body{background:#fff linear-gradient(180deg,rgba
 [data-style="chrome"] .actions .secondary .btn{font:700 13px var(--cond);letter-spacing:.12em;text-transform:uppercase;color:var(--navy);text-shadow:1.5px 1.5px 0 var(--gold)} /* the Add button's gold offset, as a text shadow */
 [data-style="chrome"] .actions .secondary .btn:hover{color:var(--red);background:transparent}
 [data-style="chrome"] .toggle button{color:var(--navy)}
+/* the display-by radios as a second small toggle in the same dress, the label in navy */
+[data-style="chrome"] .gt-wrap{gap:6px}
+[data-style="chrome"] .gt-label{color:var(--navy);font-weight:700}
+[data-style="chrome"] .gt{gap:0;border:1.5px solid var(--navy);border-radius:999px;background:#fff;box-shadow:2px 2px 0 var(--gold);overflow:hidden;font-size:11.5px}
+[data-style="chrome"] .gt button{padding:7px 13px;color:var(--navy)}
+[data-style="chrome"] .gt button:hover{color:var(--red)}
+[data-style="chrome"] .gt button.on{background:var(--navy);color:#fff}
+[data-style="chrome"] .gt button i{display:none}
 [data-style="chrome"] .toggle button.on{background:var(--navy);color:#fff}
 [data-style="chrome"] .row h2,[data-style="chrome"] .gh{font-style:italic;letter-spacing:.16em;color:var(--navy)}
 [data-style="chrome"] .fold::before,[data-style="chrome"] .row::after,[data-style="chrome"] .gh::after,[data-style="chrome"] .tl::before,[data-style="chrome"] .tl::after{height:6px;background:var(--perf)}
@@ -735,8 +744,8 @@ html:has([data-style="chrome"]) body{background:#fff linear-gradient(180deg,rgba
 .stylepick .thumb .card .face{box-shadow:0 4px 10px rgba(0,0,0,.18)}
 .stylepick .lbl{font:700 11px var(--cond);letter-spacing:.1em;text-transform:uppercase}
 /* the header's round buttons (theme, card style, more) as small keylined discs with a hard shadow, like the number on the cards; the style chip shows the printed frame itself */
-[data-style="chrome"] .btn.icon.theme,[data-style="chrome"] .btn.icon.style,[data-style="chrome"] .menu summary.more{border:1.5px solid var(--navy);background:#fff;color:var(--navy);box-shadow:2px 2.5px 0 #1c1b2a;transition:transform .12s,box-shadow .12s}
-[data-style="chrome"] .btn.icon.theme:hover,[data-style="chrome"] .btn.icon.style:hover,[data-style="chrome"] .menu summary.more:hover{background:#fff;color:var(--navy);transform:translate(-1px,-1px);box-shadow:3px 3.5px 0 #1c1b2a}
+[data-style="chrome"] .btn.icon.theme,[data-style="chrome"] .btn.icon.style,[data-style="chrome"] .menu summary.more{border:1.5px solid var(--navy);background:#fff;color:var(--navy);box-shadow:2px 2px 0 var(--gold);transition:transform .12s,box-shadow .12s}
+[data-style="chrome"] .btn.icon.theme:hover,[data-style="chrome"] .btn.icon.style:hover,[data-style="chrome"] .menu summary.more:hover{background:#fff;color:var(--navy);transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--gold)}
 [data-style="chrome"] .menu[open] summary.more{background:var(--navy);color:#fff}
 [data-style="chrome"] .menu[open] summary.more,[data-style="chrome"] .stylepick[open] summary.style,[data-style="chrome"] .menu[open] summary.more:hover,[data-style="chrome"] .stylepick[open] summary.style:hover{transform:none;box-shadow:2px 2px 0 var(--gold)} /* open: the Add button's gold shadow */
 /* the style button's chip for this stock is the frame's baseball */
