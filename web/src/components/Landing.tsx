@@ -74,11 +74,14 @@ export function Landing({ tryHref = '/app?example', signInHref = '/login', onTry
   };
   useEffect(() => () => { if (timer.current) clearTimeout(timer.current); }, []);
   const cls = (id: string, i: number) => 'h' + i + (out === id ? ' out' : '');
+  // every card on the page leans toward the pointer, the hand included
+  const root = useRef<HTMLDivElement>(null);
+  useEffect(() => { const el = root.current; if (!el) return; return attachTilt(el); }, []);
   const tryProps = onTry ? { href: tryHref, onClick: (e: React.MouseEvent) => { e.preventDefault(); carryEra(era); onTry(); } } : { href: tryHref, onClick: () => carryEra(era) };
   const hand = [S.roles[0], S.roles[2]]; // Marine Biologist at Acme, Latex Salesman at Vandelay
 
   return (
-    <div className="landing" data-style={era}>
+    <div className="landing" data-style={era} ref={root}>
       <header className="lbar">
         <a className="wordmark" href="/"><Flag /><span>CareerCards</span></a>
         <nav>
@@ -144,31 +147,36 @@ export function Landing({ tryHref = '/app?example', signInHref = '/login', onTry
 }
 
 /**
- * Pick your era: the pack, one card per stock and one for what is coming. Clicking a card deals the whole page
- * in its stock (the hero hand, the buttons, the paper); the cards lean toward the pointer.
+ * One career, several stocks: a scattered pile of the example's cards per stock, and a sealed pack for what is
+ * next. Clicking any card in a pile deals the whole page in that stock (the hero hand, the buttons, the paper).
  */
 function Pack({ S, era, onEra }: { S: State; era: CardTheme; onEra: (e: CardTheme) => void }) {
-  const host = useRef<HTMLDivElement>(null);
-  useEffect(() => { const el = host.current; if (!el) return; return attachTilt(el); }, []);
-  const r = S.roles[2]; // Latex Salesman at Vandelay
   return (
-    <section className="eras" ref={host}>
+    <section className="eras">
       <div className="eras-head">
         <div>
-          <div className="eyebrow">Pick your era</div>
-          <h2>Two stocks. One career.</h2>
+          <div className="eyebrow">Pick your stock</div>
+          <h2>One career, multiple stocks.</h2>
         </div>
-        <p>Every card in the pack comes in either. Click one to deal this page in it. Your own pack switches the same way, from the header; your page and the picture behind a shared link follow.</p>
+        <p>Every card in the pack comes in each. Click a pile to deal this page in its stock. Your own pack switches the same way, from the header; your page and the picture behind a shared link follow.</p>
       </div>
       <div className="pack" role="radiogroup" aria-label="Card stock">
-        {ERAS.map((e) => (
-          <div key={e.key} className={'pack-card' + (era === e.key ? ' on' : '') + (e.key === 'chrome' ? ' era-chrome' : '')}>
-            <RoleCard S={inEra(S, e.key)} r={r} idx={2} total={S.roles.length} onClick={() => onEra(e.key)} />
-            <div className="pack-cap"><b>{e.name}</b><span>{e.note}</span><em>{era === e.key ? 'On the table' : 'Click to deal the page in it'}</em></div>
-          </div>
-        ))}
+        {ERAS.map((e) => {
+          const T = inEra(S, e.key), pick = () => onEra(e.key);
+          return (
+            <div key={e.key} className={'pack-card' + (era === e.key ? ' on' : '') + (e.key === 'chrome' ? ' era-chrome' : '')}>
+              <div className="pile" role="radio" aria-checked={era === e.key} aria-label={e.name}>
+                <FreeCard S={T} share className="p0" onClick={pick} />
+                <RoleCard S={T} r={S.roles[0]} idx={0} total={S.roles.length} className="p1" onClick={pick} />
+                <RoleCard S={T} r={S.roles[4]} idx={4} total={S.roles.length} className="p2" onClick={pick} />
+                <RoleCard S={T} r={S.roles[2]} idx={2} total={S.roles.length} className="p3" onClick={pick} />
+              </div>
+              <div className="pack-cap"><b>{e.name}</b><span>{e.note}</span><em>{era === e.key ? 'On the table' : 'Click to deal the page in it'}</em></div>
+            </div>
+          );
+        })}
         <div className="pack-card soon">
-          <div className="card-soon"><span>More styles</span><small>coming soon</small></div>
+          <div className="wax" aria-hidden="true"><span className="s">Series 3</span><span className="q">?</span><span className="t">More stocks<br />coming soon</span></div>
           <div className="pack-cap"><b>Next up</b><span>More stocks are on the press. Every one works on every card in your pack.</span></div>
         </div>
       </div>

@@ -29,11 +29,12 @@ const MOVE_MS = 600; // longer than any transition that carries a card (the fly 
 function attachPointer(root: HTMLElement): () => void {
   let cur: HTMLElement | null = null, raf = 0, last: PointerEvent | null = null;
   const clear = (el: HTMLElement) => { el.classList.remove('tilt'); for (const k of VARS) el.style.removeProperty(k); };
-  // a card is left alone until this time; letting go of it now means its lean eases out along with whatever it is doing
-  const busy = new WeakMap<HTMLElement, number>();
-  const isBusy = (el: HTMLElement) => (busy.get(el) ?? 0) > performance.now();
-  const hold = (el: HTMLElement, ms: number) => {
-    busy.set(el, Math.max(busy.get(el) ?? 0, performance.now() + ms));
+  // a card is left alone until these times; letting go of it now means its lean eases out along with whatever it is doing.
+  // Two clocks: one for a flip (a timer, since the flip's own transition is the lean's), one for being carried (released as soon as the move ends).
+  const flipping = new WeakMap<HTMLElement, number>(), moving = new WeakMap<HTMLElement, number>();
+  const isBusy = (el: HTMLElement) => Math.max(flipping.get(el) ?? 0, moving.get(el) ?? 0) > performance.now();
+  const hold = (el: HTMLElement, ms: number, clock = flipping) => {
+    clock.set(el, Math.max(clock.get(el) ?? 0, performance.now() + ms));
     if (el === cur) { clear(cur); cur = null; }
   };
   const cardsIn = (el: Element): HTMLElement[] => el.matches('.card') ? [el as HTMLElement] : Array.from(el.querySelectorAll<HTMLElement>('.card'));
@@ -74,18 +75,27 @@ function attachPointer(root: HTMLElement): () => void {
   const onTransition = (e: TransitionEvent) => {
     const t = e.target as Element | null;
     if (!t || e.propertyName !== 'transform' || t.matches('.card .inner')) return;
-    for (const c of cardsIn(t)) hold(c, MOVE_MS);
+    for (const c of cardsIn(t)) hold(c, MOVE_MS, moving);
+  };
+  // ...and picked up again the moment the move is over (a hover lift is a fifth of a second; the timer is only the fallback)
+  const onTransitionEnd = (e: TransitionEvent) => {
+    const t = e.target as Element | null;
+    if (!t || e.propertyName !== 'transform' || t.matches('.card .inner')) return;
+    for (const c of cardsIn(t)) moving.delete(c);
   };
   // the pop into focus
-  const onAnimation = (e: AnimationEvent) => { const t = e.target as Element | null; if (t) for (const c of cardsIn(t)) hold(c, MOVE_MS); };
+  const onAnimation = (e: AnimationEvent) => { const t = e.target as Element | null; if (t) for (const c of cardsIn(t)) hold(c, MOVE_MS, moving); };
+  const onAnimationEnd = (e: AnimationEvent) => { const t = e.target as Element | null; if (t) for (const c of cardsIn(t)) moving.delete(c); };
   root.addEventListener('pointermove', onMove, { passive: true });
   root.addEventListener('pointerleave', onLeave);
   root.addEventListener('pointerdown', onDown, { passive: true });
   root.addEventListener('transitionstart', onTransition);
-  root.addEventListener('animationstart', onAnimation);
+  root.addEventListener('transitionend', onTransitionEnd); root.addEventListener('transitioncancel', onTransitionEnd);
+  root.addEventListener('animationstart', onAnimation); root.addEventListener('animationend', onAnimationEnd);
   return () => {
     root.removeEventListener('pointermove', onMove); root.removeEventListener('pointerleave', onLeave); root.removeEventListener('pointerdown', onDown);
-    root.removeEventListener('transitionstart', onTransition); root.removeEventListener('animationstart', onAnimation);
+    root.removeEventListener('transitionstart', onTransition); root.removeEventListener('transitionend', onTransitionEnd); root.removeEventListener('transitioncancel', onTransitionEnd);
+    root.removeEventListener('animationstart', onAnimation); root.removeEventListener('animationend', onAnimationEnd);
     flips.disconnect();
     if (cur) clear(cur); if (raf) cancelAnimationFrame(raf);
   };
