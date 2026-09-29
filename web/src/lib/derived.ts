@@ -24,9 +24,10 @@ export const PAIRS: [string, string][] = [
 ];
 
 /** The Chrome 90s colourways: the printed frames a team can be dealt, in the picker's order. The file names public/frames/chrome-<file>.webp (and .jpg for the share image). */
-export const FRAMES: { key: string; name: string; file: string; colors: [string, string] }[] = [
-  { key: 'teal', name: 'Teal', file: 'chrome', colors: ['#19b2a8', '#e5322d'] }, { key: 'purple', name: 'Purple', file: 'chrome-purple', colors: ['#3a1f9e', '#fd9662'] }, { key: 'noir', name: 'Noir', file: 'chrome-noir', colors: ['#121826', '#fc0d95'] },
-  { key: 'neon', name: 'Neon', file: 'chrome-neon', colors: ['#fc12a7', '#0b8bda'] }, { key: 'sunset', name: 'Sunset', file: 'chrome-sunset', colors: ['#fe5953', '#1e7fd6'] }, { key: 'lime', name: 'Lime', file: 'chrome-lime', colors: ['#10c5b1', '#d7f338'] },
+/** `colors` are the picker's two discs; `shirt` is what the 90s portrait's denim is recoloured to on this frame (see src/lib/riso.ts). */
+export const FRAMES: { key: string; name: string; file: string; colors: [string, string]; shirt: string }[] = [
+  { key: 'teal', name: 'Teal', file: 'chrome', colors: ['#19b2a8', '#e5322d'], shirt: '#19b2a8' }, { key: 'purple', name: 'Purple', file: 'chrome-purple', colors: ['#3a1f9e', '#fd9662'], shirt: '#6a44d8' }, { key: 'noir', name: 'Noir', file: 'chrome-noir', colors: ['#121826', '#fc0d95'], shirt: '#f0148f' },
+  { key: 'neon', name: 'Neon', file: 'chrome-neon', colors: ['#fc12a7', '#0b8bda'], shirt: '#1d8ee0' }, { key: 'sunset', name: 'Sunset', file: 'chrome-sunset', colors: ['#fe5953', '#1e7fd6'], shirt: '#ff7a45' }, { key: 'lime', name: 'Lime', file: 'chrome-lime', colors: ['#10c5b1', '#d7f338'], shirt: '#9ad42c' },
 ];
 /** The frame a team's cards are printed on: the team's colour pick, folded onto the frames on offer, so a pick made on either stock carries over. */
 export function frameIndexFor(S: Pick<State, 'brand'>, company: string): number {

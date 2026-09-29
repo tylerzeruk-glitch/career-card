@@ -45,7 +45,7 @@ export async function storePortrait(userId: string, photo: Blob): Promise<string
 /** Everything stored for the player: the photo and the drawn set. */
 export async function dropPortrait(userId: string) {
   const sb = supabaseBrowser(); if (!sb) return;
-  await sb.storage.from(BUCKET).remove([path(userId), userId + '/90s.png', ...Array.from({ length: 10 }, (_, i) => userId + '/riso-' + i + '.png')]);
+  await sb.storage.from(BUCKET).remove([path(userId), ...Array.from({ length: 10 }, (_, i) => userId + '/riso-' + i + '.png'), ...Array.from({ length: 6 }, (_, i) => userId + '/90s-' + i + '.png')]);
 }
 
 export type Take = { path: string; url: string };

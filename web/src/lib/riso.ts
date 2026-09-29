@@ -5,7 +5,7 @@
  * RGBA; sharp decodes and encodes.
  */
 import sharp from 'sharp';
-import { PAIRS } from './derived';
+import { FRAMES, PAIRS } from './derived';
 
 type Raw = { data: Uint8Array; w: number; h: number };
 type RGB = [number, number, number];
@@ -163,15 +163,43 @@ export function squareAndFill(r: Raw): { canvas: Raw; shirt: RGB } {
   return { canvas: { data: c, w: side, h: side }, shirt };
 }
 
-/** Slate shirt pixels take the team's frame colour, keeping the print's light and dark variation. */
-export function recolor(r: Raw, shirt: RGB, frame: string): Raw {
+/** Inside a shirt mask everything that is not ink, skin or the paper between halftone dots is cloth (the 90s denim is far brighter and more saturated than the slate). */
+const isCloth = (r: number, g: number, b: number) => {
+  const [h, s, v] = hsv(r, g, b);
+  const skin = h >= 6 && h <= 64 && s > 0.176, ink = v < 0.227, paper = s < 0.2 && v > 0.8;
+  return !skin && !ink && !paper;
+};
+
+/** Slate shirt pixels take the team's frame colour, keeping the print's light and dark variation. With a mask, only cloth pixels inside it. */
+export function recolor(r: Raw, shirt: RGB, frame: string, mask?: Uint8Array): Raw {
   const out = new Uint8Array(r.data), t = hex(frame), sm = Math.max((shirt[0] + shirt[1] + shirt[2]) / 3, 1);
-  for (let i = 0; i < out.length; i += 4) {
-    if (out[i + 3] === 0 || !isFabric(out[i], out[i + 1], out[i + 2])) continue;
+  for (let i = 0, p = 0; i < out.length; i += 4, p++) {
+    if (out[i + 3] === 0 || (mask ? !mask[p] || !isCloth(out[i], out[i + 1], out[i + 2]) : !isFabric(out[i], out[i + 1], out[i + 2]))) continue;
     const k = clip((out[i] + out[i + 1] + out[i + 2]) / 3 / sm, 0.55, 1.35);
     out[i] = clip(Math.round(t[0] * k), 0, 255); out[i + 1] = clip(Math.round(t[1] * k), 0, 255); out[i + 2] = clip(Math.round(t[2] * k), 0, 255);
   }
   return { data: out, w: r.w, h: r.h };
+}
+
+/**
+ * The shirt alone, for a portrait whose other parts share the shirt's colours (the 90s look's mirrored lens
+ * has blue in it): everything reachable from the bottom edge without crossing skin or ink, grown a little so
+ * a dark fold does not cut a lit patch of collar off. The lens sits inside its black frame, out of reach.
+ */
+export function shirtMask(r: Raw): Uint8Array {
+  const { data, w, h } = r, mask = new Uint8Array(w * h), stack: number[] = [];
+  const open = (p: number) => { const i = p * 4; if (data[i + 3] === 0) return false; const [hh, s, v] = hsv(data[i], data[i + 1], data[i + 2]); return v >= 0.227 && !(hh >= 6 && hh <= 64 && s > 0.176); };
+  const push = (p: number) => { if (!mask[p] && open(p)) { mask[p] = 1; stack.push(p); } };
+  for (let x = 0; x < w; x++) push((h - 1) * w + x);
+  while (stack.length) { const p = stack.pop()!; const x = p % w, y = (p - x) / w; if (x > 0) push(p - 1); if (x < w - 1) push(p + 1); if (y > 0) push(p - w); if (y < h - 1) push(p + w); }
+  const GROW = Math.max(4, Math.round(w * 0.03));
+  let ring = mask;
+  for (let k = 0; k < GROW; k++) {
+    const next = new Uint8Array(ring);
+    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const p = y * w + x; if (ring[p] || data[p * 4 + 3] === 0) continue; if ((x > 0 && ring[p - 1]) || (x < w - 1 && ring[p + 1]) || (y > 0 && ring[p - w]) || (y < h - 1 && ring[p + w])) next[p] = 1; }
+    ring = next;
+  }
+  return ring;
 }
 
 /** A take as the model returned it (cream background) to a stored take: keyed, squared, filled, in its own slate shirt. */
@@ -180,9 +208,12 @@ export async function prepareTake(png: Buffer): Promise<Buffer> {
   return encode(canvas, TAKE_SIDE);
 }
 
-/** A stored 90s take to the one card portrait: the frame carries the team colours, so the shirt stays as drawn. */
-export async function single(takePng: Buffer): Promise<Buffer> {
-  return encode(await decode(takePng), SET_SIDE);
+/** A stored 90s take to the card set: one PNG per frame colourway, in FRAMES order, the denim recoloured to each frame's shirt colour and the shades left alone. */
+export async function frameSet(takePng: Buffer): Promise<Buffer[]> {
+  const r = await decode(takePng);
+  const { canvas, shirt } = squareAndFill(r); // already squared; this re-reads the shirt colour and is a no-op on the fill
+  const mask = shirtMask(canvas);
+  return Promise.all(FRAMES.map((f) => encode(recolor(canvas, shirt, f.shirt, mask), SET_SIDE)));
 }
 
 /** A stored take to the card set: one PNG per team colour pair, in PAIRS order. */
