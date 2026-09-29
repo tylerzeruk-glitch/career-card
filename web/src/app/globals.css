@@ -546,14 +546,14 @@ kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--hair);border-r
 .eras-head p{margin-top:2px;font:400 14.5px/1.6 var(--serif);max-width:60ch}
 .pack{display:flex;justify-content:center;align-items:flex-start;gap:clamp(18px,3vw,44px);padding:26px 0 6px}
 .pack-card{display:flex;flex-direction:column;align-items:center;gap:18px;flex:none}
-/* a pile per stock: four of the example's cards, scattered as if dropped, the top one straightest; any of them picks the stock */
-.pile{--pw:min(170px,18vw);position:relative;width:calc(var(--pw) * 1.62);height:calc(var(--pw) * 1.78);transition:transform .25s cubic-bezier(.2,.7,.2,1);cursor:pointer}
+/* a pile per stock: three of the example's cards, two tucked underneath at a slight angle and the top one straight; only the top one picks */
+.pile{--pw:min(180px,19vw);position:relative;width:calc(var(--pw) * 1.34);height:calc(var(--pw) * 1.52);transition:transform .25s cubic-bezier(.2,.7,.2,1)}
 .pile .card{position:absolute;left:0;top:0;width:var(--pw);transform:translate(var(--px),var(--py)) rotate(var(--pr));transition:transform .22s cubic-bezier(.2,.7,.2,1)}
-.pile .p0{--px:0px;--py:calc(var(--pw) * .02);--pr:-9deg;z-index:1}
-.pile .p1{--px:calc(var(--pw) * .56);--py:0px;--pr:7deg;z-index:2}
-.pile .p2{--px:calc(var(--pw) * .1);--py:calc(var(--pw) * .17);--pr:-4deg;z-index:3}
-.pile .p3{--px:calc(var(--pw) * .33);--py:calc(var(--pw) * .3);--pr:2deg;z-index:4}
-.pile .card:hover,.pile .card:focus-visible{z-index:6;transform:translate(var(--px),calc(var(--py) - 14px)) rotate(var(--pr))}
+.pile .under{pointer-events:none;cursor:default}
+.pile .p1{--px:0px;--py:calc(var(--pw) * .02);--pr:-6deg;z-index:1}
+.pile .p2{--px:calc(var(--pw) * .34);--py:0px;--pr:5deg;z-index:2}
+.pile .p3{--px:calc(var(--pw) * .17);--py:calc(var(--pw) * .11);--pr:0deg;z-index:3;cursor:pointer}
+.pile .p3:hover,.pile .p3:focus-visible{transform:translate(var(--px),calc(var(--py) - 12px))}
 .pack-card.on .pile{transform:translateY(-10px)}
 .pack-cap{text-align:center;max-width:28ch}
 .pack-cap b{display:block;font:700 18px/1.1 var(--cond);letter-spacing:.06em;text-transform:uppercase}
@@ -561,7 +561,7 @@ kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--hair);border-r
 .pack-cap em{display:block;font:700 10.5px/1 var(--cond);font-style:normal;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-top:10px}
 .pack-card.on .pack-cap em{color:var(--red)}
 /* what is next: a sealed wax pack, crimped top and bottom, a red band across it */
-.wax{--pw:min(170px,18vw);width:var(--pw);aspect-ratio:2.5/3.5;margin:calc(var(--pw) * .3) auto 0;position:relative;background:var(--navy);color:#fbf6ea;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;padding:16% 10%;clip-path:polygon(0.0% 0%,7.1% 3.2%,14.3% 0%,21.4% 3.2%,28.6% 0%,35.7% 3.2%,42.9% 0%,50.0% 3.2%,57.1% 0%,64.3% 3.2%,71.4% 0%,78.6% 3.2%,85.7% 0%,92.9% 3.2%,100.0% 0%,100.0% 100%,92.9% 96.8%,85.7% 100%,78.6% 96.8%,71.4% 100%,64.3% 96.8%,57.1% 100%,50.0% 96.8%,42.9% 100%,35.7% 96.8%,28.6% 100%,21.4% 96.8%,14.3% 100%,7.1% 96.8%,0.0% 100%);transform:rotate(3deg)}
+.wax{--pw:min(180px,19vw);width:var(--pw);aspect-ratio:2.5/3.5;margin:calc(var(--pw) * .11) auto 0;position:relative;background:var(--navy);color:#fbf6ea;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;padding:16% 10%;clip-path:polygon(0.0% 0%,7.1% 3.2%,14.3% 0%,21.4% 3.2%,28.6% 0%,35.7% 3.2%,42.9% 0%,50.0% 3.2%,57.1% 0%,64.3% 3.2%,71.4% 0%,78.6% 3.2%,85.7% 0%,92.9% 3.2%,100.0% 0%,100.0% 100%,92.9% 96.8%,85.7% 100%,78.6% 96.8%,71.4% 100%,64.3% 96.8%,57.1% 100%,50.0% 96.8%,42.9% 100%,35.7% 96.8%,28.6% 100%,21.4% 96.8%,14.3% 100%,7.1% 96.8%,0.0% 100%);transform:rotate(3deg)}
 .wax::before{content:"";position:absolute;inset:0;background:linear-gradient(160deg,transparent 38%,var(--red) 38%,var(--red) 60%,transparent 60%)}
 .wax::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,rgba(255,255,255,.05) 0 2px,transparent 2px 7px)} /* the crinkle of the wrapper */
 .wax > *{position:relative;z-index:1}
