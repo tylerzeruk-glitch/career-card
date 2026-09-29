@@ -26,9 +26,14 @@ export function heroState(): State {
   return s;
 }
 
+/** While a stock is still being tried out (NEXT_PUBLIC_STYLE_TESTERS names who sees it in the app) the landing keeps to the one everyone has. */
+const GATED = !!process.env.NEXT_PUBLIC_STYLE_TESTERS;
+
 const STEPS = [
   { n: '01', h: 'Import', p: 'Drop in a resume PDF or a LinkedIn export. Claude reads it and deals the cards. You fix whatever it got wrong.' },
-  { n: '02', h: 'Detail', p: 'Pick a stock and your team colors, write the highlights, say how each season ended. Add a photo and have it drawn to match, like George, in every team\'s colors.' },
+  { n: '02', h: 'Detail', p: GATED
+    ? 'Pick team colors, write the highlights, say how each season ended. Add a photo and have it drawn in the house style, like George, in every team\'s colors.'
+    : 'Pick a stock and your team colors, write the highlights, say how each season ended. Add a photo and have it drawn to match, like George, in every team\'s colors.' },
   { n: '03', h: 'Share', p: 'Turn on your page at careercards.app/u/you. Only the career goes out. The job hunt stays with you.' },
 ];
 
@@ -117,7 +122,7 @@ export function Landing({ tryHref = '/app?example', signInHref = '/login', onTry
         {STEPS.map((s) => <div key={s.n} className="step"><span className="n">{s.n}</span><h2>{s.h}</h2><p>{s.p}</p></div>)}
       </section>
 
-      <Pack S={base} era={era} onEra={setEra} />
+      {!GATED && <Pack S={base} era={era} onEra={setEra} />}
 
       <section className="hunt">
         <div>
