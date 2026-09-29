@@ -12,8 +12,10 @@ export async function generateMetadata({ params }: PageProps<'/u/[slug]'>): Prom
   if (!page) return { title: 'CareerCards' };
   const S = page.S, first = (S.profile.name || '').trim().split(/\s+/)[0];
   const title = (S.profile.name || 'Career') + ' · CareerCards', description = (first ? `View ${first}\u2019s cards and make your own.` : 'View the cards and make your own.') + (S.profile.headline ? ' ' + S.profile.headline + (S.profile.location ? ' · ' + S.profile.location : '') : '');
-  // the picture comes from opengraph-image.tsx beside this file: their own cards. Only a page its owner made public is indexed; unlisted is reachable by link alone.
-  return { title: { absolute: title }, description, robots: { index: page.visibility === 'public', follow: true }, alternates: { canonical: '/u/' + slug }, openGraph: { title, description, type: 'profile', siteName: 'CareerCards', url: 'https://careercards.app/u/' + slug }, twitter: { card: 'summary_large_image', title, description } };
+  // the picture comes from og/route.tsx beside this file: their own cards. Its address carries the deploy, so a service that cached the
+  // picture fetches it afresh when the renderer changes. Only a page its owner made public is indexed; unlisted is reachable by link alone.
+  const image = { url: 'https://careercards.app/u/' + slug + '/og?v=' + (process.env.VERCEL_GIT_COMMIT_SHA || 'dev').slice(0, 8), width: 1200, height: 630, alt: 'A career as a card set' };
+  return { title: { absolute: title }, description, robots: { index: page.visibility === 'public', follow: true }, alternates: { canonical: '/u/' + slug }, openGraph: { title, description, type: 'profile', siteName: 'CareerCards', url: 'https://careercards.app/u/' + slug, images: [image] }, twitter: { card: 'summary_large_image', title, description, images: [image] } };
 }
 
 /** Someone's card at its address. Shows the career, never the job hunt. */
