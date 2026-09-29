@@ -39,8 +39,8 @@ const STEPS = [
 
 /** The two stocks, as the picker in the app names them. */
 const ERAS: { key: CardTheme; name: string; note: string }[] = [
-  { key: 'vintage', name: 'Vintage', note: 'Cream stock, a pennant and a starburst, like a card from the fifties.' },
-  { key: 'chrome', name: 'Chrome 90s', note: 'A holographic border, a cream photo panel and the name on a red plate, like a card from a nineties pack. Hover to see the foil catch the light.' },
+  { key: 'vintage', name: 'Vintage', note: 'Cream stock, pennant and starburst.' },
+  { key: 'chrome', name: 'Chrome 90s', note: 'Foil border, cream panel, red plate.' },
 ];
 const inEra = (S: State, era: CardTheme): State => ({ ...S, settings: { ...S.settings, theme: era } });
 
@@ -164,7 +164,7 @@ function Pack({ S, era, onEra }: { S: State; era: CardTheme; onEra: (e: CardThem
           <div className="eyebrow">Pick your stock</div>
           <h2>One career, multiple stocks.</h2>
         </div>
-        <p>Every card in the pack comes in each. Click a pile to deal this page in its stock. Your own pack switches the same way, from the header; your page and the picture behind a shared link follow.</p>
+        <p>Click a card to deal the page in its stock. The pennant marks the one in play.</p>
       </div>
       <div className="pack" role="radiogroup" aria-label="Card stock">
         {ERAS.map((e) => {
@@ -174,13 +174,13 @@ function Pack({ S, era, onEra }: { S: State; era: CardTheme; onEra: (e: CardThem
               <div className="pile">
                 <RoleCard S={T} r={S.roles[2]} idx={2} total={S.roles.length} onClick={pick} />
               </div>
-              <div className="pack-cap"><b>{e.name}</b><span>{e.note}</span><em>{era === e.key ? 'On the table' : 'Click to deal the page in it'}</em></div>
+              <div className="pack-cap"><b>{era === e.key && <Flag size={15} />}{e.name}</b><span>{e.note}</span></div>
             </div>
           );
         })}
         <div className="pack-card soon">
           <div className="wax" role="img" aria-label="A sealed pack: more coming soon" />
-          <div className="pack-cap"><b>Next up</b><span>More stocks are on the press. Every one works on every card in your pack.</span></div>
+          <div className="pack-cap"><b>Next up</b><span>More stocks on the press.</span></div>
         </div>
       </div>
     </section>
