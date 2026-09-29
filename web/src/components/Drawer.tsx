@@ -228,7 +228,7 @@ const LinkedInMark = <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden
  * cropped square in the browser and saved as soon as it is picked: into the account's storage, or as a
  * small data URL inside the local card (it moves to the account on sign-in). Shown on every card.
  * Drawing follows the card stock in use: the riso house style for the vintage stock (a set in every
- * team's colours, `avatar`), the 90s look for Chrome 90s (one portrait, `avatar90`); each stock keeps its own.
+ * team's colours, `avatar`), the 90s look for Chrome (one portrait, `avatar90`); each stock keeps its own.
  */
 function PortraitPicker() {
   const { S, update, user, sampleMode, loadExample } = useCard();
@@ -306,7 +306,7 @@ function PortraitPicker() {
     try {
       const avatar = await pickTake(t.path);
       update((s) => ({ ...s, profile: chrome ? { ...s.profile, avatar90: avatar } : { ...s.profile, avatar } }), keep);
-      setTakes([]); setMsg(chrome ? 'Saved. It shows on your Chrome 90s cards and on your page.' : 'Saved. It shows on every card, in each team\'s colors, and on your page.');
+      setTakes([]); setMsg(chrome ? 'Saved. It shows on your Chrome cards and on your page.' : 'Saved. It shows on every card, in each team\'s colors, and on your page.');
     } catch (e) { setMsg((e as Error).message); }
     setPicking(null);
   };

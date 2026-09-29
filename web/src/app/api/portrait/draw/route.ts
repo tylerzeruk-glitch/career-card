@@ -11,7 +11,7 @@ const MAX_PHOTO = 6 * 1024 * 1024;
 
 /**
  * One take: the signed-in player's headshot goes to OpenAI's image model with the prompt for the asked
- * style (the riso house style, or the 90s look for the Chrome 90s stock), the result is keyed, squared
+ * style (the riso house style, or the 90s look for the Chrome stock), the result is keyed, squared
  * and filled (src/lib/riso.ts) and stored under the player's takes folder, named for its style so the
  * pick route knows what to make of it. The browser asks for four of these at once. Needs OPENAI_API_KEY
  * on the server.

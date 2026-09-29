@@ -23,7 +23,7 @@ export const PAIRS: [string, string][] = [
   ['#f5e08a', '#3b3b2f'], ['#f0a58f', '#1c1b18'], ['#bfe0e3', '#254e70'], ['#d7c4f0', '#3a2a6b'], ['#cde3a5', '#2f5d2a'],
 ];
 
-/** The Chrome 90s colourways: the printed frames a team can be dealt, in the picker's order. The file names public/frames/chrome-<file>.webp (and .jpg for the share image). */
+/** The Chrome colourways: the printed frames a team can be dealt, in the picker's order. The file names public/frames/chrome-<file>.webp (and .jpg for the share image). */
 /** `colors` are the picker's two discs; `shirt` is what the 90s portrait's denim is recoloured to on this frame (see src/lib/riso.ts). */
 export const FRAMES: { key: string; name: string; file: string; colors: [string, string]; shirt: string }[] = [
   { key: 'teal', name: 'Teal', file: 'chrome', colors: ['#19b2a8', '#e5322d'], shirt: '#19b2a8' }, { key: 'purple', name: 'Purple', file: 'chrome-purple', colors: ['#3a1f9e', '#fd9662'], shirt: '#6a44d8' }, { key: 'noir', name: 'Noir', file: 'chrome-noir', colors: ['#121826', '#fc0d95'], shirt: '#f0148f' },

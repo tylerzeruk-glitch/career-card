@@ -8,7 +8,7 @@ import { FreeCard, RoleCard } from './Cards';
 /** The looks on offer, in the order they are shown. */
 export const THEMES: { key: CardTheme; name: string; note: string }[] = [
   { key: 'vintage', name: 'Vintage', note: 'Cream stock, a pennant and a starburst, like a card from the fifties.' },
-  { key: 'chrome', name: 'Chrome 90s', note: 'A holographic border, a cream photo panel and the name on a red plate, like a card from a nineties pack. Hover a card to see the foil catch the light.' },
+  { key: 'chrome', name: 'Chrome', note: 'A holographic border, a cream photo panel and the name on a red plate, like a card from a nineties pack. Hover a card to see the foil catch the light.' },
 ];
 
 /**

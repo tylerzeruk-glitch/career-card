@@ -8,7 +8,7 @@ import { portraitFor } from '@/lib/avatar';
 
 type Vars = CSSProperties & { '--a'?: string; '--b'?: string };
 const vars = (a: string, b: string): Vars => ({ '--a': a, '--b': b });
-/** The stock's class plus, on the Chrome 90s stock, the class of the team's frame. */
+/** The stock's class plus, on the Chrome stock, the class of the team's frame. */
 const stockClass = (S: State, company: string) => themeClass(S) + (themeOf(S) === 'chrome' ? ' f' + frameIndexFor(S, company) : '');
 
 /** The player's name, first name(s) and last name in their own spans so a card style can stack or size them. */
@@ -21,7 +21,7 @@ function Who({ name, plate }: { name: string; plate?: boolean }) {
   return <div className="who">{i > 0 ? <><span className="fn">{n.slice(0, i)}</span> <span className="ln">{n.slice(i + 1)}</span></> : <span className="ln">{n}</span>}</div>;
 }
 
-/** The position line: on the Chrome 90s stock it sits in the frame's box, scaled and abbreviated to fit. */
+/** The position line: on the Chrome stock it sits in the frame's box, scaled and abbreviated to fit. */
 function Role({ title, plate, children }: { title: string; plate?: boolean; children?: React.ReactNode }) {
   if (plate) { const f = fitTitle(title); return <div className="role" style={{ '--rs': f.size.toFixed(2) } as React.CSSProperties}><span className="ttl">{f.text}</span>{children}</div>; }
   return <div className="role"><span className="ttl">{title}</span>{children}</div>;
@@ -107,7 +107,7 @@ export function FreeCard({ S, on, share, className, onClick, onTimeline }: { S: 
   );
 }
 
-/** The top card of a team stack. On the Chrome 90s stock the panel carries the portrait, as on a role card; the number pill gives the count. */
+/** The top card of a team stack. On the Chrome stock the panel carries the portrait, as on a role card; the number pill gives the count. */
 export function SummaryCard({ S, run, from, to }: { S: State; run: Run; from: number; to: number }) {
   const [a, b] = pairFor(S, run.company);
   const first = run.roles[0], last = run.roles[run.roles.length - 1];

@@ -128,9 +128,9 @@ function FreeFront({ S, rot }: { S: State; rot: number }) {
   );
 }
 
-/** The Chrome 90s front has no padding, so its container unit (cqw) is a share of the whole card width, not of the vintage card's padded content. */
+/** The Chrome front has no padding, so its container unit (cqw) is a share of the whole card width, not of the vintage card's padded content. */
 const qc = (n: number) => Math.round((n * CW) / 100);
-/** The Chrome 90s frame: shares of the card where the printed frame's panel and plate sit, in px. */
+/** The Chrome frame: shares of the card where the printed frame's panel and plate sit, in px. */
 const FR = { panelL: Math.round(CW * 0.082), panelT: Math.round(CH * 0.0875), panelW: Math.round(CW * 0.836), panelH: Math.round(CH * 0.684), bustH: Math.round(CH * 0.7114),
   plateL: Math.round(CW * 0.06), plateT: Math.round(CH * 0.786), plateW: Math.round(CW * 0.62), plateH: Math.round(CH * 0.064),
   roleL: Math.round(CW * 0.076), roleT: Math.round(CH * 0.866), roleW: Math.round(CW * 0.62), roleH: Math.round(CH * 0.081) };
@@ -189,7 +189,7 @@ function ChromeRole({ title, color }: { title: string; color: string }) {
   );
 }
 
-/** The Chrome 90s card stock: the printed frame, rotated into the hand like the others; */
+/** The Chrome card stock: the printed frame, rotated into the hand like the others; */
 function ChromeStock({ site, rot, frame = 'chrome.jpg', children }: { site: string; rot: number; frame?: string; children: React.ReactNode }) {
   return (
     <div style={{ position: 'absolute', bottom: 0, width: CW, height: CH, transformOrigin: `${CW / 2}px ${Math.round(CH * 1.15)}px`, transform: `rotate(${rot}deg)`, display: 'flex', backgroundImage: `url(${site}/frames/${frame})`, backgroundSize: `${CW}px ${CH}px`, backgroundRepeat: 'no-repeat', boxShadow: '-5px 0 14px rgba(0,0,0,.25), 0 10px 26px rgba(0,0,0,.25)' }}>
@@ -198,7 +198,7 @@ function ChromeStock({ site, rot, frame = 'chrome.jpg', children }: { site: stri
   );
 }
 
-/** The Chrome 90s role card: the photo in the frame's panel, the company as the maker's mark, the position on a navy tag, the name on the plate. */
+/** The Chrome role card: the photo in the frame's panel, the company as the maker's mark, the position on a navy tag, the name on the plate. */
 function ChromeRoleFront({ S, r, site, rot }: { S: State; r: State['roles'][number]; site: string; rot: number }) {
   const p = S.profile;
   const av = portraitFor(S, p, r.company)?.src || '';
@@ -217,7 +217,7 @@ function ChromeRoleFront({ S, r, site, rot }: { S: State; r: State['roles'][numb
   );
 }
 
-/** The Chrome 90s free-agent card: its own purple frame, what the player is open to in the middle of the panel, a line each. */
+/** The Chrome free-agent card: its own purple frame, what the player is open to in the middle of the panel, a line each. */
 function ChromeFreeFront({ S, site, rot }: { S: State; site: string; rot: number }) {
   const p = S.profile, open = (p.targets || []).slice(0, 4);
   const longest = Math.max(1, ...(open.length ? open : ['Offers']).flatMap((t) => t.split(/\s+/)).map((w) => w.length));
@@ -260,7 +260,7 @@ export async function shareImage(S: State, site: string, slug?: string, variant:
   const first = (p.name || '').trim().split(/\s+/)[0];
   const cta = first ? `View ${first}\u2019s cards and make your own.` : 'View the cards and make your own.';
   const firstIdx = roleCards[0] ? Math.max(0, rs.indexOf(roleCards[0])) : 0;
-  // the page around the cards follows the stock, as the site does: vintage's cream and ink, or Chrome 90s's white paper with the foil washed across it, navy and gold
+  // the page around the cards follows the stock, as the site does: vintage's cream and ink, or Chrome's white paper with the foil washed across it, navy and gold
   const T = chrome
     ? { bg: 'linear-gradient(115deg, #fff2f2 0%, #fff8e6 18%, #f0fff2 36%, #eaf7ff 54%, #f5eeff 72%, #fff0f8 90%, #fff2f2 100%)', ink: '#1c1b2a', ink2: '#4a4a5c', muted: '#8a8a9c', red: '#e5322d', accent: '#173a8a', accentInk: '#fff', accentShadow: '3px 3px 0 #f2c230', rule: '#19b2a8', cond: 'Oswald' }
     : { bg: '#f2eee5', ink: '#1c1b18', ink2: '#55524a', muted: '#6b6559', red: '#dc4432', accent: '#1c1b18', accentInk: '#f2eee5', accentShadow: 'none', rule: '#dcd6c8', cond: BARLOW };

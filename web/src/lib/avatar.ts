@@ -32,7 +32,7 @@ function builtIn(key: string): string {
   return inline?.[key] || '/avatars/' + key + '.png';
 }
 
-/** What goes in the art box for this card: on the Chrome 90s stock the 90s portrait when there is one, else the usual. `photo` means it fills the box. */
+/** What goes in the art box for this card: on the Chrome stock the 90s portrait when there is one, else the usual. `photo` means it fills the box. */
 export function portraitFor(S: State, p: Profile, company: string): { src: string; photo: boolean } | null {
   if (themeOf(S) === 'chrome' && p.avatar90) return { src: avatar90Src(p.avatar90, frameIndexFor(S, company)), photo: isPhoto(p.avatar90) };
   if (p.avatar) return { src: avatarSrc(p.avatar, pairIndexFor(S, company)), photo: isPhoto(p.avatar) };
