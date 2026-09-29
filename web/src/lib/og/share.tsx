@@ -176,9 +176,9 @@ function ChromeRole({ title, color }: { title: string; color: string }) {
 }
 
 /** The Chrome 90s card stock: the printed frame, rotated into the hand like the others; */
-function ChromeStock({ site, rot, children }: { site: string; rot: number; children: React.ReactNode }) {
+function ChromeStock({ site, rot, frame = 'chrome.jpg', children }: { site: string; rot: number; frame?: string; children: React.ReactNode }) {
   return (
-    <div style={{ position: 'absolute', bottom: 0, width: CW, height: CH, transformOrigin: `${CW / 2}px ${Math.round(CH * 1.15)}px`, transform: `rotate(${rot}deg)`, display: 'flex', backgroundImage: `url(${site}/frames/chrome.jpg)`, backgroundSize: `${CW}px ${CH}px`, backgroundRepeat: 'no-repeat', boxShadow: '-5px 0 14px rgba(0,0,0,.25), 0 10px 26px rgba(0,0,0,.25)' }}>
+    <div style={{ position: 'absolute', bottom: 0, width: CW, height: CH, transformOrigin: `${CW / 2}px ${Math.round(CH * 1.15)}px`, transform: `rotate(${rot}deg)`, display: 'flex', backgroundImage: `url(${site}/frames/${frame})`, backgroundSize: `${CW}px ${CH}px`, backgroundRepeat: 'no-repeat', boxShadow: '-5px 0 14px rgba(0,0,0,.25), 0 10px 26px rgba(0,0,0,.25)' }}>
       {children}
     </div>
   );
@@ -203,13 +203,13 @@ function ChromeRoleFront({ S, r, site, rot }: { S: State; r: State['roles'][numb
   );
 }
 
-/** The Chrome 90s free-agent card: the panel goes navy, what the player is open to in the middle, a line each. */
+/** The Chrome 90s free-agent card: its own purple frame, what the player is open to in the middle of the panel, a line each. */
 function ChromeFreeFront({ S, site, rot }: { S: State; site: string; rot: number }) {
   const p = S.profile, open = (p.targets || []).slice(0, 3);
   return (
-    <ChromeStock site={site} rot={rot}>
-      <div style={{ position: 'absolute', left: FR.panelL, top: FR.panelT, width: FR.panelW, height: FR.panelH, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '8% 8% 16%', textAlign: 'center', background: '#1f2a44', color: '#fff', clipPath: PANEL_CLIP }}>
-        <div style={{ display: 'flex', fontFamily: BARLOW, fontSize: q(4.6), letterSpacing: '0.2em', textTransform: 'uppercase', color: '#c9d7f2', marginBottom: q(3) }}>Open to</div>
+    <ChromeStock site={site} rot={rot} frame="chrome-free.jpg">
+      <div style={{ position: 'absolute', left: FR.panelL, top: FR.panelT, width: FR.panelW, height: FR.panelH, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '8% 8% 16%', textAlign: 'center', color: NAVY, clipPath: PANEL_CLIP }}>
+        <div style={{ display: 'flex', fontFamily: BARLOW, fontSize: q(4.6), letterSpacing: '0.2em', textTransform: 'uppercase', color: RED, marginBottom: q(3) }}>Open to</div>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', fontFamily: LILITA, fontSize: q(7.5), lineHeight: 1.15, textTransform: 'uppercase', textAlign: 'center' }}>{(open.length ? open : ['Offers']).map((t, i) => <div key={i} style={{ display: 'flex' }}>{t}</div>)}</div>
       </div>
       <ChromeMark text="Free agent" color={RED} />

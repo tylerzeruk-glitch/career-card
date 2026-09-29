@@ -182,13 +182,14 @@
 /* the back's footer rides the red plate, which runs nearly the whole width */
 .card.t-chrome .foot{position:absolute;left:5%;top:87%;width:86%;height:7%;margin:0;padding:0 3cqw;border:0;color:#fff;font:400 5.4cqw/1 "Lilita One","Arial Black",Impact,sans-serif;letter-spacing:.04em;text-transform:uppercase;font-style:normal;text-shadow:.4cqw .4cqw 0 #1c1b18; /* as the surname on the front's plate */
   transform:rotate(-6.6deg);transform-origin:0 50%;display:flex;align-items:center;justify-content:space-between;white-space:nowrap;overflow:hidden}
-/* the free-agent card: the panel goes navy (painted behind the panel's content, stopping at the plates), the logo gold, the position red */
+/* the free-agent card: its own printed frames (public/frames/chrome-free*.webp), the same layout in purple and blue so it stands apart in the deck; the panel stays the frame's cream, with what the player is open to in navy */
+.card.t-chrome.free{--frame:url("/frames/chrome-free.webp");--frame-back:url("/frames/chrome-free-back.webp")}
 .card.t-chrome.free .front{background:var(--frame) center/100% 100% no-repeat;border-color:transparent}
-.card.t-chrome.free .art{background:transparent;border:0;display:flex;padding:6% 6% 14%}
-.card.t-chrome.free .art::before{content:"";display:block;position:absolute;inset:0;z-index:-1;background:#1f2a44;clip-path:polygon(0 0,100% 0,100% 92.3%,17.8% 100%,0 100%)}
+.card.t-chrome.free .art{background:transparent;border:0;display:flex;padding:6% 6% 14%;color:var(--navy)}
+.card.t-chrome.free .art::before{display:none}
 .card.t-chrome.free .team{background:transparent;color:var(--red)} /* red like the company marks: the gold read poorly on the halftone */
 .card.t-chrome.free .role{color:var(--red)}
-.card.t-chrome.free .k{color:#c9d7f2}.card.t-chrome.free .art .open{color:#fff}
+.card.t-chrome.free .k{color:var(--red);opacity:1}.card.t-chrome.free .art .open{color:var(--navy);text-shadow:.3cqw .3cqw 0 rgba(28,27,24,.18)}
 .card.t-chrome.free .who .fn{color:#ffe2a8}
 /* the stat tiles as small yellow plates: slanted, a hard black shadow, red halftone creeping in from the right, the figure in the mark's red with its keyline and shadow */
 .card.t-chrome.free .figs{gap:5%;margin:1% 0 5%}
