@@ -2,6 +2,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { CardTheme, State } from '@/lib/types';
 import { attachTilt } from '@/lib/tilt';
+import { loadLocal, saveLocal } from '@/lib/storage';
 import { sampleState } from '@/lib/sample';
 import { FreeCard, RoleCard } from './Cards';
 import { TimelineLegend, TimelineView } from './Timeline';
@@ -38,13 +39,11 @@ const ERAS: { key: CardTheme; name: string; note: string }[] = [
 ];
 const inEra = (S: State, era: CardTheme): State => ({ ...S, settings: { ...S.settings, theme: era } });
 
-/** Vintage / Chrome 90s: hovering an option shows it, a click keeps it. */
-function EraSwitch({ era, onEra, label }: { era: CardTheme; onEra: (e: CardTheme) => void; label: string }) {
-  return (
-    <div className="era" role="radiogroup" aria-label={label}>
-      {ERAS.map((e) => <button key={e.key} type="button" role="radio" aria-checked={era === e.key} className={(era === e.key ? 'on ' : '') + e.key} onMouseEnter={() => onEra(e.key)} onFocus={() => onEra(e.key)} onClick={() => onEra(e.key)}><i aria-hidden="true" />{e.name}</button>)}
-    </div>
-  );
+/** The stock picked on the landing goes with the visitor into the app: onto the card this browser holds, or onto the example it is about to deal. */
+function carryEra(era: CardTheme) {
+  const local = loadLocal();
+  if (local) saveLocal(inEra(local.state, era), local.sample);
+  else if (era !== 'vintage') saveLocal(inEra(heroState(), era), true);
 }
 
 const GLOSSARY: [string, string][] = [
@@ -61,7 +60,7 @@ const GLOSSARY: [string, string][] = [
  */
 export function Landing({ tryHref = '/app?example', signInHref = '/login', onTry }: { tryHref?: string; signInHref?: string; onTry?: () => void }) {
   const [base] = useState(heroState);
-  // the hand is dealt in whichever stock the switch under it points at
+  // the stock the whole page is dealt in: picked from the pack further down; the hand follows
   const [era, setEra] = useState<CardTheme>('vintage');
   const S = useMemo(() => inEra(base, era), [base, era]);
   // one card at a time pops out of the hand, then flips; a second click flips it back and settles it
@@ -75,11 +74,11 @@ export function Landing({ tryHref = '/app?example', signInHref = '/login', onTry
   };
   useEffect(() => () => { if (timer.current) clearTimeout(timer.current); }, []);
   const cls = (id: string, i: number) => 'h' + i + (out === id ? ' out' : '');
-  const tryProps = onTry ? { href: tryHref, onClick: (e: React.MouseEvent) => { e.preventDefault(); onTry(); } } : { href: tryHref };
+  const tryProps = onTry ? { href: tryHref, onClick: (e: React.MouseEvent) => { e.preventDefault(); carryEra(era); onTry(); } } : { href: tryHref, onClick: () => carryEra(era) };
   const hand = [S.roles[0], S.roles[2]]; // Marine Biologist at Acme, Latex Salesman at Vandelay
 
   return (
-    <div className="landing">
+    <div className="landing" data-style={era}>
       <header className="lbar">
         <a className="wordmark" href="/"><Flag /><span>CareerCards</span></a>
         <nav>
@@ -98,13 +97,12 @@ export function Landing({ tryHref = '/app?example', signInHref = '/login', onTry
           </div>
           <div className="fine">Free. No account needed to try.<br />Sign in to keep your cards, share them, and get your portrait drawn.</div>
         </div>
-        <div className={'handwrap' + (era === 'chrome' ? ' era-chrome' : '')}>
+        <div className="handwrap">
           {out && <div className="hand-dim" onClick={() => flip(out)} aria-hidden="true" />}
           <div className="hand" aria-label="Example cards. Click one to pick it up and flip it.">
             {hand.map((r, i) => <RoleCard key={r.id} S={S} r={r} idx={S.roles.indexOf(r)} total={S.roles.length} on={!!flipped[r.id]} className={cls(r.id, i)} onClick={() => flip(r.id)} />)}
             <FreeCard S={S} share on={!!flipped.free} className={cls('free', 2)} onClick={() => flip('free')} />
           </div>
-          <EraSwitch era={era} onEra={setEra} label="Card stock for the example cards" />
           <div className={'flipme' + (out ? ' off' : '')} aria-hidden="true">
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12a9 9 0 0 1 15.5-6.3" /><path d="M18.5 2v4h-4" /><path d="M21 12a9 9 0 0 1-15.5 6.3" /><path d="M5.5 22v-4h4" /></svg>
             Tap a card to flip it over
@@ -116,7 +114,7 @@ export function Landing({ tryHref = '/app?example', signInHref = '/login', onTry
         {STEPS.map((s) => <div key={s.n} className="step"><span className="n">{s.n}</span><h2>{s.h}</h2><p>{s.p}</p></div>)}
       </section>
 
-      <Eras S={base} />
+      <Pack S={base} era={era} onEra={setEra} />
 
       <section className="hunt">
         <div>
@@ -145,10 +143,12 @@ export function Landing({ tryHref = '/app?example', signInHref = '/login', onTry
   );
 }
 
-/** Pick your era: the same card in each stock, side by side, each with its character in a line. The cards flip on a click and lean toward the pointer. */
-function Eras({ S }: { S: State }) {
+/**
+ * Pick your era: the pack, one card per stock and one for what is coming. Clicking a card deals the whole page
+ * in its stock (the hero hand, the buttons, the paper); the cards lean toward the pointer.
+ */
+function Pack({ S, era, onEra }: { S: State; era: CardTheme; onEra: (e: CardTheme) => void }) {
   const host = useRef<HTMLDivElement>(null);
-  const [on, setOn] = useState<Record<string, boolean>>({});
   useEffect(() => { const el = host.current; if (!el) return; return attachTilt(el); }, []);
   const r = S.roles[2]; // Latex Salesman at Vandelay
   return (
@@ -158,15 +158,19 @@ function Eras({ S }: { S: State }) {
           <div className="eyebrow">Pick your era</div>
           <h2>Two stocks. One career.</h2>
         </div>
-        <p>Every card in the pack comes in either. Switch any time from the header; your page and the picture behind a shared link follow.</p>
+        <p>Every card in the pack comes in either. Click one to deal this page in it. Your own pack switches the same way, from the header; your page and the picture behind a shared link follow.</p>
       </div>
-      <div className="era-grid">
+      <div className="pack" role="radiogroup" aria-label="Card stock">
         {ERAS.map((e) => (
-          <div key={e.key} className={'era-card' + (e.key === 'chrome' ? ' era-chrome' : '')}>
-            <RoleCard S={inEra(S, e.key)} r={r} idx={2} total={S.roles.length} on={!!on[e.key]} onClick={() => setOn((o) => ({ ...o, [e.key]: !o[e.key] }))} />
-            <div><h3>{e.name}</h3><p>{e.note}</p></div>
+          <div key={e.key} className={'pack-card' + (era === e.key ? ' on' : '') + (e.key === 'chrome' ? ' era-chrome' : '')}>
+            <RoleCard S={inEra(S, e.key)} r={r} idx={2} total={S.roles.length} onClick={() => onEra(e.key)} />
+            <div className="pack-cap"><b>{e.name}</b><span>{e.note}</span><em>{era === e.key ? 'On the table' : 'Click to deal the page in it'}</em></div>
           </div>
         ))}
+        <div className="pack-card soon">
+          <div className="card-soon"><span>More styles</span><small>coming soon</small></div>
+          <div className="pack-cap"><b>Next up</b><span>More stocks are on the press. Every one works on every card in your pack.</span></div>
+        </div>
       </div>
     </section>
   );
