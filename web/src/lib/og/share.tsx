@@ -1,6 +1,6 @@
 import { ImageResponse } from 'next/og';
 import type { State } from '../types';
-import { careerStats, codeFor, initials, looking, pairFor, pairIndexFor, roles, status, themeOf } from '../derived';
+import { FRAMES, careerStats, codeFor, frameIndexFor, initials, looking, pairFor, pairIndexFor, roles, status, themeOf } from '../derived';
 import { avatarSrc } from '../avatar';
 import { fitCompany, fitName, fitTitle } from '../fit';
 
@@ -191,7 +191,7 @@ function ChromeRoleFront({ S, r, site, rot }: { S: State; r: State['roles'][numb
   const src = av ? (av.startsWith('/') ? site + av : av) : '';
   const ph = FR.panelH;
   return (
-    <ChromeStock site={site} rot={rot}>
+    <ChromeStock site={site} rot={rot} frame={FRAMES[frameIndexFor(S, r.company)].file + '.jpg'}>
       <div style={{ position: 'absolute', left: FR.panelL, top: FR.panelT, width: FR.panelW, height: ph, display: 'flex', alignItems: 'flex-end', justifyContent: 'center', overflow: 'hidden', clipPath: PANEL_CLIP }}>
         {src ? <div style={{ width: ph, height: ph, backgroundImage: `url(${src})`, backgroundSize: `${ph}px ${ph}px`, backgroundRepeat: 'no-repeat' }} />
           : <div style={{ display: 'flex', fontFamily: BARLOW, fontSize: q(34), letterSpacing: '-0.02em', color: NAVY, marginBottom: q(30) }}>{initials(p.name) || '?'}</div>}

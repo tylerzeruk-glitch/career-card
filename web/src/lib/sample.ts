@@ -44,7 +44,7 @@ export function sampleState(): State {
       { id: uid(), date: d(12), type: 'interview', company: 'Play Now', title: 'Sales Lead, Playground Equipment', notes: 'Hiring manager round. Brought up the Yankees.' },
       { id: uid(), date: d(6), type: 'application', company: 'Sanalac', title: 'Rest Stop Supply Manager', salary: '$125k', status: 'In Progress' },
     ],
-    brand: { 'acme corp': 2, vandelay: 0 },
+    brand: { 'acme corp': 2, vandelay: 1 },
     settings: { group: 'role', view: 'cards' },
   };
 }

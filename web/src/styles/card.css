@@ -130,7 +130,10 @@
 .card .hdr{margin:2.55cqw calc(-9.6% + 2.6cqw) 3%;border-radius:4.2cqw 4.2cqw 0 0}
 
 /* ===== Chrome 90s: a printed holographic frame (public/frames/chrome.webp: teal halftone, blue stripes in two corners, a rainbow foil edge, a cream photo panel in a gold and navy frame, a red nameplate and a baseball at the bottom right). Everything that changes per card is laid over it: the company as the logo over the top-left corner, the number, the photo in the panel, the position, the name on the plate. A rainbow sheen and a soft band of light follow the pointer across the whole face. ===== */
-.card.t-chrome{--foil:linear-gradient(115deg,#ff8a8a 0%,#ffd36b 18%,#8dff9a 36%,#7ad7ff 54%,#c48bff 72%,#ff8ad4 90%,#ff8a8a 100%);--gold:#f2c230;--navy:#173a8a;--red:#e5322d;--frame:url("/frames/chrome.webp");--frame-back:url("/frames/chrome-back.webp")}
+.card.t-chrome{--foil:linear-gradient(115deg,#ff8a8a 0%,#ffd36b 18%,#8dff9a 36%,#7ad7ff 54%,#c48bff 72%,#ff8ad4 90%,#ff8a8a 100%);--gold:#f2c230;--navy:#173a8a;--red:#e5322d;--frame:var(--frame-0);--frame-back:url("/frames/chrome-back.webp")}
+/* the colourways (src/lib/derived.ts FRAMES): a team's cards carry the class of their frame; the picker's swatches use the same variables */
+:root{--frame-0:url("/frames/chrome.webp");--frame-1:url("/frames/chrome-purple.webp");--frame-2:url("/frames/chrome-noir.webp");--frame-3:url("/frames/chrome-neon.webp");--frame-4:url("/frames/chrome-sunset.webp");--frame-5:url("/frames/chrome-lime.webp")}
+.card.t-chrome.f1{--frame:var(--frame-1)}.card.t-chrome.f2{--frame:var(--frame-2)}.card.t-chrome.f3{--frame:var(--frame-3)}.card.t-chrome.f4{--frame:var(--frame-4)}.card.t-chrome.f5{--frame:var(--frame-5)}
 .card.t-chrome .face{border-radius:0;border:0;box-shadow:-5px 0 14px rgba(0,0,0,.22),0 10px 26px rgba(0,0,0,.22);background:var(--frame) center/100% 100% no-repeat}
 .card.t-chrome .front{padding:0;isolation:isolate}
 /* the rainbow sheen and a soft band of light, drifting with the pointer over the whole face, photo included, like light on a sleeve */

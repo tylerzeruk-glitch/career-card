@@ -23,6 +23,16 @@ export const PAIRS: [string, string][] = [
   ['#f5e08a', '#3b3b2f'], ['#f0a58f', '#1c1b18'], ['#bfe0e3', '#254e70'], ['#d7c4f0', '#3a2a6b'], ['#cde3a5', '#2f5d2a'],
 ];
 
+/** The Chrome 90s colourways: the printed frames a team can be dealt, in the picker's order. The file names public/frames/chrome-<file>.webp (and .jpg for the share image). */
+export const FRAMES: { key: string; name: string; file: string }[] = [
+  { key: 'teal', name: 'Teal', file: 'chrome' }, { key: 'purple', name: 'Purple', file: 'chrome-purple' }, { key: 'noir', name: 'Noir', file: 'chrome-noir' },
+  { key: 'neon', name: 'Neon', file: 'chrome-neon' }, { key: 'sunset', name: 'Sunset', file: 'chrome-sunset' }, { key: 'lime', name: 'Lime', file: 'chrome-lime' },
+];
+/** The frame a team's cards are printed on: the team's colour pick, folded onto the frames on offer, so a pick made on either stock carries over. */
+export function frameIndexFor(S: Pick<State, 'brand'>, company: string): number {
+  return pairIndexFor(S, company) % FRAMES.length;
+}
+
 export const uid = () => Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
 export const norm = (s: string | null | undefined) => (s || '').trim().toLowerCase();
 export const initials = (s: string | null | undefined) =>

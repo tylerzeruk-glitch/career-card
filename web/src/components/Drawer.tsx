@@ -8,7 +8,7 @@ type EduRow = { school: string; degree: string; start: string; end: string; inPr
 type CertRow = { name: string; issuer: string; year: string; inProgress: boolean };
 const IN_PROGRESS = /in progress|present/i;
 import { fmtShort, parseMonth, todayISO } from '@/lib/dates';
-import { PAIRS, TYPES, codeFor, hashIdx, huntStats, initials, looking, norm, pairFor, pairIndexFor, roles, slugify, sortedEvents, statusOf, uid } from '@/lib/derived';
+import { FRAMES, PAIRS, TYPES, codeFor, hashIdx, huntStats, initials, looking, norm, pairFor, pairIndexFor, roles, slugify, sortedEvents, statusOf, themeOf, uid } from '@/lib/derived';
 import { avatarSrc, isPhoto, isSet } from '@/lib/avatar';
 import { LOCAL_SIDE, PORTRAIT_SIDE, dropPortrait, drawTake, isDataUrl, photoBlob, pickTake, squarePhoto, storePortrait, toDataUrl, type Take } from '@/lib/portrait';
 import { linkedinOn } from '@/lib/auth-providers';
@@ -138,7 +138,9 @@ function RoleForm({ roleId }: { roleId: string | null }) {
         <div className="field"><label htmlFor="r-bullets">Highlights, one per line</label><textarea id="r-bullets" name="bullets" placeholder={'Led delivery for a portfolio of clients\nRan intake, triage and UAT'} defaultValue={(r?.bullets || []).join('\n')} /></div>
         <div className="field"><label htmlFor="r-skills">Skills</label><TagInput id="r-skills" value={skills} onChange={setSkills} placeholder="Type a skill and press Enter" /></div>
         <div className="field"><label>Team colors</label>
-          <div className="swatches">{PAIRS.map((p, i) => <button type="button" key={i} className={'sw' + (i === curSwatch ? ' on' : '')} style={{ '--a': p[0], '--b': p[1] } as React.CSSProperties} title={'Color pair ' + (i + 1)} onClick={() => setSwatch(i)} />)}</div>
+          {themeOf(S) === 'chrome'
+            ? <div className="swatches">{FRAMES.map((f, i) => <button type="button" key={f.key} className={'sw frame f' + i + (i === curSwatch % FRAMES.length ? ' on' : '')} title={f.name} aria-label={f.name + ' frame'} onClick={() => setSwatch(i)} />)}</div>
+            : <div className="swatches">{PAIRS.map((p, i) => <button type="button" key={i} className={'sw' + (i === curSwatch ? ' on' : '')} style={{ '--a': p[0], '--b': p[1] } as React.CSSProperties} title={'Color pair ' + (i + 1)} onClick={() => setSwatch(i)} />)}</div>}
           <span className="help">Shared by every role at this company.</span>
         </div>
         <div className="form-foot">
