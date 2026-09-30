@@ -38,10 +38,17 @@ const STEPS = [
 ];
 
 /** The two stocks, as the picker in the app names them. */
-const ERAS: { key: CardTheme; name: string; note: string }[] = [
-  { key: 'vintage', name: 'Vintage', note: 'Cream stock, pennant and starburst.' },
-  { key: 'chrome', name: 'Chrome 90s', note: 'Foil border, cream panel, red plate.' },
+const ERAS: { key: CardTheme; name: string; note: string; spec: [string, string][] }[] = [
+  { key: 'vintage', name: 'Vintage', note: 'Cream stock, pennant and starburst.', spec: [['Stock', 'Cream'], ['Type', 'Serif'], ['Mark', 'Starburst'], ['Era', '1950s']] },
+  { key: 'v2', name: 'Vintage V2', note: 'Printed frame, pennant and star.', spec: [['Stock', 'Cream'], ['Type', 'Serif'], ['Mark', 'Pennant'], ['Era', '1960s']] },
+  { key: 'chrome', name: 'Chrome', note: 'Foil border, cream panel, red plate.', spec: [['Stock', 'Foil'], ['Type', 'Block'], ['Mark', 'Plate'], ['Era', '1990s']] },
 ];
+const SOON_SPEC: [string, string][] = [['Stock', '—'], ['Type', '—'], ['Mark', '—'], ['Era', 'Next']];
+
+/** The strip under a stock's card: a few labelled facts, set like the back of a real card. */
+function Spec({ rows }: { rows: [string, string][] }) {
+  return <dl className="pack-spec">{rows.map(([k, v]) => <div key={k}><dt>{k}</dt><dd>{v}</dd></div>)}</dl>;
+}
 const inEra = (S: State, era: CardTheme): State => ({ ...S, settings: { ...S.settings, theme: era } });
 
 /** The stock picked on the landing goes with the visitor into the app: onto the card this browser holds, or onto the example it is about to deal. */
@@ -160,27 +167,27 @@ function Pack({ S, era, onEra }: { S: State; era: CardTheme; onEra: (e: CardThem
   return (
     <section className="eras">
       <div className="eras-head">
-        <div>
-          <div className="eyebrow">Pick your stock</div>
-          <h2>One career, multiple stocks.</h2>
-        </div>
+        <div className="eyebrow">Pick your stock</div>
+        <h2>One career, multiple stocks.</h2>
         <p>Click a card to deal the page in its stock. The pennant marks the one in play.</p>
       </div>
       <div className="pack" role="radiogroup" aria-label="Card stock">
         {ERAS.map((e) => {
           const T = inEra(S, e.key), pick = () => onEra(e.key);
           return (
-            <div key={e.key} className={'pack-card' + (era === e.key ? ' on' : '') + (e.key === 'chrome' ? ' era-chrome' : '')}>
-              <div className="pile">
+            <div key={e.key} className={'pack-card' + (era === e.key ? ' on' : '')}>
+              <div className={'pile' + (e.key === 'chrome' ? ' era-chrome' : '')}>{/* the stock's tokens reach the card alone; the caption below is set in the page's stock */}
                 <RoleCard S={T} r={S.roles[2]} idx={2} total={S.roles.length} onClick={pick} />
               </div>
               <div className="pack-cap"><b>{era === e.key && <Flag size={15} />}{e.name}</b><span>{e.note}</span></div>
+              <Spec rows={e.spec} />
             </div>
           );
         })}
         <div className="pack-card soon">
           <div className="wax" role="img" aria-label="A sealed pack: more coming soon" />
           <div className="pack-cap"><b>Next up</b><span>More stocks on the press.</span></div>
+          <Spec rows={SOON_SPEC} />
         </div>
       </div>
     </section>
