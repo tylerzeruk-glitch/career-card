@@ -1,35 +1,35 @@
-import { existsSync } from 'node:fs';
-import { join } from 'node:path';
 import type { CSSProperties } from 'react';
 import { Flag, SiteFoot } from '@/components/Brand';
+import { fitCompany, fitName, fitTitle } from '@/lib/fit';
 
 /**
- * 404: a card that isn't in the set. Cosmo Kramer, no. 404, for a team that was never a company, with a
- * back you can read by hovering. A drawn portrait goes in public/avatars/kramer.webp when there is one;
- * until then the art box carries his monogram like any card without a portrait.
+ * 404: a card that isn't in the set. Cosmo Kramer, no. 404, for a team that was never a company, on the Chrome
+ * stock (the teal frame, his 90s portrait in public/avatars/kramer-90s.webp), with a back you can read by hovering.
+ * The front is built as RoleCard builds a Chrome card, with the same fitting for the team, the name and the position.
  */
-const KRAMER = existsSync(join(process.cwd(), 'public', 'avatars', 'kramer.webp'));
+const NAME = fitName('Cosmo Kramer'), TITLE = fitTitle('Not in this set');
 
 export default function NotFound() {
-  const vars = { '--a': '#f5e08a', '--b': '#3b3b2f' } as CSSProperties; // PAIRS[5], the pair the portrait was recolored for
+  const vars = { '--a': '#e8a13a', '--b': '#1f2a44' } as CSSProperties; // PAIRS[0], whose frame is the teal one (f0)
   return (
-    <div className="landing nf">
+    <div className="landing nf" data-style="chrome">
       <header className="lbar">
         <a className="wordmark" href="/"><Flag /><span>CareerCards</span></a>
         <nav><a className="btn primary" href="/">Make your own pack</a></nav>
       </header>
       <main className="nf-main">
         <div className="nf-card">
-          <div className="card t-vintage" style={vars} aria-label="Cosmo Kramer, number 404, not in this set">
+          <div className="card t-chrome f0" style={vars} aria-label="Cosmo Kramer, number 404, not in this set">
             <div className="inner">
               <div className="face front">
+                <span className="num wide" style={{ fontSize: '3.5cqw' }}>#404</span>{/* three figures: smaller than a card number ever needs */}
                 <div className="art">
-                  <div className="team" style={{ fontSize: '5.8cqw' }}>Kramerica</div>
-                  {KRAMER ? <span className="pic"><img src="/avatars/kramer.webp" alt="" loading="lazy" decoding="async" /></span> : <span className="mono">CK</span>}
+                  <div className="team" style={{ fontSize: fitCompany('Kramerica') + 'cqw' }}>Kramerica</div>
+                  <span className="pic"><img src="/avatars/kramer-90s.webp" alt="" decoding="async" /></span>
                   <span className="badge">LOST</span>
                 </div>
-                <div className="who"><span className="fn">Cosmo</span> <span className="ln">Kramer</span></div>
-                <div className="role"><span className="ttl">Not in this set</span></div>
+                <div className="who" style={{ '--ns': NAME.scale.toFixed(3) } as CSSProperties}><span className="fn">{NAME.fn}</span> <span className="ln">{NAME.ln}</span></div>
+                <div className="role" style={{ '--rs': TITLE.size.toFixed(2) } as CSSProperties}><span className="ttl">{TITLE.text}</span></div>
               </div>
               <div className="face back">
                 <div className="hdr"><div className="t">Kramerica</div><div className="s">Page not found · Apt. 5B</div></div>
