@@ -826,3 +826,28 @@ html:has([data-style="chrome"]) body{background:#fff linear-gradient(180deg,rgba
 [data-style="chrome"] .stylepick .swatch.on{outline:0;background:#fff;border-color:var(--navy);color:var(--navy);box-shadow:3px 3px 0 var(--gold)}
 [data-style="chrome"] .stylepick .swatch.on .lbl{text-shadow:1.5px 1.5px 0 var(--gold)} /* as the header links */
 [data-style="chrome"] .stylepick .thumb .card .face{box-shadow:3px 3px 0 rgba(28,27,42,.35)}
+
+/* ===== Vintage, the page around the cards: a second sheet. Each control sits on the paper like a card on a card: a thin ink
+   keyline and, two pixels down and right, a sliver of the darker paper under it (--under). Solid, short, no blur, the colour of
+   the card backs rather than ink, so it reads as stock rather than shadow. Type carries no shadow. ===== */
+[data-style="vintage"]{--under:#cbbfa3}
+[data-style="vintage"] .btn.primary{box-shadow:2px 2px 0 var(--under)}
+[data-style="vintage"] .btn.primary:hover{opacity:1;transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--under)}
+[data-style="vintage"].landing .btn:not(.primary),[data-style="vintage"].pub .btn:not(.primary),[data-style="vintage"] .btn.outline{border:1.5px solid var(--ink);color:var(--ink);background:var(--paper);box-shadow:2px 2px 0 var(--under)}
+[data-style="vintage"].landing .btn:not(.primary):hover,[data-style="vintage"].pub .btn:not(.primary):hover,[data-style="vintage"] .btn.outline:hover{background:var(--paper);color:var(--ink);transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--under)}
+[data-style="vintage"] .toggle{background:var(--paper);box-shadow:2px 2px 0 var(--under)}
+[data-style="vintage"] .btn.icon.theme,[data-style="vintage"] .btn.icon.style,[data-style="vintage"] .menu summary.more{border:1.5px solid var(--ink);background:var(--paper);color:var(--ink);box-shadow:2px 2px 0 var(--under);transition:transform .12s,box-shadow .12s}
+[data-style="vintage"] .btn.icon.theme:hover,[data-style="vintage"] .btn.icon.style:hover,[data-style="vintage"] .menu summary.more:hover{background:var(--paper);transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--under)}
+[data-style="vintage"] .menu[open] summary.more,[data-style="vintage"] .stylepick[open] summary.style{transform:none;box-shadow:2px 2px 0 var(--under);background:var(--ink);color:var(--paper)}
+[data-style="vintage"] .pill{box-shadow:2px 2px 0 var(--under)}
+[data-style="vintage"] .line b{box-shadow:1.5px 1.5px 0 var(--under)}
+[data-style="vintage"] .gt button i{border:1.5px solid var(--ink);background:var(--paper);box-shadow:1.5px 1.5px 0 var(--under)}
+[data-style="vintage"] .gt button.on i{background:var(--red);border-color:var(--red)}
+[data-style="vintage"] .ghost{border:1.5px solid var(--ink);color:var(--ink);box-shadow:3px 3px 0 var(--under);transition:transform .15s,box-shadow .15s}
+[data-style="vintage"] .ghost:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--under)}
+[data-style="vintage"] .ghost.restack{border:0;box-shadow:none;transform:none}
+[data-style="vintage"] .menu .pop{border:1.5px solid var(--ink);border-radius:6px;box-shadow:3px 3px 0 var(--under)}
+[data-style="vintage"] .stylepick .swatch.on{outline:0;border:1.5px solid var(--ink);background:var(--paper);box-shadow:2px 2px 0 var(--under)}
+[data-style="vintage"] .stylepick .thumb .card .face{box-shadow:2px 2px 0 rgba(28,27,24,.22)}
+[data-style="vintage"] .portrait .pv,[data-style="vintage"] .takes .take{border:1.5px solid var(--ink);box-shadow:3px 3px 0 var(--under)}
+[data-style="vintage"].landing .hunt{box-shadow:5px 5px 0 var(--under)}
