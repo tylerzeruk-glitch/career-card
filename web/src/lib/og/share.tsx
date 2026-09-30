@@ -4,6 +4,7 @@ import type { State } from '../types';
 import { FRAMES, careerStats, codeFor, frameIndexFor, initials, looking, pairFor, roles, status, themeOf } from '../derived';
 import { portraitFor } from '../avatar';
 import { fitCompany, fitName, fitTitle } from '../fit';
+import { SUPABASE_URL } from '../supabase/env';
 
 /**
  * The share image for a player's page: name, headline and a hand of their three most recent cards,
@@ -35,6 +36,19 @@ function fontList(lilita: ArrayBuffer, barlow: ArrayBuffer, caslon: ArrayBuffer,
 
 const FLAG = 'M9.97 11.67 L12.69 22.18 L14.24 35.35 L19.68 32.04 L25.34 30.42 L29.54 30.27 L36.89 31.08 L41.38 30.20 L49.98 26.74 L60.50 21.08 L51.31 20.56 L41.38 18.80 L35.05 16.52 L26.15 12.18 L20.27 10.49 L14.83 10.27 Z M5.93 5.41 L3.94 6.59 L3.43 8.87 L5.05 10.78 L13.58 57.34 L14.31 58.37 L15.49 58.51 L16.45 57.92 L16.74 56.38 L8.28 10.64 L9.16 7.33 L7.91 5.71 Z';
 const BARLOW = 'Barlow Condensed', LILITA = 'Lilita One', CASLON = 'Libre Caslon Text';
+
+/**
+ * A portrait the renderer may fetch: the site's own built-ins, an inline image, or a file in the project's portraits
+ * bucket. The address comes from the card owner, and the renderer fetches it on the server for anyone who asks for the
+ * picture, so anything else (another host, an internal address) is not fetched and the card shows initials instead.
+ */
+function trustedPortrait(src: string, site: string): string {
+  if (!src) return '';
+  if (src.startsWith('/') && !src.startsWith('//')) return site + src;
+  if (src.startsWith('data:image/')) return src;
+  const bucket = SUPABASE_URL ? SUPABASE_URL.replace(/\/$/, '') + '/storage/v1/object/public/portraits/' : '';
+  return bucket && src.startsWith(bucket) && !src.includes('..') ? src : '';
+}
 
 function splitName(name: string) {
   const n = (name || '').trim(), i = n.lastIndexOf(' ');
@@ -116,7 +130,7 @@ function ChromeStock({ site, rot, frame = 'chrome.jpg', children }: { site: stri
 function ChromeRoleFront({ S, r, site, rot }: { S: State; r: State['roles'][number]; site: string; rot: number }) {
   const p = S.profile;
   const av = portraitFor(S, p, r.company)?.src || '';
-  const src = av ? (av.startsWith('/') ? site + av : av) : '';
+  const src = trustedPortrait(av, site);
   const ph = FR.bustH;
   return (
     <ChromeStock site={site} rot={rot} frame={FRAMES[frameIndexFor(S, r.company)].file + '.jpg'}>
@@ -209,7 +223,7 @@ function VintageLettering({ team, code, name, role, roleColor }: { team: string;
 function VintageRoleFront({ S, r, site, rot, tint }: { S: State; r: State['roles'][number]; site: string; rot: number; tint: string }) {
   const [a, b] = pairFor(S, r.company), p = S.profile;
   const av = portraitFor(S, p, r.company)?.src || '';
-  const src = av ? (av.startsWith('/') ? site + av : av) : '';
+  const src = trustedPortrait(av, site);
   const win = { left: qv(6.5), top: qv(15.4), width: qv(87), height: qv(77.8) };
   return (
     <VintageStock site={site} rot={rot} tint={tint}>

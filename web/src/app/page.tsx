@@ -4,6 +4,7 @@ import { rowToCard } from '@/lib/card-row';
 import { supabaseServer } from '@/lib/supabase/server';
 import type { AuthUser, CloudCard } from '@/lib/types';
 import type { Metadata } from 'next';
+import { jsonLd } from '@/lib/json-ld';
 
 export const dynamic = 'force-dynamic';
 
@@ -34,6 +35,6 @@ export default async function Home() {
       if (data) cloud = rowToCard(data);
     }
   }
-  if (!user) return <><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(SITE_LD) }} /><Landing /></>;
+  if (!user) return <><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(SITE_LD) }} /><Landing /></>;
   return <CareerCardApp user={user} cloud={cloud} />;
 }

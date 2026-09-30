@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { PublicCard } from '@/components/PublicCard';
 import { loadPublicPage as load } from '@/lib/public-card';
+import { jsonLd } from '@/lib/json-ld';
 import { careerStats, roles } from '@/lib/derived';
 
 export const dynamic = 'force-dynamic';
@@ -39,5 +40,5 @@ export default async function Page({ params }: PageProps<'/u/[slug]'>) {
       description: p.summary || (cs ? `${cs.seasons} seasons, ${cs.teams} teams, ${cs.positions} positions.` : undefined),
     },
   };
-  return <><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(person) }} /><PublicCard S={S} slug={slug} /></>;
+  return <><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(person) }} /><PublicCard S={S} slug={slug} /></>;
 }

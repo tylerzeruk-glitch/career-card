@@ -20,12 +20,12 @@ export default function NotFound() {
       </header>
       <main className="nf-main">
         <div className="nf-card">
-          <div className="card" style={vars} aria-label="Cosmo Kramer, number 404, not in this set">
+          <div className="card t-vintage" style={vars} aria-label="Cosmo Kramer, number 404, not in this set">
             <div className="inner">
               <div className="face front">
                 <div className="art">
                   <div className="team" style={{ fontSize: '7.8cqw' }}>Kramerica</div>
-                  {KRAMER ? <span className="pic"><img src="/avatars/kramer.png" alt="" /></span> : <span className="mono">CK</span>}
+                  {KRAMER ? <span className="pic"><img src="/avatars/kramer.png" alt="" loading="lazy" decoding="async" /></span> : <span className="mono">CK</span>}
                   <span className="badge">LOST</span>
                 </div>
                 <div className="who"><span className="fn">Cosmo</span> <span className="ln">Kramer</span></div>

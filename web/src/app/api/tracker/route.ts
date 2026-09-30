@@ -29,13 +29,14 @@ export async function POST(req: NextRequest) {
 
   const client = new Anthropic();
   try {
-    const res = await client.messages.parse({
+    // streamed: a non-streaming request this large is refused by the SDK before it is sent (it could run past ten minutes)
+    const res = await client.messages.stream({
       model: MODEL,
       max_tokens: 32000,
       system: TRACKER_SYSTEM,
       messages: [{ role: 'user', content: `Sheet "${(body?.sheet || 'Sheet1').slice(0, 80)}", tab-separated, one row per line:\n<sheet>\n${text}\n</sheet>` }],
       output_config: { format: zodOutputFormat(TrackerSchema) },
-    });
+    }).finalMessage();
     if (res.stop_reason === 'refusal') return NextResponse.json({ error: 'refused', message: 'Claude declined to read that sheet.' }, { status: 422 });
     if (res.stop_reason === 'max_tokens' || !res.parsed_output) return NextResponse.json({ error: 'unparsed', message: 'Claude did not return a complete result. Try a smaller sheet.' }, { status: 502 });
     const x = res.parsed_output;
