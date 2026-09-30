@@ -31,7 +31,9 @@ export default async function Home() {
     const { data: { user: u } } = await sb.auth.getUser();
     if (u) {
       user = { id: u.id, email: u.email ?? null };
-      const { data } = await sb.from('cards').select('slug,visibility,data,hunt,updated_at').eq('user_id', u.id).maybeSingle();
+      const { data, error } = await sb.from('cards').select('slug,visibility,data,hunt,updated_at').eq('user_id', u.id).maybeSingle();
+      // a failed read is not "no card yet": opening the app on an empty card would save it over the real one (see app/error.tsx)
+      if (error) throw new Error('Could not read the card: ' + error.message);
       if (data) cloud = rowToCard(data);
     }
   }

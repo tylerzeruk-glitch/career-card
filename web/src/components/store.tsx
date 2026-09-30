@@ -43,11 +43,17 @@ const isReal = (s: State) => s.roles.length > 0 || s.events.length > 0 || !!s.pr
 /** Every visit opens on the deck; the view is a choice for the session, not a saved preference. */
 const onDeck = (s: State): State => (s.settings.view === 'cards' ? s : { ...s, settings: { ...s.settings, view: 'cards' } });
 /** The landing page's "Try it with an example" arrives with ?example (the preview sets a flag instead). */
-/** A stored card that is really the example (George, with his roles), whatever happened to its portrait: dealt afresh on the next visit rather than kept as this device's own. */
+/**
+ * A stored card that is still the untouched example (George, his roles, his summary and his hunt), whatever happened to
+ * its portrait or stock: dealt afresh on the next visit rather than kept as this device's own. Anything the visitor
+ * added or changed (an event, an import, an edited summary or role) makes it theirs, and it is kept.
+ */
 function looksLikeExample(s: State) {
   const g = sampleState();
-  const key = (x: State) => x.roles.map((r) => (r.company + '|' + r.title).toLowerCase()).sort().join('\n');
-  return (s.profile.name || '').trim().toLowerCase() === g.profile.name.toLowerCase() && key(s) === key(g);
+  const roleKey = (x: State) => x.roles.map((r) => [r.company, r.title, r.start, r.end, (r.bullets || []).join('|')].join('~').toLowerCase()).sort().join('\n');
+  const eventKey = (x: State) => x.events.map((e) => [e.date, e.type, e.company, e.title].join('~').toLowerCase()).sort().join('\n');
+  const same = (a?: string, b?: string) => (a || '').trim().toLowerCase() === (b || '').trim().toLowerCase();
+  return same(s.profile.name, g.profile.name) && same(s.profile.summary, g.profile.summary) && roleKey(s) === roleKey(g) && eventKey(s) === eventKey(g);
 }
 
 const wantExample = () => {
@@ -70,6 +76,14 @@ export function CardProvider({ children, user, cloud }: { children: ReactNode; u
   const flashT = useRef<ReturnType<typeof setTimeout> | null>(null);
   const saveT = useRef<ReturnType<typeof setTimeout> | null>(null);
   const dirty = useRef(false);
+  /** Each save's turn: a save that finds a newer one queued behind it leaves the writing to that one, so saves never land out of order. */
+  const saveSeq = useRef(0);
+  /** Writes to the account, one after another: a write waits for the one before it to land. */
+  const writes = useRef<Promise<unknown>>(Promise.resolve());
+  /** A portrait made while signed out, lifted into storage once however many saves ask for it: data URL to stored URL. */
+  const lifted = useRef(new Map<string, Promise<string>>());
+  /** A card brought in from this browser: the browser copy is cleared once the account has it, not before. */
+  const clearAfterSave = useRef(false);
 
   const flash = useCallback((msg: string) => {
     setFlashMsg(msg);
@@ -106,15 +120,25 @@ export function CardProvider({ children, user, cloud }: { children: ReactNode; u
     setSync('saving');
     if (saveT.current) clearTimeout(saveT.current);
     saveT.current = setTimeout(async () => {
+      const turn = ++saveSeq.current;
       try {
         let s = S;
-        if (isDataUrl(s.profile.avatar)) { // made while signed out: into the account's storage first
-          const url = await liftPortrait(user.id, s.profile.avatar);
+        const dataUrl = s.profile.avatar;
+        if (isDataUrl(dataUrl)) { // made while signed out: into the account's storage first
+          let up = lifted.current.get(dataUrl);
+          if (!up) { up = liftPortrait(user.id, dataUrl); lifted.current.set(dataUrl, up); up.catch(() => lifted.current.delete(dataUrl)); }
+          const url = await up;
           s = { ...s, profile: { ...s.profile, avatar: url, photo: url } };
-          setS(s);
+          // swap in the stored address on whatever the card is now, not on the copy taken before the upload
+          setS((prev) => (prev.profile.avatar === dataUrl ? { ...prev, profile: { ...prev.profile, avatar: url, photo: url } } : prev));
         }
-        await saveCloud(user.id, s);
+        // one write at a time, and a write that a newer save has overtaken is skipped: the newer one carries a newer card
+        const write = writes.current.then(() => (turn === saveSeq.current ? saveCloud(user.id, s) : undefined));
+        writes.current = write.catch(() => undefined);
+        await write;
+        if (turn !== saveSeq.current) return;
         setSync('saved'); dirty.current = false;
+        if (clearAfterSave.current) { clearAfterSave.current = false; clearLocal(); }
       } catch (e) { console.error(e); setSync('error'); flash('Could not save to your account. Your changes are still on this page.'); }
     }, 700);
   }, [S, sampleMode, booted, user, flash]);
@@ -143,8 +167,9 @@ export function CardProvider({ children, user, cloud }: { children: ReactNode; u
 
   const migrate = useCallback((bring: boolean) => {
     if (!migration) return;
-    if (bring) { dirty.current = true; setS(migration); flash('Brought your card into your account.'); }
-    clearLocal();
+    // brought in: the browser copy stays until the account has saved it (see the save effect); declined: it goes now
+    if (bring) { dirty.current = true; clearAfterSave.current = true; setS(migration); flash('Brought your card into your account.'); }
+    else clearLocal();
     setMigration(null);
   }, [migration, flash]);
 
