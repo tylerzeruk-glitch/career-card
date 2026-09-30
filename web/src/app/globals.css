@@ -437,6 +437,7 @@ dialog::backdrop{background:rgba(0,0,0,.35)}
 .pagebox .gt.vis{flex-direction:column;align-items:flex-start;gap:0;margin-top:2px;font-size:13px}
 .pagebox .gt.vis button{padding:6px 0}
 .pagebox .form-foot{margin-top:2px}
+.pagebox .page-links{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px} /* the saved page's links on a row of their own under the save button, so no style's wider type wraps them */
 .pagebox .btn.open{border:1px solid var(--ink);color:var(--ink);background:var(--paper);padding-inline:12px}
 .pagebox .btn.open:hover{background:var(--ink);color:var(--bg)}
 .opts{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;margin-top:8px}

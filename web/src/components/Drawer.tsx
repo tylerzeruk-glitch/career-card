@@ -536,9 +536,9 @@ function SharePanel() {
           </div>
           <div className="form-foot">
             <button className="btn primary" type="button" onClick={savePage}>Save page settings</button>
-            {slug && visibility !== 'private' && <><a className="btn open" href={'/u/' + slug} target="_blank" rel="noopener">Open your page ↗</a><button className="btn open" type="button" onClick={copyLink}>{copied ? 'Copied' : 'Copy link'}</button></>}
             <span className="spacer" /><span className="status">{pageMsg}</span>
           </div>
+          {slug && visibility !== 'private' && <div className="page-links"><a className="btn open" href={'/u/' + slug} target="_blank" rel="noopener">Open your page ↗</a><button className="btn open" type="button" onClick={copyLink}>{copied ? 'Copied' : 'Copy link'}</button></div>}
         </div>
       ) : (
         <p style={{ color: 'var(--ink-2)', fontSize: 13.5, margin: 0 }}>Sign in to give your card an address you can send to people. <a href="/login">Sign in</a></p>
