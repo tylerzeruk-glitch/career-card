@@ -215,7 +215,7 @@ function VintageRoleFront({ S, r, site, rot, tint }: { S: State; r: State['roles
     <VintageStock site={site} rot={rot} tint={tint}>
       <div style={{ position: 'absolute', ...win, borderRadius: qv(4.6), background: a, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        {src ? <img src={src} width={win.width} height={win.width} alt="" style={{ position: 'absolute', left: 0, top: 0 }} />
+        {src ? <img src={src} width={Math.round(win.width * 1.06)} height={Math.round(win.width * 1.06)} alt="" style={{ position: 'absolute', left: -Math.round(win.width * 0.03), top: 0 }} />
           : <div style={{ display: 'flex', fontFamily: BARLOW, fontSize: qv(30), letterSpacing: '-0.02em', color: b }}>{initials(p.name) || '?'}</div>}
       </div>
       <VintageLettering team={r.company} code={r.code || codeFor(r.title)} name={p.name} role={r.title} roleColor={b} />

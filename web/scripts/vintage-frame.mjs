@@ -27,7 +27,7 @@ const pieces = Buffer.alloc(W * H * 4), pen = Buffer.alloc(W * CH * 4), star = B
 for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
   const i = y * W + x, [r, g, b] = px(i);
   const d = Math.hypot(r - PAPER[0], g - PAPER[1], b - PAPER[2]);
-  const edge = x < 30 || x > W - 30 || y < 12 || y > H - 40; // the source's own paper edge, shaded darker, is not a piece
+  const edge = (x < 30 || x > W - 30 || y < 12 || y > H - 40) && d < 120; // the source's own paper edge, shaded darker, is not a piece; ink there (the star's right tip and its keyline) is
   const a = edge ? 0 : Math.max(0, Math.min(1, (d - 28) / 40));
   pieces.set([r, g, b, Math.round(a * 255)], i * 4);
   const red = r > 140 && g < 120 && b < 120 && r - g > 50, yellow = r > 190 && g > 160 && b < 120;

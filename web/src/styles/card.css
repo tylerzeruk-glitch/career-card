@@ -231,7 +231,7 @@
 .card.t-vintage .art{position:absolute;left:6.5cqw;top:15.4cqw;width:87cqw;height:77.8cqw;box-sizing:border-box;margin:0;border:0;border-radius:4.6cqw;background:var(--a);overflow:visible;flex:none}
 .card.t-vintage .art::after{border-radius:inherit;background:radial-gradient(circle at 30% 20%,rgba(255,255,255,.28),transparent 55%)}
 .card.t-vintage .art .pic{border-radius:inherit;inset:0}
-.card.t-vintage .art .pic img:not(.photo){left:0;top:0;bottom:auto;width:100%;height:auto} /* a bust fills the window's width from the top: the riso busts bleed to their own edges, so those must be the window's; what the window cuts is the shirt's bottom */
+.card.t-vintage .art .pic img:not(.photo){left:-3%;top:0;bottom:auto;width:106%;height:auto} /* a bust fills the window from the top, a little wider than it: the riso busts bleed to their own edges and their bottom corners are rounded, so those fall outside the window; what the window cuts is the shirt's bottom */
 /* the star keeps its printed red on every card. The print lies under the portrait, so the star is drawn again through its mask, above the picture; the code sits on it */
 .card.t-vintage .art::before{content:"";position:absolute;left:-6.5cqw;top:-15.4cqw;width:100cqw;height:140cqw;background:url("/frames/vintage.webp") 0 0/100% 100% no-repeat;-webkit-mask:url("/frames/vintage-star.png") 0 0/100% 100% no-repeat;mask:url("/frames/vintage-star.png") 0 0/100% 100% no-repeat;z-index:2;pointer-events:none}
 .card.t-vintage .badge{left:70.3cqw;top:66.9cqw;right:auto;bottom:auto;width:22cqw;height:22cqw;background:transparent;clip-path:none;transform:none;z-index:3;isolation:isolate;font-size:6.2cqw;padding-top:1.6cqw;color:#fff;text-shadow:.25cqw .25cqw 0 rgba(0,0,0,.35)}
