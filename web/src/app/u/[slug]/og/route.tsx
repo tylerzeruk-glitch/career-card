@@ -1,8 +1,10 @@
-import { shareImage } from '@/lib/og/share';
+import { shareImage, SHARE_SIZE } from '@/lib/og/share';
+import { snap } from '@/lib/og/snap';
 import { loadPublicCard } from '@/lib/public-card';
 import { sampleState } from '@/lib/sample';
 
 export const dynamic = 'force-dynamic';
+export const maxDuration = 30; // a cold browser takes a few seconds; the CDN keeps the result
 
 /**
  * The share image for someone's page: their own cards. A page that is not shared gets the example's, same as
@@ -14,7 +16,16 @@ export async function GET(req: Request, { params }: { params: Promise<{ slug: st
   const { slug } = await params;
   const S = await loadPublicCard(slug);
   const site = process.env.NEXT_PUBLIC_SITE_URL || 'https://careercards.app';
-  const res = await shareImage(S || sampleState(), site, S ? slug : undefined);
+  // The picture is a photograph of the share frame, the site's own cards laid out for an unfurl (see share-frame/[slug]).
+  // Should the browser fail, the older drawing stands in, so a link never unfurls without one.
+  let res: Response;
+  try {
+    const png = await snap(new URL('/share-frame/' + (S ? encodeURIComponent(slug) : '_example'), req.url).toString(), SHARE_SIZE.width, SHARE_SIZE.height);
+    res = new Response(new Uint8Array(png), { headers: { 'Content-Type': 'image/png' } });
+  } catch (e) {
+    console.error('share snap', e);
+    res = await shareImage(S || sampleState(), site, S ? slug : undefined);
+  }
   // The page links here with ?v= built from the deploy and the card's last save, so that address's picture never changes and the CDN
   // can keep it: every unfurl after the first is served without drawing. An address without it (an old link, a hand-typed one), or
   // the example shown for a card that isn't shared, is kept for an hour and refreshed in the background.

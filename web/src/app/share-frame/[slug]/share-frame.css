@@ -1,0 +1,25 @@
+/* The share picture (see page.tsx): 1200 by 630, the cards at 236px as the unfurl has always drawn them. The page around the cards
+   follows the stock as the site does: vintage's cream and ink, or Chrome's white paper with the foil washed across it, navy and gold. */
+.shareframe{--cw:236px;--bg:#f2eee5;--ink:#1c1b18;--ink2:#55524a;--muted:#6b6559;--red:#dc4432;--accent:#1c1b18;--rule:#dcd6c8;--cond:"Barlow Condensed","Arial Narrow",sans-serif;
+  position:fixed;left:0;top:0;width:1200px;height:630px;overflow:hidden;background:var(--bg);color:var(--ink);z-index:10}
+.shareframe.s-chrome{--bg:linear-gradient(115deg,#fff2f2 0%,#fff8e6 18%,#f0fff2 36%,#eaf7ff 54%,#f5eeff 72%,#fff0f8 90%,#fff2f2 100%);--ink:#1c1b2a;--ink2:#4a4a5c;--muted:#8a8a9c;--red:#e5322d;--accent:#173a8a;--rule:#19b2a8;--cond:"Oswald","Arial Narrow",sans-serif}
+.shareframe .left{position:absolute;left:64px;top:0;bottom:70px;width:540px;display:flex;flex-direction:column;justify-content:center}
+.shareframe .mark{display:flex;align-items:center;gap:8px;margin-bottom:26px;font:400 30px/1 "Lilita One",sans-serif;letter-spacing:.02em;color:var(--ink)}
+.shareframe .mark .flag{color:var(--red)}
+.shareframe.s-chrome .mark{color:var(--accent)}
+.shareframe .name{font:700 62px/.98 "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.02em;text-transform:uppercase;margin-bottom:14px}
+.shareframe.s-chrome .name{font:400 64px/1 "Lilita One",sans-serif;letter-spacing:.01em;text-transform:none;color:var(--red);text-shadow:4px 4px 0 #1c1b2a;transform:skewX(-8deg);transform-origin:0 100%;margin:0 0 16px 6px}
+.shareframe .sub{font:400 30px/1.35 "Libre Caslon Text",Georgia,serif;color:var(--ink2)}
+.shareframe .stat{margin-top:18px;font:700 23px/1.2 var(--cond);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.shareframe.s-chrome .stat{color:var(--accent)}
+.shareframe .band{position:absolute;left:64px;right:64px;bottom:40px;display:flex;align-items:baseline;justify-content:space-between;border-top:2px solid var(--rule);padding-top:18px}
+.shareframe .cta{font:400 25px/1.2 "Libre Caslon Text",Georgia,serif;color:var(--ink)}
+.shareframe .url{font:700 19px/1 var(--cond);letter-spacing:.12em;text-transform:uppercase;color:var(--red)}
+.shareframe.s-chrome .url{color:var(--accent);text-shadow:1.5px 1.5px 0 #f2c230}
+/* the hand: three cards turned about a point below them, like cards held */
+.shareframe .hand{position:absolute;right:72px;bottom:165px;width:calc(var(--cw) * 2.15);height:calc(var(--cw) * 1.4 + 40px)}
+.shareframe .slot{position:absolute;bottom:0;width:var(--cw);transform-origin:50% 115%}
+.shareframe .slot .card{width:var(--cw);cursor:default}
+/* the picture carries the team, the name and the portrait; the position, the card number and the star's code stay on the page */
+.shareframe:not(.full) .card .role,.shareframe:not(.full) .card .num{display:none}
+.shareframe:not(.full) .card .badge{color:transparent;text-shadow:none}
