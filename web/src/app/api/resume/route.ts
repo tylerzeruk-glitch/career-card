@@ -5,6 +5,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 import { RESUME_SYSTEM, ResumeSchema, type ResumeExtract } from '@/lib/resume-schema';
 import { tidyName } from '@/lib/imports';
 import { supabaseServer } from '@/lib/supabase/server';
+import { spend } from '@/lib/quota';
 import type { CareerImport } from '@/lib/imports';
 
 export const runtime = 'nodejs';
@@ -41,6 +42,9 @@ export async function POST(req: NextRequest) {
   const file = form?.get('file');
   if (!(file instanceof File)) return NextResponse.json({ error: 'bad-request', message: 'No file received.' }, { status: 400 });
   if (file.size > MAX_BYTES) return NextResponse.json({ error: 'too-large', message: 'That file is over 10 MB.' }, { status: 413 });
+
+  const quota = await spend(sb!, user.id, 'resume');
+  if (!quota.ok) return NextResponse.json({ error: quota.status === 429 ? 'cap' : 'quota', message: quota.message }, { status: quota.status });
 
   // PDFs go to Claude as documents so layout survives; everything else goes as text.
   const bytes = Buffer.from(await file.arrayBuffer());

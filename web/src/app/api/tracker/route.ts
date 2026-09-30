@@ -3,6 +3,7 @@ import { zodOutputFormat } from '@anthropic-ai/sdk/helpers/zod';
 import { NextResponse, type NextRequest } from 'next/server';
 import { TRACKER_SYSTEM, TrackerSchema } from '@/lib/tracker-schema';
 import { supabaseServer } from '@/lib/supabase/server';
+import { spend } from '@/lib/quota';
 
 export const runtime = 'nodejs';
 export const maxDuration = 120;
@@ -26,6 +27,9 @@ export async function POST(req: NextRequest) {
   const text = typeof body?.text === 'string' ? body.text.trim() : '';
   if (!text) return NextResponse.json({ error: 'bad-request', message: 'No sheet received.' }, { status: 400 });
   if (text.length > MAX_CHARS) return NextResponse.json({ error: 'too-large', message: 'That sheet is too big to send in one go. Try one sheet, or the rows since your last import.' }, { status: 413 });
+
+  const quota = await spend(sb!, user.id, 'tracker');
+  if (!quota.ok) return NextResponse.json({ error: quota.status === 429 ? 'cap' : 'quota', message: quota.message }, { status: quota.status });
 
   const client = new Anthropic();
   try {

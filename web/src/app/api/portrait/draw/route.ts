@@ -1,7 +1,8 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { supabaseServer } from '@/lib/supabase/server';
 import { prepareTake } from '@/lib/riso';
-import { IMAGE_MODEL, IMAGE_QUALITY, TAKES_PER_DAY, promptFor, unlimited, type PortraitStyle } from '@/lib/riso-prompt';
+import { IMAGE_MODEL, IMAGE_QUALITY, promptFor, type PortraitStyle } from '@/lib/riso-prompt';
+import { spend } from '@/lib/quota';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
@@ -30,14 +31,16 @@ export async function POST(req: NextRequest) {
   if (photo.size > MAX_PHOTO) return NextResponse.json({ error: 'too-big', message: 'That photo is too large.' }, { status: 413 });
   const style: PortraitStyle = form?.get('style') === '90s' ? '90s' : 'riso';
 
-  // the limit: takes are kept for a day (picking one does not clear them), so the folder is the count
+  // the day's limit, counted in the database before the paid call (src/lib/quota.ts)
+  const quota = await spend(sb, user.id, 'portrait');
+  if (!quota.ok) return NextResponse.json({ error: quota.status === 429 ? 'cap' : 'quota', message: quota.status === 429 ? 'That is the limit for today. Deal again tomorrow.' : quota.message }, { status: quota.status });
+
+  // takes are kept for a day (picking one does not clear them); older ones are tidied away here
   const folder = user.id + '/takes';
   const { data: existing } = await sb.storage.from(BUCKET).list(folder, { limit: 200 });
   const cutoff = Date.now() - 24 * 3600 * 1000;
   const old = (existing || []).filter((o) => Date.parse(o.created_at || '') < cutoff);
   if (old.length) await sb.storage.from(BUCKET).remove(old.map((o) => folder + '/' + o.name));
-  const madeToday = (existing || []).length - old.length;
-  if (madeToday >= TAKES_PER_DAY && !unlimited(user.id)) return NextResponse.json({ error: 'cap', message: 'That is the limit for today. Deal again tomorrow.' }, { status: 429 });
 
   const call = async (fidelity: boolean) => {
     const fd = new FormData();
@@ -55,8 +58,8 @@ export async function POST(req: NextRequest) {
   if (!r.ok) {
     const text = await r.text().catch(() => '');
     console.error('images/edits', r.status, text.slice(0, 500));
-    let message = 'The image model could not draw that.';
-    try { message = JSON.parse(text).error?.message?.slice(0, 200) || message; } catch { /* not JSON */ }
+    // the model's own error text stays in the log: it can carry key hints or billing state
+    const message = r.status === 400 ? 'The image model could not draw from that photo. Try a different one.' : 'The image model could not draw that. Try again in a moment.';
     return NextResponse.json({ error: 'model', message }, { status: 502 });
   }
   const out = (await r.json()) as { data?: { b64_json?: string }[] };
@@ -68,5 +71,5 @@ export async function POST(req: NextRequest) {
   const path = folder + '/' + (style === '90s' ? '90s-' : '') + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 6) + '.png';
   const { error } = await sb.storage.from(BUCKET).upload(path, take, { contentType: 'image/png', cacheControl: '3600' });
   if (error) return NextResponse.json({ error: 'store', message: 'Could not save that take.' }, { status: 500 });
-  return NextResponse.json({ path, url: sb.storage.from(BUCKET).getPublicUrl(path).data.publicUrl, left: unlimited(user.id) ? 99 : TAKES_PER_DAY - madeToday - 1 });
+  return NextResponse.json({ path, url: sb.storage.from(BUCKET).getPublicUrl(path).data.publicUrl, left: quota.left });
 }
