@@ -836,7 +836,8 @@ html:has([data-style="chrome"]) body{background:#fff linear-gradient(180deg,rgba
 [data-style="vintage"] .toggle{background:var(--paper);box-shadow:2px 2px 0 var(--under)}
 [data-style="vintage"] .btn.icon.theme,[data-style="vintage"] .btn.icon.style,[data-style="vintage"] .menu summary.more{border:1.5px solid var(--ink);background:var(--paper);color:var(--ink);box-shadow:2px 2px 0 var(--under);transition:transform .12s,box-shadow .12s}
 [data-style="vintage"] .btn.icon.theme:hover,[data-style="vintage"] .btn.icon.style:hover,[data-style="vintage"] .menu summary.more:hover{background:var(--paper);transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--under)}
-[data-style="vintage"] .menu[open] summary.more,[data-style="vintage"] .stylepick[open] summary.style{transform:none;box-shadow:2px 2px 0 var(--under);background:var(--ink);color:var(--paper)}
+[data-style="vintage"] .menu[open] summary.more{transform:none;box-shadow:2px 2px 0 var(--under);background:var(--ink);color:var(--paper)}
+[data-style="vintage"] .stylepick[open] summary.style,[data-style="vintage"] .stylepick[open] summary.style:hover{transform:none;box-shadow:2px 2px 0 var(--under);background:var(--hover)} /* open: pressed in, but kept light so the star reads */
 [data-style="vintage"] .pill{box-shadow:2px 2px 0 var(--under)}
 [data-style="vintage"] .line b{box-shadow:1.5px 1.5px 0 var(--under)}
 [data-style="vintage"] .gt button i{border:1.5px solid var(--ink);background:var(--paper);box-shadow:1.5px 1.5px 0 var(--under)}
