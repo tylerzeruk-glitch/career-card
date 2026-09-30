@@ -39,8 +39,7 @@ const STEPS = [
 
 /** The two stocks, as the picker in the app names them. */
 const ERAS: { key: CardTheme; name: string; note: string; spec: [string, string][] }[] = [
-  { key: 'vintage', name: 'Vintage', note: 'Cream stock, pennant and starburst.', spec: [['Stock', 'Cream'], ['Type', 'Serif'], ['Mark', 'Starburst'], ['Era', '1950s']] },
-  { key: 'v2', name: 'Vintage V2', note: 'Printed frame, pennant and star.', spec: [['Stock', 'Cream'], ['Type', 'Serif'], ['Mark', 'Pennant'], ['Era', '1960s']] },
+  { key: 'vintage', name: 'Vintage', note: 'Cream paper, pennant and star.', spec: [['Stock', 'Cream'], ['Type', 'Serif'], ['Mark', 'Pennant'], ['Era', '1960s']] },
   { key: 'chrome', name: 'Chrome', note: 'Foil border, cream panel, red plate.', spec: [['Stock', 'Foil'], ['Type', 'Block'], ['Mark', 'Plate'], ['Era', '1990s']] },
 ];
 const SOON_SPEC: [string, string][] = [['Stock', '—'], ['Type', '—'], ['Mark', '—'], ['Era', 'Next']];

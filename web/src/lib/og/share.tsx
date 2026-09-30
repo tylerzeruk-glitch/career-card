@@ -13,10 +13,6 @@ import { fitCompany, fitName, fitTitle } from '../fit';
 export const SHARE_SIZE = { width: 1200, height: 630 };
 
 const CW = 236, CH = Math.round(CW * 1.4); // one card, 2.5 : 3.5
-// the site's card is a container whose units (cqw) are shares of its content width, inside 8% side padding; the same here
-const PAD = Math.round(CW * 0.08), CQ = CW - 2 * PAD;
-const q = (n: number) => Math.round((n * CQ) / 100); // the card's cqw, in px
-const CARD_PAD = `${Math.round(CW * 0.18)}px ${PAD}px ${Math.round(CW * 0.07)}px`;
 
 /** The site's three faces, served from public/fonts and kept once per server. */
 let fontCache: Promise<{ name: string; data: ArrayBuffer; weight: 400 | 700; style: 'normal' }[]> | null = null;
@@ -38,96 +34,13 @@ function fontList(lilita: ArrayBuffer, barlow: ArrayBuffer, caslon: ArrayBuffer,
 }
 
 const FLAG = 'M9.97 11.67 L12.69 22.18 L14.24 35.35 L19.68 32.04 L25.34 30.42 L29.54 30.27 L36.89 31.08 L41.38 30.20 L49.98 26.74 L60.50 21.08 L51.31 20.56 L41.38 18.80 L35.05 16.52 L26.15 12.18 L20.27 10.49 L14.83 10.27 Z M5.93 5.41 L3.94 6.59 L3.43 8.87 L5.05 10.78 L13.58 57.34 L14.31 58.37 L15.49 58.51 L16.45 57.92 L16.74 56.38 L8.28 10.64 L9.16 7.33 L7.91 5.71 Z';
-const STAR = '50.0,0.0 60.6,10.4 75.0,6.7 79.0,21.0 93.3,25.0 89.6,39.4 100.0,50.0 89.6,60.6 93.3,75.0 79.0,79.0 75.0,93.3 60.6,89.6 50.0,100.0 39.4,89.6 25.0,93.3 21.0,79.0 6.7,75.0 10.4,60.6 0.0,50.0 10.4,39.4 6.7,25.0 21.0,21.0 25.0,6.7 39.4,10.4';
-
 const BARLOW = 'Barlow Condensed', LILITA = 'Lilita One', CASLON = 'Libre Caslon Text';
-
-/** The team pennant: a swallowtail strip hanging off the art box's top-left corner. */
-function Pennant({ text, a, b, wide }: { text: string; a: string; b: string; wide?: boolean }) {
-  const h = q(12.5), w = Math.min(q(80), Math.round(text.length * q(7.2) * 0.74) + q(16)), tail = q(5.5);
-  return (
-    <div style={{ position: 'absolute', left: -2, bottom: '100%', width: w, height: h, display: 'flex' }}>
-      <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} style={{ position: 'absolute', left: 0, top: 0 }}>
-        <path d={`M0 ${q(5)} Q0 0 ${q(5)} 0 L${w} 0 L${w - tail} ${h / 2} L${w} ${h} L0 ${h} Z`} fill={wide ? '#dc4432' : b} />
-      </svg>
-      <div style={{ position: 'absolute', left: q(4.6), top: 0, width: w - q(4.6) - q(10), height: h, display: 'flex', alignItems: 'center', fontFamily: LILITA, fontSize: q(7.2), letterSpacing: '0.03em', textTransform: 'uppercase', color: wide ? '#fbf6ea' : a, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{text}</div>
-    </div>
-  );
-}
-
-function Badge({ code, right }: { code: string; right?: boolean }) {
-  const s = q(25);
-  return (
-    <div style={{ position: 'absolute', width: s, height: s, [right ? 'right' : 'left']: -q(5), [right ? 'top' : 'bottom']: -q(7), display: 'flex', alignItems: 'center', justifyContent: 'center', transform: `rotate(${right ? 12 : -12}deg)` }}>
-      <svg width={s} height={s} viewBox="0 0 100 100" style={{ position: 'absolute', left: 0, top: 0 }}><polygon points={STAR} fill="#dc4432" /></svg>
-      <div style={{ position: 'relative', display: 'flex', fontFamily: BARLOW, fontSize: q(6.2), letterSpacing: '0.04em', color: '#fff' }}>{code}</div>
-    </div>
-  );
-}
-
-function Who({ name, fn, ln }: { name: string; fn: string; ln: string }) {
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', width: '100%' }}>
-      {fn ? <div style={{ display: 'flex', fontFamily: BARLOW, fontSize: q(5), letterSpacing: '0.14em', textTransform: 'uppercase', color: '#6b6559' }}>{fn}</div> : null}
-      <div style={{ display: 'flex', fontFamily: LILITA, fontSize: q(10), letterSpacing: '0.02em', textTransform: 'uppercase', color: '#1c1b18', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', width: '100%' }}>{ln || name || 'Your name'}</div>
-    </div>
-  );
-}
 
 function splitName(name: string) {
   const n = (name || '').trim(), i = n.lastIndexOf(' ');
   return i > 0 ? [n.slice(0, i), n.slice(i + 1)] : ['', n];
 }
-/** The name on a share card: first name and last initial, "George C." */
-function shortName(name: string) {
-  const w = (name || '').trim().replace(/,.*$/, '').split(/\s+/).filter(Boolean);
-  if (!w.length) return 'Your name';
-  return w.length === 1 ? w[0] : w[0] + ' ' + w[w.length - 1][0].toUpperCase() + '.';
-}
 
-// the thin rounded rule just inside the square-cut edge
-function Frame({ color }: { color: string }) {
-  return <div style={{ position: 'absolute', left: q(2.6), top: q(2.6), right: q(2.6), bottom: q(2.6), border: `1.5px solid ${color}`, borderRadius: q(4.2) }} />;
-}
-
-function RoleFront({ S, r, idx, site, rot }: { S: State; r: State['roles'][number]; idx: number; site: string; rot: number }) {
-  const [a, b] = pairFor(S, r.company), p = S.profile, [fn, ln] = splitName(p.name);
-  const av = portraitFor(S, p, r.company)?.src || '';
-  const src = av ? (av.startsWith('/') ? site + av : av) : '';
-  const inner = CQ; // the art box is square so a bust never loses its head
-  void idx; void fn;
-  return (
-    <div style={{ position: 'absolute', bottom: 0, width: CW, height: CH, transformOrigin: `${CW / 2}px ${Math.round(CH * 1.15)}px`, transform: `rotate(${rot}deg)`, display: 'flex', flexDirection: 'column', background: '#fbf6ea', borderRadius: 0, border: '2px solid #fffaf0', boxShadow: '-5px 0 14px rgba(0,0,0,.16), 0 10px 26px rgba(0,0,0,.16)', padding: CARD_PAD, color: '#1c1b18' }}>
-      <Frame color={b} />
-      <div style={{ position: 'relative', display: 'flex', width: inner, height: inner, marginBottom: q(12), borderRadius: q(5), borderTopLeftRadius: 0, background: a, border: `2px solid ${b}`, alignItems: 'center', justifyContent: 'center', overflow: 'visible' }}>
-        <Pennant text={r.company} a={a} b={b} />
-        <div style={{ position: 'absolute', left: 0, top: 0, right: 0, bottom: 0, borderRadius: q(5), borderTopLeftRadius: 0, overflow: 'hidden', display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}>
-          {src ? <div style={{ width: inner - 4, height: inner - 4, backgroundImage: `url(${src})`, backgroundSize: `${inner - 4}px ${inner - 4}px`, backgroundRepeat: 'no-repeat' }} />
-            : <div style={{ display: 'flex', fontFamily: BARLOW, fontSize: q(34), letterSpacing: '-0.02em', color: b, marginBottom: q(4) }}>{initials(p.name) || '?'}</div>}
-        </div>
-        <Badge code={r.code || codeFor(r.title)} />
-      </div>
-      <Who name={p.name} fn="" ln={shortName(p.name)} />
-    </div>
-  );
-}
-
-function FreeFront({ S, rot }: { S: State; rot: number }) {
-  const p = S.profile, [fn, ln] = splitName(p.name), open = (p.targets || []).slice(0, 3);
-  return (
-    <div style={{ position: 'absolute', bottom: 0, width: CW, height: CH, transformOrigin: `${CW / 2}px ${Math.round(CH * 1.15)}px`, transform: `rotate(${rot}deg)`, display: 'flex', flexDirection: 'column', background: '#1f2a44', borderRadius: 0, border: '2px solid #3a466a', boxShadow: '-5px 0 14px rgba(0,0,0,.16), 0 10px 26px rgba(0,0,0,.16)', padding: CARD_PAD, color: '#fbf6ea' }}>
-      <Frame color="#dc4432" />
-      <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', width: CQ, height: CQ, marginBottom: q(12), borderRadius: q(5), borderTopLeftRadius: 0, background: 'rgba(255,255,255,.07)', border: '2px solid rgba(255,255,255,.35)', alignItems: 'center', justifyContent: 'center', padding: '6%', textAlign: 'center' }}>
-        <Pennant text="Free agent" a="#fbf6ea" b="#dc4432" wide />
-        <div style={{ display: 'flex', fontFamily: BARLOW, fontSize: q(4.6), letterSpacing: '0.2em', textTransform: 'uppercase', opacity: 0.7, marginBottom: q(3) }}>Open to</div>
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', fontFamily: LILITA, fontSize: q(7.5), lineHeight: 1.15, textTransform: 'uppercase', textAlign: 'center' }}>{(open.length ? open : ['Offers']).map((t, i) => <div key={i} style={{ display: 'flex' }}>{t}</div>)}</div>
-        <Badge code="FA" right />
-      </div>
-      <div style={{ display: 'flex', fontFamily: LILITA, fontSize: q(10), letterSpacing: '0.02em', textTransform: 'uppercase', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', width: '100%' }}>{shortName(p.name)}</div>
-      {void fn}
-    </div>
-  );
-}
 
 /** The Chrome front has no padding, so its container unit (cqw) is a share of the whole card width, not of the vintage card's padded content. */
 const qc = (n: number) => Math.round((n * CW) / 100);
@@ -245,36 +158,36 @@ function ChromeFreeFront({ S, site, rot }: { S: State; site: string; rot: number
   );
 }
 
-/** The Vintage V2 stock: shares of the whole card width (the printed front has no padding), as card.css measures it. */
+/** The vintage stock: shares of the whole card width (the printed front has no padding), as card.css measures it. */
 const qv = (n: number) => Math.round((n * CW) / 100);
-/** The V2 pieces' masks, fetched once per server, and each tint of them (a mask painted in one colour, card-sized) kept as a data URI. */
-const v2Masks: Record<string, Promise<Buffer>> = {}, v2Tints: Record<string, Promise<string>> = {};
-function v2Tint(site: string, piece: 'pennant', color: string): Promise<string> {
+/** The vintage pennant's mask, fetched once per server, and each tint of it (the mask painted in one colour, card-sized) kept as a data URI. */
+const penMasks: Record<string, Promise<Buffer>> = {}, penTints: Record<string, Promise<string>> = {};
+function pennantTint(site: string, piece: 'pennant', color: string): Promise<string> {
   const key = piece + color;
-  return (v2Tints[key] ||= (async () => {
-    const mask = await (v2Masks[piece] ||= fetch(site + '/frames/v2-' + piece + '.png', { cache: 'force-cache' }).then(async (r) => { if (!r.ok) throw new Error('mask ' + piece + ' ' + r.status); return Buffer.from(await r.arrayBuffer()); }));
+  return (penTints[key] ||= (async () => {
+    const mask = await (penMasks[piece] ||= fetch(site + '/frames/vintage-' + piece + '.png', { cache: 'force-cache' }).then(async (r) => { if (!r.ok) throw new Error('mask ' + piece + ' ' + r.status); return Buffer.from(await r.arrayBuffer()); }));
     const alpha = await sharp(mask).resize(CW, CH).ensureAlpha().extractChannel(3).png().toBuffer();
     const png = await sharp({ create: { width: CW, height: CH, channels: 3, background: color } }).joinChannel(alpha).png().toBuffer();
     return 'data:image/png;base64,' + png.toString('base64');
-  })().catch((e) => { delete v2Tints[key]; throw e; }));
+  })().catch((e) => { delete penTints[key]; throw e; }));
 }
 /** The printed stock, turned into the hand like the others, with the pennant painted in the team's colour; the star keeps its printed red. */
-function V2Stock({ site, rot, tint, children }: { site: string; rot: number; tint: string; children: React.ReactNode }) {
+function VintageStock({ site, rot, tint, children }: { site: string; rot: number; tint: string; children: React.ReactNode }) {
   return (
-    <div style={{ position: 'absolute', bottom: 0, width: CW, height: CH, transformOrigin: `${CW / 2}px ${Math.round(CH * 1.15)}px`, transform: `rotate(${rot}deg)`, display: 'flex', borderRadius: qv(1.4), overflow: 'hidden', backgroundImage: `url(${site}/frames/v2.jpg)`, backgroundSize: `${CW}px ${CH}px`, backgroundRepeat: 'no-repeat', boxShadow: '-5px 0 14px rgba(0,0,0,.18), 0 10px 26px rgba(0,0,0,.18)' }}>
+    <div style={{ position: 'absolute', bottom: 0, width: CW, height: CH, transformOrigin: `${CW / 2}px ${Math.round(CH * 1.15)}px`, transform: `rotate(${rot}deg)`, display: 'flex', borderRadius: qv(1.4), overflow: 'hidden', backgroundImage: `url(${site}/frames/vintage.jpg)`, backgroundSize: `${CW}px ${CH}px`, backgroundRepeat: 'no-repeat', boxShadow: '-5px 0 14px rgba(0,0,0,.18), 0 10px 26px rgba(0,0,0,.18)' }}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={tint} width={CW} height={CH} alt="" style={{ position: 'absolute', left: 0, top: 0 }} />
       {children}
     </div>
   );
 }
-/** The lettering on the V2 front: the team on the pennant, the code on the star, the name and the position on the paper below the frame. */
+/** The lettering on the vintage front: the team on the pennant, the code on the star, the name and the position on the paper below the frame. */
 /** Text cut to a width by hand: inside a turned card the renderer misplaces an overflow clip, so nothing here overflows. `adv` is a letter's advance as a share of the size. */
 function clip(text: string, width: number, size: number, adv: number) {
   const max = Math.floor(width / (size * adv));
   return text.length <= max ? text : text.slice(0, Math.max(1, max - 1)).trimEnd() + '\u2026';
 }
-function V2Lettering({ team, code, name, role, roleColor }: { team: string; code: string; name: string; role: string; roleColor: string }) {
+function VintageLettering({ team, code, name, role, roleColor }: { team: string; code: string; name: string; role: string; roleColor: string }) {
   const [fn, ln] = splitName(name);
   // the pennant's lettering shrinks to fit its band, to a floor, then is cut; spaces are unbreakable so the renderer never wraps it
   const teamSize = Math.max(qv(3.6), Math.min(qv(6.2), Math.floor(qv(38) / Math.max(1, team.length * 0.8))));
@@ -293,33 +206,33 @@ function V2Lettering({ team, code, name, role, roleColor }: { team: string; code
     </>
   );
 }
-function V2RoleFront({ S, r, site, rot, tint }: { S: State; r: State['roles'][number]; site: string; rot: number; tint: string }) {
+function VintageRoleFront({ S, r, site, rot, tint }: { S: State; r: State['roles'][number]; site: string; rot: number; tint: string }) {
   const [a, b] = pairFor(S, r.company), p = S.profile;
   const av = portraitFor(S, p, r.company)?.src || '';
   const src = av ? (av.startsWith('/') ? site + av : av) : '';
   const win = { left: qv(6.5), top: qv(15.4), width: qv(87), height: qv(77.8) };
   return (
-    <V2Stock site={site} rot={rot} tint={tint}>
+    <VintageStock site={site} rot={rot} tint={tint}>
       <div style={{ position: 'absolute', ...win, borderRadius: qv(4.6), background: a, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         {src ? <img src={src} width={win.width} height={win.width} alt="" style={{ position: 'absolute', left: 0, top: 0 }} />
           : <div style={{ display: 'flex', fontFamily: BARLOW, fontSize: qv(30), letterSpacing: '-0.02em', color: b }}>{initials(p.name) || '?'}</div>}
       </div>
-      <V2Lettering team={r.company} code={r.code || codeFor(r.title)} name={p.name} role={r.title} roleColor={b} />
-    </V2Stock>
+      <VintageLettering team={r.company} code={r.code || codeFor(r.title)} name={p.name} role={r.title} roleColor={b} />
+    </VintageStock>
   );
 }
-function V2FreeFront({ S, site, rot, tint }: { S: State; site: string; rot: number; tint: string }) {
+function VintageFreeFront({ S, site, rot, tint }: { S: State; site: string; rot: number; tint: string }) {
   const p = S.profile, open = (p.targets || []).slice(0, 3);
   const win = { left: qv(6.5), top: qv(15.4), width: qv(87), height: qv(77.8) };
   return (
-    <V2Stock site={site} rot={rot} tint={tint}>
+    <VintageStock site={site} rot={rot} tint={tint}>
       <div style={{ position: 'absolute', ...win, borderRadius: qv(4.6), background: '#1f2a44', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: `${qv(6)}px ${qv(8)}px ${qv(14)}px`, textAlign: 'center', color: '#fbf6ea' }}>
         <div style={{ display: 'flex', fontFamily: BARLOW, fontSize: qv(4.6), letterSpacing: '0.2em', textTransform: 'uppercase', opacity: 0.7, marginBottom: qv(3) }}>Open to</div>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', fontFamily: LILITA, fontSize: qv(6.8), lineHeight: 1.15, textTransform: 'uppercase' }}>{(open.length ? open : ['Offers']).map((t, i) => <div key={i} style={{ display: 'flex' }}>{t}</div>)}</div>
       </div>
-      <V2Lettering team="Free agent" code="FA" name={p.name} role="Free agent" roleColor="#dc4432" />
-    </V2Stock>
+      <VintageLettering team="Free agent" code="FA" name={p.name} role="Free agent" roleColor="#dc4432" />
+    </VintageStock>
   );
 }
 
@@ -327,20 +240,19 @@ function V2FreeFront({ S, site, rot, tint }: { S: State; site: string; rot: numb
 export type ShareVariant = 'band' | 'button' | 'eyebrow';
 
 export async function shareImage(S: State, site: string, slug?: string, variant: ShareVariant = 'band') {
-  const rs = roles(S), st = status(S), free = st.free && looking(S), chrome = themeOf(S) === 'chrome', v2 = themeOf(S) === 'v2';
+  const rs = roles(S), st = status(S), free = st.free && looking(S), chrome = themeOf(S) === 'chrome';
   const p = S.profile, cs = careerStats(S);
   const roleCards = rs.slice(free ? -2 : -3);
   const n = roleCards.length + (free ? 1 : 0);
   const rots = n === 3 ? [-9, 1, 10] : n === 2 ? [-6, 6] : [1];
   const lefts = n === 3 ? [0, 0.575, 1.15] : n === 2 ? [0.2, 0.95] : [0.575];
-  // the V2 stock's pennant, painted in each card's colour ahead of the render (the renderer has no masks or blend modes)
-  const tints: string[] = v2 ? await Promise.all([...roleCards.map((r) => v2Tint(site, 'pennant', pairFor(S, r.company)[1])), ...(free ? [v2Tint(site, 'pennant', '#dc4432')] : [])]) : [];
+  // the vintage stock's pennant, painted in each card's colour ahead of the render (the renderer has no masks or blend modes)
+  const tints: string[] = chrome ? [] : await Promise.all([...roleCards.map((r) => pennantTint(site, 'pennant', pairFor(S, r.company)[1])), ...(free ? [pennantTint(site, 'pennant', '#dc4432')] : [])]);
   const handW = Math.round(CW * 2.15), handH = CH + 40;
   const stat = cs ? [[cs.seasons, 'season'], [cs.teams, 'team'], [cs.positions, 'position']].map(([v, k]) => `${v} ${k}${v === 1 ? '' : 's'}`).join('  ·  ') : '';
   const sub = p.headline || '';
   const first = (p.name || '').trim().split(/\s+/)[0];
   const cta = first ? `View ${first}\u2019s cards and make your own.` : 'View the cards and make your own.';
-  const firstIdx = roleCards[0] ? Math.max(0, rs.indexOf(roleCards[0])) : 0;
   // the page around the cards follows the stock, as the site does: vintage's cream and ink, or Chrome's white paper with the foil washed across it, navy and gold
   const T = chrome
     ? { bg: 'linear-gradient(115deg, #fff2f2 0%, #fff8e6 18%, #f0fff2 36%, #eaf7ff 54%, #f5eeff 72%, #fff0f8 90%, #fff2f2 100%)', ink: '#1c1b2a', ink2: '#4a4a5c', muted: '#8a8a9c', red: '#e5322d', accent: '#173a8a', accentInk: '#fff', accentShadow: '3px 3px 0 #f2c230', rule: '#19b2a8', cond: 'Oswald' }
@@ -376,8 +288,8 @@ export async function shareImage(S: State, site: string, slug?: string, variant:
           <div style={{ display: 'flex', marginLeft: 16, fontFamily: T.cond, fontSize: 19, letterSpacing: '0.12em', textTransform: 'uppercase', color: T.muted }}>{slug ? 'careercards.app/u/' + slug : 'careercards.app'}</div>
         </div> : null}
         <div style={{ position: 'relative', display: 'flex', width: handW, height: handH, marginRight: 8, marginBottom: variant === 'button' ? 0 : 70 }}>
-          {roleCards.map((r, i) => <div key={r.id} style={{ position: 'absolute', left: Math.round(lefts[i] * CW), bottom: 0, width: CW, height: CH, display: 'flex' }}>{v2 ? <V2RoleFront S={S} r={r} site={site} rot={rots[i]} tint={tints[i]} /> : chrome ? <ChromeRoleFront S={S} r={r} site={site} rot={rots[i]} /> : <RoleFront S={S} r={r} idx={firstIdx + i} site={site} rot={rots[i]} />}</div>)}
-          {free ? <div style={{ position: 'absolute', left: Math.round(lefts[n - 1] * CW), bottom: 0, width: CW, height: CH, display: 'flex' }}>{v2 ? <V2FreeFront S={S} site={site} rot={rots[n - 1]} tint={tints[n - 1]} /> : chrome ? <ChromeFreeFront S={S} site={site} rot={rots[n - 1]} /> : <FreeFront S={S} rot={rots[n - 1]} />}</div> : null}
+          {roleCards.map((r, i) => <div key={r.id} style={{ position: 'absolute', left: Math.round(lefts[i] * CW), bottom: 0, width: CW, height: CH, display: 'flex' }}>{chrome ? <ChromeRoleFront S={S} r={r} site={site} rot={rots[i]} /> : <VintageRoleFront S={S} r={r} site={site} rot={rots[i]} tint={tints[i]} />}</div>)}
+          {free ? <div style={{ position: 'absolute', left: Math.round(lefts[n - 1] * CW), bottom: 0, width: CW, height: CH, display: 'flex' }}>{chrome ? <ChromeFreeFront S={S} site={site} rot={rots[n - 1]} /> : <VintageFreeFront S={S} site={site} rot={rots[n - 1]} tint={tints[n - 1]} />}</div> : null}
         </div>
       </div>
     ),

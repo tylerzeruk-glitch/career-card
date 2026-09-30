@@ -215,45 +215,45 @@
 .card.t-chrome.free .go::after{content:"→";margin-left:1.6cqw}
 
 
-/* ===== Vintage V2: the vintage card on a printed stock (public/frames/v2.webp, cut from art/v2-frame.webp by scripts/v2-frame.mjs):
+/* ===== Vintage: the card on a printed stock (public/frames/vintage.webp, cut from art/vintage-frame.webp by scripts/vintage-frame.mjs). The rules above this section are the shared scaffolding every stock builds on:
    cream paper the whole card, a yellow frame with a black keyline around the portrait window, the team on a red pennant off the
    frame's top-left, the position on a red star off its bottom-right, the name and position on the paper below. The pennant is
-   painted in the team's dark colour through an alpha mask whose alpha carries the print's mottling (v2-pennant.png); the star
-   keeps its red (v2-star.png masks it back in above the portrait); the window behind the portrait is the team's light colour. Measurements are shares of the
+   painted in the team's dark colour through an alpha mask whose alpha carries the print's mottling (vintage-pennant.png); the star
+   keeps its red (vintage-star.png masks it back in above the portrait); the window behind the portrait is the team's light colour. Measurements are shares of the
    card's width (cqw): the frame image is the card's width and 112.2cqw tall; the window is x 6.5–93.5, y 15.4–93.2; the pennant
    x 4–49, y 1.8–12.7; the star's centre (87.8, 93.3), radius 11. ===== */
-.card.t-v2 .face{border-radius:1.4cqw;border:0;background:#ecdfc3 url("/frames/v2.webp") center/100% 100% no-repeat;box-shadow:-5px 0 14px rgba(0,0,0,.18),0 10px 26px rgba(0,0,0,.18)}
-.card.t-v2 .front{padding:0;display:block}
-.card.t-v2 .front::before{inset:0;border:0;border-radius:0;background:var(--b);-webkit-mask:url("/frames/v2-pennant.png") 0 0/100% 100% no-repeat;mask:url("/frames/v2-pennant.png") 0 0/100% 100% no-repeat;z-index:1;pointer-events:none} /* the pennant, in the team's dark colour, as the vintage pennant */
+.card.t-vintage .face{border-radius:1.4cqw;border:0;background:#ecdfc3 url("/frames/vintage.webp") center/100% 100% no-repeat;box-shadow:-5px 0 14px rgba(0,0,0,.18),0 10px 26px rgba(0,0,0,.18)}
+.card.t-vintage .front{padding:0;display:block}
+.card.t-vintage .front::before{inset:0;border:0;border-radius:0;background:var(--b);-webkit-mask:url("/frames/vintage-pennant.png") 0 0/100% 100% no-repeat;mask:url("/frames/vintage-pennant.png") 0 0/100% 100% no-repeat;z-index:1;pointer-events:none} /* the pennant, in the team's dark colour, as the vintage pennant */
 /* the card's number, stamped into the paper at the bottom right: dark ink, tilted a little to the right, a hairline of light under the figure as if pressed in */
-.card.t-v2 .num{top:auto;bottom:4.2cqw;right:4.2cqw;width:12cqw;height:10cqw;border:0;background:transparent;box-shadow:none;color:#2b2416;font-size:6.2cqw;text-shadow:0 .25cqw 0 rgba(255,250,235,.8);transform:rotate(8deg);z-index:2}
+.card.t-vintage .num{top:auto;bottom:4.2cqw;right:4.2cqw;width:12cqw;height:10cqw;border:0;background:transparent;box-shadow:none;color:#2b2416;font-size:6.2cqw;text-shadow:0 .25cqw 0 rgba(255,250,235,.8);transform:rotate(8deg);z-index:2}
 /* the window: the team colour behind the portrait, clipped to the frame's inner curve */
-.card.t-v2 .art{position:absolute;left:6.5cqw;top:15.4cqw;width:87cqw;height:77.8cqw;box-sizing:border-box;margin:0;border:0;border-radius:4.6cqw;background:var(--a);overflow:visible;flex:none}
-.card.t-v2 .art::after{border-radius:inherit;background:radial-gradient(circle at 30% 20%,rgba(255,255,255,.28),transparent 55%)}
-.card.t-v2 .art .pic{border-radius:inherit;inset:0}
-.card.t-v2 .art .pic img:not(.photo){left:0;top:0;bottom:auto;width:100%;height:auto} /* a bust fills the window's width from the top: the riso busts bleed to their own edges, so those must be the window's; what the window cuts is the shirt's bottom */
+.card.t-vintage .art{position:absolute;left:6.5cqw;top:15.4cqw;width:87cqw;height:77.8cqw;box-sizing:border-box;margin:0;border:0;border-radius:4.6cqw;background:var(--a);overflow:visible;flex:none}
+.card.t-vintage .art::after{border-radius:inherit;background:radial-gradient(circle at 30% 20%,rgba(255,255,255,.28),transparent 55%)}
+.card.t-vintage .art .pic{border-radius:inherit;inset:0}
+.card.t-vintage .art .pic img:not(.photo){left:0;top:0;bottom:auto;width:100%;height:auto} /* a bust fills the window's width from the top: the riso busts bleed to their own edges, so those must be the window's; what the window cuts is the shirt's bottom */
 /* the star keeps its printed red on every card. The print lies under the portrait, so the star is drawn again through its mask, above the picture; the code sits on it */
-.card.t-v2 .art::before{content:"";position:absolute;left:-6.5cqw;top:-15.4cqw;width:100cqw;height:140cqw;background:url("/frames/v2.webp") 0 0/100% 100% no-repeat;-webkit-mask:url("/frames/v2-star.png") 0 0/100% 100% no-repeat;mask:url("/frames/v2-star.png") 0 0/100% 100% no-repeat;z-index:2;pointer-events:none}
-.card.t-v2 .badge{left:70.3cqw;top:66.9cqw;right:auto;bottom:auto;width:22cqw;height:22cqw;background:transparent;clip-path:none;transform:none;z-index:3;isolation:isolate;font-size:6.2cqw;padding-top:1.6cqw;color:#fff;text-shadow:.25cqw .25cqw 0 rgba(0,0,0,.35)}
+.card.t-vintage .art::before{content:"";position:absolute;left:-6.5cqw;top:-15.4cqw;width:100cqw;height:140cqw;background:url("/frames/vintage.webp") 0 0/100% 100% no-repeat;-webkit-mask:url("/frames/vintage-star.png") 0 0/100% 100% no-repeat;mask:url("/frames/vintage-star.png") 0 0/100% 100% no-repeat;z-index:2;pointer-events:none}
+.card.t-vintage .badge{left:70.3cqw;top:66.9cqw;right:auto;bottom:auto;width:22cqw;height:22cqw;background:transparent;clip-path:none;transform:none;z-index:3;isolation:isolate;font-size:6.2cqw;padding-top:1.6cqw;color:#fff;text-shadow:.25cqw .25cqw 0 rgba(0,0,0,.35)}
 /* the pennant's lettering, on the printed pennant */
-.card.t-v2 .team{position:absolute;left:-2.4cqw;top:-13.5cqw;bottom:auto;height:10.6cqw;line-height:10.6cqw;width:44cqw;max-width:none;padding:0 4cqw 0 2.6cqw;background:transparent;border:0;border-radius:0;clip-path:none;color:#fff7e6;text-shadow:.3cqw .3cqw 0 #1c1b18;z-index:3}
+.card.t-vintage .team{position:absolute;left:-2.4cqw;top:-13.5cqw;bottom:auto;height:10.6cqw;line-height:10.6cqw;width:44cqw;max-width:none;padding:0 4cqw 0 2.6cqw;background:transparent;border:0;border-radius:0;clip-path:none;color:#fff7e6;text-shadow:.3cqw .3cqw 0 #1c1b18;z-index:3}
 /* the name and the position on the paper under the frame */
-.card.t-v2 .who{position:absolute;left:7cqw;top:101cqw;width:86cqw;z-index:2}
-.card.t-v2 .who .ln{max-width:76cqw} /* clear of the stamped number */
-.card.t-v2 .role{position:absolute;left:7cqw;top:119.5cqw;width:76cqw;margin:0;color:var(--b);z-index:2}
-.card.t-v2 .role .yrs{display:none}
+.card.t-vintage .who{position:absolute;left:7cqw;top:101cqw;width:86cqw;z-index:2}
+.card.t-vintage .who .ln{max-width:76cqw} /* clear of the stamped number */
+.card.t-vintage .role{position:absolute;left:7cqw;top:119.5cqw;width:76cqw;margin:0;color:var(--b);z-index:2}
+.card.t-vintage .role .yrs{display:none}
 /* the back: the paper alone, with the vintage back's band and rule */
-.card.t-v2 .back{background:#ecdfc3 url("/frames/v2-paper.webp") center/100% 100% no-repeat;padding:0 8% 6.5%}
-.card.t-v2 .back::before{inset:2.6cqw;border:1.5px solid var(--b);border-radius:4.2cqw}
+.card.t-vintage .back{background:#ecdfc3 url("/frames/vintage-paper.webp") center/100% 100% no-repeat;padding:0 8% 6.5%}
+.card.t-vintage .back::before{inset:2.6cqw;border:1.5px solid var(--b);border-radius:4.2cqw}
 /* the free-agent card: the window in the team's dark colour with what the player is open to, a red pennant and star, the name on the paper */
-.card.t-v2.free .front{background:#ecdfc3 url("/frames/v2.webp") center/100% 100% no-repeat;border-color:transparent} /* the vintage free card paints its front navy; here the paper stays */
-.card.t-v2.free .front::before{background:#dc4432}
-.card.t-v2.free .art{background:var(--b);border:0;padding:6% 8% 14%;color:#fbf6ea}
-.card.t-v2.free .art .open{font-size:6.8cqw}
-.card.t-v2.free .badge{left:70.3cqw;top:66.9cqw;right:auto;bottom:auto;transform:none}
-.card.t-v2.free .team{color:#fff7e6;text-shadow:.3cqw .3cqw 0 #1c1b18}
-.card.t-v2.free .who{align-items:flex-start;text-align:left;color:#1c1b18}
-.card.t-v2.free .who .fn{color:#6b6559}
-.card.t-v2.free .role{color:#dc4432}
+.card.t-vintage.free .front{background:#ecdfc3 url("/frames/vintage.webp") center/100% 100% no-repeat;border-color:transparent} /* the vintage free card paints its front navy; here the paper stays */
+.card.t-vintage.free .front::before{background:#dc4432}
+.card.t-vintage.free .art{background:var(--b);border:0;padding:6% 8% 14%;color:#fbf6ea}
+.card.t-vintage.free .art .open{font-size:6.8cqw}
+.card.t-vintage.free .badge{left:70.3cqw;top:66.9cqw;right:auto;bottom:auto;transform:none}
+.card.t-vintage.free .team{color:#fff7e6;text-shadow:.3cqw .3cqw 0 #1c1b18}
+.card.t-vintage.free .who{align-items:flex-start;text-align:left;color:#1c1b18}
+.card.t-vintage.free .who .fn{color:#6b6559}
+.card.t-vintage.free .role{color:#dc4432}
 /* the stack summary: the count in the window, as on vintage */
-.card.t-v2.summary .art .mono{font-size:22cqw}
+.card.t-vintage.summary .art .mono{font-size:22cqw}

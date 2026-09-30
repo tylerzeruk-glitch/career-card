@@ -82,9 +82,9 @@ export function hydrate(o: Partial<State> | null | undefined): State {
 }
 
 /** The theme in force, and the class that puts it on a card. */
-export const themeOf = (S: State): CardTheme => (S.settings.theme === 'chrome' || S.settings.theme === 'v2' ? S.settings.theme : 'vintage');
-/** The stock's class on a card; the vintage stock is the unclassed default. */
-export const themeClass = (S: State) => (themeOf(S) === 'vintage' ? '' : ' t-' + themeOf(S));
+export const themeOf = (S: State): CardTheme => (S.settings.theme === 'chrome' ? 'chrome' : 'vintage'); // anything else saved (the old 'v2' trial key included) is vintage
+/** The stock's class on a card, t-vintage or t-chrome; the unclassed rules in card.css are the scaffolding both build on. */
+export const themeClass = (S: State) => ' t-' + themeOf(S);
 
 export const roles = (S: State) => S.roles.slice().sort((a, b) => (a.start < b.start ? -1 : a.start > b.start ? 1 : 0));
 export const sortedEvents = (S: State) => S.events.slice().sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0));

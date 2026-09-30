@@ -1,11 +1,11 @@
-// The Vintage V2 stock's printed pieces, cut from the source frame (art/v2-frame.webp: cream paper, a yellow frame with
-// a black keyline, a red pennant top-left and a red star bottom-right). Run from web/: node scripts/v2-frame.mjs
-//   public/frames/v2.webp / v2.jpg   the whole card front: seamless paper the card's full height, the frame's pieces at the top
-//   public/frames/v2-paper.webp      the paper alone, for the back
-//   public/frames/v2-pennant.png     an alpha mask, card-sized, that a team colour is painted through (the alpha carries the ink's mottling)
-//   public/frames/v2-star.png        an alpha mask of the whole printed star, keyline included, that the card draws the print through above the portrait
+// The Vintage stock's printed pieces, cut from the source frame (art/vintage-frame.webp: cream paper, a yellow frame with
+// a black keyline, a red pennant top-left and a red star bottom-right). Run from web/: node scripts/vintage-frame.mjs
+//   public/frames/vintage.webp / vintage.jpg   the whole card front: seamless paper the card's full height, the frame's pieces at the top
+//   public/frames/vintage-paper.webp      the paper alone, for the back
+//   public/frames/vintage-pennant.png     an alpha mask, card-sized, that a team colour is painted through (the alpha carries the ink's mottling)
+//   public/frames/vintage-star.png        an alpha mask of the whole printed star, keyline included, that the card draws the print through above the portrait
 import sharp from 'sharp';
-const SRC = 'art/v2-frame.webp', OUT = 'public/frames/';
+const SRC = 'art/vintage-frame.webp', OUT = 'public/frames/';
 const img = sharp(SRC); const { width: W, height: H } = await img.metadata();
 const CH = Math.round(W * 1.4); // the card is 2.5 x 3.5
 const { data } = await img.ensureAlpha().raw().toBuffer({ resolveWithObject: true });
@@ -19,7 +19,7 @@ const cols = Math.ceil(W / win.width), rows = Math.ceil(CH / win.height), lay = 
 for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) lay.push({ input: flips[(c % 2) + 2 * (r % 2)], left: c * win.width, top: r * win.height });
 const paper = await sharp({ create: { width: cols * win.width, height: rows * win.height, channels: 3, background: '#ecdfc3' } })
   .composite(lay).extract({ left: 0, top: 0, width: W, height: CH }).png().toBuffer();
-await sharp(paper).webp({ quality: 82 }).toFile(OUT + 'v2-paper.webp');
+await sharp(paper).webp({ quality: 82 }).toFile(OUT + 'vintage-paper.webp');
 
 // the printed pieces: everything that is not paper, by its distance from the paper's colour, so edges stay soft
 const PAPER = [236, 222, 190];
@@ -37,7 +37,7 @@ for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
 }
 const piecesPng = await sharp(pieces, { raw: { width: W, height: H, channels: 4 } }).png().toBuffer();
 const front = await sharp(paper).composite([{ input: piecesPng, left: 0, top: 0 }]).png().toBuffer();
-await sharp(front).webp({ quality: 86 }).toFile(OUT + 'v2.webp');
-await sharp(front).jpeg({ quality: 88 }).toFile(OUT + 'v2.jpg');
-for (const [name, buf] of [['v2-pennant', pen], ['v2-star', star]]) await sharp(buf, { raw: { width: W, height: CH, channels: 4 } }).blur(0.5).png({ compressionLevel: 9 }).toFile(OUT + name + '.png');
-console.log('v2 stock:', W, 'x', CH, '(frame image', W, 'x', H + ')');
+await sharp(front).webp({ quality: 86 }).toFile(OUT + 'vintage.webp');
+await sharp(front).jpeg({ quality: 88 }).toFile(OUT + 'vintage.jpg');
+for (const [name, buf] of [['vintage-pennant', pen], ['vintage-star', star]]) await sharp(buf, { raw: { width: W, height: CH, channels: 4 } }).blur(0.5).png({ compressionLevel: 9 }).toFile(OUT + name + '.png');
+console.log('vintage stock:', W, 'x', CH, '(frame image', W, 'x', H + ')');

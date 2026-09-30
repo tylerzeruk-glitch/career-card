@@ -8,8 +8,8 @@ import { portraitFor } from '@/lib/avatar';
 
 type Vars = CSSProperties & { '--a'?: string; '--b'?: string };
 const vars = (a: string, b: string): Vars => ({ '--a': a, '--b': b });
-/** The team name's size in cqw: the Chrome plate is fitted; the V2 pennant is a narrower band than the vintage one. */
-const teamFont = (S: State, company: string) => themeOf(S) === 'chrome' ? fitCompany(company) : themeOf(S) === 'v2' ? Math.min(6.2, teamSize(company) * 0.8) : Math.min(7.8, teamSize(company));
+/** The team name's size in cqw: the Chrome plate is fitted; the vintage pennant is a band the name shrinks into. */
+const teamFont = (S: State, company: string) => themeOf(S) === 'chrome' ? fitCompany(company) : Math.min(6.2, teamSize(company) * 0.8);
 /** The stock's class plus, on the Chrome stock, the class of the team's frame. */
 const stockClass = (S: State, company: string) => themeClass(S) + (themeOf(S) === 'chrome' ? ' f' + frameIndexFor(S, company) : '');
 
