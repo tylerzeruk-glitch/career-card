@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: PageProps<'/u/[slug]'>): Prom
   const page = await load(slug);
   if (!page) return { title: 'CareerCards' };
   const S = page.S, first = (S.profile.name || '').trim().split(/\s+/)[0];
-  const title = (S.profile.name || 'Career') + ' · CareerCards', description = (first ? `View ${first}\u2019s cards and make your own.` : 'View the cards and make your own.') + (S.profile.headline ? ' ' + S.profile.headline + (S.profile.location ? ' · ' + S.profile.location : '') : '');
+  const title = (S.profile.name || 'Career') + ' · CareerCards', description = first ? `View ${first}\u2019s cards and make your own.` : 'View the cards and make your own.';
   // the picture comes from og/route.tsx beside this file: their own cards. Its address carries the deploy and the card's last save, so it
   // changes whenever the picture would, and the picture can be cached for as long as the address stands. Only a page its owner made
   // public is indexed; unlisted is reachable by link alone.

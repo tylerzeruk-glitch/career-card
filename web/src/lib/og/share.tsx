@@ -1,9 +1,9 @@
 import { ImageResponse } from 'next/og';
-import sharp from 'sharp';
+import sharp, { type OverlayOptions } from 'sharp';
 import type { State } from '../types';
-import { FRAMES, careerStats, codeFor, frameIndexFor, initials, looking, pairFor, roles, status, themeOf } from '../derived';
+import { FRAMES, careerStats, frameIndexFor, initials, pairFor, roles, themeOf } from '../derived';
 import { portraitFor } from '../avatar';
-import { fitCompany, fitName, fitTitle } from '../fit';
+import { fitCompany, fitName } from '../fit';
 import { SUPABASE_URL } from '../supabase/env';
 
 /**
@@ -60,10 +60,7 @@ function splitName(name: string) {
 const qc = (n: number) => Math.round((n * CW) / 100);
 /** The Chrome frame: shares of the card where the printed frame's panel and plate sit, in px. */
 const FR = { panelL: Math.round(CW * 0.082), panelT: Math.round(CH * 0.0875), panelW: Math.round(CW * 0.836), panelH: Math.round(CH * 0.684), bustH: Math.round(CH * 0.7114),
-  plateL: Math.round(CW * 0.06), plateT: Math.round(CH * 0.786), plateW: Math.round(CW * 0.62), plateH: Math.round(CH * 0.064),
   roleL: Math.round(CW * 0.076), roleT: Math.round(CH * 0.866), roleW: Math.round(CW * 0.62), roleH: Math.round(CH * 0.081) };
-/** The plates' top edge crosses the panel's bottom-right corner: the panel's content is clipped to it. */
-const PANEL_CLIP = `polygon(0 0, 100% 0, 100% ${Math.round(FR.panelH * 0.923)}px, ${Math.round(FR.panelW * 0.178)}px 100%, 0 100%)`;
 /* the bust's box reaches down to the printed plate and ball and is cut along them, as .card.t-chrome .art .pic in card.css (same measurements) */
 const BUST_CLIP = `polygon(${Math.round(FR.panelW * 0.0000)}px ${Math.round(FR.bustH * 0.0000)}px,${Math.round(FR.panelW * 1.0000)}px ${Math.round(FR.bustH * 0.0000)}px,${Math.round(FR.panelW * 1.0000)}px ${Math.round(FR.bustH * 0.9370)}px,${Math.round(FR.panelW * 0.9730)}px ${Math.round(FR.bustH * 0.9270)}px,${Math.round(FR.panelW * 0.9450)}px ${Math.round(FR.bustH * 0.9230)}px,${Math.round(FR.panelW * 0.9160)}px ${Math.round(FR.bustH * 0.9230)}px,${Math.round(FR.panelW * 0.8880)}px ${Math.round(FR.bustH * 0.9270)}px,${Math.round(FR.panelW * 0.8610)}px ${Math.round(FR.bustH * 0.9360)}px,${Math.round(FR.panelW * 0.8370)}px ${Math.round(FR.bustH * 0.9490)}px,${Math.round(FR.panelW * 0.8160)}px ${Math.round(FR.bustH * 0.9660)}px,${Math.round(FR.panelW * 0.8000)}px ${Math.round(FR.bustH * 0.9860)}px,${Math.round(FR.panelW * 0.7900)}px ${Math.round(FR.bustH * 0.9020)}px,${Math.round(FR.panelW * 0.0000)}px ${Math.round(FR.bustH * 0.9720)}px)`;
 const NAVY = '#173a8a', RED = '#e5322d', CREAM = '#fbf3d8';
@@ -91,31 +88,23 @@ function ChromeMark({ text, color }: { text: string; color: string }) {
   );
 }
 
-/** The name on the frame's red plate, which leans up to the right: first name small in gold, surname large in white. */
+/**
+ * The name on the frame's big yellow plate (the site's position plate, turned up to the right about its left end): first name small,
+ * surname large, navy with a white keyline and a dark drop as .card.t-chrome .role. The share card carries no position, and the
+ * yellow plate left blank read as a missing line, so the name takes it and the thin plate above stays as trim.
+ */
 function ChromePlate({ name }: { name: string }) {
-  const { fn, ln, scale } = fitName(name.replace(/,.*$/, ''));
+  const { fn, ln, scale } = fitName(name.replace(/,.*$/, ''), 54, 0.6, 0.64, 0.66, 5.4, 8);
+  const key = '1px 0 0 #fff,-1px 0 0 #fff,0 1px 0 #fff,0 -1px 0 #fff,1px 1px 0 #fff,-1px -1px 0 #fff,1px -1px 0 #fff,-1px 1px 0 #fff,2px 2px 0 #1c1b18';
+  const type = { display: 'flex', fontFamily: LILITA, lineHeight: 1, letterSpacing: '0.03em', textTransform: 'uppercase' as const, color: NAVY, textShadow: key };
   return (
-    <div style={{ position: 'absolute', left: FR.plateL, top: FR.plateT, width: FR.plateW, height: FR.plateH, display: 'flex', alignItems: 'center', paddingLeft: qc(1), transform: turnAbout(-6, FR.plateW, FR.plateH, 0, FR.plateH / 2), whiteSpace: 'nowrap', overflow: 'hidden', ...DBG }}>
-      {fn ? <div style={{ display: 'flex', fontFamily: LILITA, fontSize: qc(4.6 * scale), lineHeight: 1, letterSpacing: '0.02em', textTransform: 'uppercase', color: '#ffe2a8', textShadow: '1px 1px 0 #1c1b18', marginRight: qc(1.8) }}>{fn}</div> : null}
-      <div style={{ display: 'flex', fontFamily: LILITA, fontSize: qc(6.8 * scale), lineHeight: 1, letterSpacing: '0.02em', textTransform: 'uppercase', color: '#fff', textShadow: '1.5px 1.5px 0 #1c1b18' }}>{ln}</div>
+    <div style={{ position: 'absolute', left: FR.roleL, top: FR.roleT, width: FR.roleW, height: FR.roleH, display: 'flex', alignItems: 'center', paddingLeft: qc(2), transform: turnAbout(-5.8, FR.roleW, FR.roleH, 0, FR.roleH / 2), whiteSpace: 'nowrap', overflow: 'hidden', ...DBG }}>
+      {fn ? <div style={{ ...type, fontSize: qc(5.4 * scale), marginRight: qc(1.8) }}>{fn}</div> : null}
+      <div style={{ ...type, fontSize: qc(8 * scale) }}>{ln}</div>
     </div>
   );
 }
 
-/** The position on the yellow plate under the name, abbreviated when it would not fit. */
-function ChromeRole({ title, color }: { title: string; color: string }) {
-  const { text, size } = fitTitle(title), k = 1, ring = [[-k, 0], [k, 0], [0, -k], [0, k], [-k, -k], [k, k], [-k, k], [k, -k]];
-  const base = { position: 'absolute' as const, left: 0, top: 0, width: FR.roleW - qc(2), display: 'flex', fontFamily: LILITA, fontSize: qc(size), lineHeight: 1, letterSpacing: '0.04em', textTransform: 'uppercase' as const, whiteSpace: 'nowrap' as const, overflow: 'hidden' as const };
-  return (
-    <div style={{ position: 'absolute', left: FR.roleL, top: FR.roleT, width: FR.roleW, height: FR.roleH, display: 'flex', transform: turnAbout(-5.8, FR.roleW, FR.roleH, 0, FR.roleH / 2), ...DBG }}>
-      <div style={{ position: 'relative', display: 'flex', left: qc(2), top: Math.round((FR.roleH - qc(size)) / 2 - qc(1.2)), width: FR.roleW - qc(2), height: qc(size) }}>
-        {[[0, 0], ...ring].map(([x, y], i) => <div key={'s' + i} style={{ ...base, left: 1.5 + x, top: 2 + y, color: '#1c1b18' }}>{text}</div>)}
-        {ring.map(([x, y], i) => <div key={i} style={{ ...base, left: x, top: y, color: '#fff' }}>{text}</div>)}
-        <div style={{ ...base, color }}>{text}</div>
-      </div>
-    </div>
-  );
-}
 
 /** The Chrome card stock: the printed frame, rotated into the hand like the others; */
 function ChromeStock({ site, rot, frame = 'chrome.jpg', children }: { site: string; rot: number; frame?: string; children: React.ReactNode }) {
@@ -126,7 +115,7 @@ function ChromeStock({ site, rot, frame = 'chrome.jpg', children }: { site: stri
   );
 }
 
-/** The Chrome role card: the photo in the frame's panel, the company as the maker's mark, the position on a navy tag, the name on the plate. */
+/** The Chrome role card: the photo in the frame's panel, the company as the maker's mark, the name on the yellow plate. */
 function ChromeRoleFront({ S, r, site, rot }: { S: State; r: State['roles'][number]; site: string; rot: number }) {
   const p = S.profile;
   const av = portraitFor(S, p, r.company)?.src || '';
@@ -140,68 +129,73 @@ function ChromeRoleFront({ S, r, site, rot }: { S: State; r: State['roles'][numb
       </div>
       <ChromeMark text={r.company} color={CREAM} />
       <ChromePlate name={p.name} />
-      <ChromeRole title={r.title} color={NAVY} />
     </ChromeStock>
   );
 }
 
-/** The Chrome free-agent card: its own purple frame, what the player is open to in the middle of the panel, a line each. */
-function ChromeFreeFront({ S, site, rot }: { S: State; site: string; rot: number }) {
-  const p = S.profile, open = (p.targets || []).slice(0, 4);
-  const longest = Math.max(1, ...(open.length ? open : ['Offers']).flatMap((t) => t.split(/\s+/)).map((w) => w.length));
-  const innerW = FR.panelW - 2 * Math.round(FR.panelW * 0.06); // the panel's inner width, in px
-  const ADV = 0.92; // an upper-case Lilita letter's advance, as a share of the size, as this renderer sets it
-  const openSize = Math.min(7.5, Math.max(4.8, (innerW / CW) * 100 / (longest * ADV))); // cqw: that width over the longest word
-  // each target on its own line, or broken into lines that fit, each line centred: the renderer is not trusted to wrap or centre text on its own
-  const px = qc(openSize) * ADV, lines: string[] = [];
-  for (const t of (open.length ? open : ['Offers'])) {
-    let line = '';
-    for (const w of t.split(/\s+/)) { const next = line ? line + ' ' + w : w; if (line && next.length * px > innerW) { lines.push(line); line = w; } else line = next; }
-    if (line) lines.push(line);
-  }
-  return (
-    <ChromeStock site={site} rot={rot} frame="chrome-free.jpg">
-      <div style={{ position: 'absolute', left: FR.panelL, top: FR.panelT, width: FR.panelW, height: FR.panelH, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '8% 6% 16%', textAlign: 'center', color: NAVY, clipPath: PANEL_CLIP }}>
-        <div style={{ display: 'flex', fontFamily: BARLOW, fontSize: qc(4.6), letterSpacing: '0.2em', textTransform: 'uppercase', color: RED, marginBottom: qc(3) }}>Open to</div>
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: innerW, fontFamily: LILITA, fontSize: qc(openSize), lineHeight: 1.15, textTransform: 'uppercase' }}>{lines.map((t, i) => <div key={i} style={{ display: 'flex', justifyContent: 'center', width: innerW, whiteSpace: 'nowrap' }}>{t}</div>)}</div>
-      </div>
-      <ChromeMark text="Free agent" color={CREAM} />
-      <ChromePlate name={p.name} />
-      <ChromeRole title="Free agent" color={RED} />
-    </ChromeStock>
-  );
-}
 
 /** The vintage stock: shares of the whole card width (the printed front has no padding), as card.css measures it. */
 const qv = (n: number) => Math.round((n * CW) / 100);
-/** The vintage pennant's mask, fetched once per server, and each tint of it (the mask painted in one colour, card-sized) kept as a data URI. */
-const penMasks: Record<string, Promise<Buffer>> = {}, penTints: Record<string, Promise<string>> = {};
-function pennantTint(site: string, piece: 'pennant', color: string): Promise<string> {
-  const key = piece + color;
-  return (penTints[key] ||= (async () => {
-    const mask = await (penMasks[piece] ||= fetch(site + '/frames/vintage-' + piece + '.png', { cache: 'force-cache' }).then(async (r) => { if (!r.ok) throw new Error('mask ' + piece + ' ' + r.status); return Buffer.from(await r.arrayBuffer()); }));
-    const alpha = await sharp(mask).resize(CW, CH).ensureAlpha().extractChannel(3).png().toBuffer();
-    const png = await sharp({ create: { width: CW, height: CH, channels: 3, background: color } }).joinChannel(alpha).png().toBuffer();
-    return 'data:image/png;base64,' + png.toString('base64');
-  })().catch((e) => { delete penTints[key]; throw e; }));
+/** The vintage print and its masks, fetched once per server, and each finished front (colours plus portrait) kept as a data URI. */
+const vintageParts: Record<string, Promise<Buffer>> = {}, vintageFronts: Record<string, Promise<{ src: string; drawn: boolean }>> = {};
+const fetchPart = (url: string) => fetch(url, { cache: 'force-cache' }).then(async (r) => { if (!r.ok) throw new Error(url + ' ' + r.status); return Buffer.from(await r.arrayBuffer()); });
+const part = (site: string, file: string) => (vintageParts[file] ||= fetchPart(site + '/frames/' + file).catch((e) => { delete vintageParts[file]; throw e; }));
+/**
+ * One vintage front as a single picture, built with sharp: the print, the window in the team's light colour, the portrait in the
+ * window, the printed star back over the portrait, and the pennant in the team's dark colour. The renderer only letters it. Layers
+ * stacked in the renderer clip unevenly on a turned card (the printed red showed past the team's colour), so none are left to it.
+ * `drawn` is false when the portrait can't be had; the card then shows initials in the window.
+ */
+function vintageFront(site: string, light: string, dark: string, portrait: string): Promise<{ src: string; drawn: boolean }> {
+  const key = [light, dark, portrait].join('|');
+  return (vintageFronts[key] ||= (async () => {
+    const W = CW * 2, H = CH * 2, u = W / 100; // twice the card's size for a crisp turn; u is one cqw
+    const [print, pen, star] = await Promise.all([part(site, 'vintage.jpg'), part(site, 'vintage-pennant.png'), part(site, 'vintage-star.png')]);
+    const base = await sharp(print).resize(W, H).png().toBuffer();
+    const win = { left: Math.round(6.5 * u), top: Math.round(15.4 * u), width: Math.round(87 * u), height: Math.round(77.8 * u), r: Math.round(4.6 * u) };
+    const round = Buffer.from(`<svg width="${win.width}" height="${win.height}"><rect width="${win.width}" height="${win.height}" rx="${win.r}" ry="${win.r}"/></svg>`);
+    // the window: the light colour, the portrait a little wider than the window and hung from its top, rounded to the frame's inner curve
+    let drawn = false;
+    const layers: OverlayOptions[] = [];
+    if (portrait) {
+      try {
+        const size = Math.round(win.width * 1.06);
+        const face = await sharp(await fetchPart(portrait)).resize(size, size)
+          .extract({ left: Math.round(win.width * 0.03), top: 0, width: win.width, height: Math.min(size, win.height) }).png().toBuffer();
+        layers.push({ input: face, left: 0, top: 0 });
+        drawn = true;
+      } catch (e) { console.error('share portrait', e); }
+    }
+    const pane = await sharp({ create: { width: win.width, height: win.height, channels: 4, background: light } })
+      .composite([...layers, { input: round, blend: 'dest-in' }]).png().toBuffer();
+    const tint = async (mask: Buffer, color: string | null) => {
+      const shape = await sharp(mask).resize(W, H).ensureAlpha().png().toBuffer();
+      const fill = color ? sharp({ create: { width: W, height: H, channels: 4, background: color } }) : sharp(base).ensureAlpha();
+      return fill.composite([{ input: shape, blend: 'dest-in' }]).png().toBuffer(); // the fill kept only where the mask is
+    };
+    const front = await sharp(base).composite([
+      { input: pane, left: win.left, top: win.top },
+      { input: await tint(star, null) }, // the star as printed, back over the portrait's corner
+      { input: await tint(pen, dark) },
+    ]).jpeg({ quality: 88 }).toBuffer();
+    return { src: 'data:image/jpeg;base64,' + front.toString('base64'), drawn };
+  })().catch((e) => { delete vintageFronts[key]; throw e; }));
 }
-/** The printed stock, turned into the hand like the others, with the pennant painted in the team's colour; the star keeps its printed red. */
-function VintageStock({ site, rot, tint, children }: { site: string; rot: number; tint: string; children: React.ReactNode }) {
+/** The printed stock, its pennant already in the team's colour (see vintageFront), turned into the hand like the others; the star keeps its printed red. */
+function VintageStock({ rot, front, children }: { rot: number; front: string; children: React.ReactNode }) {
   return (
-    <div style={{ position: 'absolute', bottom: 0, width: CW, height: CH, transformOrigin: `${CW / 2}px ${Math.round(CH * 1.15)}px`, transform: `rotate(${rot}deg)`, display: 'flex', borderRadius: qv(1.4), overflow: 'hidden', backgroundImage: `url(${site}/frames/vintage.jpg)`, backgroundSize: `${CW}px ${CH}px`, backgroundRepeat: 'no-repeat', boxShadow: '-5px 0 14px rgba(0,0,0,.18), 0 10px 26px rgba(0,0,0,.18)' }}>
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={tint} width={CW} height={CH} alt="" style={{ position: 'absolute', left: 0, top: 0 }} />
+    <div style={{ position: 'absolute', bottom: 0, width: CW, height: CH, transformOrigin: `${CW / 2}px ${Math.round(CH * 1.15)}px`, transform: `rotate(${rot}deg)`, display: 'flex', borderRadius: qv(1.4), overflow: 'hidden', backgroundImage: `url(${front})`, backgroundSize: `${CW}px ${CH}px`, backgroundRepeat: 'no-repeat', boxShadow: '-5px 0 14px rgba(0,0,0,.18), 0 10px 26px rgba(0,0,0,.18)' }}>
       {children}
     </div>
   );
 }
-/** The lettering on the vintage front: the team on the pennant, the code on the star, the name and the position on the paper below the frame. */
 /** Text cut to a width by hand: inside a turned card the renderer misplaces an overflow clip, so nothing here overflows. `adv` is a letter's advance as a share of the size. */
 function clip(text: string, width: number, size: number, adv: number) {
   const max = Math.floor(width / (size * adv));
   return text.length <= max ? text : text.slice(0, Math.max(1, max - 1)).trimEnd() + '\u2026';
 }
-function VintageLettering({ team, code, name, role, roleColor }: { team: string; code: string; name: string; role: string; roleColor: string }) {
+/** The lettering on the vintage front: the team on the pennant and the name on the paper below the frame, nothing else. */
+function VintageLettering({ team, name }: { team: string; name: string }) {
   const [fn, ln] = splitName(name);
   // the pennant's lettering shrinks to fit its band, to a floor, then is cut; spaces are unbreakable so the renderer never wraps it
   const teamSize = Math.max(qv(3.6), Math.min(qv(6.2), Math.floor(qv(38) / Math.max(1, team.length * 0.8))));
@@ -211,57 +205,37 @@ function VintageLettering({ team, code, name, role, roleColor }: { team: string;
       <div style={{ position: 'absolute', left: qv(6.6), top: qv(1.8), width: qv(40), height: qv(10.6), display: 'flex', alignItems: 'center', justifyContent: 'flex-start' }}>
         <div style={{ display: 'flex', fontFamily: LILITA, fontSize: teamSize, lineHeight: 1, letterSpacing: '0.03em', textTransform: 'uppercase', color: '#fff7e6', textShadow: '1px 1px 0 #1c1b18', whiteSpace: 'nowrap' }}>{teamText}</div>
       </div>
-      <div style={{ position: 'absolute', left: qv(76.8), top: qv(82.3), width: qv(22), height: qv(22), display: 'flex', alignItems: 'center', justifyContent: 'center', paddingTop: qv(1.6), fontFamily: BARLOW, fontSize: qv(6.2), letterSpacing: '0.04em', color: '#fff', textShadow: '0.6px 0.6px 0 rgba(0,0,0,.35)' }}>{code}</div>
-      <div style={{ position: 'absolute', left: qv(7), top: qv(101), width: qv(86), display: 'flex', flexDirection: 'column' }}>
-        {fn ? <div style={{ display: 'flex', fontFamily: BARLOW, fontSize: qv(5), letterSpacing: '0.14em', textTransform: 'uppercase', color: '#6b6559' }}>{fn}</div> : null}
-        <div style={{ display: 'flex', fontFamily: LILITA, fontSize: qv(10), lineHeight: 1, letterSpacing: '0.02em', textTransform: 'uppercase', color: '#1c1b18', whiteSpace: 'nowrap' }}>{clip(ln || name || 'Your name', qv(86), qv(10), 0.66)}</div>
+      <div style={{ position: 'absolute', left: qv(7), top: qv(108), width: qv(86), display: 'flex', flexDirection: 'column' }}>
+        {fn ? <div style={{ display: 'flex', fontFamily: BARLOW, fontSize: qv(5.4), lineHeight: 1.1, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#6b6559' }}>{clip(fn, qv(86), qv(5.4), 0.62)}</div> : null}
+        <div style={{ display: 'flex', fontFamily: LILITA, fontSize: qv(11), lineHeight: 1, letterSpacing: '0.02em', textTransform: 'uppercase', color: '#1c1b18', whiteSpace: 'nowrap' }}>{clip(ln || name || 'Your name', qv(86), qv(11), 0.66)}</div>
       </div>
-      <div style={{ position: 'absolute', left: qv(7), top: qv(119.5), width: qv(86), display: 'flex', fontFamily: BARLOW, fontSize: qv(5), lineHeight: 1.2, letterSpacing: '0.1em', textTransform: 'uppercase', color: roleColor, whiteSpace: 'nowrap' }}>{clip(role, qv(86), qv(5), 0.76).replace(/ /g, '\u00a0')}</div>
     </>
   );
 }
-function VintageRoleFront({ S, r, site, rot, tint }: { S: State; r: State['roles'][number]; site: string; rot: number; tint: string }) {
-  const [a, b] = pairFor(S, r.company), p = S.profile;
-  const av = portraitFor(S, p, r.company)?.src || '';
-  const src = trustedPortrait(av, site);
-  const win = { left: qv(6.5), top: qv(15.4), width: qv(87), height: qv(77.8) };
+function VintageRoleFront({ S, r, rot, front }: { S: State; r: State['roles'][number]; rot: number; front: { src: string; drawn: boolean } }) {
+  const b = pairFor(S, r.company)[1], p = S.profile;
   return (
-    <VintageStock site={site} rot={rot} tint={tint}>
-      <div style={{ position: 'absolute', ...win, borderRadius: qv(4.6), background: a, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        {src ? <img src={src} width={Math.round(win.width * 1.06)} height={Math.round(win.width * 1.06)} alt="" style={{ position: 'absolute', left: -Math.round(win.width * 0.03), top: 0 }} />
-          : <div style={{ display: 'flex', fontFamily: BARLOW, fontSize: qv(30), letterSpacing: '-0.02em', color: b }}>{initials(p.name) || '?'}</div>}
-      </div>
-      <VintageLettering team={r.company} code={r.code || codeFor(r.title)} name={p.name} role={r.title} roleColor={b} />
-    </VintageStock>
-  );
-}
-function VintageFreeFront({ S, site, rot, tint }: { S: State; site: string; rot: number; tint: string }) {
-  const p = S.profile, open = (p.targets || []).slice(0, 3);
-  const win = { left: qv(6.5), top: qv(15.4), width: qv(87), height: qv(77.8) };
-  return (
-    <VintageStock site={site} rot={rot} tint={tint}>
-      <div style={{ position: 'absolute', ...win, borderRadius: qv(4.6), background: '#1f2a44', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: `${qv(6)}px ${qv(8)}px ${qv(14)}px`, textAlign: 'center', color: '#fbf6ea' }}>
-        <div style={{ display: 'flex', fontFamily: BARLOW, fontSize: qv(4.6), letterSpacing: '0.2em', textTransform: 'uppercase', opacity: 0.7, marginBottom: qv(3) }}>Open to</div>
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', fontFamily: LILITA, fontSize: qv(6.8), lineHeight: 1.15, textTransform: 'uppercase' }}>{(open.length ? open : ['Offers']).map((t, i) => <div key={i} style={{ display: 'flex' }}>{t}</div>)}</div>
-      </div>
-      <VintageLettering team="Free agent" code="FA" name={p.name} role="Free agent" roleColor="#dc4432" />
+    <VintageStock rot={rot} front={front.src}>
+      {front.drawn ? null : <div style={{ position: 'absolute', left: qv(6.5), top: qv(15.4), width: qv(87), height: qv(77.8), display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: BARLOW, fontSize: qv(30), letterSpacing: '-0.02em', color: b }}>{initials(p.name) || '?'}</div>}
+      <VintageLettering team={r.company} name={p.name} />
     </VintageStock>
   );
 }
 
-/** Up to three cards: the most recent roles, and the free-agent card in the last slot when the player is on the market. */
 export type ShareVariant = 'band' | 'button' | 'eyebrow';
 
+/** The picture behind a shared link: the player's name and numbers beside a hand of up to three of their most recent cards,
+ * each lettered with the team and the name only, over the portrait, so nothing on a card depends on fitting long text. */
 export async function shareImage(S: State, site: string, slug?: string, variant: ShareVariant = 'band') {
-  const rs = roles(S), st = status(S), free = st.free && looking(S), chrome = themeOf(S) === 'chrome';
+  const rs = roles(S), chrome = themeOf(S) === 'chrome';
   const p = S.profile, cs = careerStats(S);
-  const roleCards = rs.slice(free ? -2 : -3);
-  const n = roleCards.length + (free ? 1 : 0);
+  const roleCards = rs.slice(-3); // up to three, the most recent; the free-agent card stays on the page
+  const n = roleCards.length;
   const rots = n === 3 ? [-9, 1, 10] : n === 2 ? [-6, 6] : [1];
   const lefts = n === 3 ? [0, 0.575, 1.15] : n === 2 ? [0.2, 0.95] : [0.575];
   // the vintage stock's pennant, painted in each card's colour ahead of the render (the renderer has no masks or blend modes)
-  const tints: string[] = chrome ? [] : await Promise.all([...roleCards.map((r) => pennantTint(site, 'pennant', pairFor(S, r.company)[1])), ...(free ? [pennantTint(site, 'pennant', '#dc4432')] : [])]);
+  // the vintage fronts, each baked into one picture (see vintageFront): the team's colours and the portrait for that team
+  const fronts = chrome ? [] : await Promise.all(roleCards.map((r) => { const [a, b] = pairFor(S, r.company); return vintageFront(site, a, b, trustedPortrait(portraitFor(S, S.profile, r.company)?.src || '', site)); }));
   const handW = Math.round(CW * 2.15), handH = CH + 40;
   const stat = cs ? [[cs.seasons, 'season'], [cs.teams, 'team'], [cs.positions, 'position']].map(([v, k]) => `${v} ${k}${v === 1 ? '' : 's'}`).join('  ·  ') : '';
   const sub = p.headline || '';
@@ -302,8 +276,7 @@ export async function shareImage(S: State, site: string, slug?: string, variant:
           <div style={{ display: 'flex', marginLeft: 16, fontFamily: T.cond, fontSize: 19, letterSpacing: '0.12em', textTransform: 'uppercase', color: T.muted }}>{slug ? 'careercards.app/u/' + slug : 'careercards.app'}</div>
         </div> : null}
         <div style={{ position: 'relative', display: 'flex', width: handW, height: handH, marginRight: 8, marginBottom: variant === 'button' ? 0 : 70 }}>
-          {roleCards.map((r, i) => <div key={r.id} style={{ position: 'absolute', left: Math.round(lefts[i] * CW), bottom: 0, width: CW, height: CH, display: 'flex' }}>{chrome ? <ChromeRoleFront S={S} r={r} site={site} rot={rots[i]} /> : <VintageRoleFront S={S} r={r} site={site} rot={rots[i]} tint={tints[i]} />}</div>)}
-          {free ? <div style={{ position: 'absolute', left: Math.round(lefts[n - 1] * CW), bottom: 0, width: CW, height: CH, display: 'flex' }}>{chrome ? <ChromeFreeFront S={S} site={site} rot={rots[n - 1]} /> : <VintageFreeFront S={S} site={site} rot={rots[n - 1]} tint={tints[n - 1]} />}</div> : null}
+          {roleCards.map((r, i) => <div key={r.id} style={{ position: 'absolute', left: Math.round(lefts[i] * CW), bottom: 0, width: CW, height: CH, display: 'flex' }}>{chrome ? <ChromeRoleFront S={S} r={r} site={site} rot={rots[i]} /> : <VintageRoleFront S={S} r={r} rot={rots[i]} front={fronts[i]} />}</div>)}
         </div>
       </div>
     ),
