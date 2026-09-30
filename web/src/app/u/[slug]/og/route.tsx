@@ -22,6 +22,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ slug: st
   try {
     const png = await snap(new URL('/share-frame/' + (S ? encodeURIComponent(slug) : '_example'), req.url).toString(), SHARE_SIZE.width, SHARE_SIZE.height);
     res = new Response(new Uint8Array(png), { headers: { 'Content-Type': 'image/png' } });
+    if (process.env.VERCEL_ENV === 'preview' && new URL(req.url).searchParams.has('b64')) return new Response(png.toString('base64')); // TEMP: preview check
   } catch (e) {
     console.error('share snap', e);
     res = await shareImage(S || sampleState(), site, S ? slug : undefined);
