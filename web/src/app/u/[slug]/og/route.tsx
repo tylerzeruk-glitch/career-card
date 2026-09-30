@@ -1,6 +1,7 @@
 import { shareImage, SHARE_SIZE } from '@/lib/og/share';
 import { snap } from '@/lib/og/snap';
-import { loadPublicCard } from '@/lib/public-card';
+import { loadPublicPage } from '@/lib/public-card';
+import { inStyle, publicStyle } from '@/lib/styles';
 import { sampleState } from '@/lib/sample';
 
 export const dynamic = 'force-dynamic';
@@ -14,13 +15,16 @@ export const maxDuration = 30; // a cold browser takes a few seconds; the CDN ke
  */
 export async function GET(req: Request, { params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const S = await loadPublicCard(slug);
+  const page = await loadPublicPage(slug);
+  // drawn in the style the page resolved for its link (?style=), held to the ones the card's owner may use
+  const style = page ? publicStyle(page.S, page.styles, new URL(req.url).searchParams.get('style')) : null;
+  const S = page && style ? inStyle(page.S, style) : null;
   const site = process.env.NEXT_PUBLIC_SITE_URL || 'https://careercards.app';
   // The picture is a photograph of the share frame, the site's own cards laid out for an unfurl (see share-frame/[slug]).
   // Should the browser fail, the older drawing stands in, so a link never unfurls without one.
   let res: Response;
   try {
-    const png = await snap(new URL('/share-frame/' + (S ? encodeURIComponent(slug) : '_example'), req.url).toString(), SHARE_SIZE.width, SHARE_SIZE.height);
+    const png = await snap(new URL('/share-frame/' + (S ? encodeURIComponent(slug) + '?style=' + style : '_example'), req.url).toString(), SHARE_SIZE.width, SHARE_SIZE.height);
     res = new Response(new Uint8Array(png), { headers: { 'Content-Type': 'image/png' } });
   } catch (e) {
     console.error('share snap', e);

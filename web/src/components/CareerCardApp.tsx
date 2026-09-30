@@ -1,6 +1,6 @@
 'use client';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import type { AuthUser, CloudCard } from '@/lib/types';
+import type { AuthUser, CardTheme, CloudCard } from '@/lib/types';
 import { careerStats, looking, status, themeOf } from '@/lib/derived';
 import { attachTilt } from '@/lib/tilt';
 import { CardProvider, useCard } from './store';
@@ -14,9 +14,9 @@ import { BackupDialog, HelpDialog, ImportDialog } from './dialogs';
 import { StylePicker } from './StylePicker';
 import { Flag, SiteFoot } from './Brand';
 
-export function CareerCardApp({ user, cloud }: { user: AuthUser | null; cloud: CloudCard | null }) {
+export function CareerCardApp({ user, cloud, styles }: { user: AuthUser | null; cloud: CloudCard | null; styles: CardTheme[] }) {
   return (
-    <CardProvider user={user} cloud={cloud}>
+    <CardProvider user={user} cloud={cloud} styles={styles}>
       <Shell />
     </CardProvider>
   );

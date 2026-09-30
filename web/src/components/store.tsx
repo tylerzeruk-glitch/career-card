@@ -1,9 +1,9 @@
 'use client';
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import type { AuthUser, CloudCard, State, Visibility } from '@/lib/types';
+import type { AuthUser, CardTheme, CloudCard, State, Visibility } from '@/lib/types';
 import { blank } from '@/lib/derived';
 import { sampleState } from '@/lib/sample';
-import { clearLocal, loadLocal, saveCloud, saveLocal } from '@/lib/storage';
+import { CardConflict, clearLocal, loadCloud, loadLocal, saveCloud, saveLocal } from '@/lib/storage';
 import { supabaseBrowser } from '@/lib/supabase/client';
 import { isDataUrl, liftPortrait } from '@/lib/portrait';
 import { Ctx, type Store, type SyncStatus } from './card-context';
@@ -33,7 +33,7 @@ const wantExample = () => {
   return false;
 };
 
-export function CardProvider({ children, user, cloud }: { children: ReactNode; user: AuthUser | null; cloud: CloudCard | null }) {
+export function CardProvider({ children, user, cloud, styles }: { children: ReactNode; user: AuthUser | null; cloud: CloudCard | null; styles: CardTheme[] }) {
   // Start from what the server knew (the account's card), else from this browser, else the sample.
   const [S, setS] = useState<State>(() => onDeck(cloud ? cloud.state : blank()));
   const [sampleMode, setSample] = useState(false);
@@ -54,6 +54,8 @@ export function CardProvider({ children, user, cloud }: { children: ReactNode; u
   const lifted = useRef(new Map<string, Promise<string>>());
   /** A card brought in from this browser: the browser copy is cleared once the account has it, not before. */
   const clearAfterSave = useRef(false);
+  /** The account's version of the card this page last read or wrote (its updated_at): a save only writes over that one. */
+  const seen = useRef<string | null>(cloud?.updatedAt ?? null);
 
   const flash = useCallback((msg: string) => {
     setFlashMsg(msg);
@@ -103,15 +105,44 @@ export function CardProvider({ children, user, cloud }: { children: ReactNode; u
           setS((prev) => (prev.profile.avatar === dataUrl ? { ...prev, profile: { ...prev.profile, avatar: url, photo: url } } : prev));
         }
         // one write at a time, and a write that a newer save has overtaken is skipped: the newer one carries a newer card
-        const write = writes.current.then(() => (turn === saveSeq.current ? saveCloud(user.id, s) : undefined));
+        const write = writes.current.then(async () => { if (turn === saveSeq.current) { const at = await saveCloud(user.id, s, seen.current); if (at) seen.current = at; } });
         writes.current = write.catch(() => undefined);
         await write;
         if (turn !== saveSeq.current) return;
         setSync('saved'); dirty.current = false;
         if (clearAfterSave.current) { clearAfterSave.current = false; clearLocal(); }
-      } catch (e) { console.error(e); setSync('error'); flash('Could not save to your account. Your changes are still on this page.'); }
+      } catch (e) {
+        if (e instanceof CardConflict) { await takeNewer('This card was changed on another device, so this page now shows that version. Your last change here was not saved.'); return; }
+        console.error(e); setSync('error'); flash('Could not save to your account. Your changes are still on this page.');
+      }
     }, 700);
   }, [S, sampleMode, booted, user, flash]);
+
+  /**
+   * Show the account's newer card in place of this page's: after a save found the card changed elsewhere, or when the
+   * page comes back into view with nothing unsaved. `msg` is said when it replaces something.
+   */
+  const takeNewer = useCallback(async (msg?: string) => {
+    if (!user) return;
+    try {
+      const remote = await loadCloud(user.id);
+      if (!remote || remote.updatedAt === seen.current) { if (msg) setSync('saved'); return; }
+      if (!msg && dirty.current) return; // an edit made while this was loading: it saves, and a conflict then brings the newer card
+      saveSeq.current++; // a save still queued carries this page's older card: let it lapse
+      if (saveT.current) clearTimeout(saveT.current);
+      dirty.current = false; seen.current = remote.updatedAt;
+      setS(onDeck(remote.state)); setSlug(remote.slug); setVisibility(remote.visibility); setSync('saved');
+      if (msg) flash(msg);
+    } catch (e) { console.error(e); if (msg) { setSync('error'); flash('Could not save to your account. Your changes are still on this page.'); } }
+  }, [user, flash]);
+
+  // A page left open (another tab, a laptop from yesterday) catches up when it is looked at again, so it never saves an old card over a newer one.
+  useEffect(() => {
+    if (!user) return;
+    const onShow = () => { if (document.visibilityState === 'visible' && !dirty.current) takeNewer(); };
+    document.addEventListener('visibilitychange', onShow);
+    return () => document.removeEventListener('visibilitychange', onShow);
+  }, [user, takeNewer]);
 
   const update = useCallback<Store['update']>((fn, opts) => {
     dirty.current = true;
@@ -125,15 +156,19 @@ export function CardProvider({ children, user, cloud }: { children: ReactNode; u
   const setMeta = useCallback<Store['setMeta']>(async (m) => {
     if (!user) return 'Sign in to publish a page.';
     try {
-      await saveCloud(user.id, S, m);
+      // in line with the card's saves, over the version this page has
+      const write = writes.current.then(async () => { const at = await saveCloud(user.id, S, seen.current, m); if (at) seen.current = at; });
+      writes.current = write.catch(() => undefined);
+      await write;
       if ('slug' in m) setSlug(m.slug || null);
       if (m.visibility) setVisibility(m.visibility);
       return null;
     } catch (e) {
+      if (e instanceof CardConflict) { await takeNewer(); return 'This card was changed on another device and has been reloaded. Check it and save again.'; }
       const msg = (e as { message?: string })?.message || '';
       return /duplicate|unique/i.test(msg) ? 'That address is taken.' : /check/i.test(msg) ? 'Use 3 to 40 letters, numbers and dashes.' : 'Could not save that.';
     }
-  }, [user, S]);
+  }, [user, S, takeNewer]);
 
   const migrate = useCallback((bring: boolean) => {
     if (!migration) return;
@@ -149,8 +184,8 @@ export function CardProvider({ children, user, cloud }: { children: ReactNode; u
     window.location.href = '/';
   }, []);
 
-  const value = useMemo<Store>(() => ({ S, sampleMode, user, slug, visibility, sync, update, replace, reset, setMeta, migration, migrate, flash, flashMsg, signOut, loadExample }),
-    [S, sampleMode, user, slug, visibility, sync, update, replace, reset, setMeta, migration, migrate, flash, flashMsg, signOut, loadExample]);
+  const value = useMemo<Store>(() => ({ S, sampleMode, user, styles, slug, visibility, sync, update, replace, reset, setMeta, migration, migrate, flash, flashMsg, signOut, loadExample }),
+    [S, sampleMode, user, styles, slug, visibility, sync, update, replace, reset, setMeta, migration, migrate, flash, flashMsg, signOut, loadExample]);
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }

@@ -7,6 +7,7 @@ import { Landing } from '@/components/Landing';
 import { PublicCard } from '@/components/PublicCard';
 import { sampleState } from '@/lib/sample';
 import { loadLocal } from '@/lib/storage';
+import { THEMES } from '@/lib/styles';
 
 type Page = 'landing' | 'app' | 'public';
 const PAGES: [Page, string][] = [['landing', 'Landing'], ['app', 'App'], ['public', 'Public page']];
@@ -15,7 +16,7 @@ function Preview() {
   const [page, setPage] = useState<Page>('landing');
   // the public page shows whatever the app has in this browser (the example career until it is changed), so a style picked in the app carries over as it does on the site
   const pub = () => { const s = loadLocal()?.state ?? sampleState(); return { ...s, events: [] }; };
-  const body = page === 'app' ? <CareerCardApp user={null} cloud={null} />
+  const body = page === 'app' ? <CareerCardApp user={null} cloud={null} styles={THEMES.map((t) => t.key)} />
     : page === 'public' ? <PublicCard S={pub()} slug="george" resumeHref="https://careercards.app/share-card/resume" />
     : <Landing onTry={() => { (window as unknown as { __EXAMPLE__?: boolean }).__EXAMPLE__ = true; setPage('app'); }} signInHref="https://careercards.app/login" />;
   return (

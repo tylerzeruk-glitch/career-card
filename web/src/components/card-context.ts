@@ -5,7 +5,7 @@
  * client and the save code that the provider needs.
  */
 import { createContext, useContext } from 'react';
-import type { AuthUser, State, Visibility } from '@/lib/types';
+import type { AuthUser, CardTheme, State, Visibility } from '@/lib/types';
 
 export type SyncStatus = 'local' | 'saved' | 'saving' | 'error';
 
@@ -13,6 +13,8 @@ export type Store = {
   S: State;
   sampleMode: boolean;
   user: AuthUser | null;
+  /** The card styles this account may use (see lib/styles.ts): offered in the style picker and for shared links. */
+  styles: CardTheme[];
   slug: string | null;
   visibility: Visibility;
   sync: SyncStatus;

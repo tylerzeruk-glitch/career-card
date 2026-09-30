@@ -2,7 +2,8 @@ import { hydrate } from './derived';
 import { supabaseServer } from './supabase/server';
 import type { State, Visibility } from './types';
 
-export type PublicPage = { S: State; visibility: Visibility; updatedAt: string | null };
+/** `styles`: the trial styles the owner has been granted, or null when the read predates grants (see lib/styles.ts). */
+export type PublicPage = { S: State; visibility: Visibility; updatedAt: string | null; styles: string[] | null };
 
 /**
  * Someone's shared card by its address, with how it is shared, or null when there is none, it is private, or
@@ -14,10 +15,11 @@ export async function loadPublicPage(slug: string): Promise<PublicPage | null> {
   if (!sb) return null;
   const { data } = await sb.rpc('public_card', { p_slug: slug });
   if (!data) return null;
-  const row = data as { data?: Partial<State>; visibility?: Visibility; updated_at?: string } & Partial<State>;
+  const row = data as { data?: Partial<State>; visibility?: Visibility; updated_at?: string; styles?: unknown } & Partial<State>;
   const doc = row.data && !Array.isArray(row.roles) ? row.data : (row as Partial<State>);
   if (!doc || !Array.isArray(doc.roles)) return null;
-  return { S: hydrate({ ...doc, events: [] }), visibility: row.visibility === 'public' ? 'public' : 'unlisted', updatedAt: row.updated_at || null };
+  const styles = Array.isArray(row.styles) ? row.styles.filter((x): x is string => typeof x === 'string') : null;
+  return { S: hydrate({ ...doc, events: [] }), visibility: row.visibility === 'public' ? 'public' : 'unlisted', updatedAt: row.updated_at || null, styles };
 }
 
 /** The card alone, for the share image and the resume. */

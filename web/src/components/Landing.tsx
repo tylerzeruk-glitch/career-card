@@ -9,6 +9,7 @@ import { FreeCard, RoleCard } from './Cards';
 import { TimelineLegend, TimelineView } from './Timeline';
 import { dayNum, todayISO } from '@/lib/dates';
 import { status } from '@/lib/derived';
+import { TRIAL } from '@/lib/styles';
 
 /** The red pennant, same path as the favicon. */
 
@@ -20,8 +21,8 @@ export function heroState(): State {
   return s;
 }
 
-/** While a stock is still being tried out (NEXT_PUBLIC_STYLE_TESTERS names who sees it in the app) the landing keeps to the one everyone has. */
-const GATED = !!process.env.NEXT_PUBLIC_STYLE_TESTERS;
+/** While a stock is still being tried out (granted account by account, see lib/styles.ts) the landing keeps to the one everyone has. */
+const GATED = TRIAL.length > 0;
 
 const STEPS = [
   { h: 'Import', p: 'Drop in a resume PDF or a LinkedIn export. Claude reads it and deals the cards. You fix whatever it got wrong.' },

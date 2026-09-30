@@ -1,8 +1,9 @@
 'use client';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useCard } from './card-context';
+import { offered } from './StylePicker';
 import { useUI, type DrawerTab } from './ui';
-import type { Ev, EventType, Role, Visibility } from '@/lib/types';
+import type { CardTheme, Ev, EventType, Role, Visibility } from '@/lib/types';
 
 type EduRow = { school: string; degree: string; start: string; end: string; inProgress: boolean };
 type CertRow = { name: string; issuer: string; year: string; inProgress: boolean };
@@ -499,9 +500,16 @@ function Log() {
   );
 }
 
-/** The Share tab: the page's address, who can see it, open it, copy the link. Sign in to have one. */
+/**
+ * The Share tab: the page's address, who can see it, open it, copy the link. Sign in to have one. With more than one
+ * card style, the link names the style it opens in (?style=), so each link keeps the look it was sent in whatever the
+ * page's own style becomes; the page checks the owner may use it.
+ */
 function SharePanel() {
-  const { S, user, slug, visibility, setMeta } = useCard();
+  const { S, user, styles, slug, visibility, setMeta } = useCard();
+  const looks = offered(styles, themeOf(S));
+  const [linkStyle, setLinkStyle] = useState<CardTheme>(themeOf(S));
+  const path = '/u/' + slug + (looks.length > 1 ? '?style=' + linkStyle : '');
   const p = S.profile;
   const [pageMsg, setPageMsg] = useState('');
   const [slugIn, setSlugIn] = useState(slug || slugify(p.name));
@@ -515,7 +523,7 @@ function SharePanel() {
     setPageMsg(err || (vis === 'private' ? 'Saved. Your page is private.' : 'Saved.'));
   };
   const copyLink = async () => {
-    try { await navigator.clipboard.writeText(origin + '/u/' + slug); setCopied(true); setTimeout(() => setCopied(false), 1800); } catch { setPageMsg('Could not copy. The address is ' + origin + '/u/' + slug); }
+    try { await navigator.clipboard.writeText(origin + path); setCopied(true); setTimeout(() => setCopied(false), 1800); } catch { setPageMsg('Could not copy. The address is ' + origin + path); }
   };
   return (
     <section>
@@ -538,7 +546,15 @@ function SharePanel() {
             <button className="btn primary" type="button" onClick={savePage}>Save page settings</button>
             <span className="spacer" /><span className="status">{pageMsg}</span>
           </div>
-          {slug && visibility !== 'private' && <div className="page-links"><a className="btn open" href={'/u/' + slug} target="_blank" rel="noopener">Open your page ↗</a><button className="btn open" type="button" onClick={copyLink}>{copied ? 'Copied' : 'Copy link'}</button></div>}
+          {slug && visibility !== 'private' && looks.length > 1 && (
+            <div className="field"><span className="lbl" id="ls-label">Link style</span>
+              <div className="gt vis across" role="radiogroup" aria-labelledby="ls-label">
+                {looks.map((t) => <button type="button" key={t.key} role="radio" aria-checked={linkStyle === t.key} className={linkStyle === t.key ? 'on' : ''} onClick={() => setLinkStyle(t.key)}><i aria-hidden="true" />{t.name}</button>)}
+              </div>
+              <span className="help">The link opens in this style, and its preview shows it, whatever style your page is set to later.</span>
+            </div>
+          )}
+          {slug && visibility !== 'private' && <div className="page-links"><a className="btn open" href={path} target="_blank" rel="noopener">Open your page ↗</a><button className="btn open" type="button" onClick={copyLink}>{copied ? 'Copied' : 'Copy link'}</button></div>}
         </div>
       ) : (
         <p style={{ color: 'var(--ink-2)', fontSize: 13.5, margin: 0 }}>Sign in to give your card an address you can send to people. <a href="/login">Sign in</a></p>
