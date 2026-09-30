@@ -17,8 +17,8 @@ export const metadata: Metadata = { robots: { index: false, follow: false } };
  * and never a second drawing of the cards to keep in step. `_example` is the example card; `_local` reads OG_STATE (a JSON card)
  * off Vercel, for checking the picture by hand.
  */
-export default async function ShareFrame({ params, searchParams }: { params: Promise<{ slug: string }>; searchParams: Promise<{ full?: string }> }) {
-  const { slug } = await params, full = (await searchParams).full !== undefined;
+export default async function ShareFrame({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
   const S = slug === '_example' ? sampleState()
     : slug === '_local' && process.env.OG_STATE && !process.env.VERCEL ? hydrate(JSON.parse(readFileSync(process.env.OG_STATE, 'utf8')))
     : await loadPublicCard(slug);
@@ -29,7 +29,7 @@ export default async function ShareFrame({ params, searchParams }: { params: Pro
   const first = (p.name || '').trim().split(/\s+/)[0];
   const shown = slug.startsWith('_') ? '' : slug;
   return (
-    <div className={'shareframe s-' + style + (full ? ' full' : '')}>
+    <div className={'shareframe s-' + style}>
       <div className="left">
         <div className="mark"><Flag size={34} /><span>CareerCards</span></div>
         <div className="name">{p.name || 'Career'}</div>

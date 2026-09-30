@@ -20,6 +20,3 @@
 .shareframe .hand{position:absolute;right:72px;bottom:165px;width:calc(var(--cw) * 2.15);height:calc(var(--cw) * 1.4 + 40px)}
 .shareframe .slot{position:absolute;bottom:0;width:var(--cw);transform-origin:50% 115%}
 .shareframe .slot .card{width:var(--cw);cursor:default}
-/* the picture carries the team, the name and the portrait; the position, the card number and the star's code stay on the page */
-.shareframe:not(.full) .card .role,.shareframe:not(.full) .card .num{display:none}
-.shareframe:not(.full) .card .badge{color:transparent;text-shadow:none}
