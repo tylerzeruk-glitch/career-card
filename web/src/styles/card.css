@@ -222,7 +222,7 @@
    keeps its red (vintage-star.png masks it back in above the portrait); the window behind the portrait is the team's light colour. Measurements are shares of the
    card's width (cqw): the frame image is the card's width and 112.2cqw tall; the window is x 6.5–93.5, y 15.4–93.2; the pennant
    x 4–49, y 1.8–12.7; the star's centre (87.8, 93.3), radius 11. ===== */
-.card.t-vintage .face{border-radius:1.4cqw;border:0;background:#ecdfc3 url("/frames/vintage.webp") center/100% 100% no-repeat;box-shadow:-5px 0 14px rgba(0,0,0,.18),0 10px 26px rgba(0,0,0,.18)}
+.card.t-vintage .face{border-radius:7%/5%; /* a share of the card, not cqw: the face is its own container, so cqw here measured the page */border:0;background:#ecdfc3 url("/frames/vintage.webp") center/100% 100% no-repeat;box-shadow:-5px 0 14px rgba(0,0,0,.18),0 10px 26px rgba(0,0,0,.18)}
 .card.t-vintage .front{padding:0;display:block}
 .card.t-vintage .front::before{inset:0;border:0;border-radius:0;background:var(--b);-webkit-mask:url("/frames/vintage-pennant.png") 0 0/100% 100% no-repeat;mask:url("/frames/vintage-pennant.png") 0 0/100% 100% no-repeat;z-index:1;pointer-events:none} /* the pennant, in the team's dark colour, as the vintage pennant */
 /* the card's number, stamped into the paper at the bottom right: dark ink, tilted a little to the right, a hairline of light under the figure as if pressed in */
