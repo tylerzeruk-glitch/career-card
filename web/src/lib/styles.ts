@@ -9,10 +9,11 @@ export const THEMES: { key: CardTheme; name: string; note: string }[] = [
 const KEYS = THEMES.map((t) => t.key);
 
 /**
- * Styles still being tried out. An account may use one only when it is granted one (a row in style_access, made by the
- * project owner, never by the app). Every other style is open to everyone.
+ * Styles held back: an account may use one only when it is granted it (a row in style_access, made by the project
+ * owner, never by the app, e.g. after a purchase). Every other style is open to everyone. Vintage and Chrome are both
+ * open; a style added later can be listed here to keep it behind the grant.
  */
-export const TRIAL: CardTheme[] = ['chrome'];
+export const TRIAL: CardTheme[] = [];
 
 export const isStyle = (v: unknown): v is CardTheme => typeof v === 'string' && (KEYS as string[]).includes(v);
 
