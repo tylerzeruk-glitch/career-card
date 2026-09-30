@@ -258,7 +258,7 @@ a.btn{text-decoration:none;display:inline-block}
 /* editing from a focused card: the drawer slides in over the right side and the card keeps showing beside it */
 body.drawer-open .focus{padding-right:min(420px,100vw)}
 /* the dim and blur fade in on their own layer so the card itself never looks translucent */
-.focus::before{content:"";position:absolute;inset:0;z-index:-1;background:rgba(20,18,14,.5);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);animation:fade .25s ease-out}
+.focus::before{content:"";position:absolute;inset:0;z-index:-1;background:rgba(20,18,14,.5);backdrop-filter:blur(7px);animation:fade .25s ease-out}
 .focus .card{width:min(330px,80vw)}
 .focus .pop .card{animation:pop .25s cubic-bezier(.2,.7,.2,1)}
 #focus-card{will-change:transform}
@@ -371,7 +371,7 @@ body.drawer-open .scrim{opacity:1;pointer-events:auto}
 .form-foot .status{font-size:12px;color:var(--muted)}
 .form-foot .status.unsaved{color:var(--red);font-weight:600}
 /* once the profile form has changes, its footer sticks to the bottom of the flyout until they are saved */
-.form-foot.floating{position:sticky;bottom:0;z-index:3;background:color-mix(in srgb,var(--paper) 82%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);margin:0 -18px;padding:12px 18px 14px;border-top:1px solid var(--hair);box-shadow:0 -10px 24px rgba(0,0,0,.08)}
+.form-foot.floating{position:sticky;bottom:0;z-index:3;background:color-mix(in srgb,var(--paper) 82%,transparent);backdrop-filter:blur(10px);margin:0 -18px;padding:12px 18px 14px;border-top:1px solid var(--hair);box-shadow:0 -10px 24px rgba(0,0,0,.08)}
 
 .log-tools{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:8px}
 .log-tools input,.log-tools select{border:0;border-bottom:1px solid var(--hair);border-radius:0;padding:5px 0;background:transparent}
@@ -632,7 +632,7 @@ kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--hair);border-r
   .hero{grid-template-columns:1fr;gap:30px}
   .handwrap{order:-1;margin-bottom:10px}
   /* on a phone the picked card grows to about double, centred, over a dimmed and blurred page; tapping the page settles it */
-  .hand-dim{display:block;position:fixed;inset:0;z-index:8;background:rgba(20,18,14,.3);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);animation:fade .25s ease-out}
+  .hand-dim{display:block;position:fixed;inset:0;z-index:8;background:rgba(20,18,14,.3);backdrop-filter:blur(5px);animation:fade .25s ease-out}
   .hand .card.out{transform-origin:50% 50%;transform:translate(var(--dx,0px),12%) rotate(0deg) scale(var(--pop))}
   .steps{grid-template-columns:1fr;gap:18px}
   .hunt{grid-template-columns:1fr;padding:26px 22px;gap:22px}
