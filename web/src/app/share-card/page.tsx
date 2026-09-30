@@ -5,7 +5,7 @@ import { FreeCard, RoleCard } from '@/components/Cards';
 
 /**
  * The 1200 x 630 picture behind a shared link. Not linked from anywhere; a
- * screenshot of it is committed as public/og.png (see web/README.md).
+ * screenshot of it is committed as public/og.jpg (see web/README.md).
  */
 export default function ShareCard() {
   const S = heroState();

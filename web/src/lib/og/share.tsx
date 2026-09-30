@@ -44,7 +44,7 @@ const BARLOW = 'Barlow Condensed', LILITA = 'Lilita One', CASLON = 'Libre Caslon
  */
 function trustedPortrait(src: string, site: string): string {
   if (!src) return '';
-  if (src.startsWith('/') && !src.startsWith('//')) return site + src;
+  if (src.startsWith('/') && !src.startsWith('//')) return site + src.replace(/^(\/avatars\/[\w-]+)\.webp$/, '$1.png'); // the renderer reads PNG, not the site's WebP
   if (src.startsWith('data:image/')) return src;
   const bucket = SUPABASE_URL ? SUPABASE_URL.replace(/\/$/, '') + '/storage/v1/object/public/portraits/' : '';
   return bucket && src.startsWith(bucket) && !src.includes('..') ? src : '';

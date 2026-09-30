@@ -29,7 +29,7 @@ export function avatar90Src(avatar: string, frame: number): string {
 
 function builtIn(key: string): string {
   const inline = typeof window !== 'undefined' ? (window as unknown as { __AVATARS__?: Record<string, string> }).__AVATARS__ : undefined;
-  return inline?.[key] || '/avatars/' + key + '.png';
+  return inline?.[key] || '/avatars/' + key + '.webp'; // a PNG of each sits beside it for the share renderer, which cannot read WebP
 }
 
 /** What goes in the art box for this card: on the Chrome stock the 90s portrait when there is one, else the usual. `photo` means it fills the box. */

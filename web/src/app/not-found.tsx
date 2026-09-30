@@ -5,10 +5,10 @@ import { Flag, SiteFoot } from '@/components/Brand';
 
 /**
  * 404: a card that isn't in the set. Cosmo Kramer, no. 404, for a team that was never a company, with a
- * back you can read by hovering. A drawn portrait goes in public/avatars/kramer.png when there is one;
+ * back you can read by hovering. A drawn portrait goes in public/avatars/kramer.webp when there is one;
  * until then the art box carries his monogram like any card without a portrait.
  */
-const KRAMER = existsSync(join(process.cwd(), 'public', 'avatars', 'kramer.png'));
+const KRAMER = existsSync(join(process.cwd(), 'public', 'avatars', 'kramer.webp'));
 
 export default function NotFound() {
   const vars = { '--a': '#f5e08a', '--b': '#3b3b2f' } as CSSProperties; // PAIRS[5], the pair the portrait was recolored for
@@ -24,8 +24,8 @@ export default function NotFound() {
             <div className="inner">
               <div className="face front">
                 <div className="art">
-                  <div className="team" style={{ fontSize: '7.8cqw' }}>Kramerica</div>
-                  {KRAMER ? <span className="pic"><img src="/avatars/kramer.png" alt="" loading="lazy" decoding="async" /></span> : <span className="mono">CK</span>}
+                  <div className="team" style={{ fontSize: '5.8cqw' }}>Kramerica</div>
+                  {KRAMER ? <span className="pic"><img src="/avatars/kramer.webp" alt="" loading="lazy" decoding="async" /></span> : <span className="mono">CK</span>}
                   <span className="badge">LOST</span>
                 </div>
                 <div className="who"><span className="fn">Cosmo</span> <span className="ln">Kramer</span></div>

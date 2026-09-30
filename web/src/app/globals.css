@@ -594,7 +594,7 @@ kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--hair);border-r
 [data-style="chrome"].landing .hunt{border-radius:4px;box-shadow:6px 6px 0 var(--gold)}
 [data-style="chrome"].landing .flipme svg{color:var(--red)}
 
-/* the share card: a 1200 x 630 still of the hero, screenshotted into public/og.png */
+/* the share card: a 1200 x 630 still of the hero, screenshotted into public/og.jpg */
 .landing.share{--hw:224px;width:1200px;height:630px;max-width:none;margin:0;padding:0 64px;display:grid;grid-template-columns:minmax(0,1fr) max-content;gap:36px;align-items:center;background:var(--bg);overflow:hidden}
 .landing.share .wordmark{font-size:30px;margin-bottom:26px}
 .landing.share h1{font:700 58px/.98 var(--head);letter-spacing:.02em;text-transform:uppercase;margin-bottom:18px}

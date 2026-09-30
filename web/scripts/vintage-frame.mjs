@@ -8,6 +8,8 @@ import sharp from 'sharp';
 const SRC = 'art/vintage-frame.webp', OUT = 'public/frames/';
 const img = sharp(SRC); const { width: W, height: H } = await img.metadata();
 const CH = Math.round(W * 1.4); // the card is 2.5 x 3.5
+// what is written: 760 px wide for the site (twice the widest card, the 330 px focus view, with room to spare), 480 for the share image's 236 px cards
+const SITE_W = 760, SHARE_W = 480;
 const { data } = await img.ensureAlpha().raw().toBuffer({ resolveWithObject: true });
 const px = (i) => [data[i * 4], data[i * 4 + 1], data[i * 4 + 2]];
 
@@ -19,7 +21,7 @@ const cols = Math.ceil(W / win.width), rows = Math.ceil(CH / win.height), lay = 
 for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) lay.push({ input: flips[(c % 2) + 2 * (r % 2)], left: c * win.width, top: r * win.height });
 const paper = await sharp({ create: { width: cols * win.width, height: rows * win.height, channels: 3, background: '#ecdfc3' } })
   .composite(lay).extract({ left: 0, top: 0, width: W, height: CH }).png().toBuffer();
-await sharp(paper).webp({ quality: 82 }).toFile(OUT + 'vintage-paper.webp');
+await sharp(paper).resize({ width: SITE_W }).webp({ quality: 82, effort: 6 }).toFile(OUT + 'vintage-paper.webp');
 
 // the printed pieces: everything that is not paper, by its distance from the paper's colour, so edges stay soft
 const PAPER = [236, 222, 190];
@@ -27,7 +29,11 @@ const pieces = Buffer.alloc(W * H * 4), pen = Buffer.alloc(W * CH * 4), star = B
 for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
   const i = y * W + x, [r, g, b] = px(i);
   const d = Math.hypot(r - PAPER[0], g - PAPER[1], b - PAPER[2]);
-  const edge = (x < 30 || x > W - 30 || y < 12 || y > H - 40) && d < 120; // the source's own paper edge, shaded darker, is not a piece; ink there (the star's right tip and its keyline) is
+  // the source's own paper edge (shaded darker, with a dark rule along the bottom) is not a piece; the one exception is
+  // the star's right tip and keyline, which run to the image's right edge
+  const ink = (xx) => { const [r2, g2, b2] = px(y * W + xx); return Math.hypot(r2 - PAPER[0], g2 - PAPER[1], b2 - PAPER[2]) >= 120; };
+  const starTip = x > W - 30 && y > 930 && y < H - 40 && d >= 120 && ink(x - 10) && ink(x - 20); // part of the solid star, not the thin border rule
+  const edge = (x < 30 || x > W - 30 || y < 12 || y > H - 40) && !starTip;
   const a = edge ? 0 : Math.max(0, Math.min(1, (d - 28) / 40));
   pieces.set([r, g, b, Math.round(a * 255)], i * 4);
   const red = r > 140 && g < 120 && b < 120 && r - g > 50, yellow = r > 190 && g > 160 && b < 120;
@@ -37,7 +43,7 @@ for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
 }
 const piecesPng = await sharp(pieces, { raw: { width: W, height: H, channels: 4 } }).png().toBuffer();
 const front = await sharp(paper).composite([{ input: piecesPng, left: 0, top: 0 }]).png().toBuffer();
-await sharp(front).webp({ quality: 86 }).toFile(OUT + 'vintage.webp');
-await sharp(front).jpeg({ quality: 88 }).toFile(OUT + 'vintage.jpg');
-for (const [name, buf] of [['vintage-pennant', pen], ['vintage-star', star]]) await sharp(buf, { raw: { width: W, height: CH, channels: 4 } }).blur(0.5).png({ compressionLevel: 9 }).toFile(OUT + name + '.png');
+await sharp(front).resize({ width: SITE_W }).webp({ quality: 86, effort: 6 }).toFile(OUT + 'vintage.webp');
+await sharp(front).resize({ width: SHARE_W }).jpeg({ quality: 88, mozjpeg: true }).toFile(OUT + 'vintage.jpg');
+for (const [name, buf] of [['vintage-pennant', pen], ['vintage-star', star]]) await sharp(buf, { raw: { width: W, height: CH, channels: 4 } }).blur(0.5).resize({ width: SITE_W }).png({ compressionLevel: 9 }).toFile(OUT + name + '.png');
 console.log('vintage stock:', W, 'x', CH, '(frame image', W, 'x', H + ')');
