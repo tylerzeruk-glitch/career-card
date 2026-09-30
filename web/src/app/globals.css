@@ -502,6 +502,7 @@ kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--hair);border-r
 /* landing: the front door for a signed-out visitor */
 .landing{--hw:clamp(150px,17.5vw,236px);max-width:1160px;margin:0 auto;padding:0 var(--gut) 40px;display:flex;flex-direction:column;gap:56px}
 .landing .eyebrow{font:700 15px/1 var(--head);letter-spacing:.16em;text-transform:uppercase;color:var(--red);margin-bottom:14px}
+.landing .hero .eyebrow{font-size:clamp(21px,2.3vw,28px);letter-spacing:.12em;margin-bottom:16px} /* the hero's opener ("Resumes are boring.") is a line to read, not a label */
 .landing p{margin:0;color:var(--ink-2)}
 .landing a{color:inherit}
 .lbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:20px}
