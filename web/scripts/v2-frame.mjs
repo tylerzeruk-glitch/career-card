@@ -2,8 +2,8 @@
 // a black keyline, a red pennant top-left and a red star bottom-right). Run from web/: node scripts/v2-frame.mjs
 //   public/frames/v2.webp / v2.jpg   the whole card front: seamless paper the card's full height, the frame's pieces at the top
 //   public/frames/v2-paper.webp      the paper alone, for the back
-//   public/frames/v2-pennant.png     alpha masks, card-sized, that a team colour is painted through (the alpha carries the ink's mottling)
-//   public/frames/v2-star.png
+//   public/frames/v2-pennant.png     an alpha mask, card-sized, that a team colour is painted through (the alpha carries the ink's mottling)
+//   public/frames/v2-star.png        an alpha mask of the whole printed star, keyline included, that the card draws the print through above the portrait
 import sharp from 'sharp';
 const SRC = 'art/v2-frame.webp', OUT = 'public/frames/';
 const img = sharp(SRC); const { width: W, height: H } = await img.metadata();
@@ -30,9 +30,10 @@ for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
   const edge = x < 30 || x > W - 30 || y < 12 || y > H - 40; // the source's own paper edge, shaded darker, is not a piece
   const a = edge ? 0 : Math.max(0, Math.min(1, (d - 28) / 40));
   pieces.set([r, g, b, Math.round(a * 255)], i * 4);
-  const red = r > 140 && g < 120 && b < 120 && r - g > 50;
-  if (red) { const lum = (r * .3 + g * .59 + b * .11) / 255, ta = Math.round(255 * (0.78 + 0.22 * Math.min(1, lum / 0.45)));
-    if (y < 175) pen.set([255, 255, 255, ta], i * 4); else if (y > 900 && x > 820) star.set([255, 255, 255, ta], i * 4); }
+  const red = r > 140 && g < 120 && b < 120 && r - g > 50, yellow = r > 190 && g > 160 && b < 120;
+  if (red && y < 175) { const lum = (r * .3 + g * .59 + b * .11) / 255; pen.set([255, 255, 255, Math.round(255 * (0.78 + 0.22 * Math.min(1, lum / 0.45)))], i * 4); }
+  // the star's mask is the whole printed star, keyline included (everything in its corner that is neither paper nor the yellow frame): the card draws the print through it, above the portrait
+  if (y > 930 && x > 830 && !yellow && a > 0.5) star.set([255, 255, 255, Math.round(a * 255)], i * 4);
 }
 const piecesPng = await sharp(pieces, { raw: { width: W, height: H, channels: 4 } }).png().toBuffer();
 const front = await sharp(paper).composite([{ input: piecesPng, left: 0, top: 0 }]).png().toBuffer();

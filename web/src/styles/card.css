@@ -217,22 +217,23 @@
 
 /* ===== Vintage V2: the vintage card on a printed stock (public/frames/v2.webp, cut from art/v2-frame.webp by scripts/v2-frame.mjs):
    cream paper the whole card, a yellow frame with a black keyline around the portrait window, the team on a red pennant off the
-   frame's top-left, the position on a red star off its bottom-right, the name and position on the paper below. The pennant and
-   the star are painted in the team's colours through alpha masks whose alpha carries the print's mottling (v2-pennant.png,
-   v2-star.png); the window behind the portrait is the team colour, as the vintage art box is. Measurements are shares of the
+   frame's top-left, the position on a red star off its bottom-right, the name and position on the paper below. The pennant is
+   painted in the team's dark colour through an alpha mask whose alpha carries the print's mottling (v2-pennant.png); the star
+   keeps its red (v2-star.png masks it back in above the portrait); the window behind the portrait is the team's light colour. Measurements are shares of the
    card's width (cqw): the frame image is the card's width and 112.2cqw tall; the window is x 6.5–93.5, y 15.4–93.2; the pennant
    x 4–49, y 1.8–12.7; the star's centre (87.8, 93.3), radius 11. ===== */
 .card.t-v2 .face{border-radius:1.4cqw;border:0;background:#ecdfc3 url("/frames/v2.webp") center/100% 100% no-repeat;box-shadow:-5px 0 14px rgba(0,0,0,.18),0 10px 26px rgba(0,0,0,.18)}
 .card.t-v2 .front{padding:0;display:block}
 .card.t-v2 .front::before{inset:0;border:0;border-radius:0;background:var(--b);-webkit-mask:url("/frames/v2-pennant.png") 0 0/100% 100% no-repeat;mask:url("/frames/v2-pennant.png") 0 0/100% 100% no-repeat;z-index:1;pointer-events:none} /* the pennant, in the team's dark colour, as the vintage pennant */
-/* the card's number, stamped into the paper at the bottom right: a shallow dish in the paper, the figure pressed in (light below, shade above) */
-.card.t-v2 .num{top:auto;bottom:4.6cqw;right:4.6cqw;width:10.5cqw;height:10.5cqw;border:0;background:rgba(84,64,36,.07);box-shadow:inset 0 .35cqw .6cqw rgba(60,40,15,.28),inset 0 -.3cqw 0 rgba(255,250,235,.7);color:#8a7757;text-shadow:0 .3cqw 0 rgba(255,250,235,.75),0 -.2cqw 0 rgba(60,40,15,.35);z-index:2}
+/* the card's number, stamped into the paper at the bottom right: dark ink, tilted a little to the right, a hairline of light under the figure as if pressed in */
+.card.t-v2 .num{top:auto;bottom:4.2cqw;right:4.2cqw;width:12cqw;height:10cqw;border:0;background:transparent;box-shadow:none;color:#2b2416;font-size:6.2cqw;text-shadow:0 .25cqw 0 rgba(255,250,235,.8);transform:rotate(8deg);z-index:2}
 /* the window: the team colour behind the portrait, clipped to the frame's inner curve */
 .card.t-v2 .art{position:absolute;left:6.5cqw;top:15.4cqw;width:87cqw;height:77.8cqw;box-sizing:border-box;margin:0;border:0;border-radius:4.6cqw;background:var(--a);overflow:visible;flex:none}
 .card.t-v2 .art::after{border-radius:inherit;background:radial-gradient(circle at 30% 20%,rgba(255,255,255,.28),transparent 55%)}
 .card.t-v2 .art .pic{border-radius:inherit;inset:0}
 .card.t-v2 .art .pic img:not(.photo){left:0;top:0;bottom:auto;width:100%;height:auto} /* a bust fills the window's width from the top: the riso busts bleed to their own edges, so those must be the window's; what the window cuts is the shirt's bottom */
-/* the star keeps its printed red on every card; the code sits on it, over the window's corner and the portrait (z above the picture) */
+/* the star keeps its printed red on every card. The print lies under the portrait, so the star is drawn again through its mask, above the picture; the code sits on it */
+.card.t-v2 .art::before{content:"";position:absolute;left:-6.5cqw;top:-15.4cqw;width:100cqw;height:140cqw;background:url("/frames/v2.webp") 0 0/100% 100% no-repeat;-webkit-mask:url("/frames/v2-star.png") 0 0/100% 100% no-repeat;mask:url("/frames/v2-star.png") 0 0/100% 100% no-repeat;z-index:2;pointer-events:none}
 .card.t-v2 .badge{left:70.3cqw;top:66.9cqw;right:auto;bottom:auto;width:22cqw;height:22cqw;background:transparent;clip-path:none;transform:none;z-index:3;isolation:isolate;font-size:6.2cqw;padding-top:1.6cqw;color:#fff;text-shadow:.25cqw .25cqw 0 rgba(0,0,0,.35)}
 /* the pennant's lettering, on the printed pennant */
 .card.t-v2 .team{position:absolute;left:-2.4cqw;top:-13.5cqw;bottom:auto;height:10.6cqw;line-height:10.6cqw;width:44cqw;max-width:none;padding:0 4cqw 0 2.6cqw;background:transparent;border:0;border-radius:0;clip-path:none;color:#fff7e6;text-shadow:.3cqw .3cqw 0 #1c1b18;z-index:3}
