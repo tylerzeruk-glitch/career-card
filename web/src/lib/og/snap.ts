@@ -35,6 +35,9 @@ export async function snap(url: string, width: number, height: number): Promise<
     }
     const res = await page.goto(url, { waitUntil: 'networkidle', timeout: 20000 });
     if (!res || !res.ok()) throw new Error('share frame ' + (res ? res.status() : 'no response') + ' ' + url);
+    // a page that loads is not enough: a sign-in wall (a protected preview) answers 200 too, so it must be this site's share frame
+    if (new URL(page.url()).origin !== new URL(url).origin) throw new Error('share frame redirected to ' + page.url());
+    await page.waitForSelector('.shareframe', { timeout: 3000 });
     await page.evaluate(async () => {
       await document.fonts.ready;
       await Promise.all([...document.images].map((i) => i.complete ? null : new Promise((r) => { i.onload = i.onerror = r; })));
