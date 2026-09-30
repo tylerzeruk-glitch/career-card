@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { useCard } from './store';
+import { useCard } from './card-context';
 import { useUI, type DrawerTab } from './ui';
 import type { Ev, EventType, Role, Visibility } from '@/lib/types';
 
@@ -207,7 +207,7 @@ function EventForm({ eventId, prefill }: { eventId: string | null; prefill: Part
 
 // ---------- profile + page settings ----------
 /** Where the browser lands after LinkedIn: the callback sends it home with this, and the picker carries on. */
-export const LINKEDIN_RETURN = '/?portrait=linkedin';
+export const LINKEDIN_RETURN = '/app?portrait=linkedin';
 
 /** A LinkedIn address as typed ("linkedin.com/in/you", "www.linkedin.com/in/you/", or just "you") becomes a full URL; anything else is kept as typed. */
 export function linkedinUrl(raw: string): string {

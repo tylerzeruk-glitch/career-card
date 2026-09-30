@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { useCard } from './store';
+import { useCard } from './card-context';
 import { useUI } from './ui';
 import { FreeCard, RoleCard } from './Cards';
 import { roles, status } from '@/lib/derived';

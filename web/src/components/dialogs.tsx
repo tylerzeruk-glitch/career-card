@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
-import { useCard } from './store';
+import { useCard } from './card-context';
 import type { ImportTab } from './ui';
 import type { Ev, EventType, State } from '@/lib/types';
 import { parseMonth, todayISO } from '@/lib/dates';

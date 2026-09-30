@@ -1,7 +1,7 @@
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import type { CSSProperties } from 'react';
-import { Flag, SiteFoot } from '@/components/Landing';
+import { Flag, SiteFoot } from '@/components/Brand';
 
 /**
  * 404: a card that isn't in the set. Cosmo Kramer, no. 404, for a team that was never a company, with a

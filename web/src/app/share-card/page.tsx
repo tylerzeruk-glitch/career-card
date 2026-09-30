@@ -1,5 +1,6 @@
 'use client';
-import { Flag, heroState } from '@/components/Landing';
+import { Flag } from '@/components/Brand';
+import { heroState } from '@/components/Landing';
 import { FreeCard, RoleCard } from '@/components/Cards';
 
 /**

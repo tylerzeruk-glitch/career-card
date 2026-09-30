@@ -1,43 +1,13 @@
 'use client';
-import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import type { AuthUser, CloudCard, State, Visibility } from '@/lib/types';
 import { blank } from '@/lib/derived';
 import { sampleState } from '@/lib/sample';
 import { clearLocal, loadLocal, saveCloud, saveLocal } from '@/lib/storage';
 import { supabaseBrowser } from '@/lib/supabase/client';
 import { isDataUrl, liftPortrait } from '@/lib/portrait';
-
-export type SyncStatus = 'local' | 'saved' | 'saving' | 'error';
-
-type Store = {
-  S: State;
-  sampleMode: boolean;
-  user: AuthUser | null;
-  slug: string | null;
-  visibility: Visibility;
-  sync: SyncStatus;
-  /** Replace the document (and leave sample mode). */
-  update: (fn: (s: State) => State, opts?: { keepSample?: boolean }) => void;
-  /** Replace the whole document wholesale (import, restore, migrate). */
-  replace: (s: State, sample?: boolean) => void;
-  reset: () => void;
-  setMeta: (m: { slug?: string | null; visibility?: Visibility }) => Promise<string | null>;
-  /** Local data that could be brought into a freshly signed-in account. */
-  migration: State | null;
-  migrate: (bring: boolean) => void;
-  flash: (msg: string) => void;
-  flashMsg: string | null;
-  signOut: () => Promise<void>;
-  /** Deal the example career again (local mode). */
-  loadExample: () => void;
-};
-
-const Ctx = createContext<Store | null>(null);
-export const useCard = () => {
-  const c = useContext(Ctx);
-  if (!c) throw new Error('useCard outside CardProvider');
-  return c;
-};
+import { Ctx, type Store, type SyncStatus } from './card-context';
+export { useCard, type SyncStatus } from './card-context';
 
 const isReal = (s: State) => s.roles.length > 0 || s.events.length > 0 || !!s.profile.name;
 /** Every visit opens on the deck; the view is a choice for the session, not a saved preference. */

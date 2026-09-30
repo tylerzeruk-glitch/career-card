@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from 'react';
 import type { CardTheme, State } from '@/lib/types';
 import { roles, themeOf } from '@/lib/derived';
-import { useCard } from './store';
+import { useCard } from './card-context';
 import { FreeCard, RoleCard } from './Cards';
 
 /** The looks on offer, in the order they are shown. */

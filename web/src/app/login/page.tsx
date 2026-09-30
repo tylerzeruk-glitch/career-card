@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { supabaseBrowser } from '@/lib/supabase/client';
-import { Flag } from '@/components/Landing';
+import { Flag } from '@/components/Brand';
 import { enabledProviders, type Provider } from '@/lib/auth-providers';
 
 /**

@@ -12,7 +12,7 @@ import { Timeline } from './Timeline';
 import { Drawer, PORTRAIT_NOTE, type DrawerState } from './Drawer';
 import { BackupDialog, HelpDialog, ImportDialog } from './dialogs';
 import { StylePicker } from './StylePicker';
-import { Flag, SiteFoot } from './Landing';
+import { Flag, SiteFoot } from './Brand';
 
 export function CareerCardApp({ user, cloud }: { user: AuthUser | null; cloud: CloudCard | null }) {
   return (

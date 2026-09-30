@@ -1,8 +1,6 @@
-import { CareerCardApp } from '@/components/CareerCardApp';
+import { redirect } from 'next/navigation';
 import { Landing } from '@/components/Landing';
-import { rowToCard } from '@/lib/card-row';
 import { supabaseServer } from '@/lib/supabase/server';
-import type { AuthUser, CloudCard } from '@/lib/types';
 import type { Metadata } from 'next';
 import { jsonLd } from '@/lib/json-ld';
 
@@ -20,23 +18,19 @@ const SITE_LD = {
 };
 
 /**
- * Signed in: the account's card, rendered on the server so there is no flash
- * of local data. Signed out: the front door; the app itself is at /app.
+ * The front door. A signed-in visitor goes straight to their cards at /app; this page never renders the app, so a
+ * signed-out visitor downloads the landing page alone, without the app's code or the account client.
  */
-export default async function Home() {
-  let user: AuthUser | null = null;
-  let cloud: CloudCard | null = null;
+export default async function Home({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
   const sb = await supabaseServer();
   if (sb) {
-    const { data: { user: u } } = await sb.auth.getUser();
-    if (u) {
-      user = { id: u.id, email: u.email ?? null };
-      const { data, error } = await sb.from('cards').select('slug,visibility,data,hunt,updated_at').eq('user_id', u.id).maybeSingle();
-      // a failed read is not "no card yet": opening the app on an empty card would save it over the real one (see app/error.tsx)
-      if (error) throw new Error('Could not read the card: ' + error.message);
-      if (data) cloud = rowToCard(data);
+    const { data: { user } } = await sb.auth.getUser();
+    if (user) {
+      // carry the query along (an older sign-in link may still arrive here with ?portrait=linkedin)
+      const q = new URLSearchParams();
+      for (const [k, v] of Object.entries(await searchParams)) for (const x of [v].flat()) if (x != null) q.append(k, x);
+      redirect('/app' + (q.size ? '?' + q : ''));
     }
   }
-  if (!user) return <><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(SITE_LD) }} /><Landing /></>;
-  return <CareerCardApp user={user} cloud={cloud} />;
+  return <><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(SITE_LD) }} /><Landing /></>;
 }

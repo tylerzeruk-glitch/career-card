@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useRef } from 'react';
-import { useCard } from './store';
+import { useCard } from './card-context';
 import { useUI, type TimelineApi } from './ui';
 import type { Ev, State } from '@/lib/types';
 import { MONTHS, dayNum, dur, fmt, fmtMonth, fmtShort, monthEndDay, monthsBetween, todayISO } from '@/lib/dates';

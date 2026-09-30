@@ -7,7 +7,7 @@ import { attachTilt } from '@/lib/tilt';
 import { FreeCard, RoleCard } from './Cards';
 import { ShelfDots } from './ShelfDots';
 import { FocusView } from './Focus';
-import { Flag, SiteFoot } from './Landing';
+import { Flag, SiteFoot } from './Brand';
 
 /** The download button fetches the PDF itself, so it can say what is happening while the server sets the sheet (a second or two), then hands the file to the browser. */
 function ResumeButton({ href, name }: { href: string; name: string }) {

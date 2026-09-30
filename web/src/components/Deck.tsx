@@ -1,6 +1,6 @@
 'use client';
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { useCard } from './store';
+import { useCard } from './card-context';
 import { useUI } from './ui';
 import { FreeCard, RoleCard, SummaryCard, UnderCard } from './Cards';
 import { ShelfDots } from './ShelfDots';
