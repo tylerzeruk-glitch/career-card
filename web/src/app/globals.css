@@ -804,11 +804,9 @@ html:has([data-style="chrome"]) body{background:#fff linear-gradient(180deg,rgba
 .stylepick .swatch{border:0;background:transparent;padding:6px;border-radius:10px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:8px;font:inherit;color:var(--ink-2)}
 .stylepick .swatch:hover{background:var(--hover);color:var(--ink)}
 .stylepick .swatch.on{outline:2px solid var(--red);background:var(--hover);color:var(--ink)}
-.stylepick .thumb{display:block;width:84px;pointer-events:none;transition:transform .18s ease}
-.stylepick .swatch.lift .thumb{transform:translateY(-6px) rotate(-1.5deg)} /* the style being shown below (hovered, else the one in use) stands up off the page */
+.stylepick .thumb{display:block;width:84px;pointer-events:none}
 .stylepick .thumb .card{width:84px;cursor:default}
-.stylepick .thumb .card .face{box-shadow:0 4px 10px rgba(0,0,0,.18);transition:box-shadow .18s ease}
-.stylepick .swatch.lift .thumb .card .face{box-shadow:0 12px 20px rgba(0,0,0,.24)}
+.stylepick .thumb .card .face{box-shadow:0 4px 10px rgba(0,0,0,.18)}
 .stylepick .lbl{font:700 11px var(--head);letter-spacing:.1em;text-transform:uppercase}
 /* the header's round buttons (theme, card style, more) as small keylined discs with a hard shadow, like the number on the cards; the style chip shows the printed frame itself */
 [data-style="chrome"] .btn.icon.theme,[data-style="chrome"] .btn.icon.style,[data-style="chrome"] .menu summary.more{border:1.5px solid var(--navy);background:#fff;color:var(--navy);box-shadow:2px 2px 0 var(--gold);transition:transform .12s,box-shadow .12s}
@@ -826,7 +824,6 @@ html:has([data-style="chrome"]) body{background:#fff linear-gradient(180deg,rgba
 [data-style="chrome"] .stylepick .swatch.on{outline:0;background:#fff;border-color:var(--navy);color:var(--navy);box-shadow:3px 3px 0 var(--gold)}
 [data-style="chrome"] .stylepick .swatch.on .lbl{text-shadow:1.5px 1.5px 0 var(--gold)} /* as the header links */
 [data-style="chrome"] .stylepick .thumb .card .face{box-shadow:3px 3px 0 rgba(28,27,42,.35)}
-[data-style="chrome"] .stylepick .swatch.lift .thumb .card .face{box-shadow:5px 7px 0 rgba(28,27,42,.35)}
 
 /* ===== Vintage, the page around the cards: a second sheet. Each control sits on the paper like a card on a card: a thin ink
    keyline and, two pixels down and right, a sliver of the darker paper under it (--under). Solid, short, no blur, the colour of
@@ -850,6 +847,5 @@ html:has([data-style="chrome"]) body{background:#fff linear-gradient(180deg,rgba
 [data-style="vintage"] .menu .pop{border:1.5px solid var(--ink);border-radius:6px;box-shadow:3px 3px 0 var(--under)}
 [data-style="vintage"] .stylepick .swatch.on{outline:0;border:1.5px solid var(--ink);background:var(--paper);box-shadow:2px 2px 0 var(--under)}
 [data-style="vintage"] .stylepick .thumb .card .face{box-shadow:2px 2px 0 rgba(28,27,24,.22)}
-[data-style="vintage"] .stylepick .swatch.lift .thumb .card .face{box-shadow:4px 6px 0 rgba(28,27,24,.2)}
 [data-style="vintage"] .portrait .pv,[data-style="vintage"] .takes .take{border:1.5px solid var(--ink);box-shadow:3px 3px 0 var(--under)}
 [data-style="vintage"].landing .hunt{box-shadow:5px 5px 0 var(--under)}
