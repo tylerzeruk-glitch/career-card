@@ -249,7 +249,7 @@ function ChromeFreeFront({ S, site, rot }: { S: State; site: string; rot: number
 const qv = (n: number) => Math.round((n * CW) / 100);
 /** The V2 pieces' masks, fetched once per server, and each tint of them (a mask painted in one colour, card-sized) kept as a data URI. */
 const v2Masks: Record<string, Promise<Buffer>> = {}, v2Tints: Record<string, Promise<string>> = {};
-function v2Tint(site: string, piece: 'pennant' | 'star', color: string): Promise<string> {
+function v2Tint(site: string, piece: 'pennant', color: string): Promise<string> {
   const key = piece + color;
   return (v2Tints[key] ||= (async () => {
     const mask = await (v2Masks[piece] ||= fetch(site + '/frames/v2-' + piece + '.png', { cache: 'force-cache' }).then(async (r) => { if (!r.ok) throw new Error('mask ' + piece + ' ' + r.status); return Buffer.from(await r.arrayBuffer()); }));
@@ -258,14 +258,12 @@ function v2Tint(site: string, piece: 'pennant' | 'star', color: string): Promise
     return 'data:image/png;base64,' + png.toString('base64');
   })().catch((e) => { delete v2Tints[key]; throw e; }));
 }
-/** The printed stock, turned into the hand like the others, with the pennant and the star painted in `ink`. */
-function V2Stock({ site, rot, tints, children }: { site: string; rot: number; tints: [string, string]; children: React.ReactNode }) {
+/** The printed stock, turned into the hand like the others, with the pennant painted in the team's colour; the star keeps its printed red. */
+function V2Stock({ site, rot, tint, children }: { site: string; rot: number; tint: string; children: React.ReactNode }) {
   return (
     <div style={{ position: 'absolute', bottom: 0, width: CW, height: CH, transformOrigin: `${CW / 2}px ${Math.round(CH * 1.15)}px`, transform: `rotate(${rot}deg)`, display: 'flex', borderRadius: qv(1.4), overflow: 'hidden', backgroundImage: `url(${site}/frames/v2.jpg)`, backgroundSize: `${CW}px ${CH}px`, backgroundRepeat: 'no-repeat', boxShadow: '-5px 0 14px rgba(0,0,0,.18), 0 10px 26px rgba(0,0,0,.18)' }}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={tints[0]} width={CW} height={CH} alt="" style={{ position: 'absolute', left: 0, top: 0 }} />
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={tints[1]} width={CW} height={CH} alt="" style={{ position: 'absolute', left: 0, top: 0 }} />
+      <img src={tint} width={CW} height={CH} alt="" style={{ position: 'absolute', left: 0, top: 0 }} />
       {children}
     </div>
   );
@@ -295,13 +293,13 @@ function V2Lettering({ team, code, name, role, roleColor }: { team: string; code
     </>
   );
 }
-function V2RoleFront({ S, r, site, rot, tints }: { S: State; r: State['roles'][number]; site: string; rot: number; tints: [string, string] }) {
+function V2RoleFront({ S, r, site, rot, tint }: { S: State; r: State['roles'][number]; site: string; rot: number; tint: string }) {
   const [a, b] = pairFor(S, r.company), p = S.profile;
   const av = portraitFor(S, p, r.company)?.src || '';
   const src = av ? (av.startsWith('/') ? site + av : av) : '';
   const win = { left: qv(6.5), top: qv(15.4), width: qv(87), height: qv(77.8) };
   return (
-    <V2Stock site={site} rot={rot} tints={tints}>
+    <V2Stock site={site} rot={rot} tint={tint}>
       <div style={{ position: 'absolute', ...win, borderRadius: qv(4.6), background: a, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         {src ? <img src={src} width={win.width} height={win.width} alt="" style={{ position: 'absolute', left: 0, top: 0 }} />
@@ -311,11 +309,11 @@ function V2RoleFront({ S, r, site, rot, tints }: { S: State; r: State['roles'][n
     </V2Stock>
   );
 }
-function V2FreeFront({ S, site, rot, tints }: { S: State; site: string; rot: number; tints: [string, string] }) {
+function V2FreeFront({ S, site, rot, tint }: { S: State; site: string; rot: number; tint: string }) {
   const p = S.profile, open = (p.targets || []).slice(0, 3);
   const win = { left: qv(6.5), top: qv(15.4), width: qv(87), height: qv(77.8) };
   return (
-    <V2Stock site={site} rot={rot} tints={tints}>
+    <V2Stock site={site} rot={rot} tint={tint}>
       <div style={{ position: 'absolute', ...win, borderRadius: qv(4.6), background: '#1f2a44', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: `${qv(6)}px ${qv(8)}px ${qv(14)}px`, textAlign: 'center', color: '#fbf6ea' }}>
         <div style={{ display: 'flex', fontFamily: BARLOW, fontSize: qv(4.6), letterSpacing: '0.2em', textTransform: 'uppercase', opacity: 0.7, marginBottom: qv(3) }}>Open to</div>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', fontFamily: LILITA, fontSize: qv(6.8), lineHeight: 1.15, textTransform: 'uppercase' }}>{(open.length ? open : ['Offers']).map((t, i) => <div key={i} style={{ display: 'flex' }}>{t}</div>)}</div>
@@ -335,8 +333,8 @@ export async function shareImage(S: State, site: string, slug?: string, variant:
   const n = roleCards.length + (free ? 1 : 0);
   const rots = n === 3 ? [-9, 1, 10] : n === 2 ? [-6, 6] : [1];
   const lefts = n === 3 ? [0, 0.575, 1.15] : n === 2 ? [0.2, 0.95] : [0.575];
-  // the V2 stock's pennant and star, painted in each card's colour ahead of the render (the renderer has no masks or blend modes)
-  const tints: [string, string][] = v2 ? await Promise.all([...roleCards.map((r) => { const b = pairFor(S, r.company)[1]; return Promise.all([v2Tint(site, 'pennant', b), v2Tint(site, 'star', b)]) as Promise<[string, string]>; }), ...(free ? [Promise.all([v2Tint(site, 'pennant', '#dc4432'), v2Tint(site, 'star', '#dc4432')]) as Promise<[string, string]>] : [])]) : [];
+  // the V2 stock's pennant, painted in each card's colour ahead of the render (the renderer has no masks or blend modes)
+  const tints: string[] = v2 ? await Promise.all([...roleCards.map((r) => v2Tint(site, 'pennant', pairFor(S, r.company)[1])), ...(free ? [v2Tint(site, 'pennant', '#dc4432')] : [])]) : [];
   const handW = Math.round(CW * 2.15), handH = CH + 40;
   const stat = cs ? [[cs.seasons, 'season'], [cs.teams, 'team'], [cs.positions, 'position']].map(([v, k]) => `${v} ${k}${v === 1 ? '' : 's'}`).join('  ·  ') : '';
   const sub = p.headline || '';
@@ -378,8 +376,8 @@ export async function shareImage(S: State, site: string, slug?: string, variant:
           <div style={{ display: 'flex', marginLeft: 16, fontFamily: T.cond, fontSize: 19, letterSpacing: '0.12em', textTransform: 'uppercase', color: T.muted }}>{slug ? 'careercards.app/u/' + slug : 'careercards.app'}</div>
         </div> : null}
         <div style={{ position: 'relative', display: 'flex', width: handW, height: handH, marginRight: 8, marginBottom: variant === 'button' ? 0 : 70 }}>
-          {roleCards.map((r, i) => <div key={r.id} style={{ position: 'absolute', left: Math.round(lefts[i] * CW), bottom: 0, width: CW, height: CH, display: 'flex' }}>{v2 ? <V2RoleFront S={S} r={r} site={site} rot={rots[i]} tints={tints[i]} /> : chrome ? <ChromeRoleFront S={S} r={r} site={site} rot={rots[i]} /> : <RoleFront S={S} r={r} idx={firstIdx + i} site={site} rot={rots[i]} />}</div>)}
-          {free ? <div style={{ position: 'absolute', left: Math.round(lefts[n - 1] * CW), bottom: 0, width: CW, height: CH, display: 'flex' }}>{v2 ? <V2FreeFront S={S} site={site} rot={rots[n - 1]} tints={tints[n - 1]} /> : chrome ? <ChromeFreeFront S={S} site={site} rot={rots[n - 1]} /> : <FreeFront S={S} rot={rots[n - 1]} />}</div> : null}
+          {roleCards.map((r, i) => <div key={r.id} style={{ position: 'absolute', left: Math.round(lefts[i] * CW), bottom: 0, width: CW, height: CH, display: 'flex' }}>{v2 ? <V2RoleFront S={S} r={r} site={site} rot={rots[i]} tint={tints[i]} /> : chrome ? <ChromeRoleFront S={S} r={r} site={site} rot={rots[i]} /> : <RoleFront S={S} r={r} idx={firstIdx + i} site={site} rot={rots[i]} />}</div>)}
+          {free ? <div style={{ position: 'absolute', left: Math.round(lefts[n - 1] * CW), bottom: 0, width: CW, height: CH, display: 'flex' }}>{v2 ? <V2FreeFront S={S} site={site} rot={rots[n - 1]} tint={tints[n - 1]} /> : chrome ? <ChromeFreeFront S={S} site={site} rot={rots[n - 1]} /> : <FreeFront S={S} rot={rots[n - 1]} />}</div> : null}
         </div>
       </div>
     ),
