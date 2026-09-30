@@ -1,4 +1,4 @@
-import type { Ev, EventType, Role, State } from './types';
+import type { Ev, EventType, Role, State, CardTheme } from './types';
 import { dayNum, isoFromDay, monthEndDay, monthIndex, nowYM, todayISO } from './dates';
 
 export const TYPES: Record<EventType, { label: string; dir: 1 | -1; color: string }> = {
@@ -82,8 +82,9 @@ export function hydrate(o: Partial<State> | null | undefined): State {
 }
 
 /** The theme in force, and the class that puts it on a card. */
-export const themeOf = (S: State): 'vintage' | 'chrome' => (S.settings.theme === 'chrome' ? 'chrome' : 'vintage');
-export const themeClass = (S: State) => (themeOf(S) === 'chrome' ? ' t-chrome' : '');
+export const themeOf = (S: State): CardTheme => (S.settings.theme === 'chrome' || S.settings.theme === 'v2' ? S.settings.theme : 'vintage');
+/** The stock's class on a card; the vintage stock is the unclassed default. */
+export const themeClass = (S: State) => (themeOf(S) === 'vintage' ? '' : ' t-' + themeOf(S));
 
 export const roles = (S: State) => S.roles.slice().sort((a, b) => (a.start < b.start ? -1 : a.start > b.start ? 1 : 0));
 export const sortedEvents = (S: State) => S.events.slice().sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0));

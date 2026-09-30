@@ -8,6 +8,7 @@ import { FreeCard, RoleCard } from './Cards';
 /** The looks on offer, in the order they are shown. */
 export const THEMES: { key: CardTheme; name: string; note: string }[] = [
   { key: 'vintage', name: 'Vintage', note: 'Cream stock, a pennant and a starburst, like a card from the fifties.' },
+  { key: 'v2', name: 'Vintage V2', note: 'The vintage card on a printed stock: cream paper, a yellow frame around the portrait, the team on a red pennant and the position on a star.' },
   { key: 'chrome', name: 'Chrome', note: 'A holographic border, a cream photo panel and the name on a red plate, like a card from a nineties pack. Hover a card to see the foil catch the light.' },
 ];
 
@@ -16,7 +17,7 @@ export const THEMES: { key: CardTheme; name: string; note: string }[] = [
  * ids, comma-separated); with the variable unset, every build offers every style. A saved pick is kept
  * whatever the list says, so a tester's public page and shared picture keep the look for everyone.
  */
-const TRIAL: CardTheme[] = ['chrome'];
+const TRIAL: CardTheme[] = ['chrome', 'v2'];
 const testers = (process.env.NEXT_PUBLIC_STYLE_TESTERS || '').split(',').map((s) => s.trim()).filter(Boolean);
 export const offered = (userId: string | undefined, cur: CardTheme) => THEMES.filter((t) => !TRIAL.includes(t.key) || t.key === cur || !testers.length || (userId && testers.includes(userId)));
 
