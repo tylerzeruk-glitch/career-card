@@ -10,8 +10,8 @@ type CertRow = { name: string; issuer: string; year: string; inProgress: boolean
 const IN_PROGRESS = /in progress|present/i;
 import { fmtShort, parseMonth, todayISO } from '@/lib/dates';
 import { FRAMES, PAIRS, TYPES, codeFor, hashIdx, huntStats, initials, looking, norm, pairFor, roles, slugify, sortedEvents, statusOf, themeOf, uid } from '@/lib/derived';
-import { isBust90, isPhoto, isSet, portraitFor } from '@/lib/avatar';
-import { LOCAL_SIDE, PORTRAIT_SIDE, dropPortrait, drawTake, isDataUrl, photoBlob, pickTake, squarePhoto, storePortrait, toDataUrl, type Take } from '@/lib/portrait';
+import { isBust90, isSet, ownChrome, portraitFor } from '@/lib/avatar';
+import { LOCAL_SIDE, PORTRAIT_SIDE, dropUnused, drawTake, isDataUrl, photoBlob, pickTake, squarePhoto, storePortrait, toDataUrl, type Take } from '@/lib/portrait';
 import { linkedinOn } from '@/lib/auth-providers';
 import { supabaseBrowser } from '@/lib/supabase/client';
 
@@ -227,9 +227,10 @@ const LinkedInMark = <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden
 /**
  * Profile → Player → Portrait. A headshot from a file, a drop, or the player's LinkedIn profile photo;
  * cropped square in the browser and saved as soon as it is picked: into the account's storage, or as a
- * small data URL inside the local card (it moves to the account on sign-in). Shown on every card.
- * Drawing follows the card stock in use: the riso house style for the vintage stock (a set in every
- * team's colours, `avatar`), the 90s look for Chrome (one portrait, `avatar90`); each stock keeps its own.
+ * small data URL inside the local card (it moves to the account on sign-in). Each card stock keeps its own
+ * photo and portrait (vintage `photo`/`avatar`, Chrome `photo90`/`avatar90`): a change on one never touches
+ * the other, except that the very first photo goes on both. Drawing follows the stock: the riso house style
+ * for vintage (a set in every team's colours), the 90s look for Chrome (a set in every frame colourway).
  */
 function PortraitPicker() {
   const { S, update, user, sampleMode, loadExample } = useCard();
@@ -240,8 +241,16 @@ function PortraitPicker() {
   const [a, b] = first ? pairFor(S, first.company) : PAIRS[0];
   const chrome = themeOf(S) === 'chrome';
   const shown = portraitFor(S, p, first ? first.company : '');
-  const drawn = chrome ? isBust90(p.avatar90 || '') : isSet(p.avatar || ''); // this stock's cards show a drawing (the built-in George aside)
-  const standIn = chrome && !p.avatar90 && !!p.avatar && isSet(p.avatar); // the riso set is filling in on the 90s cards
+  const own = chrome ? p.avatar90 : p.avatar; // this stock's portrait ('' on Chrome: removed)
+  const photo = chrome ? (p.photo90 ?? (p.avatar90 === '' ? undefined : p.photo)) : p.photo; // the headshot this stock draws from
+  const drawn = chrome ? isBust90(own || '') : isSet(own || ''); // this stock's cards show a drawing (the built-in George aside)
+  const standIn = chrome && p.avatar90 === undefined && !!p.avatar && isSet(p.avatar); // a card from before: the riso set is filling in on the 90s cards
+  /** The profile with this stock's photo and portrait changed, the other stock's left as they are. */
+  const mine = (pr: typeof p, avatar: string | undefined, ph: string | undefined) => {
+    const o = chrome ? { ...pr, avatar90: avatar ?? '', photo90: ph } : { ...ownChrome(pr), avatar, photo: ph };
+    if (o.photo === undefined) delete o.photo; if (o.photo90 === undefined) delete o.photo90; if (o.avatar === undefined) delete o.avatar;
+    return o;
+  };
   const [busy, setBusy] = useState<'photo' | 'linkedin' | null>(null);
   const [msg, setMsg] = useState('');
   const [over, setOver] = useState(false);
@@ -253,19 +262,22 @@ function PortraitPicker() {
   const take = async (src: Blob) => {
     setBusy('photo'); setMsg('');
     try {
-      const photo = await squarePhoto(src, user ? PORTRAIT_SIDE : LOCAL_SIDE);
-      const url = user ? await storePortrait(user.id, photo) : await toDataUrl(photo);
-      update((s) => { const { avatar90: _n, ...rest } = s.profile; return { ...s, profile: { ...rest, avatar: url, photo: url } }; }, keep); // a new photo shows on every stock until it is drawn
+      const shot = await squarePhoto(src, user ? PORTRAIT_SIDE : LOCAL_SIDE);
+      const url = user ? await storePortrait(user.id, shot) : await toDataUrl(shot);
+      const first = !p.avatar && !p.avatar90 && !p.photo && !p.photo90; // the first photo goes on both stocks; after that each keeps its own
+      const next = first ? { ...p, avatar: url, photo: url, avatar90: url, photo90: url } : mine(p, url, url);
+      update((s) => ({ ...s, profile: first ? { ...s.profile, avatar: url, photo: url, avatar90: url, photo90: url } : mine(s.profile, url, url) }), keep);
+      if (user) dropUnused(user.id, [own, photo], next).catch(() => { /* orphaned at worst */ });
       setTakes([]);
-      setMsg('Saved. It shows on every card' + (user ? ' and on your page.' : '.'));
+      setMsg(first ? 'Saved. It shows on your Vintage and Chrome cards' + (user ? ' and on your page.' : '.') : 'Saved. It shows on your ' + (chrome ? 'Chrome' : 'Vintage') + ' cards' + (user ? ' and on your page.' : '.'));
     } catch (e) { setMsg((e as Error).message || 'Could not use that photo.'); }
     setBusy(null);
   };
   const remove = () => {
-    const stored = user && p.avatar && isPhoto(p.avatar) && !isDataUrl(p.avatar);
-    update((s) => { const { avatar: _a, photo: _p, avatar90: _n, ...rest } = s.profile; return { ...s, profile: rest }; }, keep);
-    if (stored) dropPortrait(user.id).catch(() => { /* the file is orphaned at worst */ });
-    setMsg('Removed. Cards show your initials.');
+    const next = mine(p, undefined, undefined);
+    update((s) => ({ ...s, profile: mine(s.profile, undefined, undefined) }), keep);
+    if (user && !isDataUrl(own)) dropUnused(user.id, [own, photo], next, chrome ? '90s' : 'riso').catch(() => { /* orphaned at worst */ });
+    setMsg('Removed. Your ' + (chrome ? 'Chrome' : 'Vintage') + ' cards show your initials.');
   };
   const linkedin = async () => {
     const sb = supabaseBrowser();
@@ -289,10 +301,10 @@ function PortraitPicker() {
   };
   /** Four takes from the image model, drawn in parallel; each lands in its slot as it arrives. */
   const deal = async () => {
-    if (!user || !p.photo) return;
+    if (!user || !photo) return;
     setDealing(true); setMsg(''); setTakes([null, null, null, null]);
     let src: Blob;
-    try { src = await photoBlob(p.photo); } catch (e) { setMsg((e as Error).message); setDealing(false); setTakes([]); return; }
+    try { src = await photoBlob(photo); } catch (e) { setMsg((e as Error).message); setDealing(false); setTakes([]); return; }
     let firstErr = '', left = -1;
     await Promise.all([0, 1, 2, 3].map(async (i) => {
       try { const t = await drawTake(src, chrome ? '90s' : 'riso'); left = Math.min(left < 0 ? t.left : left, t.left); setTakes((ts) => ts.map((x, j) => (j === i ? t : x))); }
@@ -306,12 +318,12 @@ function PortraitPicker() {
     setPicking(t.path); setMsg('');
     try {
       const avatar = await pickTake(t.path);
-      update((s) => ({ ...s, profile: chrome ? { ...s.profile, avatar90: avatar } : { ...s.profile, avatar } }), keep);
+      update((s) => ({ ...s, profile: mine(s.profile, avatar, chrome ? (s.profile.photo90 ?? s.profile.photo) : s.profile.photo) }), keep);
       setTakes([]); setMsg(chrome ? 'Saved. It shows on your Chrome cards and on your page.' : 'Saved. It shows on every card, in each team\'s colors, and on your page.');
     } catch (e) { setMsg((e as Error).message); }
     setPicking(null);
   };
-  const usePhoto = () => { if (p.photo) update((s) => ({ ...s, profile: chrome ? { ...s.profile, avatar90: s.profile.photo } : { ...s.profile, avatar: s.profile.photo } }), keep); setMsg('Back to the photo.'); };
+  const usePhoto = () => { if (photo) update((s) => ({ ...s, profile: mine(s.profile, photo, photo) }), keep); setMsg('Back to the photo.'); };
 
   // back from LinkedIn: the app left a note to carry on
   useEffect(() => {
@@ -332,15 +344,15 @@ function PortraitPicker() {
           <div className="pt-actions">
             <button type="button" className="btn sm" disabled={!!busy} onClick={() => fileRef.current?.click()}>Choose a photo</button><input ref={fileRef} type="file" accept="image/*" onChange={(e) => { const f = e.target.files?.[0]; e.target.value = ''; if (f) take(f); }} />
             <button type="button" className="btn sm" disabled={!linkedinOn || !user || !!busy} title={liTitle} onClick={linkedin}>{LinkedInMark} Use my LinkedIn photo</button>
-            {p.avatar && <button type="button" className="btn sm" disabled={!!busy} onClick={remove}>Remove</button>}
+            {shown && <button type="button" className="btn sm" disabled={!!busy} onClick={remove}>Remove</button>}
           </div>
-          {user && p.photo && !takes.length && (
+          {user && photo && !takes.length && (
             <div className="pt-actions">
               <button type="button" className="btn sm draw" disabled={!!busy || dealing} onClick={deal}>{drawn ? 'Draw me again' : chrome ? 'Draw me 90s style' : 'Draw me in the house style'}</button>
               {drawn && <button type="button" className="btn sm" onClick={usePhoto}>Use the photo instead</button>}
             </div>
           )}
-          <span className="help">{msg || (user && p.photo
+          <span className="help">{msg || (user && photo
             ? (standIn ? 'Your riso portrait is standing in on these cards. ' : '') + (chrome ? 'The model redraws your photo as 90s trading-card art like George\'s: brush ink, halftone dots, shades. Four takes, pick one.' : 'The model redraws your photo as a riso print like George\'s: four takes, pick one.') + ' Each deal is a few cents, so there is a daily limit.'
             : 'A headshot works best: face the camera, plain background. Drop one on the square or choose a file; it is cropped to the center.')}</span>
           {!user && <span className="help nudge"><b>Sign in</b> and your photo gets drawn like George&apos;s: {chrome ? '90s trading-card art for this stock' : 'a riso portrait in every team\'s colors'}. <a href="/login">Sign in</a></span>}

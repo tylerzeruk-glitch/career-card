@@ -32,9 +32,17 @@ function builtIn(key: string): string {
   return inline?.[key] || '/avatars/' + key + '.webp'; // a PNG of each sits beside it for the share renderer, which cannot read WebP
 }
 
-/** What goes in the art box for this card: on the Chrome stock the 90s portrait when there is one, else the usual. `photo` means it fills the box. */
+/** What goes in the art box for this card: each stock its own portrait (Chrome `avatar90`, vintage `avatar`). `photo` means it fills the box. */
 export function portraitFor(S: State, p: Profile, company: string): { src: string; photo: boolean } | null {
-  if (themeOf(S) === 'chrome' && p.avatar90) return { src: avatar90Src(p.avatar90, frameIndexFor(S, company)), photo: isPhoto(p.avatar90) };
+  if (themeOf(S) === 'chrome') {
+    const a = p.avatar90 === undefined ? p.avatar : p.avatar90; // a card from before per-stock portraits: the vintage one stands in
+    if (!a) return null;
+    if (isSet(a)) return { src: avatarSrc(a, pairIndexFor(S, company)), photo: false };
+    return { src: avatar90Src(a, frameIndexFor(S, company)), photo: isPhoto(a) };
+  }
   if (p.avatar) return { src: avatarSrc(p.avatar, pairIndexFor(S, company)), photo: isPhoto(p.avatar) };
   return null;
 }
+
+/** The profile with the Chrome stock holding its own portrait, so a change to the vintage one stays there. */
+export const ownChrome = (p: Profile): Profile => (p.avatar90 === undefined ? { ...p, avatar90: p.avatar ?? '', photo90: p.photo } : p);

@@ -1,6 +1,6 @@
 'use client';
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import type { AuthUser, CardTheme, CloudCard, State, Visibility } from '@/lib/types';
+import type { AuthUser, CardTheme, CloudCard, Profile, State, Visibility } from '@/lib/types';
 import { blank } from '@/lib/derived';
 import { sampleState } from '@/lib/sample';
 import { CardConflict, clearLocal, loadCloud, loadLocal, saveCloud, saveLocal } from '@/lib/storage';
@@ -11,6 +11,9 @@ export { useCard, type SyncStatus } from './card-context';
 
 const isReal = (s: State) => s.roles.length > 0 || s.events.length > 0 || !!s.profile.name;
 /** Every visit opens on the deck; the view is a choice for the session, not a saved preference. */
+/** Where a profile keeps photo addresses: each card stock's portrait and the headshot it is drawn from. */
+const PHOTO_FIELDS = ['avatar', 'photo', 'avatar90', 'photo90'] as const;
+
 const onDeck = (s: State): State => (s.settings.view === 'cards' ? s : { ...s, settings: { ...s.settings, view: 'cards' } });
 /** The landing page's "Try it with an example" arrives with ?example (the preview sets a flag instead). */
 /**
@@ -95,14 +98,15 @@ export function CardProvider({ children, user, cloud, styles }: { children: Reac
       const turn = ++saveSeq.current;
       try {
         let s = S;
-        const dataUrl = s.profile.avatar;
-        if (isDataUrl(dataUrl)) { // made while signed out: into the account's storage first
+        // photos made while signed out (each card stock may hold its own): into the account's storage first
+        for (const dataUrl of new Set(PHOTO_FIELDS.map((f) => s.profile[f]).filter(isDataUrl))) {
           let up = lifted.current.get(dataUrl);
           if (!up) { up = liftPortrait(user.id, dataUrl); lifted.current.set(dataUrl, up); up.catch(() => lifted.current.delete(dataUrl)); }
           const url = await up;
-          s = { ...s, profile: { ...s.profile, avatar: url, photo: url } };
+          const swap = (pr: Profile): Profile => { const o = { ...pr }; for (const f of PHOTO_FIELDS) if (o[f] === dataUrl) o[f] = url; return o; };
+          s = { ...s, profile: swap(s.profile) };
           // swap in the stored address on whatever the card is now, not on the copy taken before the upload
-          setS((prev) => (prev.profile.avatar === dataUrl ? { ...prev, profile: { ...prev.profile, avatar: url, photo: url } } : prev));
+          setS((prev) => (PHOTO_FIELDS.some((f) => prev.profile[f] === dataUrl) ? { ...prev, profile: swap(prev.profile) } : prev));
         }
         // one write at a time, and a write that a newer save has overtaken is skipped: the newer one carries a newer card
         const write = writes.current.then(async () => { if (turn === saveSeq.current) { const at = await saveCloud(user.id, s, seen.current); if (at) seen.current = at; } });

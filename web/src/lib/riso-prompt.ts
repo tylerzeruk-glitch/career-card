@@ -1,11 +1,11 @@
 /**
  * The Vintage prompt (the riso house style). Written for gpt-image-2.5, which draws closer to the photo than
- * gpt-image-1 did, so it spells the print style out. Three things in it serve the finishing in src/lib/riso.ts
+ * gpt-image-1 did, so it names the print style up front and spells it out. Three things in it serve the finishing in src/lib/riso.ts
  * and stay whatever else changes: a plain cream background (keyed out there; a model asked for transparency
  * can paint a checkerboard instead), one plain slate shirt (recoloured to each team colour) and the shirt
  * running off the bottom and both sides (the card's art box).
  */
-export const HOUSE_PROMPT = `Transform the uploaded portrait into a vintage mid-century sports-card avatar illustration.
+export const HOUSE_PROMPT = `Redraw the person in the uploaded photo as a risograph screen-print portrait for a vintage mid-century baseball card. Draw it fresh, as ink printed on paper: do not filter, trace or paint over the photo, and keep nothing photographic.
 
 IDENTITY — MUST PRESERVE
 Preserve the person's recognizable identity and distinctive facial characteristics from the uploaded photo.
@@ -36,10 +36,12 @@ No card frame.
 No text.
 No logos.
 
-1950s–1970s ART STYLE
-Render the portrait like a vintage illustrated baseball card or mid-century sports print.
+RISOGRAPH PRINT STYLE (1950s–1970s)
+Render the portrait as a risograph screen print, like the illustration on a vintage baseball card.
 
 Use:
+- bold black ink line work with stippled halftone shading
+- flat areas of ink with visible halftone dots, never smooth shading
 - bold, clean dark ink contour lines
 - simplified flat graphic shapes
 - posterized facial shading
@@ -53,13 +55,11 @@ Use:
 The image should feel printed rather than painted or photographed.
 
 COLOR PALETTE
-Use a restrained vintage palette:
-- warm cream / off-white
-- charcoal or very dark brown-black
-- muted slate blue
-- faded navy
-- muted tan / warm skin tones
-- optional small accents of brick red or mustard
+Three flat inks on warm cream paper, as a risograph prints them:
+- muted warm tan for the skin
+- muted slate blue for the shirt
+- charcoal black for the line work, hair and shadows
+No other colours.
 
 Avoid neon colors.
 Avoid glossy effects.
@@ -97,7 +97,7 @@ Do not make it 3D.`;
  * fixed points as the Vintage prompt: a plain cream background, one plain blue denim shirt (recoloured to
  * each frame's shirt colour; a yellow or patterned shirt would not take it) and the shirt off the edges.
  */
-export const PROMPT_90S = `Transform the uploaded portrait into a bold 1990s sports-card avatar illustration.
+export const PROMPT_90S = `Redraw the person in the uploaded photo as early-1990s trading-card art: bold brush ink, coarse halftone dots, wraparound shades. Draw it fresh, as a cheap colour print: do not filter, trace or paint over the photo, and keep nothing photographic.
 
 IDENTITY — MUST PRESERVE
 Preserve the person's recognizable identity and distinctive facial characteristics from the uploaded photo.
@@ -131,7 +131,9 @@ No logos.
 Render the portrait like an energetic early-to-mid-1990s sports trading-card illustration.
 
 Use:
-- heavy black contour lines
+- bold black brush-ink line work, heavy contour lines
+- coarse halftone dot shading like a cheap print
+- flat saturated colour with a little misregistration
 - aggressive posterized shadows
 - bold graphic facial planes
 - chunky halftone dots
@@ -209,6 +211,8 @@ export const promptFor = (style: PortraitStyle) => (style === '90s' ? PROMPT_90S
 
 export const IMAGE_MODEL = process.env.OPENAI_IMAGE_MODEL || 'gpt-image-2.5-sunburst';
 export const IMAGE_QUALITY = process.env.OPENAI_IMAGE_QUALITY || 'medium';
+/** OpenAI's input_fidelity: 'high' holds the photo closely, which with gpt-image-2.5 pulls the drawing toward a photo. Unset sends none. */
+export const IMAGE_FIDELITY = process.env.OPENAI_IMAGE_FIDELITY || '';
 /** Takes a player may draw in a rolling 24 hours (a deal is four). Counted from the takes kept in their folder. */
 export const TAKES_PER_DAY = 12;
 /** Accounts with no limit: PORTRAIT_UNLIMITED, a comma-separated list of user ids (the owner, testers). */

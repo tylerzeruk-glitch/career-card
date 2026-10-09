@@ -1,6 +1,7 @@
 'use client';
 import { supabaseBrowser } from './supabase/client';
 import type { PortraitStyle } from './riso-prompt';
+import type { Profile } from './types';
 
 /** The stored headshot: a centre square, this many pixels a side. */
 export const PORTRAIT_SIDE = 640;
@@ -8,7 +9,8 @@ export const PORTRAIT_SIDE = 640;
 export const LOCAL_SIDE = 448;
 
 const BUCKET = 'portraits';
-const path = (userId: string) => userId + '/photo.jpg';
+/** Each photo gets a name of its own, so a new one for one card stock never rewrites the file another stock shows. */
+const newPath = (userId: string) => userId + '/photo-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6) + '.jpg';
 
 function decode(src: Blob): Promise<HTMLImageElement> {
   return new Promise((res, rej) => {
@@ -34,18 +36,26 @@ export async function squarePhoto(src: Blob, side: number): Promise<Blob> {
 
 export const toDataUrl = (b: Blob) => new Promise<string>((res, rej) => { const r = new FileReader(); r.onload = () => res(String(r.result)); r.onerror = () => rej(r.error); r.readAsDataURL(b); });
 
-/** Put the photo in the account's folder and return its address (with a cache-busting version, since the file name never changes). */
+/** Put the photo in the account's folder and return its address. */
 export async function storePortrait(userId: string, photo: Blob): Promise<string> {
   const sb = supabaseBrowser(); if (!sb) throw new Error('Not connected to your account.');
-  const { error } = await sb.storage.from(BUCKET).upload(path(userId), photo, { upsert: true, contentType: 'image/jpeg', cacheControl: '31536000' });
+  const at = newPath(userId);
+  const { error } = await sb.storage.from(BUCKET).upload(at, photo, { contentType: 'image/jpeg', cacheControl: '31536000' });
   if (error) throw error;
-  return sb.storage.from(BUCKET).getPublicUrl(path(userId)).data.publicUrl + '?v=' + Date.now();
+  return sb.storage.from(BUCKET).getPublicUrl(at).data.publicUrl;
 }
 
-/** Everything stored for the player: the photo and the drawn set. */
-export async function dropPortrait(userId: string) {
+/**
+ * Stored files the card no longer uses: of the `old` addresses, the player's photos that `now` (the profile
+ * after the change) does not refer to, and a drawn set when it is named. A file is orphaned at worst.
+ */
+export async function dropUnused(userId: string, old: (string | undefined)[], now: Profile, set?: PortraitStyle) {
   const sb = supabaseBrowser(); if (!sb) return;
-  await sb.storage.from(BUCKET).remove([path(userId), ...Array.from({ length: 10 }, (_, i) => userId + '/riso-' + i + '.png'), ...Array.from({ length: 6 }, (_, i) => userId + '/90s-' + i + '.png')]);
+  const used = new Set([now.avatar, now.photo, now.avatar90, now.photo90].filter(Boolean).map((a) => a!.split('?')[0]));
+  const photos = old.filter((a): a is string => !!a && !used.has(a.split('?')[0]))
+    .map((a) => /\/object\/public\/portraits\/([^?]+)/.exec(a)?.[1]).filter((at): at is string => !!at && at.startsWith(userId + '/photo'));
+  const drawn = set === 'riso' ? Array.from({ length: 10 }, (_, i) => userId + '/riso-' + i + '.png') : set === '90s' ? Array.from({ length: 6 }, (_, i) => userId + '/90s-' + i + '.png') : [];
+  if (photos.length || drawn.length) await sb.storage.from(BUCKET).remove([...photos, ...drawn]);
 }
 
 export type Take = { path: string; url: string };

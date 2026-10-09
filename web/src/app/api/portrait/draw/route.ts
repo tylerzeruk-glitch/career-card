@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { supabaseServer } from '@/lib/supabase/server';
 import { prepareTake } from '@/lib/riso';
-import { IMAGE_MODEL, IMAGE_QUALITY, promptFor, type PortraitStyle } from '@/lib/riso-prompt';
+import { IMAGE_FIDELITY, IMAGE_MODEL, IMAGE_QUALITY, promptFor, type PortraitStyle } from '@/lib/riso-prompt';
 import { spend } from '@/lib/quota';
 
 export const runtime = 'nodejs';
@@ -50,10 +50,10 @@ export async function POST(req: NextRequest) {
     fd.append('n', '1');
     fd.append('size', '1024x1024');
     fd.append('quality', IMAGE_QUALITY);
-    if (fidelity) fd.append('input_fidelity', 'high');
+    if (fidelity) fd.append('input_fidelity', IMAGE_FIDELITY);
     return fetch('https://api.openai.com/v1/images/edits', { method: 'POST', headers: { authorization: 'Bearer ' + key }, body: fd });
   };
-  let r = await call(true);
+  let r = await call(!!IMAGE_FIDELITY);
   if (r.status === 400 && /input_fidelity/i.test(await r.clone().text())) r = await call(false); // a model without the knob
   if (!r.ok) {
     const text = await r.text().catch(() => '');

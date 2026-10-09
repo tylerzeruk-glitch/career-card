@@ -53,8 +53,15 @@ export type Profile = {
   looking?: boolean;
   /** The headshot the portrait is made from, kept so it can be redrawn later. For now the avatar is the photo itself. */
   photo?: string;
-  /** The portrait for the Chrome cards: a built-in key (the example's 'george'), a drawn set (one PNG per frame colourway, a {frame} slot) or a stored photo. Missing means those cards show `avatar`. */
+  /**
+   * The portrait for the Chrome cards: a built-in key (the example's 'george'), a drawn set (one PNG per frame
+   * colourway, a {frame} slot) or a stored photo. Each stock keeps its own: '' means removed (initials). Missing
+   * only on a card from before that, whose Chrome cards still show `avatar`; the first change to a portrait
+   * gives Chrome its own copy.
+   */
   avatar90?: string;
+  /** The headshot the Chrome portrait is drawn from. Missing (on a card from before) means `photo`. */
+  photo90?: string;
 };
 
 /** The card set's look. 'vintage' is the 1950s–70s stock the site started with; missing means vintage. */
