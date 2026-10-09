@@ -105,7 +105,9 @@ style is the next step down (`photo` is kept for it).
 asks for four takes at once, each a `POST /api/portrait/draw`: the photo
 goes to OpenAI's image edit endpoint with the house prompt from the
 Avatars canvas (`src/lib/riso-prompt.ts`; model and quality from
-`OPENAI_IMAGE_MODEL`, default `gpt-image-1`, and `OPENAI_IMAGE_QUALITY`,
+`OPENAI_IMAGE_MODEL`, default `gpt-image-2.5-sunburst` (gpt-image-1
+shuts down on 23 October 2026; `gpt-image-2.5-flare` is the faster
+alternative), and `OPENAI_IMAGE_QUALITY`,
 default `medium`; `input_fidelity: high` to hold the likeness, dropped
 if the model refuses it). The result is finished in `src/lib/riso.ts`,
 a port of the steps George went through: cream keyed out (the border's

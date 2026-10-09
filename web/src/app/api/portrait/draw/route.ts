@@ -5,7 +5,7 @@ import { IMAGE_MODEL, IMAGE_QUALITY, promptFor, type PortraitStyle } from '@/lib
 import { spend } from '@/lib/quota';
 
 export const runtime = 'nodejs';
-export const maxDuration = 60;
+export const maxDuration = 120; // Sunburst edits run longer than gpt-image-1 did
 
 const BUCKET = 'portraits';
 const MAX_PHOTO = 6 * 1024 * 1024;

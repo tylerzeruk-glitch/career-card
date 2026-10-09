@@ -11,7 +11,7 @@ export const PROMPT_90S = 'Portrait illustration of the person in the photo, hea
 export type PortraitStyle = 'riso' | '90s';
 export const promptFor = (style: PortraitStyle) => (style === '90s' ? PROMPT_90S : HOUSE_PROMPT);
 
-export const IMAGE_MODEL = process.env.OPENAI_IMAGE_MODEL || 'gpt-image-1';
+export const IMAGE_MODEL = process.env.OPENAI_IMAGE_MODEL || 'gpt-image-2.5-sunburst';
 export const IMAGE_QUALITY = process.env.OPENAI_IMAGE_QUALITY || 'medium';
 /** Takes a player may draw in a rolling 24 hours (a deal is four). Counted from the takes kept in their folder. */
 export const TAKES_PER_DAY = 12;
