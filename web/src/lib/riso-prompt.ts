@@ -25,12 +25,16 @@ A head-and-shoulders bust in three-quarter view, never looking at the viewer. Th
 The bust is wide and fills the lower part of the frame: the shirt runs off the bottom edge and off both side edges, with no gap and no background showing beside the shoulders.
 No hands, no props, no baseball equipment, no scenery, no card frame, no text, no logos.`;
 
+/** With a style reference sent as the second image: George for the riso look, Kramer for the 90s look (assets/portrait-refs). */
+const REFERENCE = (look: string, not: string) => `STYLE REFERENCE
+The first image is the photo of the person to draw. The second image is the style to draw them in: ${look} Match its drawing style closely: the line work, the shading, the inks and colour, and how far the face is simplified. It shows a different man: draw the person from the photo, never him, and do not copy his ${not}.`;
+
 const BACKGROUND = `BACKGROUND
 A plain, flat warm cream background, one even colour edge to edge. No shapes, no drop shadow, no decoration.`;
 
 /** The Vintage look: a risograph print of a 1950s–60s sports-card illustration. */
-const vintage = (take: number) => `Draw the person in the uploaded photo as a hand-drawn illustration for a vintage 1950s–60s baseball card, printed by risograph. An illustrator drew it with pen and brush, then it was printed in three inks. Use the photo only for who they are, not for how the picture looks: it must read at a glance as a drawing, never as a photo or a filtered photo.
-
+const vintage = (take: number, ref: boolean) => `Draw the person in the uploaded photo as a hand-drawn illustration for a vintage 1950s–60s baseball card, printed by risograph. An illustrator drew it with pen and brush, then it was printed in three inks. Use the photo only for who they are, not for how the picture looks: it must read at a glance as a drawing, never as a photo or a filtered photo.
+${ref ? '\n' + REFERENCE('a riso-printed sports-card illustration of a man, in exactly the look this card needs: hand-inked line work, stippled halftone shading, flat inks on cream paper.', 'face, hair, glasses or expression') + '\n' : ''}
 ${LIKENESS}
 No glasses unless they wear glasses in the photo.
 
@@ -57,8 +61,8 @@ ${BACKGROUND}
 If it could pass for a photograph, it is wrong. No painterly rendering, no 3D.`;
 
 /** The Chrome look: early-90s trading-card art, wraparound shades. */
-const nineties = (take: number) => `Draw the person in the uploaded photo as hand-drawn early-1990s trading-card art: bold brush ink, coarse halftone dots, wraparound shades. A comic artist drew it with a brush and it was printed cheaply in flat bright colour. Use the photo only for who they are, not for how the picture looks: it must read at a glance as a drawing, never as a photo or a filtered photo.
-
+const nineties = (take: number, ref: boolean) => `Draw the person in the uploaded photo as hand-drawn early-1990s trading-card art: bold brush ink, coarse halftone dots, wraparound shades. A comic artist drew it with a brush and it was printed cheaply in flat bright colour. Use the photo only for who they are, not for how the picture looks: it must read at a glance as a drawing, never as a photo or a filtered photo.
+${ref ? '\n' + REFERENCE('early-90s trading-card art of a man, in exactly the look this card needs: brush ink, halftone dots, flat loud colour and mirrored wraparound shades.', 'face, hair, expression or patterned shirt') + '\n' : ''}
 ${LIKENESS}
 
 ${POSE(take)}
@@ -85,8 +89,8 @@ If it could pass for a photograph, it is wrong. No glossy 3D, no anime, no flat 
 
 /** The two looks a portrait can be drawn in: the riso house style for the vintage stock, the 90s look for Chrome. */
 export type PortraitStyle = 'riso' | '90s';
-/** The prompt for one take: `take` picks its pose (0–3 in a deal). */
-export const promptFor = (style: PortraitStyle, take = 0) => (style === '90s' ? nineties(take) : vintage(take));
+/** The prompt for one take: `take` picks its pose (0–3 in a deal); `ref` says a style reference goes with the photo. */
+export const promptFor = (style: PortraitStyle, take = 0, ref = false) => (style === '90s' ? nineties(take, ref) : vintage(take, ref));
 
 export const IMAGE_MODEL = process.env.OPENAI_IMAGE_MODEL || 'gpt-image-2.5-sunburst';
 export const IMAGE_QUALITY = process.env.OPENAI_IMAGE_QUALITY || 'medium';

@@ -1,3 +1,5 @@
+import { readFile } from 'node:fs/promises';
+import path from 'node:path';
 import { NextResponse, type NextRequest } from 'next/server';
 import { supabaseServer } from '@/lib/supabase/server';
 import { prepareTake } from '@/lib/riso';
@@ -9,6 +11,9 @@ export const maxDuration = 120; // Sunburst edits run longer than gpt-image-1 di
 
 const BUCKET = 'portraits';
 const MAX_PHOTO = 6 * 1024 * 1024;
+
+/** The look each style is drawn after, sent beside the photo: George's riso print, Kramer's 90s card (assets/portrait-refs, traced in by next.config.ts). */
+const styleRef = (style: PortraitStyle) => readFile(path.join(process.cwd(), 'assets/portrait-refs', style + '.png')).then((b) => new Blob([new Uint8Array(b)], { type: 'image/png' }));
 
 /**
  * One take: the signed-in player's headshot goes to OpenAI's image model with the prompt for the asked
@@ -43,11 +48,12 @@ export async function POST(req: NextRequest) {
   const old = (existing || []).filter((o) => Date.parse(o.created_at || '') < cutoff);
   if (old.length) await sb.storage.from(BUCKET).remove(old.map((o) => folder + '/' + o.name));
 
+  const ref = await styleRef(style).catch((e) => { console.error('style reference', e); return null; }); // without it, the prompt alone
   const call = async (fidelity: boolean) => {
     const fd = new FormData();
     fd.append('model', IMAGE_MODEL);
-    fd.append('image', photo, 'photo.jpg');
-    fd.append('prompt', promptFor(style, pose));
+    if (ref) { fd.append('image[]', photo, 'photo.jpg'); fd.append('image[]', ref, 'style.png'); } else fd.append('image', photo, 'photo.jpg');
+    fd.append('prompt', promptFor(style, pose, !!ref));
     fd.append('n', '1');
     fd.append('size', '1024x1024');
     fd.append('quality', IMAGE_QUALITY);
