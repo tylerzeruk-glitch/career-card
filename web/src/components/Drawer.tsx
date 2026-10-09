@@ -307,7 +307,7 @@ function PortraitPicker() {
     try { src = await photoBlob(photo); } catch (e) { setMsg((e as Error).message); setDealing(false); setTakes([]); return; }
     let firstErr = '', left = -1;
     await Promise.all([0, 1, 2, 3].map(async (i) => {
-      try { const t = await drawTake(src, chrome ? '90s' : 'riso'); left = Math.min(left < 0 ? t.left : left, t.left); setTakes((ts) => ts.map((x, j) => (j === i ? t : x))); }
+      try { const t = await drawTake(src, chrome ? '90s' : 'riso', i); left = Math.min(left < 0 ? t.left : left, t.left); setTakes((ts) => ts.map((x, j) => (j === i ? t : x))); }
       catch (e) { firstErr ||= (e as Error).message; setTakes((ts) => ts.map((x, j) => (j === i ? undefined as unknown as null : x))); }
     }));
     setTakes((ts) => ts.filter((t) => t !== undefined));

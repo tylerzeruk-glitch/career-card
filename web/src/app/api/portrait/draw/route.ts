@@ -30,6 +30,7 @@ export async function POST(req: NextRequest) {
   if (!(photo instanceof File) || !photo.size) return NextResponse.json({ error: 'no-photo', message: 'Add a photo first.' }, { status: 400 });
   if (photo.size > MAX_PHOTO) return NextResponse.json({ error: 'too-big', message: 'That photo is too large.' }, { status: 413 });
   const style: PortraitStyle = form?.get('style') === '90s' ? '90s' : 'riso';
+  const pose = Math.max(0, Math.min(3, Number(form?.get('take')) || 0)); // which of the deal's four poses
 
   // the day's limit, counted in the database before the paid call (src/lib/quota.ts)
   const quota = await spend(sb, user.id, 'portrait');
@@ -46,7 +47,7 @@ export async function POST(req: NextRequest) {
     const fd = new FormData();
     fd.append('model', IMAGE_MODEL);
     fd.append('image', photo, 'photo.jpg');
-    fd.append('prompt', promptFor(style));
+    fd.append('prompt', promptFor(style, pose));
     fd.append('n', '1');
     fd.append('size', '1024x1024');
     fd.append('quality', IMAGE_QUALITY);

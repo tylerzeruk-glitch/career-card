@@ -1,213 +1,92 @@
 /**
- * The Vintage prompt (the riso house style). Written for gpt-image-2.5, which draws closer to the photo than
- * gpt-image-1 did, so it names the print style up front and spells it out. Three things in it serve the finishing in src/lib/riso.ts
- * and stay whatever else changes: a plain cream background (keyed out there; a model asked for transparency
- * can paint a checkerboard instead), one plain slate shirt (recoloured to each team colour) and the shirt
- * running off the bottom and both sides (the card's art box).
+ * The portrait prompts, written for gpt-image-2.5, which keeps much closer to the photo than gpt-image-1 did:
+ * each opens with the look and that an illustrator drew it, asks for likeness rather than every detail of the
+ * face, and leaves the pose free. Three things in them serve the finishing in src/lib/riso.ts and stay whatever
+ * else changes: a plain cream background (keyed out there; a model asked for transparency can paint a
+ * checkerboard instead), one plain shirt colour (recoloured to each team or frame colour; a yellow or patterned
+ * shirt would not take it) and the shirt running off the bottom and both sides (the card's art box).
  */
-export const HOUSE_PROMPT = `Redraw the person in the uploaded photo as a risograph screen-print portrait for a vintage mid-century baseball card. Draw it fresh, as ink printed on paper: do not filter, trace or paint over the photo, and keep nothing photographic.
 
-IDENTITY — MUST PRESERVE
-Preserve the person's recognizable identity and distinctive facial characteristics from the uploaded photo.
-Keep their actual:
-- face shape
-- hairline and hairstyle
-- nose
-- mouth
-- jawline
-- ears
-- facial hair, if present
-- apparent age
-- skin tone
-- distinctive asymmetry and individual features
+/** One head turn per take, so a deal of four shows four poses rather than one pose four times. */
+const POSES = [
+  'Their head is turned to one side and they gaze up and off into the distance.',
+  'Their head is turned toward the other side and they look off past the viewer, chin raised a little.',
+  'A three-quarter view, the head tilted slightly, looking off to one side with a confident expression.',
+  'Their head is turned to one side, gazing off and slightly upward, as if watching a ball in flight.',
+];
 
-Do not beautify, idealize, age up, age down, or substantially alter the person's facial proportions.
-Do not invent facial hair, glasses, hats, or accessories unless they are visible in the source image.
+const LIKENESS = `LIKENESS
+Keep them recognisable: face shape, hairline and hairstyle, hair colour, skin tone, apparent age, facial hair only if they have it, and the one or two features that make them look like themselves. Do not beautify or idealize them.
+Simplify everything else the way an illustrator would: fewer and bolder shapes, no pores, no skin texture, no individual hairs, no photographic lighting or depth of field.
+Add nothing that is not in the photo: no hat unless they wear one, no jewellery.`;
 
-COMPOSITION
-Create a centered bust portrait from approximately mid-chest upward.
-The subject should face mostly forward with a very slight 3/4 turn, approximately 5–15 degrees.
+const POSE = (take: number) => `POSE
+A head-and-shoulders bust in three-quarter view, never looking at the viewer. The pose does not need to match the photo. ${POSES[take % POSES.length]}
 The bust is wide and fills the lower part of the frame: the shirt runs off the bottom edge and off both side edges, with no gap and no background showing beside the shoulders.
-No hands.
-No props.
-No baseball equipment.
-No scenery.
-No card frame.
-No text.
-No logos.
+No hands, no props, no baseball equipment, no scenery, no card frame, no text, no logos.`;
 
-RISOGRAPH PRINT STYLE (1950s–1970s)
-Render the portrait as a risograph screen print, like the illustration on a vintage baseball card.
+const BACKGROUND = `BACKGROUND
+A plain, flat warm cream background, one even colour edge to edge. No shapes, no drop shadow, no decoration.`;
 
-Use:
-- bold black ink line work with stippled halftone shading
-- flat areas of ink with visible halftone dots, never smooth shading
-- bold, clean dark ink contour lines
-- simplified flat graphic shapes
-- posterized facial shading
-- 3–5 major tonal regions rather than realistic gradients
-- subtle halftone and stipple texture
-- restrained screen-print texture
-- slightly imperfect vintage ink character
-- strong silhouette readability
-- hand-inked editorial sports illustration feeling
+/** The Vintage look: a risograph print of a 1950s–60s sports-card illustration. */
+const vintage = (take: number) => `Draw the person in the uploaded photo as a hand-drawn illustration for a vintage 1950s–60s baseball card, printed by risograph. An illustrator drew it with pen and brush, then it was printed in three inks. Use the photo only for who they are, not for how the picture looks: it must read at a glance as a drawing, never as a photo or a filtered photo.
 
-The image should feel printed rather than painted or photographed.
+${LIKENESS}
+No glasses unless they wear glasses in the photo.
 
-COLOR PALETTE
-Three flat inks on warm cream paper, as a risograph prints them:
-- muted warm tan for the skin
-- muted slate blue for the shirt
-- charcoal black for the line work, hair and shadows
-No other colours.
+${POSE(take)}
 
-Avoid neon colors.
-Avoid glossy effects.
-Avoid photorealistic skin rendering.
+DRAWING
+- bold black ink outlines drawn by hand, confident and a little imperfect
+- the face built from a few flat shapes: three or four tones at most, no smooth gradients
+- shadows as solid ink shapes and stippled halftone dots
+- hair as bold massed shapes with a few ink strokes, not strands
+- features drawn with simple lines, slightly stylised, with the charm of a mid-century sports illustration
+
+INKS
+Three flat inks on warm cream paper, as a risograph prints them: muted warm tan for the skin, muted slate blue for the shirt, charcoal black for the line work, hair and shadows. No other colours.
 
 CLOTHING
-Whatever they wear in the photo, they wear a plain muted slate blue collared button-down shirt: one colour, no pattern, no plaid, no logo.
-Render clothing with flat color blocks, bold folds, and minimal halftone shading.
+Whatever they wear in the photo, they wear a plain muted slate blue collared button-down shirt: one colour, no pattern, no plaid, no logo, drawn with flat colour, a few bold folds and a little halftone.
 
-PRINT TREATMENT
-Add light halftone dots and stippling in:
-- shadowed facial areas
-- neck
-- hair
-- shirt folds
+PRINT
+Light halftone dots and stippling in the shadows of the face, neck, hair and shirt folds, slight misregistration between the inks. Clean, not distressed or dirty.
 
-Keep texture controlled and clean.
-Do not make the portrait look heavily distressed, damaged, dirty, or artificially aged.
+${BACKGROUND}
 
-BACKGROUND
-A plain, flat warm cream background, one even colour edge to edge.
-No drop shadow.
-No decorative background graphics.
+If it could pass for a photograph, it is wrong. No painterly rendering, no 3D.`;
 
-FINAL LOOK
-The finished avatar should feel like a clean, collectible baseball-card illustration produced sometime between the 1950s and 1970s:
-graphic, charming, slightly imperfect, bold, simple, and immediately recognizable as the uploaded person.
+/** The Chrome look: early-90s trading-card art, wraparound shades. */
+const nineties = (take: number) => `Draw the person in the uploaded photo as hand-drawn early-1990s trading-card art: bold brush ink, coarse halftone dots, wraparound shades. A comic artist drew it with a brush and it was printed cheaply in flat bright colour. Use the photo only for who they are, not for how the picture looks: it must read at a glance as a drawing, never as a photo or a filtered photo.
 
-Do not make it photorealistic.
-Do not make it painterly.
-Do not make it 3D.`;
+${LIKENESS}
 
-/**
- * The Chrome prompt: early-90s trading-card art, wraparound shades with a mirrored lens. The same three
- * fixed points as the Vintage prompt: a plain cream background, one plain blue denim shirt (recoloured to
- * each frame's shirt colour; a yellow or patterned shirt would not take it) and the shirt off the edges.
- */
-export const PROMPT_90S = `Redraw the person in the uploaded photo as early-1990s trading-card art: bold brush ink, coarse halftone dots, wraparound shades. Draw it fresh, as a cheap colour print: do not filter, trace or paint over the photo, and keep nothing photographic.
+${POSE(take)}
 
-IDENTITY — MUST PRESERVE
-Preserve the person's recognizable identity and distinctive facial characteristics from the uploaded photo.
-Keep their actual:
-- face shape
-- hairline and hairstyle
-- nose
-- mouth
-- jawline
-- ears
-- facial hair, if present
-- apparent age
-- skin tone
-- distinctive asymmetry and individual features
-
-Do not beautify, idealize, age up, age down, or substantially alter the person's facial proportions.
-
-COMPOSITION
-Create a centered bust portrait from approximately mid-chest upward.
-The subject should face mostly forward with a slight confident 3/4 turn, approximately 5–15 degrees.
-The bust is wide and fills the lower part of the frame: the shirt runs off the bottom edge and off both side edges, with no gap and no background showing beside the shoulders.
-No hands.
-No props.
-No baseball equipment.
-No scenery.
-No card frame.
-No text.
-No logos.
-
-1990s ART STYLE
-Render the portrait like an energetic early-to-mid-1990s sports trading-card illustration.
-
-Use:
-- bold black brush-ink line work, heavy contour lines
-- coarse halftone dot shading like a cheap print
-- flat saturated colour with a little misregistration
-- aggressive posterized shadows
-- bold graphic facial planes
-- chunky halftone dots
-- screen-print / comic-print texture
-- sharp high-contrast edges
-- slightly exaggerated sports-poster energy
-- crisp flat colors rather than realistic gradients
-
-The portrait should still look like a printed illustration, not a photograph.
+DRAWING
+- heavy black brush-ink outlines with varied weight, drawn fast and confident
+- bold graphic facial planes with aggressive solid-black shadow shapes under the chin, around the hairline and in the creases
+- coarse halftone dot shading on the cheeks, forehead, neck, hair and shirt
+- crisp flat colours, no smooth gradients, a little colour misregistration like a cheap print
+- slightly exaggerated sports-poster energy, a touch of caricature
 
 SUNGLASSES
-Add oversized 1990s wraparound shield sunglasses.
+Oversized early-90s wraparound sport sunglasses: a black frame and a single shield lens, mirrored in flat graphic streaks of electric blue, magenta, hot pink and yellow. They replace any glasses from the photo and do not hide the shape of the face.
 
-The sunglasses should:
-- span broadly across the face
-- have a black or very dark frame
-- feel sporty and period-specific
-- use mirrored graphic lenses
-- reflect streaks of electric blue, royal blue, magenta, hot pink, red, and yellow
-- feel illustrated and flat, not photorealistically reflective
-
-Do not let the sunglasses obscure the overall recognizable structure of the person's face.
-
-COLOR PALETTE
-Use a vivid 1990s sports palette:
-- electric blue
-- cyan
-- royal blue
-- hot pink
-- magenta
-- bright yellow
-- red
-- cream
-- black
-
-Keep skin rendering graphic and warm, with black halftone shadows.
+COLOUR
+Flat and loud: warm skin with black halftone shadows, a bright blue shirt, black ink, cream; the lens carries the neon.
 
 CLOTHING
-Whatever they wear in the photo, they wear a plain bright blue denim button-down shirt with a collar and white buttons: one colour, no pattern, no logo.
-Keep the garment graphic rather than realistic.
+Whatever they wear in the photo, they wear a plain bright blue denim button-down shirt with a collar and white buttons: one colour, no pattern, no logo, drawn graphic rather than realistic.
 
-PRINT TREATMENT
-Use coarse but intentional halftone/stipple shading across:
-- cheeks
-- forehead
-- neck
-- hair
-- clothing
+${BACKGROUND}
 
-Use strong solid-black shadow shapes under the chin, around the hairline, and in facial creases.
-
-Keep the edges crisp and readable at small avatar size.
-
-BACKGROUND
-A plain, flat warm cream background, one even colour edge to edge.
-No background shapes.
-No trading-card frame.
-No lightning bolts.
-No decorative graphics.
-No drop shadow.
-
-FINAL LOOK
-The finished avatar should feel like a loud, collectible 1990s baseball or extreme-sports trading-card portrait:
-bold, graphic, colorful, slightly outrageous, confident, and highly recognizable as the uploaded person.
-
-Think neon sports graphics, wraparound shades, halftone printing, and comic-book energy—but keep the avatar itself clean and isolated.
-
-Do not make it photorealistic.
-Do not make it glossy 3D CGI.
-Do not turn it into anime or a modern vector-flat corporate illustration.`;
+If it could pass for a photograph, it is wrong. No glossy 3D, no anime, no flat corporate vector art.`;
 
 /** The two looks a portrait can be drawn in: the riso house style for the vintage stock, the 90s look for Chrome. */
 export type PortraitStyle = 'riso' | '90s';
-export const promptFor = (style: PortraitStyle) => (style === '90s' ? PROMPT_90S : HOUSE_PROMPT);
+/** The prompt for one take: `take` picks its pose (0–3 in a deal). */
+export const promptFor = (style: PortraitStyle, take = 0) => (style === '90s' ? nineties(take) : vintage(take));
 
 export const IMAGE_MODEL = process.env.OPENAI_IMAGE_MODEL || 'gpt-image-2.5-sunburst';
 export const IMAGE_QUALITY = process.env.OPENAI_IMAGE_QUALITY || 'medium';

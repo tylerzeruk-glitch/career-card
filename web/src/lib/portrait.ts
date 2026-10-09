@@ -61,9 +61,9 @@ export async function dropUnused(userId: string, old: (string | undefined)[], no
 export type Take = { path: string; url: string };
 type Fail = { error?: string; message?: string };
 
-/** One take from the image model in the given style, via the server. Throws with a message the picker can show. */
-export async function drawTake(photo: Blob, style: PortraitStyle): Promise<Take & { left: number }> {
-  const fd = new FormData(); fd.append('photo', photo, 'photo.jpg'); fd.append('style', style);
+/** One take from the image model in the given style, via the server (`take`, 0–3, picks its pose). Throws with a message the picker can show. */
+export async function drawTake(photo: Blob, style: PortraitStyle, take: number): Promise<Take & { left: number }> {
+  const fd = new FormData(); fd.append('photo', photo, 'photo.jpg'); fd.append('style', style); fd.append('take', String(take));
   const r = await fetch('/api/portrait/draw', { method: 'POST', body: fd });
   const body = (await r.json().catch(() => ({}))) as (Take & { left: number }) | Fail;
   if (!r.ok) throw Object.assign(new Error((body as Fail).message || 'Could not draw that.'), { code: (body as Fail).error });
